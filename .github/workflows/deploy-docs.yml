@@ -24,7 +24,10 @@ jobs:
         uses: swift-actions/setup-swift@v1
         with:
           swift-version: "5.9"
-          
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
       - name: Build Documentation
         run: |
           xcrun docc convert TSPL.docc --output-path docs --hosting-base-path swift-book --transform-for-static-hosting
@@ -32,15 +35,19 @@ jobs:
       - name: Create CNAME file
         run: |
           echo "swift.burt.pe.kr" > docs/CNAME
-          
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
         
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
-          path: docs
+          path: ./docs
           
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v3 
+        uses: actions/deploy-pages@v4
