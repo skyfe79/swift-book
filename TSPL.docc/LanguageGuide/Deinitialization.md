@@ -1,32 +1,21 @@
-# Deinitialization
+# 리소스 해제
 
-Release resources that require custom cleanup.
+커스텀 정리가 필요한 리소스를 해제한다.
 
-A *deinitializer* is called immediately before a class instance is deallocated.
-You write deinitializers with the `deinit` keyword,
-similar to how initializers are written with the `init` keyword.
-Deinitializers are only available on class types.
+*디이니셜라이저*는 클래스 인스턴스가 메모리에서 해제되기 직전에 호출된다.  
+디이니셜라이저는 `init` 키워드로 이니셜라이저를 작성하는 방식과 유사하게 `deinit` 키워드를 사용해 작성한다.  
+디이니셜라이저는 클래스 타입에서만 사용할 수 있다.
 
-## How Deinitialization Works
 
-Swift automatically deallocates your instances when they're no longer needed,
-to free up resources.
-Swift handles the memory management of instances through
-*automatic reference counting* (*ARC*),
-as described in <doc:AutomaticReferenceCounting>.
-Typically you don't need to perform manual cleanup when your instances are deallocated.
-However, when you are working with your own resources,
-you might need to perform some additional cleanup yourself.
-For example, if you create a custom class to open a file and write some data to it,
-you might need to close the file before the class instance is deallocated.
+## 디이니셜라이저의 동작 원리
 
-Class definitions can have at most one deinitializer per class.
-The deinitializer doesn't take any parameters
-and is written without parentheses:
+Swift는 인스턴스가 더 이상 필요하지 않을 때 자동으로 메모리를 해제하여 리소스를 확보한다. Swift는 *자동 참조 카운팅*(*ARC*)을 통해 인스턴스의 메모리 관리를 처리한다. 이에 대한 자세한 내용은 <doc:AutomaticReferenceCounting>에서 확인할 수 있다. 일반적으로 인스턴스가 해제될 때 수동으로 정리 작업을 수행할 필요는 없다. 하지만 커스텀 리소스를 다룰 때는 추가적인 정리 작업이 필요할 수 있다. 예를 들어, 파일을 열고 데이터를 기록하는 커스텀 클래스를 만든 경우, 클래스 인스턴스가 해제되기 전에 파일을 닫아야 할 수 있다.
+
+클래스 정의에서는 클래스당 최대 하나의 디이니셜라이저를 가질 수 있다. 디이니셜라이저는 매개변수를 받지 않으며, 괄호 없이 작성한다:
 
 ```swift
 deinit {
-    // perform the deinitialization
+    // 디이니셜라이저 수행
 }
 ```
 
@@ -36,34 +25,20 @@ deinit {
   ```swifttest
   >> class Test {
   -> deinit {
-        // perform the deinitialization
+        // 디이니셜라이저 수행
      }
   >> }
   ```
 -->
 
-Deinitializers are called automatically, just before instance deallocation takes place.
-You aren't allowed to call a deinitializer yourself.
-Superclass deinitializers are inherited by their subclasses,
-and the superclass deinitializer is called automatically at the end of
-a subclass deinitializer implementation.
-Superclass deinitializers are always called,
-even if a subclass doesn't provide its own deinitializer.
+디이니셜라이저는 인스턴스가 해제되기 직전에 자동으로 호출된다. 개발자가 직접 디이니셜라이저를 호출할 수는 없다. 슈퍼클래스의 디이니셜라이저는 서브클래스에 상속되며, 서브클래스의 디이니셜라이저 구현이 끝나면 자동으로 슈퍼클래스의 디이니셜라이저가 호출된다. 서브클래스가 자체 디이니셜라이저를 제공하지 않더라도 슈퍼클래스의 디이니셜라이저는 항상 호출된다.
 
-Because an instance isn't deallocated until after its deinitializer is called,
-a deinitializer can access all properties of the instance it's called on
-and can modify its behavior based on those properties
-(such as looking up the name of a file that needs to be closed).
+디이니셜라이저가 호출된 후에야 인스턴스가 해제되기 때문에, 디이니셜라이저는 호출된 인스턴스의 모든 프로퍼티에 접근할 수 있다. 또한 이러한 프로퍼티를 기반으로 동작을 수정할 수도 있다(예: 닫아야 할 파일의 이름을 조회하는 등).
 
-## Deinitializers in Action
 
-Here's an example of a deinitializer in action.
-This example defines two new types, `Bank` and `Player`, for a simple game.
-The `Bank` class manages a made-up currency,
-which can never have more than 10,000 coins in circulation.
-There can only ever be one `Bank` in the game,
-and so the `Bank` is implemented as a class with type properties and methods
-to store and manage its current state:
+## 디이니셜라이저의 동작
+
+디이니셜라이저가 어떻게 동작하는지 예제를 통해 살펴보자. 이 예제에서는 간단한 게임을 위해 `Bank`와 `Player`라는 두 가지 타입을 정의한다. `Bank` 클래스는 가상의 통화를 관리하며, 유통되는 코인은 최대 10,000개를 넘을 수 없다. 게임 내에는 오직 하나의 `Bank`만 존재할 수 있으므로, `Bank`는 타입 프로퍼티와 메서드를 사용해 현재 상태를 저장하고 관리한다.
 
 ```swift
 class Bank {
@@ -97,21 +72,13 @@ class Bank {
   ```
 -->
 
-`Bank` keeps track of the current number of coins it holds with its `coinsInBank` property.
-It also offers two methods --- `distribute(coins:)` and `receive(coins:)` ---
-to handle the distribution and collection of coins.
+`Bank`는 `coinsInBank` 프로퍼티를 통해 현재 보유한 코인 수를 추적한다. 또한 `distribute(coins:)`와 `receive(coins:)` 두 메서드를 제공해 코인을 분배하고 회수한다.
 
-The `distribute(coins:)` method checks that there are enough coins in the bank before distributing them.
-If there aren't enough coins,
-`Bank` returns a smaller number than the number that was requested
-(and returns zero if no coins are left in the bank).
-It returns an integer value to indicate the actual number of coins that were provided.
+`distribute(coins:)` 메서드는 코인을 분배하기 전에 은행에 충분한 코인이 있는지 확인한다. 만약 코인이 부족하면, 요청된 수보다 적은 양을 반환한다(은행에 코인이 하나도 없다면 0을 반환). 이 메서드는 실제로 제공된 코인 수를 나타내는 정수 값을 반환한다.
 
-The `receive(coins:)` method simply adds the received number of coins back into the bank's coin store.
+`receive(coins:)` 메서드는 단순히 받은 코인 수를 은행의 코인 저장고에 다시 추가한다.
 
-The `Player` class describes a player in the game.
-Each player has a certain number of coins stored in their purse at any time.
-This is represented by the player's `coinsInPurse` property:
+`Player` 클래스는 게임 내 플레이어를 나타낸다. 각 플레이어는 언제든지 지갑에 일정 수의 코인을 보유한다. 이는 플레이어의 `coinsInPurse` 프로퍼티로 표현된다.
 
 ```swift
 class Player {
@@ -147,17 +114,9 @@ class Player {
   ```
 -->
 
-Each `Player` instance is initialized with a starting allowance of
-a specified number of coins from the bank during initialization,
-although a `Player` instance may receive fewer than that number
-if not enough coins are available.
+각 `Player` 인스턴스는 초기화 과정에서 은행으로부터 지정된 수의 코인을 받는다. 하지만 은행에 코인이 충분하지 않다면, 요청된 수보다 적은 양을 받을 수도 있다.
 
-The `Player` class defines a `win(coins:)` method,
-which retrieves a certain number of coins from the bank
-and adds them to the player's purse.
-The `Player` class also implements a deinitializer,
-which is called just before a `Player` instance is deallocated.
-Here, the deinitializer simply returns all of the player's coins to the bank:
+`Player` 클래스는 `win(coins:)` 메서드를 정의한다. 이 메서드는 은행에서 일정 수의 코인을 가져와 플레이어의 지갑에 추가한다. 또한 `Player` 클래스는 디이니셜라이저를 구현한다. 이 디이니셜라이저는 `Player` 인스턴스가 메모리에서 해제되기 직전에 호출된다. 여기서 디이니셜라이저는 플레이어가 보유한 모든 코인을 은행에 반환한다.
 
 ```swift
 var playerOne: Player? = Player(coins: 100)
@@ -179,14 +138,9 @@ print("There are now \(Bank.coinsInBank) coins left in the bank")
   ```
 -->
 
-A new `Player` instance is created, with a request for 100 coins if they're available.
-This `Player` instance is stored in an optional `Player` variable called `playerOne`.
-An optional variable is used here, because players can leave the game at any point.
-The optional lets you track whether there's currently a player in the game.
+새로운 `Player` 인스턴스가 생성되고, 가능하다면 100개의 코인을 요청한다. 이 `Player` 인스턴스는 `playerOne`이라는 옵셔널 `Player` 변수에 저장된다. 여기서 옵셔널 변수를 사용한 이유는 플레이어가 언제든지 게임을 떠날 수 있기 때문이다. 옵셔널을 사용하면 현재 게임에 플레이어가 있는지 여부를 추적할 수 있다.
 
-Because `playerOne` is an optional, it's qualified with an exclamation point (`!`)
-when its `coinsInPurse` property is accessed to print its default number of coins,
-and whenever its `win(coins:)` method is called:
+`playerOne`이 옵셔널이기 때문에, `coinsInPurse` 프로퍼티에 접근해 초기 코인 수를 출력하거나 `win(coins:)` 메서드를 호출할 때 느낌표(`!`)를 사용해 강제 언래핑한다.
 
 ```swift
 playerOne!.win(coins: 2_000)
@@ -208,9 +162,7 @@ print("The bank now only has \(Bank.coinsInBank) coins left")
   ```
 -->
 
-Here, the player has won 2,000 coins.
-The player's purse now contains 2,100 coins,
-and the bank has only 7,900 coins left.
+여기서 플레이어는 2,000개의 코인을 획득한다. 플레이어의 지갑에는 이제 2,100개의 코인이 있고, 은행에는 7,900개의 코인이 남아 있다.
 
 ```swift
 playerOne = nil
@@ -232,15 +184,7 @@ print("The bank now has \(Bank.coinsInBank) coins")
   ```
 -->
 
-The player has now left the game.
-This is indicated by setting the optional `playerOne` variable to `nil`,
-meaning “no `Player` instance.”
-At the point that this happens,
-the `playerOne` variable's reference to the `Player` instance is broken.
-No other properties or variables are still referring to the `Player` instance,
-and so it's deallocated in order to free up its memory.
-Just before this happens, its deinitializer is called automatically,
-and its coins are returned to the bank.
+이제 플레이어가 게임을 떠났다. 이는 옵셔널 `playerOne` 변수를 `nil`로 설정해 나타낸다. 이 시점에서 `playerOne` 변수가 참조하던 `Player` 인스턴스의 참조가 끊어진다. 더 이상 다른 프로퍼티나 변수가 이 `Player` 인스턴스를 참조하지 않으므로, 메모리를 해제하기 위해 인스턴스가 제거된다. 이 과정에서 디이니셜라이저가 자동으로 호출되고, 플레이어가 보유한 모든 코인이 은행에 반환된다.
 
 <!--
 This source file is part of the Swift.org open source project
@@ -251,3 +195,5 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
+
+

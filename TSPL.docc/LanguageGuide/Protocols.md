@@ -1,37 +1,28 @@
-# Protocols
+# 프로토콜
 
-Define requirements that conforming types must implement.
+특정 타입이 반드시 구현해야 하는 요구사항을 정의한다.
 
-A *protocol* defines a blueprint of
-methods, properties, and other requirements
-that suit a particular task or piece of functionality.
-The protocol can then be *adopted* by a class, structure, or enumeration
-to provide an actual implementation of those requirements.
-Any type that satisfies the requirements of a protocol is said to
-*conform* to that protocol.
+*프로토콜*은 특정 작업이나 기능을 수행하기 위해 필요한 메서드, 프로퍼티, 그리고 기타 요구사항에 대한 청사진을 정의한다. 클래스, 구조체, 열거형은 이 프로토콜을 *채택*하여 해당 요구사항을 실제로 구현할 수 있다. 프로토콜의 요구사항을 충족하는 모든 타입은 해당 프로토콜을 *준수*한다고 말한다.
 
-In addition to specifying requirements that conforming types must implement,
-you can extend a protocol to implement some of these requirements
-or to implement additional functionality that conforming types can take advantage of.
+프로토콜은 준수 타입이 반드시 구현해야 하는 요구사항을 지정할 뿐만 아니라, 이를 확장하여 일부 요구사항을 구현하거나 준수 타입이 활용할 수 있는 추가 기능을 제공할 수도 있다.
 
 <!--
-  FIXME: Protocols should also be able to support initializers,
-  and indeed you can currently write them,
-  but they don't work due to
-  <rdar://problem/13695680> Constructor requirements in protocols (needed for NSCoding).
-  I'll need to write about them once this is fixed.
-  UPDATE: actually, they *can* be used right now,
-  but only in a generic function, and not more generally with the protocol type.
-  I'm not sure I should mention them in this chapter until they work more generally.
+  FIXME: 프로토콜은 초기화 구문도 지원할 수 있어야 하며, 현재 이를 작성할 수는 있지만
+  <rdar://problem/13695680> 프로토콜의 생성자 요구사항(NSCoding에 필요) 문제로 인해 작동하지 않는다.
+  이 문제가 해결되면 이에 대해 작성해야 할 것이다.
+  UPDATE: 사실, 현재 이 기능을 사용할 수는 있지만 제네릭 함수 내에서만 가능하며,
+  프로토콜 타입과 함께 일반적으로 사용할 수는 없다.
+  이 기능이 더 일반적으로 작동할 때까지 이 장에서 언급할지 여부는 확실하지 않다.
 -->
 
-## Protocol Syntax
 
-You define protocols in a very similar way to classes, structures, and enumerations:
+## 프로토콜 문법
+
+프로토콜은 클래스, 구조체, 열거형과 매우 유사한 방식으로 정의한다:
 
 ```swift
 protocol SomeProtocol {
-    // protocol definition goes here
+    // 프로토콜 정의가 여기에 위치한다
 }
 ```
 
@@ -40,19 +31,16 @@ protocol SomeProtocol {
 
   ```swifttest
   -> protocol SomeProtocol {
-        // protocol definition goes here
+        // 프로토콜 정의가 여기에 위치한다
      }
   ```
 -->
 
-Custom types state that they adopt a particular protocol
-by placing the protocol's name after the type's name,
-separated by a colon, as part of their definition.
-Multiple protocols can be listed, and are separated by commas:
+커스텀 타입은 특정 프로토콜을 채택한다고 선언할 때, 타입 이름 뒤에 콜론을 붙이고 프로토콜 이름을 적는다. 여러 프로토콜을 채택할 경우 쉼표로 구분한다:
 
 ```swift
 struct SomeStructure: FirstProtocol, AnotherProtocol {
-    // structure definition goes here
+    // 구조체 정의가 여기에 위치한다
 }
 ```
 
@@ -63,17 +51,16 @@ struct SomeStructure: FirstProtocol, AnotherProtocol {
   >> protocol FirstProtocol {}
   >> protocol AnotherProtocol {}
   -> struct SomeStructure: FirstProtocol, AnotherProtocol {
-        // structure definition goes here
+        // 구조체 정의가 여기에 위치한다
      }
   ```
 -->
 
-If a class has a superclass, list the superclass name
-before any protocols it adopts, followed by a comma:
+클래스가 슈퍼클래스를 가지고 있다면, 슈퍼클래스 이름을 프로토콜 목록 앞에 적고 쉼표로 구분한다:
 
 ```swift
 class SomeClass: SomeSuperclass, FirstProtocol, AnotherProtocol {
-    // class definition goes here
+    // 클래스 정의가 여기에 위치한다
 }
 ```
 
@@ -83,40 +70,21 @@ class SomeClass: SomeSuperclass, FirstProtocol, AnotherProtocol {
   ```swifttest
   >> class SomeSuperclass {}
   -> class SomeClass: SomeSuperclass, FirstProtocol, AnotherProtocol {
-        // class definition goes here
+        // 클래스 정의가 여기에 위치한다
      }
   ```
 -->
 
-> Note: Because protocols are types,
-> begin their names with a capital letter
-> (such as `FullyNamed` and `RandomNumberGenerator`)
-> to match the names of other types in Swift
-> (such as `Int`, `String`, and `Double`).
+> 참고: 프로토콜도 타입이기 때문에, 이름은 대문자로 시작한다(예: `FullyNamed`, `RandomNumberGenerator`). 이는 Swift의 다른 타입 이름(예: `Int`, `String`, `Double`)과 일관성을 유지하기 위함이다.
 
-## Property Requirements
 
-A protocol can require any conforming type to provide
-an instance property or type property with a particular name and type.
-The protocol doesn't specify whether the property should be
-a stored property or a computed property ---
-it only specifies the required property name and type.
-The protocol also specifies whether each property must be gettable
-or gettable *and* settable.
+## 프로퍼티 요구사항
 
-If a protocol requires a property to be gettable and settable,
-that property requirement can't be fulfilled by
-a constant stored property or a read-only computed property.
-If the protocol only requires a property to be gettable,
-the requirement can be satisfied by any kind of property,
-and it's valid for the property to be also settable
-if this is useful for your own code.
+프로토콜은 특정 이름과 타입을 가진 인스턴스 프로퍼티나 타입 프로퍼티를 제공하도록 요구할 수 있다. 프로토콜은 프로퍼티가 저장 프로퍼티인지 계산 프로퍼티인지 명시하지 않는다. 단지 프로퍼티 이름과 타입만 지정한다. 또한 프로토콜은 각 프로퍼티가 읽기 전용인지, 읽기와 쓰기가 모두 가능한지를 명시한다.
 
-Property requirements are always declared as variable properties,
-prefixed with the `var` keyword.
-Gettable and settable properties are indicated by writing
-`{ get set }` after their type declaration,
-and gettable properties are indicated by writing `{ get }`.
+프로토콜이 프로퍼티를 읽기와 쓰기가 모두 가능하도록 요구한다면, 해당 요구사항은 상수 저장 프로퍼티나 읽기 전용 계산 프로퍼티로는 충족할 수 없다. 프로토콜이 프로퍼티를 읽기 전용으로만 요구한다면, 어떤 종류의 프로퍼티로도 요구사항을 충족할 수 있으며, 코드에 유용하다면 프로퍼티가 쓰기 가능하도록 구현해도 문제없다.
+
+프로퍼티 요구사항은 항상 `var` 키워드로 선언하며, 읽기와 쓰기가 모두 가능한 프로퍼티는 타입 선언 뒤에 `{ get set }`을, 읽기 전용 프로퍼티는 `{ get }`을 추가해 표시한다.
 
 ```swift
 protocol SomeProtocol {
@@ -136,10 +104,7 @@ protocol SomeProtocol {
   ```
 -->
 
-Always prefix type property requirements with the `static` keyword
-when you define them in a protocol.
-This rule pertains even though type property requirements can be prefixed with
-the `class` or `static` keyword when implemented by a class:
+프로토콜에서 타입 프로퍼티 요구사항을 정의할 때는 항상 `static` 키워드를 붙인다. 이 규칙은 클래스에서 타입 프로퍼티 요구사항을 구현할 때 `class`나 `static` 키워드를 사용할 수 있더라도 동일하게 적용된다.
 
 ```swift
 protocol AnotherProtocol {
@@ -157,7 +122,7 @@ protocol AnotherProtocol {
   ```
 -->
 
-Here's an example of a protocol with a single instance property requirement:
+다음은 단일 인스턴스 프로퍼티 요구사항을 가진 프로토콜의 예시다.
 
 ```swift
 protocol FullyNamed {
@@ -175,21 +140,16 @@ protocol FullyNamed {
   ```
 -->
 
-The `FullyNamed` protocol requires a conforming type to provide a fully qualified name.
-The protocol doesn't specify anything else about the nature of the conforming type ---
-it only specifies that the type must be able to provide a full name for itself.
-The protocol states that any `FullyNamed` type must have
-a gettable instance property called `fullName`, which is of type `String`.
+`FullyNamed` 프로토콜은 해당 타입이 완전한 이름을 제공하도록 요구한다. 프로토콜은 타입의 다른 특성에 대해 아무것도 명시하지 않는다. 단지 타입이 자신의 전체 이름을 제공할 수 있어야 한다는 점만 요구한다. 이 프로토콜은 `FullyNamed` 타입이 `String` 타입의 `fullName`이라는 읽기 전용 인스턴스 프로퍼티를 가져야 한다고 명시한다.
 
-Here's an example of a simple structure that adopts and conforms to
-the `FullyNamed` protocol:
+다음은 `FullyNamed` 프로토콜을 채택하고 준수하는 간단한 구조체의 예시다.
 
 ```swift
 struct Person: FullyNamed {
     var fullName: String
 }
 let john = Person(fullName: "John Appleseed")
-// john.fullName is "John Appleseed"
+// john.fullName은 "John Appleseed"이다.
 ```
 
 <!--
@@ -205,18 +165,11 @@ let john = Person(fullName: "John Appleseed")
   ```
 -->
 
-This example defines a structure called `Person`,
-which represents a specific named person.
-It states that it adopts the `FullyNamed` protocol
-as part of the first line of its definition.
+이 예시는 `Person`이라는 구조체를 정의하며, 특정 이름을 가진 사람을 나타낸다. 구조체 정의의 첫 줄에서 `FullyNamed` 프로토콜을 채택한다고 명시한다.
 
-Each instance of `Person` has a single stored property called `fullName`,
-which is of type `String`.
-This matches the single requirement of the `FullyNamed` protocol,
-and means that `Person` has correctly conformed to the protocol.
-(Swift reports an error at compile time if a protocol requirement isn't fulfilled.)
+`Person`의 각 인스턴스는 `String` 타입의 `fullName`이라는 단일 저장 프로퍼티를 가진다. 이는 `FullyNamed` 프로토콜의 단일 요구사항과 일치하며, `Person`이 프로토콜을 올바르게 준수한다는 의미이다. (Swift는 프로토콜 요구사항이 충족되지 않으면 컴파일 시점에 오류를 발생시킨다.)
 
-Here's a more complex class, which also adopts and conforms to the `FullyNamed` protocol:
+다음은 `FullyNamed` 프로토콜을 채택하고 준수하는 더 복잡한 클래스의 예시다.
 
 ```swift
 class Starship: FullyNamed {
@@ -231,7 +184,7 @@ class Starship: FullyNamed {
     }
 }
 var ncc1701 = Starship(name: "Enterprise", prefix: "USS")
-// ncc1701.fullName is "USS Enterprise"
+// ncc1701.fullName은 "USS Enterprise"이다.
 ```
 
 <!--
@@ -255,31 +208,18 @@ var ncc1701 = Starship(name: "Enterprise", prefix: "USS")
   ```
 -->
 
-This class implements the `fullName` property requirement as
-a computed read-only property for a starship.
-Each `Starship` class instance stores a mandatory `name` and an optional `prefix`.
-The `fullName` property uses the `prefix` value if it exists,
-and prepends it to the beginning of `name` to create a full name for the starship.
+이 클래스는 `fullName` 프로퍼티 요구사항을 우주선의 계산된 읽기 전용 프로퍼티로 구현한다. 각 `Starship` 클래스 인스턴스는 필수 `name`과 선택적 `prefix`를 저장한다. `fullName` 프로퍼티는 `prefix` 값이 존재하면 이를 사용하고, `name` 앞에 추가해 우주선의 전체 이름을 생성한다.
 
 <!--
   TODO: add some advice on how protocols should be named
 -->
 
-## Method Requirements
 
-Protocols can require specific instance methods and type methods
-to be implemented by conforming types.
-These methods are written as part of the protocol's definition
-in exactly the same way as for normal instance and type methods,
-but without curly braces or a method body.
-Variadic parameters are allowed, subject to the same rules as for normal methods.
-Default values, however, can't be specified for method parameters within a protocol's definition.
+## 메서드 요구사항
 
-As with type property requirements,
-you always prefix type method requirements with the `static` keyword
-when they're defined in a protocol.
-This is true even though type method requirements are prefixed with
-the `class` or `static` keyword when implemented by a class:
+프로토콜은 특정 인스턴스 메서드와 타입 메서드를 구현하도록 요구할 수 있다. 이러한 메서드는 일반 인스턴스 메서드와 타입 메서드와 동일한 방식으로 프로토콜 정의의 일부로 작성되지만, 중괄호나 메서드 본문은 포함하지 않는다. 일반 메서드와 마찬가지로 가변 인자를 허용하지만, 프로토콜 정의 내에서는 메서드 매개변수에 기본값을 지정할 수 없다.
+
+타입 프로퍼티 요구사항과 마찬가지로, 프로토콜에 정의된 타입 메서드 요구사항에는 항상 `static` 키워드를 붙인다. 이는 클래스에서 구현할 때 `class` 또는 `static` 키워드를 사용하더라도 마찬가지로 적용된다:
 
 ```swift
 protocol SomeProtocol {
@@ -297,7 +237,7 @@ protocol SomeProtocol {
   ```
 -->
 
-The following example defines a protocol with a single instance method requirement:
+다음 예제는 단일 인스턴스 메서드 요구사항을 가진 프로토콜을 정의한다:
 
 ```swift
 protocol RandomNumberGenerator {
@@ -315,22 +255,11 @@ protocol RandomNumberGenerator {
   ```
 -->
 
-This protocol, `RandomNumberGenerator`, requires any conforming type
-to have an instance method called `random`,
-which returns a `Double` value whenever it's called.
-Although it's not specified as part of the protocol,
-it's assumed that this value will be
-a number from `0.0` up to (but not including) `1.0`.
+이 프로토콜인 `RandomNumberGenerator`는 해당 프로토콜을 준수하는 모든 타입이 `random`이라는 인스턴스 메서드를 구현하도록 요구한다. 이 메서드는 호출될 때마다 `Double` 값을 반환한다. 프로토콜에 명시되지는 않았지만, 이 값은 `0.0` 이상 `1.0` 미만의 숫자일 것으로 가정한다.
 
-The `RandomNumberGenerator` protocol doesn't make any assumptions
-about how each random number will be generated ---
-it simply requires the generator to provide a standard way
-to generate a new random number.
+`RandomNumberGenerator` 프로토콜은 각 난수가 어떻게 생성되는지에 대해 어떤 가정도 하지 않는다. 단지 새로운 난수를 생성하기 위한 표준 방법을 제공할 것을 요구할 뿐이다.
 
-Here's an implementation of a class that adopts and conforms to
-the `RandomNumberGenerator` protocol.
-This class implements a pseudorandom number generator algorithm known as
-a *linear congruential generator*:
+다음은 `RandomNumberGenerator` 프로토콜을 채택하고 준수하는 클래스의 구현 예제다. 이 클래스는 *선형 합동 생성기*라고 알려진 의사 난수 생성 알고리즘을 구현한다:
 
 ```swift
 class LinearCongruentialGenerator: RandomNumberGenerator {
@@ -374,37 +303,18 @@ print("And another one: \(generator.random())")
   ```
 -->
 
-## Mutating Method Requirements
 
-It's sometimes necessary for a method to modify (or *mutate*) the instance it belongs to.
-For instance methods on value types (that is, structures and enumerations)
-you place the `mutating` keyword before a method's `func` keyword
-to indicate that the method is allowed to modify the instance it belongs to
-and any properties of that instance.
-This process is described in <doc:Methods#Modifying-Value-Types-from-Within-Instance-Methods>.
+## 뮤테이션 메서드 요구사항
 
-If you define a protocol instance method requirement
-that's intended to mutate instances of any type that adopts the protocol,
-mark the method with the `mutating` keyword
-as part of the protocol's definition.
-This enables structures and enumerations to adopt the protocol
-and satisfy that method requirement.
+때로는 메서드가 자신이 속한 인스턴스를 수정(또는 *뮤테이트*)해야 할 필요가 있다. 값 타입(구조체와 열거형)의 인스턴스 메서드의 경우, `mutating` 키워드를 `func` 키워드 앞에 붙여 해당 메서드가 인스턴스와 그 속성을 수정할 수 있음을 나타낸다. 이 과정은 <doc:Methods#Modifying-Value-Types-from-Within-Instance-Methods>에서 자세히 설명한다.
 
-> Note: If you mark a protocol instance method requirement as `mutating`,
-> you don't need to write the `mutating` keyword when writing
-> an implementation of that method for a class.
-> The `mutating` keyword is only used by structures and enumerations.
+프로토콜의 인스턴스 메서드 요구사항을 정의할 때, 해당 프로토콜을 채택한 모든 타입의 인스턴스를 뮤테이트할 의도가 있다면, 메서드를 `mutating` 키워드로 표시해야 한다. 이렇게 하면 구조체와 열거형이 프로토콜을 채택하고 해당 메서드 요구사항을 충족할 수 있다.
 
-The example below defines a protocol called `Togglable`,
-which defines a single instance method requirement called `toggle`.
-As its name suggests, the `toggle()` method is intended to
-toggle or invert the state of any conforming type,
-typically by modifying a property of that type.
+> 참고: 프로토콜 인스턴스 메서드 요구사항을 `mutating`으로 표시했다면, 클래스에서 해당 메서드를 구현할 때 `mutating` 키워드를 작성할 필요가 없다. `mutating` 키워드는 구조체와 열거형에서만 사용한다.
 
-The `toggle()` method is marked with the `mutating` keyword
-as part of the `Togglable` protocol definition,
-to indicate that the method is expected to mutate the state of a conforming instance
-when it's called:
+아래 예제는 `Togglable`이라는 프로토콜을 정의한다. 이 프로토콜은 `toggle`이라는 단일 인스턴스 메서드 요구사항을 정의한다. 이름에서 알 수 있듯이, `toggle()` 메서드는 일반적으로 해당 타입의 속성을 수정하여 상태를 토글하거나 반전시키는 역할을 한다.
+
+`toggle()` 메서드는 `Togglable` 프로토콜 정의의 일부로 `mutating` 키워드로 표시된다. 이는 메서드가 호출될 때 프로토콜을 준수하는 인스턴스의 상태를 뮤테이트할 것으로 예상됨을 나타낸다:
 
 ```swift
 protocol Togglable {
@@ -422,16 +332,9 @@ protocol Togglable {
   ```
 -->
 
-If you implement the `Togglable` protocol for a structure or enumeration,
-that structure or enumeration can conform to the protocol
-by providing an implementation of the `toggle()` method
-that's also marked as `mutating`.
+구조체나 열거형에서 `Togglable` 프로토콜을 구현할 때, `toggle()` 메서드를 `mutating`으로 표시하여 프로토콜을 준수할 수 있다.
 
-The example below defines an enumeration called `OnOffSwitch`.
-This enumeration toggles between two states,
-indicated by the enumeration cases `on` and `off`.
-The enumeration's `toggle` implementation is marked as `mutating`,
-to match the `Togglable` protocol's requirements:
+아래 예제는 `OnOffSwitch`라는 열거형을 정의한다. 이 열거형은 `on`과 `off`라는 두 가지 상태 사이를 토글한다. 열거형의 `toggle` 구현은 `Togglable` 프로토콜의 요구사항과 일치하도록 `mutating`으로 표시된다:
 
 ```swift
 enum OnOffSwitch: Togglable {
@@ -471,13 +374,10 @@ lightSwitch.toggle()
   ```
 -->
 
-## Initializer Requirements
 
-Protocols can require specific initializers
-to be implemented by conforming types.
-You write these initializers as part of the protocol's definition
-in exactly the same way as for normal initializers,
-but without curly braces or an initializer body:
+## 초기화 요구사항
+
+프로토콜은 특정 초기화 메서드를 구현하도록 요구할 수 있다. 이 초기화 메서드는 일반 초기화 메서드를 정의하는 방식과 동일하게 프로토콜 정의의 일부로 작성한다. 단, 중괄호나 초기화 본문은 작성하지 않는다:
 
 ```swift
 protocol SomeProtocol {
@@ -495,130 +395,26 @@ protocol SomeProtocol {
   ```
 -->
 
-### Class Implementations of Protocol Initializer Requirements
 
-You can implement a protocol initializer requirement on a conforming class
-as either a designated initializer or a convenience initializer.
-In both cases,
-you must mark the initializer implementation with the `required` modifier:
+### 프로토콜 초기화 요구사항의 클래스 구현
+
+프로토콜의 초기화 요구사항을 준수하는 클래스에서는 이를 지정 초기화자(designated initializer)나 편의 초기화자(convenience initializer)로 구현할 수 있다. 두 경우 모두 `required` 수식어를 사용해 초기화자를 표시해야 한다:
 
 ```swift
 class SomeClass: SomeProtocol {
     required init(someParameter: Int) {
-        // initializer implementation goes here
+        // 초기화자 구현
     }
 }
 ```
 
-<!--
-  - test: `initializers`
+`required` 수식어를 사용하면 해당 클래스를 상속하는 모든 서브클래스에서 초기화 요구사항을 명시적으로 구현하거나 상속받도록 보장한다. 이를 통해 서브클래스도 프로토콜을 준수할 수 있다.
 
-  ```swifttest
-  -> class SomeClass: SomeProtocol {
-        required init(someParameter: Int) {
-           // initializer implementation goes here
-        }
-     }
-  ```
--->
+초기화자에 대한 더 자세한 내용은 <doc:Initialization#Required-Initializers>를 참고한다.
 
-<!--
-  - test: `protocolInitializerRequirementsCanBeImplementedAsDesignatedOrConvenience`
+> 참고: `final` 수식어가 붙은 클래스에서는 `required` 수식어를 사용할 필요가 없다. `final` 클래스는 상속할 수 없기 때문이다. `final` 수식어에 대한 더 자세한 내용은 <doc:Inheritance#Preventing-Overrides>를 참고한다.
 
-  ```swifttest
-  -> protocol P {
-        init(x: Int)
-     }
-  -> class C1: P {
-        required init(x: Int) {}
-     }
-  -> class C2: P {
-        init() {}
-        required convenience init(x: Int) {
-           self.init()
-        }
-     }
-  ```
--->
-
-The use of the `required` modifier ensures that
-you provide an explicit or inherited implementation of the initializer requirement
-on all subclasses of the conforming class,
-such that they also conform to the protocol.
-
-For more information on required initializers,
-see <doc:Initialization#Required-Initializers>.
-
-<!--
-  - test: `protocolInitializerRequirementsRequireTheRequiredModifierOnTheImplementingClass`
-
-  ```swifttest
-  -> protocol P {
-        init(s: String)
-     }
-  -> class C1: P {
-        required init(s: String) {}
-     }
-  -> class C2: P {
-        init(s: String) {}
-     }
-  !$ error: initializer requirement 'init(s:)' can only be satisfied by a 'required' initializer in non-final class 'C2'
-  !! init(s: String) {}
-  !! ^
-  !! required
-  ```
--->
-
-<!--
-  - test: `protocolInitializerRequirementsRequireTheRequiredModifierOnSubclasses`
-
-  ```swifttest
-  -> protocol P {
-        init(s: String)
-     }
-  -> class C: P {
-        required init(s: String) {}
-     }
-  -> class D1: C {
-        required init(s: String) { super.init(s: s) }
-     }
-  -> class D2: C {
-        init(s: String) { super.init(s: s) }
-     }
-  !$ error: 'required' modifier must be present on all overrides of a required initializer
-  !! init(s: String) { super.init(s: s) }
-  !! ^
-  !! required
-  !$ note: overridden required initializer is here
-  !! required init(s: String) {}
-  !! ^
-  ```
--->
-
-> Note: You don't need to mark protocol initializer implementations with the `required` modifier
-> on classes that are marked with the `final` modifier,
-> because final classes can't subclassed.
-> For more about the `final` modifier, see <doc:Inheritance#Preventing-Overrides>.
-
-<!--
-  - test: `finalClassesDoNotNeedTheRequiredModifierForProtocolInitializerRequirements`
-
-  ```swifttest
-  -> protocol P {
-        init(s: String)
-     }
-  -> final class C1: P {
-        required init(s: String) {}
-     }
-  -> final class C2: P {
-        init(s: String) {}
-     }
-  ```
--->
-
-If a subclass overrides a designated initializer from a superclass,
-and also implements a matching initializer requirement from a protocol,
-mark the initializer implementation with both the `required` and `override` modifiers:
+서브클래스가 슈퍼클래스의 지정 초기화자를 재정의하면서 동시에 프로토콜의 초기화 요구사항을 구현해야 하는 경우, `required`와 `override` 수식어를 모두 사용해야 한다:
 
 ```swift
 protocol SomeProtocol {
@@ -627,50 +423,24 @@ protocol SomeProtocol {
 
 class SomeSuperClass {
     init() {
-        // initializer implementation goes here
+        // 초기화자 구현
     }
 }
 
 class SomeSubClass: SomeSuperClass, SomeProtocol {
-    // "required" from SomeProtocol conformance; "override" from SomeSuperClass
+    // SomeProtocol 준수를 위한 "required"; SomeSuperClass 재정의를 위한 "override"
     required override init() {
-        // initializer implementation goes here
+        // 초기화자 구현
     }
 }
 ```
 
-<!--
-  - test: `requiredOverrideInitializers`
 
-  ```swifttest
-  -> protocol SomeProtocol {
-        init()
-     }
+### 실패 가능한 초기화 요구사항
 
-  -> class SomeSuperClass {
-        init() {
-           // initializer implementation goes here
-        }
-     }
+프로토콜은 준수 타입에 대해 실패 가능한 초기화 요구사항을 정의할 수 있다. 이는 <doc:Initialization#Failable-Initializers>에서 설명한 바와 같다.
 
-  -> class SomeSubClass: SomeSuperClass, SomeProtocol {
-        // "required" from SomeProtocol conformance; "override" from SomeSuperClass
-        required override init() {
-           // initializer implementation goes here
-        }
-     }
-  ```
--->
-
-### Failable Initializer Requirements
-
-Protocols can define failable initializer requirements for conforming types,
-as defined in <doc:Initialization#Failable-Initializers>.
-
-A failable initializer requirement can be satisfied by
-a failable or nonfailable initializer on a conforming type.
-A nonfailable initializer requirement can be satisfied by
-a nonfailable initializer or an implicitly unwrapped failable initializer.
+실패 가능한 초기화 요구사항은 준수 타입의 실패 가능한 초기화 메서드 또는 실패하지 않는 초기화 메서드로 충족할 수 있다. 반면, 실패하지 않는 초기화 요구사항은 실패하지 않는 초기화 메서드 또는 암시적으로 언래핑된 실패 가능한 초기화 메서드로 충족할 수 있다.
 
 <!--
   - test: `failableRequirementCanBeSatisfiedByFailableInitializer`
@@ -752,78 +522,31 @@ a nonfailable initializer or an implicitly unwrapped failable initializer.
   ```
 -->
 
-## Protocols as Types
 
-Protocols don't actually implement any functionality themselves.
-Regardless, you can use a protocol as a type in your code.
+## 프로토콜을 타입으로 사용하기
 
-The most common way to use a protocol as a type
-is to use a protocol as a generic constraint.
-Code with generic constraints can work with
-any type that conforms to the protocol,
-and the specific type is chosen by the code that uses the API.
-For example,
-when you call a function that takes an argument
-and that argument's type is generic,
-the caller chooses the type.
+프로토콜 자체는 실제 기능을 구현하지 않는다. 하지만 프로토콜을 코드에서 타입으로 사용할 수 있다.
 
-Code with an opaque type
-works with some type that conforms to the protocol.
-The underlying type is known at compile time,
-and the API implementation chooses that type,
-but that type's identity is hidden from clients of the API.
-Using an opaque type lets you prevent implementation details of an API
-from leaking through the layer of abstraction ---
-for example, by hiding the specific return type from a function,
-and only guaranteeing that the value conforms to a given protocol.
+프로토콜을 타입으로 사용하는 가장 일반적인 방법은 프로토콜을 제네릭 제약 조건으로 활용하는 것이다. 제네릭 제약 조건이 있는 코드는 해당 프로토콜을 준수하는 모든 타입과 함께 작동하며, 구체적인 타입은 API를 사용하는 코드에서 선택한다. 예를 들어, 인자를 받는 함수를 호출할 때 그 인자의 타입이 제네릭이라면, 호출자가 타입을 결정한다.
 
-Code with a boxed protocol type
-works with any type, chosen at runtime, that conforms to the protocol.
-To support this runtime flexibility,
-Swift adds a level of indirection when necessary ---
-known as a *box*,
-which has a performance cost.
-Because of this flexibility,
-Swift doesn't know the underlying type at compile time,
-which means you can access only the members
-that are required by the protocol.
-Accessing any other APIs on the underlying type
-requires casting at runtime.
+불투명 타입(opaque type)을 사용하는 코드는 프로토콜을 준수하는 어떤 타입과도 작동한다. 내부 타입은 컴파일 시점에 알려지며, API 구현이 그 타입을 선택한다. 하지만 이 타입의 정체는 API 클라이언트에게 숨겨진다. 불투명 타입을 사용하면 API의 구현 세부사항이 추상화 계층을 통해 유출되는 것을 방지할 수 있다. 예를 들어, 함수의 구체적인 반환 타입을 숨기고 값이 주어진 프로토콜을 준수한다는 점만 보장할 수 있다.
 
-For information about using protocols as generic constraints,
-see <doc:Generics>.
-For information about opaque types, and boxed protocol types,
-see <doc:OpaqueTypes>.
+박스형 프로토콜 타입(boxed protocol type)을 사용하는 코드는 런타임에 선택된 프로토콜을 준수하는 모든 타입과 작동한다. 이 런타임 유연성을 지원하기 위해, Swift는 필요한 경우 간접 참조 계층을 추가한다. 이를 *박스*라고 하며, 이는 성능 비용을 수반한다. 이러한 유연성 때문에 Swift는 컴파일 시점에 내부 타입을 알 수 없으며, 이는 프로토콜에서 요구하는 멤버만 접근할 수 있음을 의미한다. 내부 타입의 다른 API에 접근하려면 런타임에 타입 캐스팅이 필요하다.
+
+프로토콜을 제네릭 제약 조건으로 사용하는 방법에 대한 자세한 내용은 <doc:Generics>를 참고한다. 불투명 타입과 박스형 프로토콜 타입에 대한 정보는 <doc:OpaqueTypes>를 확인한다.
 
 <!--
-Performance impact from SE-0335:
+SE-0335의 성능 영향:
 
-Existential types are also significantly more expensive than using concrete types.
-Because they can store any value whose type conforms to the protocol,
-and the type of value stored can change dynamically,
-existential types require dynamic memory
-unless the value is small enough to fit within an inline 3-word buffer.
-In addition to heap allocation and reference counting,
-code using existential types incurs pointer indirection and dynamic method dispatch
-that cannot be optimized away.
+실존 타입(existential type)은 구체적인 타입을 사용하는 것보다 훨씬 더 비용이 많이 든다. 프로토콜을 준수하는 모든 타입의 값을 저장할 수 있고, 저장된 값의 타입이 동적으로 변경될 수 있기 때문에, 실존 타입은 값이 인라인 3워드 버퍼에 맞을 정도로 작지 않은 한 동적 메모리가 필요하다. 힙 할당과 참조 카운팅 외에도, 실존 타입을 사용하는 코드는 포인터 간접 참조와 최적화할 수 없는 동적 메서드 디스패치를 수반한다.
 -->
 
-## Delegation
 
-*Delegation* is a design pattern that enables
-a class or structure to hand off (or *delegate*)
-some of its responsibilities to an instance of another type.
-This design pattern is implemented by defining
-a protocol that encapsulates the delegated responsibilities,
-such that a conforming type (known as a delegate)
-is guaranteed to provide the functionality that has been delegated.
-Delegation can be used to respond to a particular action,
-or to retrieve data from an external source without needing to know
-the underlying type of that source.
+## 위임(Delegation)
 
-The example below defines a dice game
-and a nested protocol for a delegate
-that tracks the game's progress:
+*위임*은 클래스나 구조체가 특정 책임을 다른 타입의 인스턴스에 넘기는 디자인 패턴이다. 이 패턴은 위임할 책임을 캡슐화한 프로토콜을 정의함으로써 구현된다. 프로토콜을 준수하는 타입(위임자라고 함)은 위임된 기능을 제공할 것을 보장한다. 위임은 특정 작업에 응답하거나, 외부 소스로부터 데이터를 가져오는 데 사용할 수 있다. 이때 외부 소스의 내부 타입을 알 필요가 없다.
+
+아래 예제는 주사위 게임과 게임 진행을 추적하는 위임자를 위한 중첩 프로토콜을 정의한다:
 
 ```swift
 class DiceGame {
@@ -863,51 +586,17 @@ class DiceGame {
 }
 ```
 
-The `DiceGame` class implements a game where
-each player takes a turn rolling dice,
-and the player who rolls the highest number wins the round.
-It uses a linear congruential generator
-from the example earlier in the chapter,
-to generate random numbers for dice rolls.
+`DiceGame` 클래스는 각 플레이어가 주사위를 굴리고, 더 높은 숫자를 굴린 플레이어가 라운드에서 승리하는 게임을 구현한다. 이 클래스는 주사위 굴림을 위한 난수를 생성하기 위해 이전 장에서 다룬 선형 합동 생성기를 사용한다.
 
-The `DiceGame.Delegate` protocol can be adopted
-to track the progress of a dice game.
-Because the `DiceGame.Delegate` protocol
-is always used in the context of a dice game,
-it's nested inside of the `DiceGame` class.
-Protocols can be nested
-inside of type declarations like structures and classes,
-as long as the outer declaration isn't generic.
-For information about nesting types, see <doc:NestedTypes>.
+`DiceGame.Delegate` 프로토콜은 주사위 게임의 진행 상황을 추적하기 위해 채택할 수 있다. 이 프로토콜은 항상 주사위 게임의 맥락에서 사용되므로 `DiceGame` 클래스 내부에 중첩되어 있다. 프로토콜은 외부 선언이 제네릭이 아닌 한, 구조체나 클래스와 같은 타입 선언 내부에 중첩될 수 있다. 중첩 타입에 대한 자세한 내용은 <doc:NestedTypes>를 참조한다.
 
-To prevent strong reference cycles,
-delegates are declared as weak references.
-For information about weak references,
-see <doc:AutomaticReferenceCounting#Strong-Reference-Cycles-Between-Class-Instances>.
-Marking the protocol as class-only
-lets the `DiceGame` class
-declare that its delegate must use a weak reference.
-A class-only protocol
-is marked by its inheritance from `AnyObject`,
-as discussed in <doc:Protocols#Class-Only-Protocols>.
+강한 참조 순환을 방지하기 위해 위임자는 약한 참조로 선언된다. 약한 참조에 대한 자세한 내용은 <doc:AutomaticReferenceCounting#Strong-Reference-Cycles-Between-Class-Instances>를 참조한다. 프로토콜을 클래스 전용으로 표시하면 `DiceGame` 클래스가 위임자를 약한 참조로 선언할 수 있다. 클래스 전용 프로토콜은 `AnyObject`를 상속함으로써 표시되며, 이에 대한 자세한 내용은 <doc:Protocols#Class-Only-Protocols>에서 다룬다.
 
-`DiceGame.Delegate` provides three methods for tracking the progress of a game.
-These three methods are incorporated into the game logic
-in the `play(rounds:)` method above.
-The `DiceGame` class calls its delegate methods when
-a new game starts, a new turn begins, or the game ends.
+`DiceGame.Delegate`는 게임 진행 상황을 추적하기 위한 세 가지 메서드를 제공한다. 이 세 메서드는 위의 `play(rounds:)` 메서드에 통합되어 있다. `DiceGame` 클래스는 새로운 게임이 시작되거나, 새로운 턴이 시작되거나, 게임이 종료될 때 위임자 메서드를 호출한다.
 
-Because the `delegate` property is an *optional* `DiceGame.Delegate`,
-the `play(rounds:)` method uses optional chaining each time it calls a method on the delegate,
-as discussed in <doc:OptionalChaining>.
-If the `delegate` property is nil,
-these delegate calls are ignored.
-If the `delegate` property is non-nil,
-the delegate methods are called,
-and are passed the `DiceGame` instance as a parameter.
+`delegate` 프로퍼티는 *옵셔널* `DiceGame.Delegate` 타입이므로, `play(rounds:)` 메서드는 위임자 메서드를 호출할 때마다 옵셔널 체이닝을 사용한다. 이는 <doc:OptionalChaining>에서 다룬다. `delegate` 프로퍼티가 nil이면 위임자 호출은 무시된다. `delegate` 프로퍼티가 nil이 아니면 위임자 메서드가 호출되고, `DiceGame` 인스턴스가 매개변수로 전달된다.
 
-This next example shows a class called `DiceGameTracker`,
-which adopts the `DiceGame.Delegate` protocol:
+다음 예제는 `DiceGame.Delegate` 프로토콜을 채택한 `DiceGameTracker` 클래스를 보여준다:
 
 ```swift
 class DiceGameTracker: DiceGame.Delegate {
@@ -941,14 +630,9 @@ class DiceGameTracker: DiceGame.Delegate {
 }
 ```
 
-The `DiceGameTracker` class implements all three methods
-that are required by the `DiceGame.Delegate` protocol.
-It uses these methods to zero out both players' scores
-at the start of a new game,
-to update their scores at the end of each round,
-and to announce a winner at the end of the game.
+`DiceGameTracker` 클래스는 `DiceGame.Delegate` 프로토콜이 요구하는 세 가지 메서드를 모두 구현한다. 이 클래스는 새 게임이 시작될 때 두 플레이어의 점수를 초기화하고, 각 라운드가 끝날 때 점수를 업데이트하며, 게임이 끝날 때 승자를 발표한다.
 
-Here's how `DiceGame` and `DiceGameTracker` look in action:
+다음은 `DiceGame`과 `DiceGameTracker`가 동작하는 모습이다:
 
 ```swift
 let tracker = DiceGameTracker()
@@ -962,20 +646,14 @@ game.play(rounds: 3)
 // Player 2 won!
 ```
 
-## Adding Protocol Conformance with an Extension
 
-You can extend an existing type to adopt and conform to a new protocol,
-even if you don't have access to the source code for the existing type.
-Extensions can add new properties, methods, and subscripts to an existing type,
-and are therefore able to add any requirements that a protocol may demand.
-For more about extensions, see <doc:Extensions>.
+## 확장을 통해 프로토콜 준수성 추가하기
 
-> Note: Existing instances of a type automatically adopt and conform to a protocol
-> when that conformance is added to the instance's type in an extension.
+기존 타입의 소스 코드에 접근할 수 없더라도, 확장(extension)을 사용해 새로운 프로토콜을 채택하고 준수하도록 만들 수 있다. 확장은 기존 타입에 새로운 프로퍼티, 메서드, 서브스크립트를 추가할 수 있으므로, 프로토콜이 요구하는 모든 조건을 충족시킬 수 있다. 확장에 대한 더 자세한 내용은 <doc:Extensions>를 참고한다.
 
-For example, this protocol, called `TextRepresentable`, can be implemented by
-any type that has a way to be represented as text.
-This might be a description of itself, or a text version of its current state:
+> 참고: 타입의 기존 인스턴스는 확장에서 해당 타입에 프로토콜 준수성을 추가하면 자동으로 프로토콜을 채택하고 준수하게 된다.
+
+예를 들어, `TextRepresentable`이라는 프로토콜은 텍스트로 표현할 수 있는 모든 타입이 구현할 수 있다. 이는 타입 자체에 대한 설명이거나, 현재 상태의 텍스트 버전일 수 있다:
 
 ```swift
 protocol TextRepresentable {
@@ -993,13 +671,7 @@ protocol TextRepresentable {
   ```
 -->
 
-The `Dice` class from above can be extended to adopt and conform to `TextRepresentable`:
-
-<!--
-  No "from above" xref because
-  even though Dice isn't defined in the section immediately previous
-  it's part of a running example and Dice is used in that section.
--->
+이전에 정의한 `Dice` 클래스를 확장해 `TextRepresentable` 프로토콜을 채택하고 준수하도록 만들 수 있다:
 
 ```swift
 extension Dice: TextRepresentable {
@@ -1021,13 +693,9 @@ extension Dice: TextRepresentable {
   ```
 -->
 
-This extension adopts the new protocol in exactly the same way
-as if `Dice` had provided it in its original implementation.
-The protocol name is provided after the type name, separated by a colon,
-and an implementation of all requirements of the protocol
-is provided within the extension's curly braces.
+이 확장은 `Dice`가 원래 구현에서 프로토콜을 제공한 것과 동일한 방식으로 새로운 프로토콜을 채택한다. 프로토콜 이름은 타입 이름 뒤에 콜론으로 구분해 추가하며, 프로토콜의 모든 요구 사항을 확장의 중괄호 안에 구현한다.
 
-Any `Dice` instance can now be treated as `TextRepresentable`:
+이제 모든 `Dice` 인스턴스를 `TextRepresentable`로 취급할 수 있다:
 
 ```swift
 let d12 = Dice(sides: 12, generator: LinearCongruentialGenerator())
@@ -1045,8 +713,7 @@ print(d12.textualDescription)
   ```
 -->
 
-Similarly, the `SnakesAndLadders` game class can be extended to
-adopt and conform to the `TextRepresentable` protocol:
+마찬가지로, `SnakesAndLadders` 게임 클래스도 확장을 통해 `TextRepresentable` 프로토콜을 채택하고 준수하도록 만들 수 있다:
 
 ```swift
 extension SnakesAndLadders: TextRepresentable {
@@ -1072,20 +739,12 @@ print(game.textualDescription)
   ```
 -->
 
-### Conditionally Conforming to a Protocol
 
-A generic type may be able to satisfy the requirements of a protocol
-only under certain conditions,
-such as when the type's generic parameter conforms to the protocol.
-You can make a generic type conditionally conform to a protocol
-by listing constraints when extending the type.
-Write these constraints after the name of the protocol you're adopting
-by writing a generic `where` clause.
-For more about generic `where` clauses, see <doc:Generics#Generic-Where-Clauses>.
+### 조건부 프로토콜 준수
 
-The following extension
-makes `Array` instances conform to the `TextRepresentable` protocol
-whenever they store elements of a type that conforms to `TextRepresentable`.
+제네릭 타입은 특정 조건 하에서만 프로토콜의 요구 사항을 충족할 수 있다. 예를 들어, 타입의 제네릭 파라미터가 프로토콜을 준수할 때가 그렇다. 제네릭 타입이 조건부로 프로토콜을 준수하도록 만들려면, 타입을 확장할 때 제약 조건을 나열하면 된다. 이러한 제약 조건은 프로토콜 이름 뒤에 제네릭 `where` 절을 작성하여 추가한다. 제네릭 `where` 절에 대한 자세한 내용은 <doc:Generics#Generic-Where-Clauses>를 참고한다.
+
+다음 확장은 `Array` 인스턴스가 `TextRepresentable` 프로토콜을 준수하는 타입의 요소를 저장할 때, `Array`가 `TextRepresentable` 프로토콜을 준수하도록 만든다.
 
 ```swift
 extension Array: TextRepresentable where Element: TextRepresentable {
@@ -1115,11 +774,10 @@ print(myDice.textualDescription)
   ```
 -->
 
-### Declaring Protocol Adoption with an Extension
 
-If a type already conforms to all of the requirements of a protocol,
-but hasn't yet stated that it adopts that protocol,
-you can make it adopt the protocol with an empty extension:
+### 익스텐션을 통해 프로토콜 채택 선언하기
+
+타입이 이미 프로토콜의 모든 요구 사항을 충족하지만, 아직 해당 프로토콜을 채택한다고 명시하지 않은 경우, 빈 익스텐션을 사용해 프로토콜을 채택하도록 할 수 있다:
 
 ```swift
 struct Hamster {
@@ -1145,7 +803,7 @@ extension Hamster: TextRepresentable {}
   ```
 -->
 
-Instances of `Hamster` can now be used wherever `TextRepresentable` is the required type:
+이제 `Hamster`의 인스턴스는 `TextRepresentable` 타입이 요구되는 모든 곳에서 사용할 수 있다:
 
 ```swift
 let simonTheHamster = Hamster(name: "Simon")
@@ -1165,60 +823,43 @@ print(somethingTextRepresentable.textualDescription)
   ```
 -->
 
-> Note: Types don't automatically adopt a protocol just by satisfying its requirements.
-> They must always explicitly declare their adoption of the protocol.
+> 참고: 타입이 프로토콜의 요구 사항을 충족한다고 해서 자동으로 프로토콜을 채택하지는 않는다. 항상 명시적으로 프로토콜 채택을 선언해야 한다.
 
-## Adopting a Protocol Using a Synthesized Implementation
 
-Swift can automatically provide the protocol conformance
-for `Equatable`, `Hashable`, and `Comparable`
-in many simple cases.
-Using this synthesized implementation
-means you don't have to write repetitive boilerplate code
-to implement the protocol requirements yourself.
+## 합성 구현을 통한 프로토콜 채택
+
+Swift는 `Equatable`, `Hashable`, `Comparable` 프로토콜에 대해 많은 간단한 경우에 자동으로 프로토콜 준수를 제공한다. 이 합성 구현을 사용하면 프로토콜 요구사항을 직접 구현하기 위해 반복적인 보일러플레이트 코드를 작성할 필요가 없다.
 
 <!--
-  Linking directly to a section of an article like the URLs below do
-  is expected to be stable --
-  as long as the section stays around, that topic ID will be there too.
+  아래 URL과 같은 섹션에 직접 연결하는 것은 안정적일 것으로 예상된다.
+  해당 섹션이 존재하는 한, 그 토픽 ID도 계속 유지될 것이다.
 
-  Conforming to the Equatable Protocol
+  Equatable 프로토콜 준수
   https://developer.apple.com/documentation/swift/equatable#2847780
 
-  Conforming to the Hashable Protocol
+  Hashable 프로토콜 준수
   https://developer.apple.com/documentation/swift/hashable#2849490
 
-  Conforming to the Comparable Protocol
+  Comparable 프로토콜 준수
   https://developer.apple.com/documentation/swift/comparable#2845320
 
-  ^-- Need to add discussion of synthesized implementation
-  to the reference for Comparable, since that's new
+  ^-- Comparable에 대한 참조 문서에 합성 구현에 대한 논의를 추가해야 한다.
+  이는 새로운 내용이기 때문이다.
 
-  Some of the information in the type references above
-  is also repeated in the "Conform Automatically to Equatable and Hashable" section
-  of the article "Adopting Common Protocols".
+  위 타입 참조의 일부 정보는 "Adopting Common Protocols" 문서의
+  "Conform Automatically to Equatable and Hashable" 섹션에서도 반복된다.
   https://developer.apple.com/documentation/swift/adopting_common_protocols#2991123
 -->
 
-Swift provides a synthesized implementation of `Equatable`
-for the following kinds of custom types:
+Swift는 다음과 같은 커스텀 타입에 대해 `Equatable`의 합성 구현을 제공한다:
 
-- Structures that have only stored properties that conform to the `Equatable` protocol
-- Enumerations that have only associated types that conform to the `Equatable` protocol
-- Enumerations that have no associated types
+- `Equatable` 프로토콜을 준수하는 저장 프로퍼티만 있는 구조체
+- `Equatable` 프로토콜을 준수하는 연관 타입만 있는 열거형
+- 연관 타입이 없는 열거형
 
-To receive a synthesized implementation of `==`,
-declare conformance to `Equatable`
-in the file that contains the original declaration,
-without implementing an `==` operator yourself.
-The `Equatable` protocol provides a default implementation of `!=`.
+`==` 연산자의 합성 구현을 받으려면, 원래 선언이 포함된 파일에서 `Equatable` 프로토콜을 준수한다고 선언하고, `==` 연산자를 직접 구현하지 않아도 된다. `Equatable` 프로토콜은 `!=` 연산자의 기본 구현을 제공한다.
 
-The example below defines a `Vector3D` structure
-for a three-dimensional position vector `(x, y, z)`,
-similar to the `Vector2D` structure.
-Because the `x`, `y`, and `z` properties are all of an `Equatable` type,
-`Vector3D` receives synthesized implementations
-of the equivalence operators.
+아래 예제는 `Vector2D` 구조체와 유사한 3차원 위치 벡터 `(x, y, z)`를 위한 `Vector3D` 구조체를 정의한다. `x`, `y`, `z` 프로퍼티가 모두 `Equatable` 타입이기 때문에, `Vector3D`는 동등 연산자의 합성 구현을 받는다.
 
 ```swift
 struct Vector3D: Equatable {
@@ -1251,40 +892,24 @@ if twoThreeFour == anotherTwoThreeFour {
 -->
 
 <!--
-  Need to cross reference here from "Adopting Common Protocols"
+  "Adopting Common Protocols" 문서에서 여기로 교차 참조를 추가해야 한다.
   https://developer.apple.com/documentation/swift/adopting_common_protocols
 
-  Discussion in the article calls out that
-  enums without associated values are Equatable & Hashable
-  even if you don't declare the protocol conformance.
+  문서의 논의에서는 연관 값이 없는 열거형은 프로토콜 준수를 선언하지 않아도
+  Equatable 및 Hashable을 준수한다고 언급한다.
 -->
 
-Swift provides a synthesized implementation of `Hashable`
-for the following kinds of custom types:
+Swift는 다음과 같은 커스텀 타입에 대해 `Hashable`의 합성 구현을 제공한다:
 
-- Structures that have only stored properties that conform to the `Hashable` protocol
-- Enumerations that have only associated types that conform to the `Hashable` protocol
-- Enumerations that have no associated types
+- `Hashable` 프로토콜을 준수하는 저장 프로퍼티만 있는 구조체
+- `Hashable` 프로토콜을 준수하는 연관 타입만 있는 열거형
+- 연관 타입이 없는 열거형
 
-To receive a synthesized implementation of `hash(into:)`,
-declare conformance to `Hashable`
-in the file that contains the original declaration,
-without implementing a `hash(into:)` method yourself.
+`hash(into:)` 메서드의 합성 구현을 받으려면, 원래 선언이 포함된 파일에서 `Hashable` 프로토콜을 준수한다고 선언하고, `hash(into:)` 메서드를 직접 구현하지 않아도 된다.
 
-Swift provides a synthesized implementation of `Comparable`
-for enumerations that don't have a raw value.
-If the enumeration has associated types,
-they must all conform to the `Comparable` protocol.
-To receive a synthesized implementation of `<`,
-declare conformance to `Comparable`
-in the file that contains the original enumeration declaration,
-without implementing a `<` operator yourself.
-The `Comparable` protocol's default implementation
-of `<=`, `>`, and `>=` provides the remaining comparison operators.
+Swift는 원시 값이 없는 열거형에 대해 `Comparable`의 합성 구현을 제공한다. 열거형에 연관 타입이 있는 경우, 모든 연관 타입이 `Comparable` 프로토콜을 준수해야 한다. `<` 연산자의 합성 구현을 받으려면, 원래 열거형 선언이 포함된 파일에서 `Comparable` 프로토콜을 준수한다고 선언하고, `<` 연산자를 직접 구현하지 않아도 된다. `Comparable` 프로토콜의 기본 구현은 `<=`, `>`, `>=` 연산자를 제공한다.
 
-The example below defines a `SkillLevel` enumeration
-with cases for beginners, intermediates, and experts.
-Experts are additionally ranked by the number of stars they have.
+아래 예제는 초보자, 중급자, 전문가를 위한 `SkillLevel` 열거형을 정의한다. 전문가는 추가로 별의 개수에 따라 순위가 매겨진다.
 
 ```swift
 enum SkillLevel: Comparable {
@@ -1325,9 +950,9 @@ for level in levels.sorted() {
 -->
 
 <!--
-  The example above iterates and prints instead of printing the whole array
-  because printing an array gives you the debug description of each element,
-  which looks like temp123908.SkillLevel.expert(5) -- not nice to read.
+  위 예제는 전체 배열을 출력하는 대신 반복하여 출력한다.
+  배열을 출력하면 각 요소의 디버그 설명이 출력되기 때문이다.
+  이는 temp123908.SkillLevel.expert(5)와 같이 보여 읽기 불편하다.
 -->
 
 <!--
@@ -1368,12 +993,10 @@ for level in levels.sorted() {
   ```
 -->
 
-## Collections of Protocol Types
 
-A protocol can be used as the type to be stored in
-a collection such as an array or a dictionary,
-as mentioned in <doc:Protocols#Protocols-as-Types>.
-This example creates an array of `TextRepresentable` things:
+## 프로토콜 타입 컬렉션
+
+프로토콜은 배열이나 딕셔너리와 같은 컬렉션에 저장할 타입으로 사용할 수 있다. 이는 <doc:Protocols#Protocols-as-Types>에서 언급한 내용과 같다. 다음 예제는 `TextRepresentable` 타입의 배열을 생성한다:
 
 ```swift
 let things: [TextRepresentable] = [game, d12, simonTheHamster]
@@ -1387,8 +1010,7 @@ let things: [TextRepresentable] = [game, d12, simonTheHamster]
   ```
 -->
 
-It's now possible to iterate over the items in the array,
-and print each item's textual description:
+이제 배열의 각 항목을 순회하며 텍스트 설명을 출력할 수 있다:
 
 ```swift
 for thing in things {
@@ -1412,23 +1034,16 @@ for thing in things {
   ```
 -->
 
-Note that the `thing` constant is of type `TextRepresentable`.
-It's not of type `Dice`, or `DiceGame`, or `Hamster`,
-even if the actual instance behind the scenes is of one of those types.
-Nonetheless, because it's of type `TextRepresentable`,
-and anything that's `TextRepresentable` is known to have a `textualDescription` property,
-it's safe to access `thing.textualDescription` each time through the loop.
+여기서 `thing` 상수는 `TextRepresentable` 타입이다. 실제 인스턴스가 `Dice`, `DiceGame`, 또는 `Hamster` 타입일지라도 `thing`은 이 타입들 중 하나가 아니다. 그럼에도 불구하고 `thing`이 `TextRepresentable` 타입이므로, `textualDescription` 프로퍼티에 접근하는 것이 안전하다. `TextRepresentable`을 준수하는 모든 타입은 `textualDescription` 프로퍼티를 가지고 있기 때문이다.
 
-## Protocol Inheritance
 
-A protocol can *inherit* one or more other protocols
-and can add further requirements on top of the requirements it inherits.
-The syntax for protocol inheritance is similar to the syntax for class inheritance,
-but with the option to list multiple inherited protocols, separated by commas:
+## 프로토콜 상속
+
+프로토콜은 하나 이상의 다른 프로토콜을 *상속*할 수 있으며, 상속받은 요구사항 위에 추가 요구사항을 정의할 수 있다. 프로토콜 상속 구문은 클래스 상속 구문과 유사하지만, 여러 프로토콜을 쉼표로 구분하여 나열할 수 있다는 점이 다르다:
 
 ```swift
 protocol InheritingProtocol: SomeProtocol, AnotherProtocol {
-    // protocol definition goes here
+    // 프로토콜 정의
 }
 ```
 
@@ -1439,13 +1054,12 @@ protocol InheritingProtocol: SomeProtocol, AnotherProtocol {
   >> protocol SomeProtocol {}
   >> protocol AnotherProtocol {}
   -> protocol InheritingProtocol: SomeProtocol, AnotherProtocol {
-        // protocol definition goes here
+        // 프로토콜 정의
      }
   ```
 -->
 
-Here's an example of a protocol that inherits
-the `TextRepresentable` protocol from above:
+다음은 위에서 정의한 `TextRepresentable` 프로토콜을 상속하는 프로토콜의 예시다:
 
 ```swift
 protocol PrettyTextRepresentable: TextRepresentable {
@@ -1463,15 +1077,9 @@ protocol PrettyTextRepresentable: TextRepresentable {
   ```
 -->
 
-This example defines a new protocol, `PrettyTextRepresentable`,
-which inherits from `TextRepresentable`.
-Anything that adopts `PrettyTextRepresentable` must satisfy all of the requirements
-enforced by `TextRepresentable`,
-*plus* the additional requirements enforced by `PrettyTextRepresentable`.
-In this example, `PrettyTextRepresentable` adds a single requirement
-to provide a gettable property called `prettyTextualDescription` that returns a `String`.
+이 예시에서는 `TextRepresentable` 프로토콜을 상속하는 `PrettyTextRepresentable`이라는 새로운 프로토콜을 정의한다. `PrettyTextRepresentable`을 채택하는 모든 타입은 `TextRepresentable`의 요구사항을 모두 충족해야 하며, 추가로 `PrettyTextRepresentable`의 요구사항도 충족해야 한다. 이 예시에서 `PrettyTextRepresentable`은 `String` 타입의 `prettyTextualDescription`이라는 읽기 전용 프로퍼티를 제공해야 한다는 단일 요구사항을 추가한다.
 
-The `SnakesAndLadders` class can be extended to adopt and conform to `PrettyTextRepresentable`:
+`SnakesAndLadders` 클래스를 확장하여 `PrettyTextRepresentable`을 채택하고 준수하도록 할 수 있다:
 
 ```swift
 extension SnakesAndLadders: PrettyTextRepresentable {
@@ -1515,27 +1123,13 @@ extension SnakesAndLadders: PrettyTextRepresentable {
   ```
 -->
 
-This extension states that it adopts the `PrettyTextRepresentable` protocol
-and provides an implementation of the `prettyTextualDescription` property
-for the `SnakesAndLadders` type.
-Anything that's `PrettyTextRepresentable` must also be `TextRepresentable`,
-and so the implementation of `prettyTextualDescription` starts
-by accessing the `textualDescription` property
-from the `TextRepresentable` protocol to begin an output string.
-It appends a colon and a line break,
-and uses this as the start of its pretty text representation.
-It then iterates through the array of board squares,
-and appends a geometric shape to represent the contents of each square:
+이 확장은 `PrettyTextRepresentable` 프로토콜을 채택하고, `SnakesAndLadders` 타입에 대해 `prettyTextualDescription` 프로퍼티의 구현을 제공한다. `PrettyTextRepresentable`은 `TextRepresentable`이기도 해야 하므로, `prettyTextualDescription`의 구현은 `TextRepresentable` 프로토콜의 `textualDescription` 프로퍼티에 접근하여 출력 문자열을 시작한다. 그런 다음 콜론과 줄 바꿈을 추가하고, 이를 예쁜 텍스트 표현의 시작점으로 사용한다. 이후 보드 사각형 배열을 순회하며, 각 사각형의 내용을 나타내는 기하학적 모양을 추가한다:
 
-- If the square's value is greater than `0`, it's the base of a ladder,
-  and is represented by `▲`.
-- If the square's value is less than `0`, it's the head of a snake,
-  and is represented by `▼`.
-- Otherwise, the square's value is `0`, and it's a “free” square,
-  represented by `○`.
+- 사각형의 값이 `0`보다 크면 사다리의 시작점을 나타내며, `▲`로 표현된다.
+- 사각형의 값이 `0`보다 작으면 뱀의 머리를 나타내며, `▼`로 표현된다.
+- 그 외의 경우, 사각형의 값은 `0`이며, "자유" 사각형을 나타내고 `○`로 표현된다.
 
-The `prettyTextualDescription` property can now be used to print a pretty text description
-of any `SnakesAndLadders` instance:
+이제 `prettyTextualDescription` 프로퍼티를 사용해 `SnakesAndLadders` 인스턴스의 예쁜 텍스트 설명을 출력할 수 있다:
 
 ```swift
 print(game.prettyTextualDescription)
@@ -1553,14 +1147,14 @@ print(game.prettyTextualDescription)
   ```
 -->
 
-## Class-Only Protocols
 
-You can limit protocol adoption to class types (and not structures or enumerations)
-by adding the `AnyObject` protocol to a protocol's inheritance list.
+## 클래스 전용 프로토콜
+
+프로토콜의 상속 목록에 `AnyObject` 프로토콜을 추가하면, 해당 프로토콜을 클래스 타입으로만 채택할 수 있도록 제한할 수 있다. 구조체나 열거형에서는 이 프로토콜을 채택할 수 없다.
 
 ```swift
 protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {
-    // class-only protocol definition goes here
+    // 클래스 전용 프로토콜 정의
 }
 ```
 
@@ -1570,21 +1164,14 @@ protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {
   ```swifttest
   >> protocol SomeInheritedProtocol {}
   -> protocol SomeClassOnlyProtocol: AnyObject, SomeInheritedProtocol {
-        // class-only protocol definition goes here
+        // 클래스 전용 프로토콜 정의
      }
   ```
 -->
 
-In the example above, `SomeClassOnlyProtocol` can only be adopted by class types.
-It's a compile-time error to write a structure or enumeration definition
-that tries to adopt `SomeClassOnlyProtocol`.
+위 예제에서 `SomeClassOnlyProtocol`은 클래스 타입에만 채택할 수 있다. 구조체나 열거형 정의에서 `SomeClassOnlyProtocol`을 채택하려고 하면 컴파일 타임 오류가 발생한다.
 
-> Note: Use a class-only protocol when the behavior defined by that protocol's requirements
-> assumes or requires that a conforming type has
-> reference semantics rather than value semantics.
-> For more about reference and value semantics,
-> see <doc:ClassesAndStructures#Structures-and-Enumerations-Are-Value-Types>
-> and <doc:ClassesAndStructures#Classes-Are-Reference-Types>.
+> 참고: 프로토콜의 요구사항이 참조 의미론(reference semantics)을 가진 타입을 필요로 할 때 클래스 전용 프로토콜을 사용한다. 값 의미론(value semantics)과 참조 의미론에 대한 자세한 내용은 <doc:ClassesAndStructures#Structures-and-Enumerations-Are-Value-Types>와 <doc:ClassesAndStructures#Classes-Are-Reference-Types>를 참고한다.
 
 <!--
   - test: `anyobject-doesn't-have-to-be-first`
@@ -1592,34 +1179,23 @@ that tries to adopt `SomeClassOnlyProtocol`.
   ```swifttest
   >> protocol SomeInheritedProtocol {}
   -> protocol SomeClassOnlyProtocol: SomeInheritedProtocol, AnyObject {
-        // class-only protocol definition goes here
+        // 클래스 전용 프로토콜 정의
      }
   ```
 -->
 
 <!--
-  TODO: a Cacheable protocol might make a good example here?
+  TODO: 여기에 Cacheable 프로토콜 예제를 추가하는 것이 좋을지 고민해보자.
 -->
 
-## Protocol Composition
 
-It can be useful to require a type to conform to multiple protocols at the same time.
-You can combine multiple protocols into a single requirement
-with a *protocol composition*.
-Protocol compositions behave as if you
-defined a temporary local protocol that has the combined requirements
-of all protocols in the composition.
-Protocol compositions don't define any new protocol types.
+## 프로토콜 합성
 
-Protocol compositions have the form `SomeProtocol & AnotherProtocol`.
-You can list as many protocols as you need,
-separating them with ampersands (`&`).
-In addition to its list of protocols,
-a protocol composition can also contain one class type,
-which you can use to specify a required superclass.
+특정 타입이 여러 프로토콜을 동시에 준수하도록 요구하는 것이 유용할 때가 있다. 이때 *프로토콜 합성*을 사용해 여러 프로토콜을 하나의 요구사항으로 결합할 수 있다. 프로토콜 합성은 마치 합성된 모든 프로토콜의 요구사항을 가진 임시 로컬 프로토콜을 정의한 것처럼 동작한다. 단, 프로토콜 합성은 새로운 프로토콜 타입을 정의하지는 않는다.
 
-Here's an example that combines two protocols called `Named` and `Aged`
-into a single protocol composition requirement on a function parameter:
+프로토콜 합성은 `SomeProtocol & AnotherProtocol` 형태로 작성한다. 필요한 만큼의 프로토콜을 앰퍼샌드(`&`)로 구분해 나열할 수 있다. 프로토콜 목록 외에도, 프로토콜 합성은 하나의 클래스 타입을 포함할 수 있으며, 이를 통해 특정 슈퍼클래스를 요구할 수 있다.
+
+다음 예제는 `Named`와 `Aged`라는 두 프로토콜을 합성해 함수 파라미터에 대한 단일 프로토콜 합성 요구사항을 정의한다:
 
 ```swift
 protocol Named {
@@ -1663,27 +1239,13 @@ wishHappyBirthday(to: birthdayPerson)
   ```
 -->
 
-In this example,
-the `Named` protocol
-has a single requirement for a gettable `String` property called `name`.
-The `Aged` protocol
-has a single requirement for a gettable `Int` property called `age`.
-Both protocols are adopted by a structure called `Person`.
+이 예제에서 `Named` 프로토콜은 `name`이라는 `String` 타입의 읽기 전용 프로퍼티를 요구한다. `Aged` 프로토콜은 `age`라는 `Int` 타입의 읽기 전용 프로퍼티를 요구한다. 두 프로토콜 모두 `Person`이라는 구조체에서 채택된다.
 
-The example also defines a `wishHappyBirthday(to:)` function.
-The type of the `celebrator` parameter is `Named & Aged`,
-which means “any type that conforms to both the `Named` and `Aged` protocols.”
-It doesn't matter which specific type is passed to the function,
-as long as it conforms to both of the required protocols.
+이 예제는 또한 `wishHappyBirthday(to:)` 함수를 정의한다. `celebrator` 파라미터의 타입은 `Named & Aged`로, 이는 "`Named`와 `Aged` 프로토콜을 모두 준수하는 어떤 타입"을 의미한다. 함수에 전달되는 특정 타입이 무엇인지는 중요하지 않으며, 단지 두 프로토콜을 모두 준수하기만 하면 된다.
 
-The example then creates a new `Person` instance called `birthdayPerson`
-and passes this new instance to the `wishHappyBirthday(to:)` function.
-Because `Person` conforms to both protocols, this call is valid,
-and the `wishHappyBirthday(to:)` function can print its birthday greeting.
+예제는 `birthdayPerson`이라는 새로운 `Person` 인스턴스를 생성하고, 이 인스턴스를 `wishHappyBirthday(to:)` 함수에 전달한다. `Person`이 두 프로토콜을 모두 준수하기 때문에 이 호출은 유효하며, `wishHappyBirthday(to:)` 함수는 생일 축하 메시지를 출력할 수 있다.
 
-Here's an example that combines
-the `Named` protocol from the previous example
-with a `Location` class:
+다음은 이전 예제의 `Named` 프로토콜을 `Location` 클래스와 결합한 예제이다:
 
 ```swift
 class Location {
@@ -1739,37 +1301,20 @@ beginConcert(in: seattle)
   ```
 -->
 
-The `beginConcert(in:)` function takes
-a parameter of type `Location & Named`,
-which means "any type that's a subclass of `Location`
-and that conforms to the `Named` protocol."
-In this case, `City` satisfies both requirements.
+`beginConcert(in:)` 함수는 `Location & Named` 타입의 파라미터를 받는다. 이는 "`Location`의 서브클래스이면서 `Named` 프로토콜을 준수하는 어떤 타입"을 의미한다. 이 경우, `City`가 두 요구사항을 모두 충족한다.
 
-Passing `birthdayPerson` to the `beginConcert(in:)` function
-is invalid because `Person` isn't a subclass of `Location`.
-Likewise,
-if you made a subclass of `Location`
-that didn't conform to the `Named` protocol,
-calling `beginConcert(in:)` with an instance of that type
-is also invalid.
+`birthdayPerson`을 `beginConcert(in:)` 함수에 전달하는 것은 유효하지 않다. 왜냐하면 `Person`은 `Location`의 서브클래스가 아니기 때문이다. 마찬가지로, `Named` 프로토콜을 준수하지 않는 `Location`의 서브클래스를 만들었다면, 그 타입의 인스턴스로 `beginConcert(in:)`을 호출하는 것도 유효하지 않다.
 
-## Checking for Protocol Conformance
 
-You can use the `is` and `as` operators described in <doc:TypeCasting>
-to check for protocol conformance, and to cast to a specific protocol.
-Checking for and casting to a protocol
-follows exactly the same syntax as checking for and casting to a type:
+## 프로토콜 준수 확인
 
-- The `is` operator returns `true` if an instance conforms to a protocol
-  and returns `false` if it doesn't.
-- The `as?` version of the downcast operator returns
-  an optional value of the protocol's type,
-  and this value is `nil` if the instance doesn't conform to that protocol.
-- The `as!` version of the downcast operator forces the downcast to the protocol type
-  and triggers a runtime error if the downcast doesn't succeed.
+`is`와 `as` 연산자를 사용해 프로토콜 준수 여부를 확인하고 특정 프로토콜로 타입 캐스팅을 할 수 있다. 프로토콜에 대한 확인과 캐스팅은 타입에 대한 확인과 캐스팅과 동일한 문법을 따른다:
 
-This example defines a protocol called `HasArea`,
-with a single property requirement of a gettable `Double` property called `area`:
+- `is` 연산자는 인스턴스가 프로토콜을 준수하면 `true`를 반환하고, 그렇지 않으면 `false`를 반환한다.
+- 다운캐스트 연산자 `as?`는 프로토콜 타입의 옵셔널 값을 반환하며, 인스턴스가 해당 프로토콜을 준수하지 않으면 `nil`이 된다.
+- 다운캐스트 연산자 `as!`는 프로토콜 타입으로 강제 다운캐스트를 시도하며, 다운캐스트가 실패하면 런타임 에러가 발생한다.
+
+다음 예제는 `HasArea`라는 프로토콜을 정의하며, `area`라는 읽기 전용 `Double` 타입의 프로퍼티 요구사항을 포함한다:
 
 ```swift
 protocol HasArea {
@@ -1787,8 +1332,7 @@ protocol HasArea {
   ```
 -->
 
-Here are two classes, `Circle` and `Country`,
-both of which conform to the `HasArea` protocol:
+다음은 `HasArea` 프로토콜을 준수하는 `Circle`과 `Country` 두 클래스이다:
 
 ```swift
 class Circle: HasArea {
@@ -1820,12 +1364,9 @@ class Country: HasArea {
   ```
 -->
 
-The `Circle` class implements the `area` property requirement
-as a computed property, based on a stored `radius` property.
-The `Country` class implements the `area` requirement directly as a stored property.
-Both classes correctly conform to the `HasArea` protocol.
+`Circle` 클래스는 저장 프로퍼티 `radius`를 기반으로 계산된 프로퍼티로 `area` 요구사항을 구현한다. `Country` 클래스는 `area` 요구사항을 직접 저장 프로퍼티로 구현한다. 두 클래스 모두 `HasArea` 프로토콜을 올바르게 준수한다.
 
-Here's a class called `Animal`, which doesn't conform to the `HasArea` protocol:
+다음은 `HasArea` 프로토콜을 준수하지 않는 `Animal` 클래스이다:
 
 ```swift
 class Animal {
@@ -1845,9 +1386,7 @@ class Animal {
   ```
 -->
 
-The `Circle`, `Country` and `Animal` classes don't have a shared base class.
-Nonetheless, they're all classes, and so instances of all three types
-can be used to initialize an array that stores values of type `AnyObject`:
+`Circle`, `Country`, `Animal` 클래스는 공통된 기본 클래스를 가지고 있지 않다. 그러나 모두 클래스이므로, 세 타입의 인스턴스를 `AnyObject` 타입의 배열로 초기화할 수 있다:
 
 ```swift
 let objects: [AnyObject] = [
@@ -1869,15 +1408,9 @@ let objects: [AnyObject] = [
   ```
 -->
 
-The `objects` array is initialized with an array literal containing
-a `Circle` instance with a radius of 2 units;
-a `Country` instance initialized with
-the surface area of the United Kingdom in square kilometers;
-and an `Animal` instance with four legs.
+`objects` 배열은 반지름이 2 단위인 `Circle` 인스턴스, 영국의 면적(제곱킬로미터)으로 초기화된 `Country` 인스턴스, 그리고 다리가 4개인 `Animal` 인스턴스를 포함하는 배열 리터럴로 초기화된다.
 
-The `objects` array can now be iterated,
-and each object in the array can be checked to see if
-it conforms to the `HasArea` protocol:
+이제 `objects` 배열을 순회하며 각 객체가 `HasArea` 프로토콜을 준수하는지 확인할 수 있다:
 
 ```swift
 for object in objects {
@@ -1909,80 +1442,32 @@ for object in objects {
   ```
 -->
 
-Whenever an object in the array conforms to the `HasArea` protocol,
-the optional value returned by the `as?` operator is unwrapped with optional binding
-into a constant called `objectWithArea`.
-The `objectWithArea` constant is known to be of type `HasArea`,
-and so its `area` property can be accessed and printed in a type-safe way.
+배열의 객체가 `HasArea` 프로토콜을 준수할 때마다, `as?` 연산자가 반환한 옵셔널 값을 `objectWithArea`라는 상수로 언래핑한다. `objectWithArea` 상수는 `HasArea` 타입으로 알려져 있으므로, `area` 프로퍼티에 안전하게 접근하고 출력할 수 있다.
 
-Note that the underlying objects aren't changed by the casting process.
-They continue to be a `Circle`, a `Country` and an `Animal`.
-However, at the point that they're stored in the `objectWithArea` constant,
-they're only known to be of type `HasArea`,
-and so only their `area` property can be accessed.
+캐스팅 과정에서 기본 객체는 변경되지 않는다. 여전히 `Circle`, `Country`, `Animal` 타입이다. 그러나 `objectWithArea` 상수에 저장된 시점에는 `HasArea` 타입으로만 알려져 있으므로, `area` 프로퍼티만 접근할 수 있다.
 
 <!--
-  TODO: This is an *extremely* contrived example.
-  Also, it's not particularly useful to be able to get the area of these two objects,
-  because there's no shared unit system.
-  Also also, I'd say that a circle should probably be a structure, not a class.
-  Plus, I'm having to write lots of boilerplate initializers,
-  which make the example far less focused than I'd like.
-  The problem is, I can't use strings within an @objc protocol
-  without also having to import Foundation, so it's numbers or bust, I'm afraid.
+  TODO: 이 예제는 매우 인위적으로 구성되었다.
+  또한, 이 두 객체의 면적을 얻는 것은 특별히 유용하지 않다. 공통된 단위 체계가 없기 때문이다.
+  그리고 원은 클래스가 아닌 구조체로 정의하는 것이 더 적절할 것이다.
+  게다가, 많은 보일러플레이트 초기화 코드를 작성해야 해서 예제가 원하는 만큼 간결하지 않다.
+  문제는 @objc 프로토콜 내에서 문자열을 사용하려면 Foundation을 임포트해야 하므로, 숫자만 사용할 수 있다는 점이다.
 -->
 
 <!--
-  TODO: Since the restrictions on @objc of the previous TODO are now lifted,
-  Should the previous examples be revisited?
+  TODO: 이전 TODO에서 언급된 @objc 제한이 해제되었으므로, 이전 예제를 다시 검토해야 할까?
 -->
 
-## Optional Protocol Requirements
 
-<!--
-  TODO: split this section into several subsections as per [Contributor 7746]'s feedback,
-  and cover the missing alternative approaches that he mentioned.
--->
+## 선택적 프로토콜 요구사항
 
-<!--
-  TODO: you can specify optional subscripts,
-  and the way you check for them / work with them is a bit esoteric.
-  You have to try and access a value from the subscript,
-  and see if the value you get back (which will be an optional)
-  has a value or is nil.
--->
+프로토콜에 *선택적 요구사항*을 정의할 수 있다. 이 요구사항은 프로토콜을 준수하는 타입에서 반드시 구현할 필요가 없다. 선택적 요구사항은 프로토콜 정의 내에서 `optional` 수식어를 붙여 표시한다. 선택적 요구사항은 Objective-C와의 호환성을 위해 사용된다. 프로토콜과 선택적 요구사항 모두 `@objc` 속성으로 표시해야 한다. `@objc` 프로토콜은 클래스에서만 채택할 수 있으며, 구조체나 열거형에서는 사용할 수 없다.
 
-You can define *optional requirements* for protocols.
-These requirements don't have to be implemented by types that conform to the protocol.
-Optional requirements are prefixed by the `optional` modifier
-as part of the protocol's definition.
-Optional requirements are available so that you can write code
-that interoperates with Objective-C.
-Both the protocol and the optional requirement
-must be marked with the `@objc` attribute.
-Note that `@objc` protocols can be adopted only by classes,
-not by structures or enumerations.
+선택적 요구사항에서 메서드나 프로퍼티를 사용할 때, 그 타입은 자동으로 옵셔널이 된다. 예를 들어, `(Int) -> String` 타입의 메서드는 `((Int) -> String)?`이 된다. 이때 함수 타입 전체가 옵셔널로 감싸지며, 메서드의 반환 값만 옵셔널이 되는 것은 아니다.
 
-When you use a method or property in an optional requirement,
-its type automatically becomes an optional.
-For example,
-a method of type `(Int) -> String` becomes `((Int) -> String)?`.
-Note that the entire function type
-is wrapped in the optional,
-not the method's return value.
+선택적 프로토콜 요구사항은 옵셔널 체이닝을 통해 호출할 수 있다. 이는 프로토콜을 준수하는 타입이 해당 요구사항을 구현하지 않았을 가능성을 고려한 것이다. 선택적 메서드의 구현 여부를 확인하려면 메서드 이름 뒤에 물음표를 붙여 호출한다. 예를 들어 `someOptionalMethod?(someArgument)`와 같이 사용한다. 옵셔널 체이닝에 대한 자세한 내용은 <doc:OptionalChaining>을 참고한다.
 
-An optional protocol requirement can be called with optional chaining,
-to account for the possibility that the requirement was not implemented
-by a type that conforms to the protocol.
-You check for an implementation of an optional method
-by writing a question mark after the name of the method when it's called,
-such as `someOptionalMethod?(someArgument)`.
-For information on optional chaining, see <doc:OptionalChaining>.
-
-The following example defines an integer-counting class called `Counter`,
-which uses an external data source to provide its increment amount.
-This data source is defined by the `CounterDataSource` protocol,
-which has two optional requirements:
+다음 예제는 `Counter`라는 정수 카운팅 클래스를 정의한다. 이 클래스는 외부 데이터 소스를 사용해 증가량을 제공한다. 이 데이터 소스는 `CounterDataSource` 프로토콜로 정의되며, 두 가지 선택적 요구사항을 포함한다:
 
 ```swift
 @objc protocol CounterDataSource {
@@ -1991,32 +1476,11 @@ which has two optional requirements:
 }
 ```
 
-<!--
-  - test: `protocolConformance`
+`CounterDataSource` 프로토콜은 `increment(forCount:)`라는 선택적 메서드 요구사항과 `fixedIncrement`라는 선택적 프로퍼티 요구사항을 정의한다. 이 요구사항들은 데이터 소스가 `Counter` 인스턴스에 적절한 증가량을 제공하는 두 가지 방법을 정의한다.
 
-  ```swifttest
-  >> import Foundation
-  -> @objc protocol CounterDataSource {
-  ->    @objc optional func increment(forCount count: Int) -> Int
-  ->    @objc optional var fixedIncrement: Int { get }
-  -> }
-  ```
--->
+> 참고: 엄밀히 말하면, `CounterDataSource` 프로토콜을 준수하는 커스텀 클래스를 작성할 때, 두 요구사항 모두 구현하지 않아도 된다. 둘 다 선택적이기 때문이다. 기술적으로는 허용되지만, 이는 좋은 데이터 소스라고 할 수 없다.
 
-The `CounterDataSource` protocol defines
-an optional method requirement called `increment(forCount:)`
-and an optional property requirement called `fixedIncrement`.
-These requirements define two different ways for data sources to provide
-an appropriate increment amount for a `Counter` instance.
-
-> Note: Strictly speaking, you can write a custom class
-> that conforms to `CounterDataSource` without implementing
-> *either* protocol requirement.
-> They're both optional, after all.
-> Although technically allowed, this wouldn't make for a very good data source.
-
-The `Counter` class, defined below,
-has an optional `dataSource` property of type `CounterDataSource?`:
+아래에 정의된 `Counter` 클래스는 `CounterDataSource?` 타입의 선택적 `dataSource` 프로퍼티를 가지고 있다:
 
 ```swift
 class Counter {
@@ -2032,78 +1496,19 @@ class Counter {
 }
 ```
 
-<!--
-  - test: `protocolConformance`
+`Counter` 클래스는 현재 값을 `count`라는 변수 프로퍼티에 저장한다. 또한 `increment`라는 메서드를 정의하며, 이 메서드는 호출될 때마다 `count` 프로퍼티를 증가시킨다.
 
-  ```swifttest
-  -> class Counter {
-        var count = 0
-        var dataSource: CounterDataSource?
-        func increment() {
-           if let amount = dataSource?.increment?(forCount: count) {
-              count += amount
-           } else if let amount = dataSource?.fixedIncrement {
-              count += amount
-           }
-        }
-     }
-  ```
--->
+`increment()` 메서드는 먼저 데이터 소스에서 `increment(forCount:)` 메서드의 구현을 찾아 증가량을 가져오려고 시도한다. `increment()` 메서드는 옵셔널 체이닝을 사용해 `increment(forCount:)`를 호출하며, 현재 `count` 값을 메서드의 인자로 전달한다.
 
-The `Counter` class stores its current value in a variable property called `count`.
-The `Counter` class also defines a method called `increment`,
-which increments the `count` property every time the method is called.
+여기서 *두 가지* 수준의 옵셔널 체이닝이 사용된다. 첫째, `dataSource`가 `nil`일 가능성이 있으므로, `dataSource` 이름 뒤에 물음표를 붙여 `dataSource`가 `nil`이 아닐 때만 `increment(forCount:)`를 호출한다. 둘째, `dataSource`가 존재하더라도 `increment(forCount:)`를 구현하지 않았을 가능성이 있다. 이 경우에도 옵셔널 체이닝을 통해 처리된다. `increment(forCount:)`가 존재할 때만 호출되며, 이는 `increment(forCount:)` 이름 뒤에 물음표를 붙여 표시한다.
 
-The `increment()` method first tries to retrieve an increment amount
-by looking for an implementation of the `increment(forCount:)` method on its data source.
-The `increment()` method uses optional chaining to try to call `increment(forCount:)`,
-and passes the current `count` value as the method's single argument.
+`increment(forCount:)` 호출은 두 가지 이유로 실패할 수 있으므로, 호출 결과는 옵셔널 `Int` 값을 반환한다. 이는 `CounterDataSource` 정의에서 `increment(forCount:)`가 비옵셔널 `Int`를 반환하도록 정의되어 있더라도 마찬가지다. 두 가지 옵셔널 체이닝 연산이 연속적으로 사용되었지만, 결과는 여전히 단일 옵셔널로 감싸진다. 여러 수준의 옵셔널 체이닝을 사용하는 방법에 대한 자세한 내용은 <doc:OptionalChaining#Linking-Multiple-Levels-of-Chaining>을 참고한다.
 
-Note that *two* levels of optional chaining are at play here.
-First, it's possible that `dataSource` may be `nil`,
-and so `dataSource` has a question mark after its name to indicate that
-`increment(forCount:)` should be called only if `dataSource` isn't `nil`.
-Second, even if `dataSource` *does* exist,
-there's no guarantee that it implements `increment(forCount:)`,
-because it's an optional requirement.
-Here, the possibility that `increment(forCount:)` might not be implemented
-is also handled by optional chaining.
-The call to `increment(forCount:)` happens
-only if `increment(forCount:)` exists ---
-that is, if it isn't `nil`.
-This is why `increment(forCount:)` is also written with a question mark after its name.
+`increment(forCount:)`를 호출한 후, 반환된 옵셔널 `Int`는 옵셔널 바인딩을 사용해 `amount`라는 상수로 언래핑된다. 옵셔널 `Int`에 값이 포함되어 있다면(즉, 델리게이트와 메서드가 모두 존재하고 메서드가 값을 반환했다면), 언래핑된 `amount`가 저장된 `count` 프로퍼티에 더해지고 증가가 완료된다.
 
-Because the call to `increment(forCount:)` can fail for either of these two reasons,
-the call returns an *optional* `Int` value.
-This is true even though `increment(forCount:)` is defined as returning
-a non-optional `Int` value in the definition of `CounterDataSource`.
-Even though there are two optional chaining operations,
-one after another,
-the result is still wrapped in a single optional.
-For more information about using multiple optional chaining operations,
-see <doc:OptionalChaining#Linking-Multiple-Levels-of-Chaining>.
+`increment(forCount:)` 메서드로부터 값을 가져올 수 없는 경우(즉, `dataSource`가 `nil`이거나 데이터 소스가 `increment(forCount:)`를 구현하지 않은 경우), `increment()` 메서드는 대신 데이터 소스의 `fixedIncrement` 프로퍼티에서 값을 가져오려고 시도한다. `fixedIncrement` 프로퍼티도 선택적 요구사항이므로, 그 값은 옵셔널 `Int` 값이다. `CounterDataSource` 프로토콜 정의에서 `fixedIncrement`는 비옵셔널 `Int` 프로퍼티로 정의되어 있지만, 여전히 옵셔널로 간주된다.
 
-After calling `increment(forCount:)`, the optional `Int` that it returns
-is unwrapped into a constant called `amount`, using optional binding.
-If the optional `Int` does contain a value ---
-that is, if the delegate and method both exist,
-and the method returned a value ---
-the unwrapped `amount` is added onto the stored `count` property,
-and incrementation is complete.
-
-If it's *not* possible to retrieve a value from the `increment(forCount:)` method ---
-either because `dataSource` is nil,
-or because the data source doesn't implement `increment(forCount:)` ---
-then the `increment()` method tries to retrieve a value
-from the data source's `fixedIncrement` property instead.
-The `fixedIncrement` property is also an optional requirement,
-so its value is an optional `Int` value,
-even though `fixedIncrement` is defined as a non-optional `Int` property
-as part of the `CounterDataSource` protocol definition.
-
-Here's a simple `CounterDataSource` implementation where the data source
-returns a constant value of `3` every time it's queried.
-It does this by implementing the optional `fixedIncrement` property requirement:
+다음은 데이터 소스가 매번 `3`이라는 고정 값을 반환하는 간단한 `CounterDataSource` 구현이다. 이는 선택적 `fixedIncrement` 프로퍼티 요구사항을 구현함으로써 이루어진다:
 
 ```swift
 class ThreeSource: NSObject, CounterDataSource {
@@ -2111,17 +1516,7 @@ class ThreeSource: NSObject, CounterDataSource {
 }
 ```
 
-<!--
-  - test: `protocolConformance`
-
-  ```swifttest
-  -> class ThreeSource: NSObject, CounterDataSource {
-        let fixedIncrement = 3
-     }
-  ```
--->
-
-You can use an instance of `ThreeSource` as the data source for a new `Counter` instance:
+`ThreeSource` 인스턴스를 새로운 `Counter` 인스턴스의 데이터 소스로 사용할 수 있다:
 
 ```swift
 var counter = Counter()
@@ -2136,32 +1531,9 @@ for _ in 1...4 {
 // 12
 ```
 
-<!--
-  - test: `protocolConformance`
+위 코드는 새로운 `Counter` 인스턴스를 생성하고, 데이터 소스를 `ThreeSource` 인스턴스로 설정한 후, 카운터의 `increment()` 메서드를 네 번 호출한다. 예상대로, `increment()`가 호출될 때마다 카운터의 `count` 프로퍼티는 3씩 증가한다.
 
-  ```swifttest
-  -> var counter = Counter()
-  -> counter.dataSource = ThreeSource()
-  -> for _ in 1...4 {
-        counter.increment()
-        print(counter.count)
-     }
-  </ 3
-  </ 6
-  </ 9
-  </ 12
-  ```
--->
-
-The code above creates a new `Counter` instance;
-sets its data source to be a new `ThreeSource` instance;
-and calls the counter's `increment()` method four times.
-As expected, the counter's `count` property increases by three
-each time `increment()` is called.
-
-Here's a more complex data source called `TowardsZeroSource`,
-which makes a `Counter` instance count up or down towards zero
-from its current `count` value:
+다음은 `TowardsZeroSource`라는 더 복잡한 데이터 소스로, `Counter` 인스턴스가 현재 `count` 값에서 0을 향해 증가하거나 감소하도록 만든다:
 
 ```swift
 class TowardsZeroSource: NSObject, CounterDataSource {
@@ -2177,33 +1549,9 @@ class TowardsZeroSource: NSObject, CounterDataSource {
 }
 ```
 
-<!--
-  - test: `protocolConformance`
+`TowardsZeroSource` 클래스는 `CounterDataSource` 프로토콜의 선택적 `increment(forCount:)` 메서드를 구현하며, `count` 인자 값을 사용해 어느 방향으로 카운트할지 결정한다. `count`가 이미 0이라면, 메서드는 `0`을 반환해 더 이상 카운트하지 않도록 한다.
 
-  ```swifttest
-  -> class TowardsZeroSource: NSObject, CounterDataSource {
-        func increment(forCount count: Int) -> Int {
-           if count == 0 {
-              return 0
-           } else if count < 0 {
-              return 1
-           } else {
-              return -1
-           }
-        }
-     }
-  ```
--->
-
-The `TowardsZeroSource` class implements
-the optional `increment(forCount:)` method from the `CounterDataSource` protocol
-and uses the `count` argument value to work out which direction to count in.
-If `count` is already zero, the method returns `0`
-to indicate that no further counting should take place.
-
-You can use an instance of `TowardsZeroSource` with the existing `Counter` instance
-to count from `-4` to zero.
-Once the counter reaches zero, no more counting takes place:
+기존 `Counter` 인스턴스와 `TowardsZeroSource` 인스턴스를 함께 사용해 `-4`에서 0까지 카운트할 수 있다. 카운터가 0에 도달하면 더 이상 카운트하지 않는다:
 
 ```swift
 counter.count = -4
@@ -2219,36 +1567,12 @@ for _ in 1...5 {
 // 0
 ```
 
-<!--
-  - test: `protocolConformance`
 
-  ```swifttest
-  -> counter.count = -4
-  -> counter.dataSource = TowardsZeroSource()
-  -> for _ in 1...5 {
-        counter.increment()
-        print(counter.count)
-     }
-  </ -3
-  </ -2
-  </ -1
-  </ 0
-  </ 0
-  ```
--->
+## 프로토콜 확장
 
-## Protocol Extensions
+프로토콜은 메서드, 초기화 구문, 서브스크립트, 그리고 계산 프로퍼티 구현을 제공하기 위해 확장할 수 있다. 이를 통해 각 타입의 개별 준수 사항이나 전역 함수가 아닌 프로토콜 자체에 동작을 정의할 수 있다.
 
-Protocols can be extended to provide method,
-initializer, subscript, and computed property implementations
-to conforming types.
-This allows you to define behavior on protocols themselves,
-rather than in each type's individual conformance or in a global function.
-
-For example, the `RandomNumberGenerator` protocol can be extended
-to provide a `randomBool()` method,
-which uses the result of the required `random()` method
-to return a random `Bool` value:
+예를 들어, `RandomNumberGenerator` 프로토콜을 확장하여 `randomBool()` 메서드를 제공할 수 있다. 이 메서드는 필수 `random()` 메서드의 결과를 사용해 무작위 `Bool` 값을 반환한다:
 
 ```swift
 extension RandomNumberGenerator {
@@ -2270,9 +1594,7 @@ extension RandomNumberGenerator {
   ```
 -->
 
-By creating an extension on the protocol,
-all conforming types automatically gain this method implementation
-without any additional modification.
+프로토콜에 확장을 생성하면, 모든 준수 타입은 추가 수정 없이 이 메서드 구현을 자동으로 얻게 된다.
 
 ```swift
 let generator = LinearCongruentialGenerator()
@@ -2301,26 +1623,16 @@ print("And here's a random Boolean: \(generator.randomBool())")
   the variable that already exists from a previous testcode block.
 -->
 
-Protocol extensions can add implementations to conforming types
-but can't make a protocol extend or inherit from another protocol.
-Protocol inheritance is always specified in the protocol declaration itself.
+프로토콜 확장은 준수 타입에 구현을 추가할 수 있지만, 프로토콜이 다른 프로토콜을 확장하거나 상속하도록 만들 수는 없다. 프로토콜 상속은 항상 프로토콜 선언 자체에서 지정된다.
 
-### Providing Default Implementations
 
-You can use protocol extensions to provide a default implementation
-to any method or computed property requirement of that protocol.
-If a conforming type provides its own implementation of a required method or property,
-that implementation will be used instead of the one provided by the extension.
+### 기본 구현 제공하기
 
-> Note: Protocol requirements with default implementations provided by extensions
-> are distinct from optional protocol requirements.
-> Although conforming types don't have to provide their own implementation of either,
-> requirements with default implementations can be called without optional chaining.
+프로토콜 확장을 사용하면 프로토콜의 메서드나 계산된 프로퍼티 요구사항에 대한 기본 구현을 제공할 수 있다. 프로토콜을 준수하는 타입이 해당 메서드나 프로퍼티에 대해 자체 구현을 제공하면, 확장에서 제공한 구현 대신 자체 구현이 사용된다.
 
-For example, the `PrettyTextRepresentable` protocol,
-which inherits the `TextRepresentable` protocol
-can provide a default implementation of its required `prettyTextualDescription` property
-to simply return the result of accessing the `textualDescription` property:
+> 주의: 확장을 통해 기본 구현이 제공된 프로토콜 요구사항은 옵셔널 프로토콜 요구사항과 다르다. 준수 타입이 자체 구현을 제공하지 않아도 되지만, 기본 구현이 있는 요구사항은 옵셔널 체이닝 없이 호출할 수 있다.
+
+예를 들어, `TextRepresentable` 프로토콜을 상속받는 `PrettyTextRepresentable` 프로토콜은 `prettyTextualDescription` 프로퍼티에 대한 기본 구현을 제공할 수 있다. 이 구현은 단순히 `textualDescription` 프로퍼티의 결과를 반환한다:
 
 ```swift
 extension PrettyTextRepresentable  {
@@ -2347,46 +1659,36 @@ extension PrettyTextRepresentable  {
 -->
 
 <!--
-  If something is a protocol requirement,
-  types that conform to the protocol can override the default implementation.
+  프로토콜 요구사항인 경우,
+  프로토콜을 준수하는 타입이 기본 구현을 재정의할 수 있다.
 -->
 
 <!--
-  If something isn't a requirement,
-  you get wonky behavior when you try to override the default implementation.
+  요구사항이 아닌 경우,
+  기본 구현을 재정의하려고 하면 이상한 동작이 발생할 수 있다.
 -->
 
 <!--
-  If the static type is the conforming type,
-  your override is used.
+  정적 타입이 준수 타입인 경우,
+  재정의한 구현이 사용된다.
 -->
 
 <!--
-  If the static type is the protocol type,
-  the default implementation is used.
+  정적 타입이 프로토콜 타입인 경우,
+  기본 구현이 사용된다.
 -->
 
 <!--
-  You can't write ``final`` on a default implementation
-  to prevent someone from overriding it in a conforming type.
+  기본 구현에 ``final``을 붙여서
+  준수 타입에서 재정의하는 것을 막을 수 없다.
 -->
 
-### Adding Constraints to Protocol Extensions
 
-When you define a protocol extension,
-you can specify constraints that conforming types
-must satisfy before the methods and properties of the extension are available.
-You write these constraints after the name of the protocol you're extending
-by writing a generic `where` clause.
-For more about generic `where` clauses, see <doc:Generics#Generic-Where-Clauses>.
+### 프로토콜 확장에 제약 조건 추가하기
 
-For example,
-you can define an extension to the `Collection` protocol
-that applies to any collection whose elements conform
-to the `Equatable` protocol.
-By constraining a collection's elements to the `Equatable` protocol,
-a part of the Swift standard library,
-you can use the `==` and `!=` operators to check for equality and inequality between two elements.
+프로토콜 확장을 정의할 때, 특정 메서드나 프로퍼티를 사용하기 위해 해당 타입이 충족해야 하는 조건을 지정할 수 있다. 이러한 조건은 확장하려는 프로토콜 이름 뒤에 제네릭 `where` 절을 작성하여 정의한다. 제네릭 `where` 절에 대한 자세한 내용은 <doc:Generics#Generic-Where-Clauses>를 참고한다.
+
+예를 들어, `Collection` 프로토콜을 확장하여 해당 컬렉션의 요소가 `Equatable` 프로토콜을 준수하는 경우에만 적용되는 메서드를 정의할 수 있다. Swift 표준 라이브러리의 일부인 `Equatable` 프로토콜을 통해 컬렉션의 요소를 제한하면, `==`와 `!=` 연산자를 사용해 두 요소가 같은지 다른지 비교할 수 있다.
 
 ```swift
 extension Collection where Element: Equatable {
@@ -2418,12 +1720,9 @@ extension Collection where Element: Equatable {
   ```
 -->
 
-The `allEqual()` method returns `true`
-only if all the elements in the collection are equal.
+`allEqual()` 메서드는 컬렉션의 모든 요소가 동일한 경우에만 `true`를 반환한다.
 
-Consider two arrays of integers,
-one where all the elements are the same,
-and one where they aren't:
+두 개의 정수 배열을 예로 들어보자. 하나는 모든 요소가 동일하고, 다른 하나는 그렇지 않다:
 
 ```swift
 let equalNumbers = [100, 100, 100, 100, 100]
@@ -2439,9 +1738,7 @@ let differentNumbers = [100, 100, 200, 100, 200]
   ```
 -->
 
-Because arrays conform to `Collection`
-and integers conform to `Equatable`,
-`equalNumbers` and `differentNumbers` can use the `allEqual()` method:
+배열은 `Collection` 프로토콜을 준수하고, 정수는 `Equatable` 프로토콜을 준수하므로, `equalNumbers`와 `differentNumbers` 모두 `allEqual()` 메서드를 사용할 수 있다:
 
 ```swift
 print(equalNumbers.allEqual())
@@ -2461,9 +1758,7 @@ print(differentNumbers.allEqual())
   ```
 -->
 
-> Note: If a conforming type satisfies the requirements for multiple constrained extensions
-> that provide implementations for the same method or property,
-> Swift uses the implementation corresponding to the most specialized constraints.
+> 참고: 만약 특정 타입이 동일한 메서드나 프로퍼티를 제공하는 여러 제약 조건을 가진 확장의 요구 사항을 모두 충족한다면, Swift는 가장 구체적인 제약 조건에 해당하는 구현을 사용한다.
 
 <!--
   TODO: It would be great to pull this out of a note,
@@ -2494,3 +1789,5 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
+
+

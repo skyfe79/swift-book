@@ -1,63 +1,30 @@
-# Automatic Reference Counting
+# 자동 참조 카운팅
 
-Model the lifetime of objects and their relationships.
+객체의 수명과 관계를 모델링한다.
 
-Swift uses *Automatic Reference Counting* (ARC)
-to track and manage your app's memory usage.
-In most cases, this means that memory management “just works” in Swift,
-and you don't need to think about memory management yourself.
-ARC automatically frees up the memory used by class instances
-when those instances are no longer needed.
+Swift는 *자동 참조 카운팅*(ARC, Automatic Reference Counting)을 사용해 앱의 메모리 사용을 추적하고 관리한다. 대부분의 경우 Swift에서 메모리 관리는 "그냥 작동"하기 때문에 직접 메모리 관리를 고민할 필요가 없다. ARC는 클래스 인스턴스가 더 이상 필요하지 않을 때 해당 인스턴스가 사용하던 메모리를 자동으로 해제한다.
 
-However, in a few cases ARC requires more information
-about the relationships between parts of your code
-in order to manage memory for you.
-This chapter describes those situations
-and shows how you enable ARC to manage all of your app's memory.
-Using ARC in Swift is very similar to the approach described in
-[Transitioning to ARC Release Notes](https://developer.apple.com/library/content/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html)
-for using ARC with Objective-C.
+하지만 몇 가지 경우 ARC는 메모리를 관리하기 위해 코드의 일부 간 관계에 대한 추가 정보를 요구한다. 이 장에서는 이러한 상황을 설명하고 ARC가 앱의 모든 메모리를 관리할 수 있도록 하는 방법을 보여준다. Swift에서 ARC를 사용하는 방식은 Objective-C에서 ARC를 사용하는 방식과 매우 유사하다. 자세한 내용은 [ARC로 전환하기 릴리스 노트](https://developer.apple.com/library/content/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html)를 참고한다.
 
-Reference counting applies only to instances of classes.
-Structures and enumerations are value types, not reference types,
-and aren't stored and passed by reference.
+참조 카운팅은 클래스의 인스턴스에만 적용된다. 구조체와 열거형은 값 타입이지 참조 타입이 아니며, 참조로 저장되거나 전달되지 않는다.
 
-## How ARC Works
 
-Every time you create a new instance of a class,
-ARC allocates a chunk of memory to store information about that instance.
-This memory holds information about the type of the instance,
-together with the values of any stored properties associated with that instance.
+## ARC의 동작 원리
 
-Additionally, when an instance is no longer needed,
-ARC frees up the memory used by that instance
-so that the memory can be used for other purposes instead.
-This ensures that class instances don't take up space in memory
-when they're no longer needed.
+클래스의 새 인스턴스를 생성할 때마다 ARC는 해당 인스턴스에 대한 정보를 저장하기 위해 메모리 공간을 할당한다. 이 메모리 공간에는 인스턴스의 타입 정보와 함께, 해당 인스턴스와 연결된 저장 프로퍼티의 값이 포함된다.
 
-However, if ARC were to deallocate an instance that was still in use,
-it would no longer be possible to access that instance's properties,
-or call that instance's methods.
-Indeed, if you tried to access the instance, your app would most likely crash.
+또한, 인스턴스가 더 이상 필요하지 않게 되면 ARC는 해당 인스턴스가 사용하던 메모리를 해제하여 다른 용도로 사용할 수 있게 한다. 이를 통해 클래스 인스턴스가 불필요하게 메모리를 차지하는 것을 방지한다.
 
-To make sure that instances don't disappear while they're still needed,
-ARC tracks how many properties, constants, and variables
-are currently referring to each class instance.
-ARC will not deallocate an instance
-as long as at least one active reference to that instance still exists.
+하지만, ARC가 여전히 사용 중인 인스턴스를 해제해 버리면, 해당 인스턴스의 프로퍼티에 접근하거나 메서드를 호출할 수 없게 된다. 심지어 인스턴스에 접근하려고 시도하면 앱이 크래시될 가능성이 높다.
 
-To make this possible,
-whenever you assign a class instance to a property, constant, or variable,
-that property, constant, or variable makes a *strong reference* to the instance.
-The reference is called a "strong" reference because
-it keeps a firm hold on that instance,
-and doesn't allow it to be deallocated for as long as that strong reference remains.
+따라서 ARC는 인스턴스가 필요하지 않을 때까지 사라지지 않도록 보장하기 위해, 현재 각 클래스 인스턴스를 참조하고 있는 프로퍼티, 상수, 변수의 수를 추적한다. ARC는 해당 인스턴스에 대한 활성 참조가 하나라도 남아 있는 한, 인스턴스를 해제하지 않는다.
 
-## ARC in Action
+이를 가능하게 하기 위해, 클래스 인스턴스를 프로퍼티, 상수, 또는 변수에 할당할 때마다, 해당 프로퍼티, 상수, 또는 변수는 인스턴스에 대한 *강한 참조*를 만든다. 이 참조를 "강한" 참조라고 부르는 이유는, 강한 참조가 남아 있는 동안에는 인스턴스를 단단히 붙잡아 두고 해제되지 않도록 하기 때문이다.
 
-Here's an example of how Automatic Reference Counting works.
-This example starts with a simple class called `Person`,
-which defines a stored constant property called `name`:
+
+## ARC 동작 방식
+
+자동 참조 카운팅(Automatic Reference Counting, ARC)이 어떻게 동작하는지 예제를 통해 살펴본다. 이 예제는 `Person`이라는 간단한 클래스로 시작한다. 이 클래스는 `name`이라는 저장 상수 프로퍼티를 정의한다:
 
 ```swift
 class Person {
@@ -89,17 +56,9 @@ class Person {
   ```
 -->
 
-The `Person` class has an initializer that sets the instance's `name` property
-and prints a message to indicate that initialization is underway.
-The `Person` class also has a deinitializer
-that prints a message when an instance of the class is deallocated.
+`Person` 클래스는 인스턴스의 `name` 프로퍼티를 설정하고 초기화가 진행 중임을 알리는 메시지를 출력하는 초기화 메서드를 가지고 있다. 또한 `Person` 클래스는 인스턴스가 메모리에서 해제될 때 메시지를 출력하는 디이니셜라이저를 포함한다.
 
-The next code snippet defines three variables of type `Person?`,
-which are used to set up multiple references to a new `Person` instance
-in subsequent code snippets.
-Because these variables are of an optional type (`Person?`, not `Person`),
-they're automatically initialized with a value of `nil`,
-and don't currently reference a `Person` instance.
+다음 코드 조각은 `Person?` 타입의 세 변수를 정의한다. 이 변수들은 이후 코드에서 새로운 `Person` 인스턴스에 대한 여러 참조를 설정하는 데 사용된다. 이 변수들은 옵셔널 타입(`Person?`, `Person`이 아님)이기 때문에 자동으로 `nil` 값으로 초기화되며, 현재는 `Person` 인스턴스를 참조하지 않는다.
 
 ```swift
 var reference1: Person?
@@ -117,8 +76,7 @@ var reference3: Person?
   ```
 -->
 
-You can now create a new `Person` instance
-and assign it to one of these three variables:
+이제 새로운 `Person` 인스턴스를 생성하고 이 세 변수 중 하나에 할당할 수 있다:
 
 ```swift
 reference1 = Person(name: "John Appleseed")
@@ -134,17 +92,11 @@ reference1 = Person(name: "John Appleseed")
   ```
 -->
 
-Note that the message `"John Appleseed is being initialized"` is printed
-at the point that you call the `Person` class's initializer.
-This confirms that initialization has taken place.
+`Person` 클래스의 초기화 메서드를 호출할 때 `"John Appleseed is being initialized"` 메시지가 출력된다. 이는 초기화가 완료되었음을 확인시켜준다.
 
-Because the new `Person` instance has been assigned to the `reference1` variable,
-there's now a strong reference from `reference1` to the new `Person` instance.
-Because there's at least one strong reference,
-ARC makes sure that this `Person` is kept in memory and isn't deallocated.
+새로운 `Person` 인스턴스가 `reference1` 변수에 할당되었기 때문에, 이제 `reference1`에서 새로운 `Person` 인스턴스로의 강한 참조가 생성되었다. 최소 하나의 강한 참조가 존재하기 때문에, ARC는 이 `Person` 인스턴스가 메모리에 유지되고 해제되지 않도록 보장한다.
 
-If you assign the same `Person` instance to two more variables,
-two more strong references to that instance are established:
+동일한 `Person` 인스턴스를 두 개의 추가 변수에 할당하면, 해당 인스턴스에 대한 두 개의 추가 강한 참조가 생성된다:
 
 ```swift
 reference2 = reference1
@@ -160,12 +112,9 @@ reference3 = reference1
   ```
 -->
 
-There are now *three* strong references to this single `Person` instance.
+이제 이 단일 `Person` 인스턴스에 대해 *세 개*의 강한 참조가 존재한다.
 
-If you break two of these strong references (including the original reference)
-by assigning `nil` to two of the variables,
-a single strong reference remains,
-and the `Person` instance isn't deallocated:
+두 개의 강한 참조(원래의 참조 포함)를 `nil`로 설정하여 끊으면, 단일 강한 참조만 남게 되고, `Person` 인스턴스는 해제되지 않는다:
 
 ```swift
 reference1 = nil
@@ -181,9 +130,7 @@ reference2 = nil
   ```
 -->
 
-ARC doesn't deallocate the `Person` instance until
-the third and final strong reference is broken,
-at which point it's clear that you are no longer using the `Person` instance:
+ARC는 세 번째이자 마지막 강한 참조가 끊어질 때까지 `Person` 인스턴스를 해제하지 않는다. 이 시점에서 `Person` 인스턴스가 더 이상 사용되지 않는다는 것이 명확해진다:
 
 ```swift
 reference3 = nil
@@ -199,29 +146,14 @@ reference3 = nil
   ```
 -->
 
-## Strong Reference Cycles Between Class Instances
 
-In the examples above,
-ARC is able to track the number of references to the new `Person` instance you create
-and to deallocate that `Person` instance when it's no longer needed.
+## 클래스 인스턴스 간의 강한 참조 순환
 
-However, it's possible to write code in which an instance of a class
-*never* gets to a point where it has zero strong references.
-This can happen if two class instances hold a strong reference to each other,
-such that each instance keeps the other alive.
-This is known as a *strong reference cycle*.
+위 예제에서 ARC는 새로운 `Person` 인스턴스에 대한 참조 횟수를 추적하고, 더 이상 필요하지 않을 때 해당 인스턴스를 해제할 수 있다. 하지만 클래스 인스턴스가 **절대로** 강한 참조가 0이 되지 않는 코드를 작성할 수도 있다. 두 클래스 인스턴스가 서로를 강하게 참조하는 경우, 각 인스턴스가 서로를 살려두는 상황이 발생할 수 있다. 이를 **강한 참조 순환**이라고 한다.
 
-You resolve strong reference cycles
-by defining some of the relationships between classes
-as weak or unowned references instead of as strong references.
-This process is described in
-<doc:AutomaticReferenceCounting#Resolving-Strong-Reference-Cycles-Between-Class-Instances>.
-However, before you learn how to resolve a strong reference cycle,
-it's useful to understand how such a cycle is caused.
+강한 참조 순환을 해결하려면 클래스 간의 관계를 강한 참조 대신 약한 참조(weak) 또는 미소유 참조(unowned)로 정의해야 한다. 이 과정은 <doc:AutomaticReferenceCounting#Resolving-Strong-Reference-Cycles-Between-Class-Instances>에서 설명한다. 하지만 강한 참조 순환을 해결하는 방법을 배우기 전에, 이러한 순환이 어떻게 발생하는지 이해하는 것이 유용하다.
 
-Here's an example of how a strong reference cycle can be created by accident.
-This example defines two classes called `Person` and `Apartment`,
-which model a block of apartments and its residents:
+다음은 실수로 강한 참조 순환이 발생할 수 있는 예제다. 이 예제는 아파트 단지와 그 거주자를 모델링하는 `Person`과 `Apartment`라는 두 클래스를 정의한다:
 
 ```swift
 class Person {
@@ -259,23 +191,13 @@ class Apartment {
   ```
 -->
 
-Every `Person` instance has a `name` property of type `String`
-and an optional `apartment` property that's initially `nil`.
-The `apartment` property is optional, because a person may not always have an apartment.
+모든 `Person` 인스턴스는 `String` 타입의 `name` 프로퍼티와 초기값이 `nil`인 옵셔널 `apartment` 프로퍼티를 가진다. `apartment` 프로퍼티는 옵셔널이며, 사람이 항상 아파트를 소유하지 않을 수 있기 때문이다.
 
-Similarly, every `Apartment` instance has a `unit` property of type `String`
-and has an optional `tenant` property that's initially `nil`.
-The tenant property is optional because an apartment may not always have a tenant.
+마찬가지로, 모든 `Apartment` 인스턴스는 `String` 타입의 `unit` 프로퍼티와 초기값이 `nil`인 옵셔널 `tenant` 프로퍼티를 가진다. `tenant` 프로퍼티는 아파트가 항상 세입자를 보유하지 않을 수 있기 때문에 옵셔널이다.
 
-Both of these classes also define a deinitializer,
-which prints the fact that an instance of that class is being deinitialized.
-This enables you to see whether
-instances of `Person` and `Apartment` are being deallocated as expected.
+두 클래스 모두 디이니셜라이저를 정의하며, 해당 클래스의 인스턴스가 해제될 때 이를 출력한다. 이를 통해 `Person`과 `Apartment` 인스턴스가 예상대로 해제되는지 확인할 수 있다.
 
-This next code snippet defines two variables of optional type
-called `john` and `unit4A`,
-which will be set to a specific `Apartment` and `Person` instance below.
-Both of these variables have an initial value of `nil`, by virtue of being optional:
+다음 코드 스니펫은 옵셔널 타입의 `john`과 `unit4A`라는 두 변수를 정의한다. 이 변수들은 아래에서 특정 `Apartment`와 `Person` 인스턴스로 설정될 것이다. 두 변수 모두 옵셔널이기 때문에 초기값은 `nil`이다:
 
 ```swift
 var john: Person?
@@ -291,8 +213,7 @@ var unit4A: Apartment?
   ```
 -->
 
-You can now create a specific `Person` instance and `Apartment` instance
-and assign these new instances to the `john` and `unit4A` variables:
+이제 특정 `Person` 인스턴스와 `Apartment` 인스턴스를 생성하고, 이 새로운 인스턴스를 `john`과 `unit4A` 변수에 할당할 수 있다:
 
 ```swift
 john = Person(name: "John Appleseed")
@@ -308,17 +229,11 @@ unit4A = Apartment(unit: "4A")
   ```
 -->
 
-Here's how the strong references look after creating and assigning these two instances.
-The `john` variable now has a strong reference to the new `Person` instance,
-and the `unit4A` variable has a strong reference to the new `Apartment` instance:
+이 두 인스턴스를 생성하고 할당한 후의 강한 참조 상태는 다음과 같다. `john` 변수는 새로운 `Person` 인스턴스를 강하게 참조하고, `unit4A` 변수는 새로운 `Apartment` 인스턴스를 강하게 참조한다:
 
 ![](referenceCycle01)
 
-You can now link the two instances together
-so that the person has an apartment, and the apartment has a tenant.
-Note that an exclamation point (`!`) is used to unwrap and access
-the instances stored inside the `john` and `unit4A` optional variables,
-so that the properties of those instances can be set:
+이제 두 인스턴스를 연결하여 사람이 아파트를 소유하고, 아파트가 세입자를 가지도록 할 수 있다. `john`과 `unit4A` 옵셔널 변수에 저장된 인스턴스에 접근하고 언래핑하기 위해 느낌표(`!`)를 사용하여 해당 인스턴스의 프로퍼티를 설정한다:
 
 ```swift
 john!.apartment = unit4A
@@ -334,18 +249,11 @@ unit4A!.tenant = john
   ```
 -->
 
-Here's how the strong references look after you link the two instances together:
+두 인스턴스를 연결한 후의 강한 참조 상태는 다음과 같다:
 
 ![](referenceCycle02)
 
-Unfortunately, linking these two instances creates
-a strong reference cycle between them.
-The `Person` instance now has a strong reference to the `Apartment` instance,
-and the `Apartment` instance has a strong reference to the `Person` instance.
-Therefore, when you break the strong references held by
-the `john` and `unit4A` variables,
-the reference counts don't drop to zero,
-and the instances aren't deallocated by ARC:
+불행히도, 이 두 인스턴스를 연결하면 강한 참조 순환이 발생한다. `Person` 인스턴스는 `Apartment` 인스턴스를 강하게 참조하고, `Apartment` 인스턴스는 `Person` 인스턴스를 강하게 참조한다. 따라서 `john`과 `unit4A` 변수가 가진 강한 참조를 끊어도 참조 횟수가 0으로 떨어지지 않으며, ARC는 인스턴스를 해제하지 않는다:
 
 ```swift
 john = nil
@@ -361,69 +269,37 @@ unit4A = nil
   ```
 -->
 
-Note that neither deinitializer was called
-when you set these two variables to `nil`.
-The strong reference cycle prevents the `Person` and `Apartment` instances
-from ever being deallocated, causing a memory leak in your app.
+이 두 변수를 `nil`로 설정했을 때 디이니셜라이저가 호출되지 않았음을 주목하라. 강한 참조 순환은 `Person`과 `Apartment` 인스턴스가 해제되지 못하게 하여 앱에서 메모리 누수를 일으킨다.
 
-Here's how the strong references look after you set
-the `john` and `unit4A` variables to `nil`:
+`john`과 `unit4A` 변수를 `nil`로 설정한 후의 강한 참조 상태는 다음과 같다:
 
 ![](referenceCycle03)
 
-The strong references between the `Person` instance
-and the `Apartment` instance remain and can't be broken.
+`Person` 인스턴스와 `Apartment` 인스턴스 간의 강한 참조는 여전히 남아 있으며, 끊을 수 없다.
 
-## Resolving Strong Reference Cycles Between Class Instances
 
-Swift provides two ways to resolve strong reference cycles
-when you work with properties of class type:
-weak references and unowned references.
+## 클래스 인스턴스 간 강한 참조 순환 문제 해결
 
-Weak and unowned references enable one instance in a reference cycle
-to refer to the other instance *without* keeping a strong hold on it.
-The instances can then refer to each other without creating a strong reference cycle.
+Swift는 클래스 타입 프로퍼티를 다룰 때 강한 참조 순환 문제를 해결하기 위해 두 가지 방법을 제공한다: 약한 참조(weak reference)와 미소유 참조(unowned reference).
 
-Use a weak reference when the other instance has a shorter lifetime ---
-that is, when the other instance can be deallocated first.
-In the `Apartment` example above,
-it's appropriate for an apartment to be able to have
-no tenant at some point in its lifetime,
-and so a weak reference is an appropriate way to break the reference cycle in this case.
-In contrast, use an unowned reference when the other instance
-has the same lifetime or a longer lifetime.
+약한 참조와 미소유 참조는 참조 순환에 있는 한 인스턴스가 다른 인스턴스를 강하게 유지하지 않고도 참조할 수 있게 한다. 이렇게 하면 강한 참조 순환을 만들지 않고도 서로를 참조할 수 있다.
+
+다른 인스턴스의 수명이 더 짧을 때, 즉 다른 인스턴스가 먼저 해제될 가능성이 있을 때는 약한 참조를 사용한다. 위의 `Apartment` 예제에서, 아파트가 일생 동안 세입자가 없을 수 있는 상황이므로, 이 경우 약한 참조를 사용해 참조 순환을 끊는 것이 적절하다. 반면, 다른 인스턴스의 수명이 같거나 더 길 때는 미소유 참조를 사용한다.
 
 <!--
-  QUESTION: how do I answer the question
-  "which of the two properties in the reference cycle
-  should be marked as weak or unowned?"
+  질문: "참조 순환에 있는 두 프로퍼티 중 어떤 것을 약한 참조나 미소유 참조로 표시해야 할까요?"라는 질문에 어떻게 답할 수 있을까요?
 -->
 
-### Weak References
 
-A *weak reference* is a reference that doesn't keep a strong hold
-on the instance it refers to,
-and so doesn't stop ARC from disposing of the referenced instance.
-This behavior prevents the reference from becoming part of a strong reference cycle.
-You indicate a weak reference by placing the `weak` keyword
-before a property or variable declaration.
+### 약한 참조
 
-Because a weak reference doesn't keep a strong hold on the instance it refers to,
-it's possible for that instance to be deallocated
-while the weak reference is still referring to it.
-Therefore, ARC automatically sets a weak reference to `nil`
-when the instance that it refers to is deallocated.
-And, because weak references need to allow
-their value to be changed to `nil` at runtime,
-they're always declared as variables, rather than constants, of an optional type.
+**약한 참조**는 참조하는 인스턴스를 강하게 유지하지 않아, ARC가 참조된 인스턴스를 해제하는 것을 막지 않는다. 이 동작은 참조가 강한 참조 순환에 포함되는 것을 방지한다. 약한 참조를 나타내려면 프로퍼티나 변수 선언 앞에 `weak` 키워드를 붙인다.
 
-You can check for the existence of a value in the weak reference,
-just like any other optional value,
-and you will never end up with
-a reference to an invalid instance that no longer exists.
+약한 참조는 참조하는 인스턴스를 강하게 유지하지 않기 때문에, 약한 참조가 여전히 해당 인스턴스를 참조하고 있는 동안에도 그 인스턴스가 해제될 수 있다. 따라서 ARC는 참조된 인스턴스가 해제되면 자동으로 약한 참조를 `nil`로 설정한다. 또한, 약한 참조는 런타임에 값이 `nil`로 변경될 수 있어야 하므로, 항상 옵셔널 타입의 변수로 선언된다.
 
-> Note: Property observers aren't called
-> when ARC sets a weak reference to `nil`.
+약한 참조의 값이 존재하는지 확인할 수 있으며, 더 이상 존재하지 않는 유효하지 않은 인스턴스를 참조하는 상황은 발생하지 않는다.
+
+> 참고: ARC가 약한 참조를 `nil`로 설정할 때 프로퍼티 옵저버는 호출되지 않는다.
 
 <!--
   - test: `weak-reference-doesnt-trigger-didset`
@@ -444,10 +320,7 @@ a reference to an invalid instance that no longer exists.
   ```
 -->
 
-The example below is identical to the `Person` and `Apartment` example from above,
-with one important difference.
-This time around, the `Apartment` type's `tenant` property
-is declared as a weak reference:
+아래 예제는 앞서 살펴본 `Person`과 `Apartment` 예제와 동일하지만, 한 가지 중요한 차이점이 있다. 이번에는 `Apartment` 타입의 `tenant` 프로퍼티가 약한 참조로 선언되었다:
 
 ```swift
 class Person {
@@ -485,8 +358,7 @@ class Apartment {
   ```
 -->
 
-The strong references from the two variables (`john` and `unit4A`)
-and the links between the two instances are created as before:
+두 변수(`john`과 `unit4A`)의 강한 참조와 두 인스턴스 간의 연결은 이전과 동일하게 생성된다:
 
 ```swift
 var john: Person?
@@ -514,15 +386,11 @@ unit4A!.tenant = john
   ```
 -->
 
-Here's how the references look now that you've linked the two instances together:
+두 인스턴스를 연결한 후의 참조 상태는 다음과 같다:
 
 ![](weakReference01)
 
-The `Person` instance still has a strong reference to the `Apartment` instance,
-but the `Apartment` instance now has a *weak* reference to the `Person` instance.
-This means that when you break the strong reference held by
-the `john` variable by setting it to `nil`,
-there are no more strong references to the `Person` instance:
+`Person` 인스턴스는 여전히 `Apartment` 인스턴스에 대한 강한 참조를 가지고 있지만, `Apartment` 인스턴스는 이제 `Person` 인스턴스에 대한 **약한 참조**를 가지고 있다. 이는 `john` 변수가 `nil`로 설정되어 강한 참조가 끊어지면, `Person` 인스턴스에 대한 강한 참조가 더 이상 없음을 의미한다:
 
 ```swift
 john = nil
@@ -538,16 +406,11 @@ john = nil
   ```
 -->
 
-Because there are no more strong references to the `Person` instance,
-it's deallocated
-and the `tenant` property is set to `nil`:
+`Person` 인스턴스에 대한 강한 참조가 더 이상 없기 때문에, 해당 인스턴스는 해제되고 `tenant` 프로퍼티는 `nil`로 설정된다:
 
 ![](weakReference02)
 
-The only remaining strong reference to the `Apartment` instance
-is from the `unit4A` variable.
-If you break *that* strong reference,
-there are no more strong references to the `Apartment` instance:
+`Apartment` 인스턴스에 대한 유일한 강한 참조는 `unit4A` 변수에서 온다. 이 강한 참조를 끊으면, `Apartment` 인스턴스에 대한 강한 참조가 더 이상 없게 된다:
 
 ```swift
 unit4A = nil
@@ -563,82 +426,44 @@ unit4A = nil
   ```
 -->
 
-Because there are no more strong references to the `Apartment` instance,
-it too is deallocated:
+`Apartment` 인스턴스에 대한 강한 참조가 더 이상 없기 때문에, 이 인스턴스도 해제된다:
 
 ![](weakReference03)
 
-> Note: In systems that use garbage collection,
-> weak pointers are sometimes used to implement a simple caching mechanism
-> because objects with no strong references are deallocated
-> only when memory pressure triggers garbage collection.
-> However, with ARC, values are deallocated
-> as soon as their last strong reference is removed,
-> making weak references unsuitable for such a purpose.
+> 참고: 가비지 컬렉션을 사용하는 시스템에서는, 강한 참조가 없는 객체는 메모리 압박으로 인해 가비지 컬렉션이 트리거될 때만 해제되기 때문에, 약한 포인터를 간단한 캐싱 메커니즘을 구현하는 데 사용하기도 한다. 그러나 ARC에서는 마지막 강한 참조가 제거되면 즉시 값이 해제되므로, 약한 참조는 이러한 목적에 적합하지 않다.
 
-### Unowned References
 
-Like a weak reference,
-an *unowned reference* doesn't keep
-a strong hold on the instance it refers to.
-Unlike a weak reference, however,
-an unowned reference is used when the other instance
-has the same lifetime or a longer lifetime.
-You indicate an unowned reference by placing the `unowned` keyword
-before a property or variable declaration.
+### 소유하지 않은 참조 (Unowned References)
 
-Unlike a weak reference,
-an unowned reference is expected to always have a value.
-As a result,
-marking a value as unowned doesn't make it optional,
-and ARC never sets an unowned reference's value to `nil`.
+약한 참조(weak reference)와 마찬가지로, *소유하지 않은 참조(unowned reference)*는 참조하는 인스턴스를 강하게 유지하지 않는다. 그러나 약한 참조와 달리, 소유하지 않은 참조는 다른 인스턴스가 동일한 수명이나 더 긴 수명을 가질 때 사용한다. `unowned` 키워드를 프로퍼티나 변수 선언 앞에 붙여 소유하지 않은 참조를 표시한다.
+
+약한 참조와 달리, 소유하지 않은 참조는 항상 값을 가질 것으로 예상된다. 따라서 값을 `unowned`로 표시하면 옵셔널이 되지 않으며, ARC는 소유하지 않은 참조의 값을 `nil`로 설정하지 않는다.
 
 <!--
-  Everything that unowned can do, weak can do slower and more awkwardly
-  (but still correctly).
-  Unowned is interesting because it's faster and easier (no optionals) ---
-  in the cases where it's actually correct for your data.
+  소유하지 않은 참조가 할 수 있는 모든 것을 약한 참조는 더 느리고 더 어색하게 할 수 있다
+  (하지만 여전히 올바르게 수행한다).
+  소유하지 않은 참조는 더 빠르고 쉽기 때문에(옵셔널이 없음) 흥미롭다 ---
+  실제로 데이터에 적합한 경우에만 사용할 때.
 -->
 
-> Important: Use an unowned reference only when you are sure that
-> the reference *always* refers to an instance that hasn't been deallocated.
+> 중요: 참조된 인스턴스가 해제되지 않았다는 것을 확신할 때만 소유하지 않은 참조를 사용하라.
 >
-> If you try to access the value of an unowned reference
-> after that instance has been deallocated,
-> you'll get a runtime error.
+> 인스턴스가 해제된 후 소유하지 않은 참조의 값에 접근하려고 하면 런타임 오류가 발생한다.
 
 <!--
-  One way to satisfy that requirement is to
-  always access objects that have unmanaged properties through their owner
-  instead of keeping a reference to them directly,
-  because those direct references could outlive the owner.
-  However... this strategy really only works when the unowned reference
-  is a backpointer from an object up to its owner.
+  이 요구 사항을 충족하는 한 가지 방법은
+  소유하지 않은 프로퍼티를 가진 객체를 소유자를 통해 접근하는 것이다.
+  직접 참조를 유지하는 대신, 왜냐하면 그 직접 참조는 소유자보다 더 오래 살 수 있기 때문이다.
+  그러나... 이 전략은 소유하지 않은 참조가 객체에서 소유자로의 역참조일 때만 효과적이다.
 -->
 
-The following example defines two classes, `Customer` and `CreditCard`,
-which model a bank customer and a possible credit card for that customer.
-These two classes each store an instance of the other class as a property.
-This relationship has the potential to create a strong reference cycle.
+다음 예제는 은행 고객과 그 고객의 신용카드를 모델링하는 두 클래스, `Customer`와 `CreditCard`를 정의한다. 이 두 클래스는 각각 다른 클래스의 인스턴스를 프로퍼티로 저장한다. 이 관계는 강한 참조 순환을 일으킬 가능성이 있다.
 
-The relationship between `Customer` and `CreditCard` is slightly different from
-the relationship between `Apartment` and `Person`
-seen in the weak reference example above.
-In this data model, a customer may or may not have a credit card,
-but a credit card will *always* be associated with a customer.
-A `CreditCard` instance never outlives the `Customer` that it refers to.
-To represent this, the `Customer` class has an optional `card` property,
-but the `CreditCard` class has an unowned (and non-optional) `customer` property.
+`Customer`와 `CreditCard` 간의 관계는 위의 약한 참조 예제에서 본 `Apartment`와 `Person` 간의 관계와 약간 다르다. 이 데이터 모델에서 고객은 신용카드를 가질 수도 있고 가지지 않을 수도 있지만, 신용카드는 항상 고객과 연결된다. `CreditCard` 인스턴스는 참조하는 `Customer`보다 더 오래 살지 않는다. 이를 나타내기 위해 `Customer` 클래스는 옵셔널 `card` 프로퍼티를 가지지만, `CreditCard` 클래스는 소유하지 않은(그리고 옵셔널이 아닌) `customer` 프로퍼티를 가진다.
 
-Furthermore, a new `CreditCard` instance can *only* be created
-by passing a `number` value and a `customer` instance
-to a custom `CreditCard` initializer.
-This ensures that a `CreditCard` instance always has
-a `customer` instance associated with it when the `CreditCard` instance is created.
+또한, 새로운 `CreditCard` 인스턴스는 `number` 값과 `customer` 인스턴스를 커스텀 `CreditCard` 초기화 함수에 전달해야만 생성할 수 있다. 이렇게 하면 `CreditCard` 인스턴스가 생성될 때 항상 연결된 `customer` 인스턴스가 있다는 것을 보장한다.
 
-Because a credit card will always have a customer,
-you define its `customer` property as an unowned reference,
-to avoid a strong reference cycle:
+신용카드는 항상 고객을 가지므로, 강한 참조 순환을 피하기 위해 `customer` 프로퍼티를 소유하지 않은 참조로 정의한다:
 
 ```swift
 class Customer {
@@ -686,14 +511,9 @@ class CreditCard {
   ```
 -->
 
-> Note: The `number` property of the `CreditCard` class is defined with
-> a type of `UInt64` rather than `Int`,
-> to ensure that the `number` property's capacity is large enough to store
-> a 16-digit card number on both 32-bit and 64-bit systems.
+> 참고: `CreditCard` 클래스의 `number` 프로퍼티는 `Int` 대신 `UInt64` 타입으로 정의되어 있다. 이는 `number` 프로퍼티의 용량이 32비트와 64비트 시스템 모두에서 16자리 카드 번호를 저장할 수 있을 만큼 충분히 크도록 보장하기 위함이다.
 
-This next code snippet defines an optional `Customer` variable called `john`,
-which will be used to store a reference to a specific customer.
-This variable has an initial value of nil, by virtue of being optional:
+다음 코드 조각은 특정 고객에 대한 참조를 저장할 옵셔널 `Customer` 변수 `john`을 정의한다. 이 변수는 옵셔널이기 때문에 초기값이 `nil`이다:
 
 ```swift
 var john: Customer?
@@ -707,9 +527,7 @@ var john: Customer?
   ```
 -->
 
-You can now create a `Customer` instance,
-and use it to initialize and assign a new `CreditCard` instance
-as that customer's `card` property:
+이제 `Customer` 인스턴스를 생성하고, 이를 사용해 새로운 `CreditCard` 인스턴스를 초기화한 후 해당 고객의 `card` 프로퍼티에 할당할 수 있다:
 
 ```swift
 john = Customer(name: "John Appleseed")
@@ -725,24 +543,17 @@ john!.card = CreditCard(number: 1234_5678_9012_3456, customer: john!)
   ```
 -->
 
-Here's how the references look, now that you've linked the two instances:
+두 인스턴스를 연결한 후의 참조 관계는 다음과 같다:
 
 ![](unownedReference01)
 
-The `Customer` instance now has a strong reference to the `CreditCard` instance,
-and the `CreditCard` instance has an unowned reference to the `Customer` instance.
+이제 `Customer` 인스턴스는 `CreditCard` 인스턴스에 대한 강한 참조를 가지고, `CreditCard` 인스턴스는 `Customer` 인스턴스에 대한 소유하지 않은 참조를 가진다.
 
-Because of the unowned `customer` reference,
-when you break the strong reference held by the `john` variable,
-there are no more strong references to the `Customer` instance:
+소유하지 않은 `customer` 참조 때문에, `john` 변수가 가진 강한 참조를 끊으면 `Customer` 인스턴스에 대한 강한 참조가 더 이상 존재하지 않는다:
 
 ![](unownedReference02)
 
-Because there are no more strong references to the `Customer` instance,
-it's deallocated.
-After this happens,
-there are no more strong references to the `CreditCard` instance,
-and it too is deallocated:
+`Customer` 인스턴스에 대한 강한 참조가 더 이상 없으므로, 이 인스턴스는 해제된다. 이 후 `CreditCard` 인스턴스에 대한 강한 참조도 더 이상 없으므로, 이 인스턴스 역시 해제된다:
 
 ```swift
 john = nil
@@ -760,42 +571,23 @@ john = nil
   ```
 -->
 
-The final code snippet above shows that
-the deinitializers for the `Customer` instance and `CreditCard` instance
-both print their “deinitialized” messages
-after the `john` variable is set to `nil`.
+위의 최종 코드 조각은 `john` 변수가 `nil`로 설정된 후 `Customer` 인스턴스와 `CreditCard` 인스턴스의 디이니셜라이저가 모두 "해제됨" 메시지를 출력하는 것을 보여준다.
 
-> Note: The examples above show how to use *safe* unowned references.
-> Swift also provides *unsafe* unowned references for cases where
-> you need to disable runtime safety checks ---
-> for example, for performance reasons.
-> As with all unsafe operations,
-> you take on the responsibility for checking that code for safety.
+> 참고: 위의 예제는 *안전한* 소유하지 않은 참조를 사용하는 방법을 보여준다. Swift는 또한 런타임 안전 검사를 비활성화해야 하는 경우(예: 성능상의 이유로)를 위해 *안전하지 않은* 소유하지 않은 참조를 제공한다. 모든 안전하지 않은 연산과 마찬가지로, 코드의 안전성을 확인할 책임을 진다.
 >
-> You indicate an unsafe unowned reference by writing `unowned(unsafe)`.
-> If you try to access an unsafe unowned reference
-> after the instance that it refers to is deallocated,
-> your program will try to access the memory location
-> where the instance used to be,
-> which is an unsafe operation.
+> 안전하지 않은 소유하지 않은 참조는 `unowned(unsafe)`를 사용하여 표시한다. 안전하지 않은 소유하지 않은 참조를 참조된 인스턴스가 해제된 후에 접근하려고 하면, 프로그램은 해당 인스턴스가 있던 메모리 위치에 접근하려고 시도하며, 이는 안전하지 않은 연산이다.
 
 <!--
   <rdar://problem/28805121> TSPL: ARC - Add discussion of "unowned" with different lifetimes
-  Try expanding the example above so each customer has an array of credit cards.
+  위의 예제를 확장하여 각 고객이 여러 신용카드를 가질 수 있도록 해 보자.
 -->
 
-### Unowned Optional References
 
-You can mark an optional reference to a class as unowned.
-In terms of the ARC ownership model,
-an unowned optional reference and a weak reference
-can both be used in the same contexts.
-The difference is that when you use an unowned optional reference,
-you're responsible for making sure it always
-refers to a valid object or is set to `nil`.
+### 소유하지 않은 옵셔널 참조
 
-Here's an example that keeps track of the courses
-offered by a particular department at a school:
+클래스에 대한 옵셔널 참조를 소유하지 않은(unowned) 것으로 표시할 수 있다. ARC 소유권 모델에서 소유하지 않은 옵셔널 참조와 약한(weak) 참조는 동일한 상황에서 사용할 수 있다. 차이점은 소유하지 않은 옵셔널 참조를 사용할 때, 항상 유효한 객체를 참조하거나 `nil`로 설정해야 할 책임이 있다는 점이다.
+
+다음은 학교의 특정 학과에서 제공하는 강좌를 추적하는 예제이다:
 
 ```swift
 class Department {
@@ -819,46 +611,9 @@ class Course {
 }
 ```
 
-<!--
-  - test: `unowned-optional-references`
+`Department`는 학과에서 제공하는 각 강좌에 대한 강한 참조를 유지한다. ARC 소유권 모델에서 학과는 강좌를 소유한다. `Course`는 두 개의 소유하지 않은 참조를 가지는데, 하나는 학과를, 다른 하나는 학생이 다음에 들어야 할 강좌를 가리킨다. 강좌는 이 객체들 중 어느 것도 소유하지 않는다. 모든 강좌는 특정 학과에 속하므로 `department` 프로퍼티는 옵셔널이 아니다. 그러나 일부 강좌는 추천 후속 강좌가 없을 수 있으므로 `nextCourse` 프로퍼티는 옵셔널이다.
 
-  ```swifttest
-  -> class Department {
-         var name: String
-         var courses: [Course]
-         init(name: String) {
-             self.name = name
-             self.courses = []
-         }
-     }
-
-  -> class Course {
-         var name: String
-         unowned var department: Department
-         unowned var nextCourse: Course?
-         init(name: String, in department: Department) {
-             self.name = name
-             self.department = department
-             self.nextCourse = nil
-         }
-     }
-  ```
--->
-
-`Department` maintains a strong reference
-to each course that the department offers.
-In the ARC ownership model, a department owns its courses.
-`Course` has two unowned references,
-one to the department
-and one to the next course a student should take;
-a course doesn't own either of these objects.
-Every course is part of some department
-so the `department` property isn't an optional.
-However,
-because some courses don't have a recommended follow-on course,
-the `nextCourse` property is an optional.
-
-Here's an example of using these classes:
+다음은 이 클래스들을 사용하는 예제이다:
 
 ```swift
 let department = Department(name: "Horticulture")
@@ -872,115 +627,32 @@ intermediate.nextCourse = advanced
 department.courses = [intro, intermediate, advanced]
 ```
 
-<!--
-  - test: `unowned-optional-references`
-
-  ```swifttest
-  -> let department = Department(name: "Horticulture")
-
-  -> let intro = Course(name: "Survey of Plants", in: department)
-  -> let intermediate = Course(name: "Growing Common Herbs", in: department)
-  -> let advanced = Course(name: "Caring for Tropical Plants", in: department)
-
-  -> intro.nextCourse = intermediate
-  -> intermediate.nextCourse = advanced
-  -> department.courses = [intro, intermediate, advanced]
-  ```
--->
-
-The code above creates a department and its three courses.
-The intro and intermediate courses both have a suggested next course
-stored in their `nextCourse` property,
-which maintains an unowned optional reference to
-the course a student should take after completing this one.
+위 코드는 학과와 세 개의 강좌를 생성한다. 입문 강좌와 중급 강좌는 각각 `nextCourse` 프로퍼티에 추천 후속 강좌를 저장한다. 이 프로퍼티는 학생이 해당 강좌를 마친 후 들어야 할 강좌에 대한 소유하지 않은 옵셔널 참조를 유지한다.
 
 ![](unownedOptionalReference)
 
-An unowned optional reference doesn't keep a strong hold
-on the instance of the class that it wraps,
-and so it doesn't prevent ARC from deallocating the instance.
-It behaves the same as an unowned reference does under ARC,
-except that an unowned optional reference can be `nil`.
+소유하지 않은 옵셔널 참조는 감싸고 있는 클래스 인스턴스를 강하게 유지하지 않으므로, ARC가 인스턴스를 해제하는 것을 방해하지 않는다. ARC에서 소유하지 않은 참조와 동일하게 동작하지만, 소유하지 않은 옵셔널 참조는 `nil`이 될 수 있다.
 
-Like non-optional unowned references,
-you're responsible for ensuring that `nextCourse`
-always refers to a course that hasn't been deallocated.
-In this case, for example,
-when you delete a course from `department.courses`
-you also need to remove any references to it
-that other courses might have.
+옵셔널이 아닌 소유하지 않은 참조와 마찬가지로, `nextCourse`가 항상 해제되지 않은 강좌를 참조하도록 책임져야 한다. 예를 들어, `department.courses`에서 강좌를 삭제할 때, 다른 강좌가 해당 강좌를 참조하지 않도록 해야 한다.
 
-> Note: The underlying type of an optional value is `Optional`,
-> which is an enumeration in the Swift standard library.
-> However, optionals are an exception to the rule that
-> value types can't be marked with `unowned`.
+> 참고: 옵셔널 값의 기본 타입은 `Optional`이며, 이는 Swift 표준 라이브러리의 열거형이다. 그러나 옵셔널은 값 타입에 `unowned`를 표시할 수 없다는 규칙의 예외이다.
 >
-> The optional that wraps the class
-> doesn't use reference counting,
-> so you don't need to maintain a strong reference to the optional.
+> 클래스를 감싸는 옵셔널은 참조 카운팅을 사용하지 않으므로, 옵셔널에 대한 강한 참조를 유지할 필요가 없다.
 
-<!--
-  - test: `unowned-can-be-optional`
 
-  ```swifttest
-  >> class C { var x = 100 }
-  >> class D {
-  >>     unowned var a: C
-  >>     unowned var b: C?
-  >>     init(value: C) {
-  >>         self.a = value
-  >>         self.b = value
-  >>     }
-  >> }
-  >> var c = C() as C?
-  >> let d = D(value: c! )
-  >> print(d.a.x, d.b?.x as Any)
-  << 100 Optional(100)
+### 소유되지 않은 참조와 암시적 언래핑 옵셔널 프로퍼티
 
-  >> c = nil
-  // Now that the C instance is deallocated, access to d.a is an error.
-  // We manually nil out d.b, which is safe because d.b is an Optional and the
-  // enum stays in memory regardless of ARC deallocating the C instance.
-  >> d.b = nil
-  >> print(d.b?.x as Any)
-  << nil
-  ```
--->
+앞서 살펴본 약한 참조와 소유되지 않은 참조는 강한 참조 순환을 끊어야 하는 두 가지 일반적인 상황을 다룬다.
 
-### Unowned References and Implicitly Unwrapped Optional Properties
+`Person`과 `Apartment` 예제는 두 프로퍼티 모두 `nil`이 허용되면서 강한 참조 순환이 발생할 가능성이 있는 상황을 보여준다. 이 경우 약한 참조를 사용하는 것이 가장 적합하다.
 
-The examples for weak and unowned references above
-cover two of the more common scenarios
-in which it's necessary to break a strong reference cycle.
+`Customer`와 `CreditCard` 예제는 하나의 프로퍼티는 `nil`이 허용되고 다른 프로퍼티는 `nil`이 허용되지 않으면서 강한 참조 순환이 발생할 가능성이 있는 상황을 보여준다. 이 경우 소유되지 않은 참조를 사용하는 것이 가장 적합하다.
 
-The `Person` and `Apartment` example shows
-a situation where two properties, both of which are allowed to be `nil`,
-have the potential to cause a strong reference cycle.
-This scenario is best resolved with a weak reference.
+하지만 세 번째 시나리오도 있다. 이 시나리오에서는 두 프로퍼티 모두 항상 값을 가져야 하며, 초기화가 완료된 후에는 어느 프로퍼티도 `nil`이 되어서는 안 된다. 이 경우 한 클래스에는 소유되지 않은 프로퍼티를, 다른 클래스에는 암시적 언래핑 옵셔널 프로퍼티를 결합하는 것이 유용하다.
 
-The `Customer` and `CreditCard` example
-shows a situation where one property that's allowed to be `nil`
-and another property that can't be `nil`
-have the potential to cause a strong reference cycle.
-This scenario is best resolved with an unowned reference.
+이렇게 하면 초기화가 완료된 후 두 프로퍼티 모두 옵셔널 언래핑 없이 직접 접근할 수 있으면서도 참조 순환을 피할 수 있다. 이 섹션에서는 이러한 관계를 설정하는 방법을 설명한다.
 
-However, there's a third scenario,
-in which *both* properties should always have a value,
-and neither property should ever be `nil` once initialization is complete.
-In this scenario, it's useful to combine an unowned property on one class
-with an implicitly unwrapped optional property on the other class.
-
-This enables both properties to be accessed directly
-(without optional unwrapping) once initialization is complete,
-while still avoiding a reference cycle.
-This section shows you how to set up such a relationship.
-
-The example below defines two classes, `Country` and `City`,
-each of which stores an instance of the other class as a property.
-In this data model, every country must always have a capital city,
-and every city must always belong to a country.
-To represent this, the `Country` class has a `capitalCity` property,
-and the `City` class has a `country` property:
+아래 예제는 두 클래스 `Country`와 `City`를 정의한다. 각 클래스는 다른 클래스의 인스턴스를 프로퍼티로 저장한다. 이 데이터 모델에서는 모든 국가는 항상 수도 도시를 가져야 하며, 모든 도시는 항상 국가에 속해야 한다. 이를 표현하기 위해 `Country` 클래스에는 `capitalCity` 프로퍼티가 있고, `City` 클래스에는 `country` 프로퍼티가 있다:
 
 ```swift
 class Country {
@@ -1026,37 +698,15 @@ class City {
   ```
 -->
 
-To set up the interdependency between the two classes,
-the initializer for `City` takes a `Country` instance,
-and stores this instance in its `country` property.
+두 클래스 간의 상호 의존성을 설정하기 위해 `City`의 초기화 메서드는 `Country` 인스턴스를 받아 `country` 프로퍼티에 저장한다.
 
-The initializer for `City` is called from within the initializer for `Country`.
-However, the initializer for `Country` can't pass `self` to the `City` initializer
-until a new `Country` instance is fully initialized,
-as described in <doc:Initialization#Two-Phase-Initialization>.
+`City`의 초기화 메서드는 `Country`의 초기화 메서드 내부에서 호출된다. 하지만 <doc:Initialization#Two-Phase-Initialization>에서 설명한 것처럼, 새로운 `Country` 인스턴스가 완전히 초기화되기 전까지는 `Country` 초기화 메서드가 `self`를 `City` 초기화 메서드에 전달할 수 없다.
 
-To cope with this requirement,
-you declare the `capitalCity` property of `Country` as
-an implicitly unwrapped optional property,
-indicated by the exclamation point at the end of its type annotation (`City!`).
-This means that the `capitalCity` property has a default value of `nil`,
-like any other optional,
-but can be accessed without the need to unwrap its value
-as described in <doc:TheBasics#Implicitly-Unwrapped-Optionals>.
+이 요구 사항을 해결하기 위해 `Country`의 `capitalCity` 프로퍼티를 암시적 언래핑 옵셔널 프로퍼티로 선언한다. 이는 타입 어노테이션 끝에 느낌표(`City!`)를 붙여 표시한다. 이는 `capitalCity` 프로퍼티가 다른 옵셔널과 마찬가지로 기본값이 `nil`이지만, <doc:TheBasics#Implicitly-Unwrapped-Optionals>에서 설명한 것처럼 값을 언래핑하지 않고도 접근할 수 있음을 의미한다.
 
-Because `capitalCity` has a default `nil` value,
-a new `Country` instance is considered fully initialized
-as soon as the `Country` instance sets its `name` property within its initializer.
-This means that the `Country` initializer can start to reference and pass around
-the implicit `self` property as soon as the `name` property is set.
-The `Country` initializer can therefore pass `self` as one of the parameters for
-the `City` initializer when the `Country` initializer is setting
-its own `capitalCity` property.
+`capitalCity`가 기본적으로 `nil` 값을 가지기 때문에, `Country` 인스턴스는 초기화 메서드 내에서 `name` 프로퍼티를 설정하는 즉시 완전히 초기화된 것으로 간주된다. 이는 `Country` 초기화 메서드가 `name` 프로퍼티가 설정되자마자 암시적 `self` 프로퍼티를 참조하고 전달할 수 있음을 의미한다. 따라서 `Country` 초기화 메서드는 `capitalCity` 프로퍼티를 설정할 때 `self`를 `City` 초기화 메서드의 매개변수로 전달할 수 있다.
 
-All of this means that you can create the `Country` and `City` instances
-in a single statement, without creating a strong reference cycle,
-and the `capitalCity` property can be accessed directly,
-without needing to use an exclamation point to unwrap its optional value:
+이 모든 것은 강한 참조 순환을 생성하지 않고도 `Country`와 `City` 인스턴스를 단일 문장으로 생성할 수 있으며, `capitalCity` 프로퍼티를 옵셔널 값을 언래핑하기 위해 느낌표를 사용하지 않고도 직접 접근할 수 있음을 의미한다:
 
 ```swift
 var country = Country(name: "Canada", capitalName: "Ottawa")
@@ -1074,45 +724,20 @@ print("\(country.name)'s capital city is called \(country.capitalCity.name)")
   ```
 -->
 
-In the example above, the use of an implicitly unwrapped optional
-means that all of the two-phase class initializer requirements are satisfied.
-The `capitalCity` property can be used and accessed like a non-optional value
-once initialization is complete,
-while still avoiding a strong reference cycle.
+위 예제에서 암시적 언래핑 옵셔널을 사용하면 두 단계 클래스 초기화 요구 사항이 모두 충족된다. 초기화가 완료되면 `capitalCity` 프로퍼티는 옵셔널이 아닌 값처럼 사용하고 접근할 수 있으면서도 강한 참조 순환을 피할 수 있다.
 
-## Strong Reference Cycles for Closures
 
-You saw above how a strong reference cycle can be created
-when two class instance properties hold a strong reference to each other.
-You also saw how to use weak and unowned references to break these strong reference cycles.
+## 클로저에서 발생하는 강한 참조 순환
 
-A strong reference cycle can also occur
-if you assign a closure to a property of a class instance,
-and the body of that closure captures the instance.
-This capture might occur because the closure's body accesses a property of the instance,
-such as `self.someProperty`,
-or because the closure calls a method on the instance,
-such as `self.someMethod()`.
-In either case, these accesses cause the closure to “capture” `self`,
-creating a strong reference cycle.
+앞서 두 클래스 인스턴스 프로퍼티가 서로를 강하게 참조할 때 강한 참조 순환이 어떻게 발생하는지 살펴보았다. 또한 이러한 강한 참조 순환을 깨기 위해 약한 참조와 미소유 참조를 사용하는 방법도 배웠다.
 
-This strong reference cycle occurs because closures, like classes, are *reference types*.
-When you assign a closure to a property,
-you are assigning a *reference* to that closure.
-In essence, it's the same problem as above ---
-two strong references are keeping each other alive.
-However, rather than two class instances,
-this time it's a class instance and a closure that are keeping each other alive.
+강한 참조 순환은 클래스 인스턴스의 프로퍼티에 클로저를 할당하고, 그 클로저의 본문이 해당 인스턴스를 캡처할 때도 발생할 수 있다. 이 캡처는 클로저 본문이 `self.someProperty`와 같이 인스턴스의 프로퍼티에 접근하거나, `self.someMethod()`와 같이 인스턴스의 메서드를 호출할 때 일어난다. 두 경우 모두 이러한 접근은 클로저가 `self`를 캡처하게 만들고, 이로 인해 강한 참조 순환이 발생한다.
 
-Swift provides an elegant solution to this problem,
-known as a *closure capture list*.
-However, before you learn how to break a strong reference cycle with a closure capture list,
-it's useful to understand how such a cycle can be caused.
+이 강한 참조 순환은 클로저가 클래스와 마찬가지로 *참조 타입*이기 때문에 발생한다. 클로저를 프로퍼티에 할당할 때, 실제로는 그 클로저에 대한 *참조*를 할당하는 것이다. 본질적으로 이 문제는 앞서 살펴본 것과 동일하다. 두 강한 참조가 서로를 살려두는 것이다. 다만 이번에는 두 클래스 인스턴스가 아니라, 클래스 인스턴스와 클로저가 서로를 살려두는 것이다.
 
-The example below shows how you can create a strong reference cycle
-when using a closure that references `self`.
-This example defines a class called `HTMLElement`,
-which provides a simple model for an individual element within an HTML document:
+Swift는 이 문제를 해결하기 위해 *클로저 캡처 리스트*라는 우아한 해결책을 제공한다. 하지만 클로저 캡처 리스트를 사용해 강한 참조 순환을 깨는 방법을 배우기 전에, 이러한 순환이 어떻게 발생하는지 이해하는 것이 유용하다.
+
+아래 예제는 `self`를 참조하는 클로저를 사용할 때 강한 참조 순환을 어떻게 만들 수 있는지 보여준다. 이 예제는 HTML 문서 내의 개별 엘리먼트를 위한 간단한 모델을 제공하는 `HTMLElement`라는 클래스를 정의한다:
 
 ```swift
 class HTMLElement {
@@ -1140,67 +765,15 @@ class HTMLElement {
 }
 ```
 
-<!--
-  - test: `strongReferenceCyclesForClosures`
+`HTMLElement` 클래스는 `name` 프로퍼티를 정의한다. 이 프로퍼티는 엘리먼트의 이름을 나타내며, 예를 들어 제목 엘리먼트는 `"h1"`, 단락 엘리먼트는 `"p"`, 줄바꿈 엘리먼트는 `"br"` 등이 될 수 있다. `HTMLElement`는 또한 선택적 `text` 프로퍼티를 정의한다. 이 프로퍼티는 해당 HTML 엘리먼트 내에 렌더링될 텍스트를 나타내는 문자열로 설정할 수 있다.
 
-  ```swifttest
-  -> class HTMLElement {
+이 두 간단한 프로퍼티 외에도, `HTMLElement` 클래스는 `asHTML`이라는 지연 저장 프로퍼티를 정의한다. 이 프로퍼티는 `name`과 `text`를 HTML 문자열 조각으로 결합하는 클로저를 참조한다. `asHTML` 프로퍼티의 타입은 `() -> String`이며, 이는 "매개변수를 받지 않고 `String` 값을 반환하는 함수"를 의미한다.
 
-        let name: String
-        let text: String?
+기본적으로 `asHTML` 프로퍼티는 HTML 태그의 문자열 표현을 반환하는 클로저가 할당된다. 이 태그는 `text` 값이 존재하면 해당 값을 포함하고, `text`가 존재하지 않으면 텍스트 내용을 포함하지 않는다. 예를 들어 단락 엘리먼트의 경우, `text` 프로퍼티가 `"some text"`인지 `nil`인지에 따라 클로저는 `"<p>some text</p>"` 또는 `"<p />"`를 반환한다.
 
-        lazy var asHTML: () -> String = {
-           if let text = self.text {
-              return "<\(self.name)>\(text)</\(self.name)>"
-           } else {
-              return "<\(self.name) />"
-           }
-        }
+`asHTML` 프로퍼티는 인스턴스 메서드처럼 이름이 지어지고 사용된다. 그러나 `asHTML`은 인스턴스 메서드가 아니라 클로저 프로퍼티이기 때문에, 특정 HTML 엘리먼트의 HTML 렌더링을 변경하려면 `asHTML` 프로퍼티의 기본 값을 커스텀 클로저로 대체할 수 있다.
 
-        init(name: String, text: String? = nil) {
-           self.name = name
-           self.text = text
-        }
-
-        deinit {
-           print("\(name) is being deinitialized")
-        }
-
-     }
-  ```
--->
-
-The `HTMLElement` class defines a `name` property,
-which indicates the name of the element,
-such as `"h1"` for a heading element,
-`"p"` for a paragraph element,
-or `"br"` for a line break element.
-`HTMLElement` also defines an optional `text` property,
-which you can set to a string that represents
-the text to be rendered within that HTML element.
-
-In addition to these two simple properties,
-the `HTMLElement` class defines a lazy property called `asHTML`.
-This property references a closure that combines `name` and `text`
-into an HTML string fragment.
-The `asHTML` property is of type `() -> String`,
-or “a function that takes no parameters, and returns a `String` value”.
-
-By default, the `asHTML` property is assigned a closure that returns
-a string representation of an HTML tag.
-This tag contains the optional `text` value if it exists,
-or no text content if `text` doesn't exist.
-For a paragraph element, the closure would return `"<p>some text</p>"` or `"<p />"`,
-depending on whether the `text` property equals `"some text"` or `nil`.
-
-The `asHTML` property is named and used somewhat like an instance method.
-However, because `asHTML` is a closure property rather than an instance method,
-you can replace the default value of the `asHTML` property with a custom closure,
-if you want to change the HTML rendering for a particular HTML element.
-
-For example, the `asHTML` property could be set to a closure
-that defaults to some text if the `text` property is `nil`,
-in order to prevent the representation from returning an empty HTML tag:
+예를 들어, `asHTML` 프로퍼티를 `text` 프로퍼티가 `nil`일 때 기본 텍스트를 사용하는 클로저로 설정할 수 있다. 이렇게 하면 빈 HTML 태그를 반환하지 않도록 방지할 수 있다:
 
 ```swift
 let heading = HTMLElement(name: "h1")
@@ -1212,35 +785,11 @@ print(heading.asHTML())
 // Prints "<h1>some default text</h1>"
 ```
 
-<!--
-  - test: `strongReferenceCyclesForClosures`
+> 참고: `asHTML` 프로퍼티는 지연 저장 프로퍼티로 선언된다. 이는 엘리먼트가 실제로 HTML 출력 대상으로 문자열 값으로 렌더링되어야 할 때만 필요하기 때문이다. `asHTML`이 지연 저장 프로퍼티라는 사실은 기본 클로저 내에서 `self`를 참조할 수 있음을 의미한다. 왜냐하면 지연 저장 프로퍼티는 초기화가 완료되고 `self`가 존재한다고 알려진 이후에야 접근되기 때문이다.
 
-  ```swifttest
-  -> let heading = HTMLElement(name: "h1")
-  -> let defaultText = "some default text"
-  -> heading.asHTML = {
-        return "<\(heading.name)>\(heading.text ?? defaultText)</\(heading.name)>"
-     }
-  -> print(heading.asHTML())
-  <- <h1>some default text</h1>
-  ```
--->
+`HTMLElement` 클래스는 `name` 인자와 (필요한 경우) `text` 인자를 받아 새 엘리먼트를 초기화하는 단일 이니셜라이저를 제공한다. 또한 이 클래스는 `HTMLElement` 인스턴스가 해제될 때 메시지를 출력하는 디이니셜라이저를 정의한다.
 
-> Note: The `asHTML` property is declared as a lazy property,
-> because it's only needed if and when the element actually needs to be rendered
-> as a string value for some HTML output target.
-> The fact that `asHTML` is a lazy property means that you can refer to `self`
-> within the default closure,
-> because the lazy property will not be accessed until
-> after initialization has been completed and `self` is known to exist.
-
-The `HTMLElement` class provides a single initializer,
-which takes a `name` argument and (if desired) a `text` argument
-to initialize a new element.
-The class also defines a deinitializer,
-which prints a message to show when an `HTMLElement` instance is deallocated.
-
-Here's how you use the `HTMLElement` class to create and print a new instance:
+다음은 `HTMLElement` 클래스를 사용해 새 인스턴스를 생성하고 출력하는 방법이다:
 
 ```swift
 var paragraph: HTMLElement? = HTMLElement(name: "p", text: "hello, world")
@@ -1248,91 +797,43 @@ print(paragraph!.asHTML())
 // Prints "<p>hello, world</p>"
 ```
 
-<!--
-  - test: `strongReferenceCyclesForClosures`
+> 참고: 위의 `paragraph` 변수는 *옵셔널* `HTMLElement`로 정의된다. 이는 아래에서 강한 참조 순환의 존재를 보여주기 위해 `nil`로 설정할 수 있도록 하기 위함이다.
 
-  ```swifttest
-  -> var paragraph: HTMLElement? = HTMLElement(name: "p", text: "hello, world")
-  -> print(paragraph!.asHTML())
-  <- <p>hello, world</p>
-  ```
--->
-
-> Note: The `paragraph` variable above is defined as an *optional* `HTMLElement`,
-> so that it can be set to `nil` below to demonstrate
-> the presence of a strong reference cycle.
-
-Unfortunately, the `HTMLElement` class, as written above,
-creates a strong reference cycle between
-an `HTMLElement` instance and the closure used for its default `asHTML` value.
-Here's how the cycle looks:
+안타깝게도, 위와 같이 작성된 `HTMLElement` 클래스는 `HTMLElement` 인스턴스와 기본 `asHTML` 값을 위한 클로저 사이에 강한 참조 순환을 생성한다. 이 순환은 다음과 같이 나타난다:
 
 ![](closureReferenceCycle01)
 
-The instance's `asHTML` property holds a strong reference to its closure.
-However, because the closure refers to `self` within its body
-(as a way to reference `self.name` and `self.text`),
-the closure *captures* self,
-which means that it holds a strong reference back to the `HTMLElement` instance.
-A strong reference cycle is created between the two.
-(For more information about capturing values in a closure,
-see <doc:Closures#Capturing-Values>.)
+인스턴스의 `asHTML` 프로퍼티는 클로저에 대한 강한 참조를 보유한다. 그러나 클로저는 본문 내에서 `self`를 참조하기 때문에 (즉, `self.name`과 `self.text`를 참조하기 위해), 클로저는 `self`를 *캡처*한다. 이는 클로저가 `HTMLElement` 인스턴스에 대한 강한 참조를 보유한다는 것을 의미한다. 결과적으로 두 사이에 강한 참조 순환이 생성된다. (클로저에서 값을 캡처하는 방법에 대한 자세한 내용은 <doc:Closures#Capturing-Values>를 참조하라.)
 
-> Note: Even though the closure refers to `self` multiple times,
-> it only captures one strong reference to the `HTMLElement` instance.
+> 참고: 클로저가 `self`를 여러 번 참조하더라도, `HTMLElement` 인스턴스에 대한 강한 참조는 하나만 캡처된다.
 
-If you set the `paragraph` variable to `nil`
-and break its strong reference to the `HTMLElement` instance,
-the strong reference cycle prevents deallocating
-both the `HTMLElement` instance and its closure:
+`paragraph` 변수를 `nil`로 설정하고 `HTMLElement` 인스턴스에 대한 강한 참조를 끊더라도, 강한 참조 순환으로 인해 `HTMLElement` 인스턴스와 그 클로저 모두 해제되지 않는다:
 
 ```swift
 paragraph = nil
 ```
 
-<!--
-  - test: `strongReferenceCyclesForClosures`
+`HTMLElement`의 디이니셜라이저에 있는 메시지가 출력되지 않는다는 점에 주목하라. 이는 `HTMLElement` 인스턴스가 해제되지 않았음을 보여준다.
 
-  ```swifttest
-  -> paragraph = nil
-  ```
--->
 
-Note that the message in the `HTMLElement` deinitializer isn't printed,
-which shows that the `HTMLElement` instance isn't deallocated.
+## 클로저와 강한 참조 순환 문제 해결
 
-## Resolving Strong Reference Cycles for Closures
+클로저와 클래스 인스턴스 간의 강한 참조 순환 문제를 해결하려면 클로저 정의에 **캡처 리스트**를 추가한다. 캡처 리스트는 클로저 본문 내에서 하나 이상의 참조 타입을 캡처할 때 사용할 규칙을 정의한다. 두 클래스 인스턴스 간의 강한 참조 순환 문제와 마찬가지로, 각 캡처된 참조를 강한 참조 대신 약한 참조(weak) 또는 미소유 참조(unowned)로 선언한다. 약한 참조와 미소유 참조 중 어떤 것을 선택할지는 코드의 여러 부분 간의 관계에 따라 결정된다.
 
-You resolve a strong reference cycle between a closure and a class instance
-by defining a *capture list* as part of the closure's definition.
-A capture list defines the rules to use when capturing one or more reference types
-within the closure's body.
-As with strong reference cycles between two class instances,
-you declare each captured reference to be a weak or unowned reference
-rather than a strong reference.
-The appropriate choice of weak or unowned depends on
-the relationships between the different parts of your code.
+> 참고: Swift에서는 클로저 내에서 `self`의 멤버를 참조할 때 `self.someProperty` 또는 `self.someMethod()`와 같이 `self`를 명시적으로 작성해야 한다. 이렇게 하면 실수로 `self`를 캡처할 가능성을 상기시킬 수 있다.
 
-> Note: Swift requires you to write `self.someProperty` or `self.someMethod()`
-> (rather than just `someProperty` or `someMethod()`)
-> whenever you refer to a member of `self` within a closure.
-> This helps you remember that it's possible to capture `self` by accident.
 
-### Defining a Capture List
+### 캡처 리스트 정의하기
 
-Each item in a capture list is a pairing of the `weak` or `unowned` keyword
-with a reference to a class instance (such as `self`)
-or a variable initialized with some value (such as `delegate = self.delegate`).
-These pairings are written within a pair of square braces, separated by commas.
+캡처 리스트의 각 항목은 `weak` 또는 `unowned` 키워드와 클래스 인스턴스에 대한 참조(예: `self`) 또는 특정 값으로 초기화된 변수(예: `delegate = self.delegate`)의 쌍으로 이루어진다. 이러한 쌍은 대괄호 안에 쉼표로 구분하여 작성한다.
 
-Place the capture list before a closure's parameter list and return type
-if they're provided:
+클로저에 매개변수 목록과 반환 타입이 있는 경우, 캡처 리스트를 매개변수 목록과 반환 타입 앞에 위치시킨다:
 
 ```swift
 lazy var someClosure = {
         [unowned self, weak delegate = self.delegate]
         (index: Int, stringToProcess: String) -> String in
-    // closure body goes here
+    // 클로저 본문이 여기에 위치한다
 }
 ```
 
@@ -1345,22 +846,19 @@ lazy var someClosure = {
      lazy var someClosure = {
            [unowned self, weak delegate = self.delegate]
            (index: Int, stringToProcess: String) -> String in
-        // closure body goes here
+        // 클로저 본문이 여기에 위치한다
   >>    return "foo"
      }
   >> }
   ```
 -->
 
-If a closure doesn't specify a parameter list or return type
-because they can be inferred from context,
-place the capture list at the very start of the closure,
-followed by the `in` keyword:
+클로저가 매개변수 목록과 반환 타입을 지정하지 않고, 이를 컨텍스트에서 추론할 수 있는 경우, 캡처 리스트를 클로저의 가장 앞에 위치시키고 `in` 키워드를 붙인다:
 
 ```swift
 lazy var someClosure = {
         [unowned self, weak delegate = self.delegate] in
-    // closure body goes here
+    // 클로저 본문이 여기에 위치한다
 }
 ```
 
@@ -1372,37 +870,27 @@ lazy var someClosure = {
   >> var delegate: AnyObject?
      lazy var someClosure = {
            [unowned self, weak delegate = self.delegate] in
-        // closure body goes here
+        // 클로저 본문이 여기에 위치한다
   >>    return "foo"
      }
   >> }
   ```
 -->
 
-### Weak and Unowned References
 
-Define a capture in a closure as an unowned reference
-when the closure and the instance it captures will always refer to each other,
-and will always be deallocated at the same time.
+### 약한 참조와 미소유 참조
 
-Conversely, define a capture as a weak reference when the captured reference
-may become `nil` at some point in the future.
-Weak references are always of an optional type,
-and automatically become `nil` when the instance they reference is deallocated.
-This enables you to check for their existence within the closure's body.
+클로저와 클로저가 캡처한 인스턴스가 항상 서로를 참조하고, 동시에 메모리에서 해제되는 경우에는 클로저 내에서 캡처를 미소유 참조로 정의한다.
+
+반대로, 캡처한 참조가 나중에 `nil`이 될 가능성이 있다면 약한 참조로 정의한다. 약한 참조는 항상 옵셔널 타입이며, 참조한 인스턴스가 해제되면 자동으로 `nil`이 된다. 이를 통해 클로저 본문 내에서 해당 참조의 존재 여부를 확인할 수 있다.
 
 <!--
   <rdar://problem/28812110> Reframe discussion of weak/unowned closure capture in terms of object graph
 -->
 
-> Note: If the captured reference will never become `nil`,
-> it should always be captured as an unowned reference,
-> rather than a weak reference.
+> 참고: 캡처한 참조가 절대 `nil`이 되지 않는다면, 약한 참조 대신 항상 미소유 참조로 캡처해야 한다.
 
-An unowned reference is the appropriate capture method to use to resolve
-the strong reference cycle in the `HTMLElement` example
-from <doc:AutomaticReferenceCounting#Strong-Reference-Cycles-for-Closures> above.
-Here's how you write the `HTMLElement` class to avoid the cycle:
+미소유 참조는 앞서 <doc:AutomaticReferenceCounting#Strong-Reference-Cycles-for-Closures>에서 다룬 `HTMLElement` 예제의 강한 참조 순환 문제를 해결하기에 적합한 캡처 방식이다. 다음은 순환을 방지하기 위해 `HTMLElement` 클래스를 작성하는 방법이다:
 
 ```swift
 class HTMLElement {
@@ -1462,12 +950,9 @@ class HTMLElement {
   ```
 -->
 
-This implementation of `HTMLElement` is identical to the previous implementation,
-apart from the addition of a capture list within the `asHTML` closure.
-In this case, the capture list is `[unowned self]`,
-which means “capture self as an unowned reference rather than a strong reference”.
+이 `HTMLElement` 구현은 `asHTML` 클로저 내에 캡처 목록이 추가된 것을 제외하면 이전 구현과 동일하다. 여기서 캡처 목록은 `[unowned self]`로, "self를 강한 참조가 아닌 미소유 참조로 캡처하라"는 의미이다.
 
-You can create and print an `HTMLElement` instance as before:
+이전과 동일하게 `HTMLElement` 인스턴스를 생성하고 출력할 수 있다:
 
 ```swift
 var paragraph: HTMLElement? = HTMLElement(name: "p", text: "hello, world")
@@ -1485,15 +970,11 @@ print(paragraph!.asHTML())
   ```
 -->
 
-Here's how the references look with the capture list in place:
+캡처 목록이 적용된 상태에서의 참조 관계는 다음과 같다:
 
 ![](closureReferenceCycle02)
 
-This time, the capture of `self` by the closure is an unowned reference,
-and doesn't keep a strong hold on the `HTMLElement` instance it has captured.
-If you set the strong reference from the `paragraph` variable to `nil`,
-the `HTMLElement` instance is deallocated,
-as can be seen from the printing of its deinitializer message in the example below:
+이번에는 클로저가 `self`를 미소유 참조로 캡처하므로, 캡처한 `HTMLElement` 인스턴스를 강하게 유지하지 않는다. `paragraph` 변수의 강한 참조를 `nil`로 설정하면, `HTMLElement` 인스턴스가 해제되며, 아래 예제에서처럼 디이니셜라이저 메시지가 출력된다:
 
 ```swift
 paragraph = nil
@@ -1509,8 +990,7 @@ paragraph = nil
   ```
 -->
 
-For more information about capture lists,
-see <doc:Expressions#Capture-Lists>.
+캡처 목록에 대한 더 자세한 정보는 <doc:Expressions#Capture-Lists>를 참고한다.
 
 <!--
 This source file is part of the Swift.org open source project
@@ -1521,3 +1001,5 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
+
+

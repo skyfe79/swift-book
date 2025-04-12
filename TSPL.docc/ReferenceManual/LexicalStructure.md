@@ -1,51 +1,37 @@
-# Lexical Structure
+# 어휘 구조
 
-Use the lowest-level components of the syntax.
+문법의 가장 기본적인 요소를 사용한다.
 
-The *lexical structure* of Swift describes what sequence of characters
-form valid tokens of the language.
-These valid tokens form the lowest-level building blocks of the language
-and are used to describe the rest of the language in subsequent chapters.
-A token consists of an identifier, keyword, punctuation, literal, or operator.
+Swift의 *어휘 구조*는 어떤 문자 시퀀스가 유효한 토큰을 구성하는지 설명한다.  
+이 유효한 토큰들은 언어의 가장 기본적인 구성 요소이며, 이후 장에서 언어의 나머지 부분을 설명하는 데 사용된다.  
+토큰은 식별자, 키워드, 구두점, 리터럴 또는 연산자로 구성된다.
 
-In most cases, tokens are generated from the characters of a Swift source file
-by considering the longest possible substring from the input text,
-within the constraints of the grammar that are specified below.
-This behavior is referred to as *longest match*
-or *maximal munch*.
+대부분의 경우, Swift 소스 파일의 문자로부터 토큰이 생성된다.  
+이때 아래에 명시된 문법 제약 조건 내에서 입력 텍스트에서 가능한 가장 긴 부분 문자열을 고려한다.  
+이러한 동작을 *최장 일치* 또는 *최대 길이 우선*이라고 부른다.
 
-## Whitespace and Comments
 
-Whitespace has two uses: to separate tokens in the source file
-and to distinguish between prefix, postfix, and infix operators
-(see <doc:LexicalStructure#Operators>),
-but is otherwise ignored.
-The following characters are considered whitespace:
-space (U+0020),
-line feed (U+000A),
-carriage return (U+000D),
-horizontal tab (U+0009),
-vertical tab (U+000B),
-form feed (U+000C)
-and null (U+0000).
+## 공백과 주석
+
+공백은 두 가지 용도로 사용된다. 소스 파일에서 토큰을 구분하거나, 접두사, 접미사, 중위 연산자를 구별하는 데 쓰인다(자세한 내용은 <doc:LexicalStructure#Operators> 참조). 이 외의 경우에는 무시된다. 다음 문자들은 공백으로 간주된다:
+- 스페이스 (U+0020)
+- 줄 바꿈 (U+000A)
+- 캐리지 리턴 (U+000D)
+- 수평 탭 (U+0009)
+- 수직 탭 (U+000B)
+- 폼 피드 (U+000C)
+- 널 (U+0000)
 
 <!--
-  Whitespace characters are listed roughly from
-  most salient/common to least,
-  not in order of Unicode scalar value.
+  공백 문자는 유니코드 스칼라 값 순서가 아니라,
+  중요도와 사용 빈도를 기준으로 대략 나열했다.
 -->
 
-Comments are treated as whitespace by the compiler.
-Single line comments begin with `//`
-and continue until a line feed (U+000A)  or carriage return (U+000D).
-Multiline comments begin with `/*` and end with `*/`.
-Nesting multiline comments is allowed,
-but the comment markers must be balanced.
+컴파일러는 주석을 공백으로 취급한다. 한 줄 주석은 `//`로 시작하며, 줄 바꿈(U+000A)이나 캐리지 리턴(U+000D)이 나올 때까지 계속된다. 여러 줄 주석은 `/*`로 시작하고 `*/`로 끝난다. 여러 줄 주석을 중첩할 수 있지만, 주석 표시자는 반드시 균형을 맞춰야 한다.
 
-Comments can contain additional formatting and markup,
-as described in [Markup Formatting Reference](https://developer.apple.com/library/content/documentation/Xcode/Reference/xcode_markup_formatting_ref/index.html).
+주석은 [Markup Formatting Reference](https://developer.apple.com/library/content/documentation/Xcode/Reference/xcode_markup_formatting_ref/index.html)에 설명된 대로 추가적인 서식과 마크업을 포함할 수 있다.
 
-> Grammar of whitespace:
+> 공백 문법:
 >
 > *whitespace* → *whitespace-item* *whitespace*_?_ \
 > *whitespace-item* → *line-break* \
@@ -72,72 +58,44 @@ as described in [Markup Formatting Reference](https://developer.apple.com/librar
 > *multiline-comment-text-item* → *comment-text-item* \
 > *multiline-comment-text-item* → Any Unicode scalar value except  **`/*`** or  **`*/`**
 
-## Identifiers
 
-*Identifiers* begin with
-an uppercase or lowercase letter A through Z,
-an underscore (`_`),
-a noncombining alphanumeric Unicode character
-in the Basic Multilingual Plane,
-or a character outside the Basic Multilingual Plane
-that isn't in a Private Use Area.
-After the first character,
-digits and combining Unicode characters are also allowed.
+## 식별자
 
-Treat identifiers that begin with an underscore,
-subscripts whose first argument label begins with an underscore,
-and initializers whose first argument label begins with an underscore,
-as internal,
-even if their declaration has the `public` access-level modifier.
-This convention lets framework authors mark part of an API
-that clients must not interact with or depend on,
-even though some limitation requires the declaration to be public.
-In addition,
-identifiers that begin with two underscores
-are reserved for the Swift compiler and standard library.
+**식별자**는 다음과 같은 문자로 시작한다:
+- 대문자 또는 소문자 A부터 Z
+- 언더스코어(`_`)
+- 기본 다국어 평면(Basic Multilingual Plane)에 속한 비결합 알파벳 유니코드 문자
+- 기본 다국어 평면 외부에 있지만 사적 사용 영역(Private Use Area)에 속하지 않은 문자
 
-To use a reserved word as an identifier,
-put a backtick (\`) before and after it.
-For example, `class` isn't a valid identifier,
-but `` `class` `` is valid.
-The backticks aren't considered part of the identifier;
-`` `x` `` and `x` have the same meaning.
+첫 번째 문자 이후에는 숫자와 결합 유니코드 문자도 사용할 수 있다.
+
+언더스코어로 시작하는 식별자, 첫 번째 인자 레이블이 언더스코어로 시작하는 서브스크립트, 그리고 첫 번째 인자 레이블이 언더스코어로 시작하는 초기화 구문은 `public` 접근 레벨 제어자를 사용하더라도 내부용으로 간주한다. 이 규칙은 프레임워크 개발자가 클라이언트가 상호작용하거나 의존하지 말아야 하는 API 부분을 표시할 수 있게 한다. 또한, 두 개의 언더스코어로 시작하는 식별자는 Swift 컴파일러와 표준 라이브러리가 사용하도록 예약되어 있다.
+
+예약어를 식별자로 사용하려면 앞뒤에 백틱(\`)을 추가한다. 예를 들어, `class`는 유효한 식별자가 아니지만 `` `class` ``는 유효하다. 백틱은 식별자의 일부로 간주되지 않는다. 따라서 `` `x` ``와 `x`는 같은 의미를 가진다.
 
 <!--
-The paragraph above produces a link-resolution warning
-because of a known issue with ` in code voice.
+위 단락은 코드 음성에서 ` 사용과 관련된 알려진 문제로 인해 링크 해결 경고를 발생시킨다.
 
 https://github.com/swiftlang/swift-book/issues/71
 https://github.com/swiftlang/swift-markdown/issues/93
 -->
 
-Inside a closure with no explicit parameter names,
-the parameters are implicitly named `$0`, `$1`, `$2`, and so on.
-These names are valid identifiers within the scope of the closure.
+명시적인 매개변수 이름이 없는 클로저 내부에서는 매개변수가 암시적으로 `$0`, `$1`, `$2` 등으로 이름 지어진다. 이러한 이름은 클로저 범위 내에서 유효한 식별자이다.
 
-The compiler synthesizes identifiers that begin with a dollar sign (`$`)
-for properties that have a property wrapper projection.
-Your code can interact with these identifiers,
-but you can't declare identifiers with that prefix.
-For more information, see the <doc:Attributes#propertyWrapper> section
-of the <doc:Attributes> chapter.
+컴파일러는 프로퍼티 래퍼 프로젝션을 가진 프로퍼티에 대해 달러 기호(`$`)로 시작하는 식별자를 생성한다. 코드에서 이러한 식별자와 상호작용할 수 있지만, 해당 접두사로 식별자를 직접 선언할 수는 없다. 자세한 내용은 <doc:Attributes> 장의 <doc:Attributes#propertyWrapper> 섹션을 참고한다.
 
 <!--
-  The cross reference above includes both the section and chapter because,
-  even though "propertyWrapper" is the title of the section,
-  the section name isn't title case so it doesn't necessarily look like a title.
+위의 교차 참조는 섹션과 장을 모두 포함한다. "propertyWrapper"가 섹션의 제목이지만, 섹션 이름이 제목 대문자 표기법을 따르지 않아 제목처럼 보이지 않을 수 있기 때문이다.
 -->
 
 <!--
-The formal grammar below for 'identifier'
-produces a link-resolution warning
-because of a known issue with ` in code voice.
+아래의 'identifier' 문법은 코드 음성에서 ` 사용과 관련된 알려진 문제로 인해 링크 해결 경고를 발생시킨다.
 
 https://github.com/swiftlang/swift-book/issues/71
 https://github.com/swiftlang/swift-markdown/issues/93
 -->
 
-> Grammar of an identifier:
+> 식별자 문법:
 >
 > *identifier* → *identifier-head* *identifier-characters*_?_ \
 > *identifier* → **`` ` ``** *identifier-head* *identifier-characters*_?_ **`` ` ``** \
@@ -145,47 +103,35 @@ https://github.com/swiftlang/swift-markdown/issues/93
 > *identifier* → *property-wrapper-projection* \
 > *identifier-list* → *identifier* | *identifier* **`,`** *identifier-list*
 >
-> *identifier-head* → Upper- or lowercase letter A through Z \
+> *identifier-head* → 대문자 또는 소문자 A부터 Z \
 > *identifier-head* → **`_`** \
-> *identifier-head* → U+00A8, U+00AA, U+00AD, U+00AF, U+00B2–U+00B5, or U+00B7–U+00BA \
-> *identifier-head* → U+00BC–U+00BE, U+00C0–U+00D6, U+00D8–U+00F6, or U+00F8–U+00FF \
-> *identifier-head* → U+0100–U+02FF, U+0370–U+167F, U+1681–U+180D, or U+180F–U+1DBF \
+> *identifier-head* → U+00A8, U+00AA, U+00AD, U+00AF, U+00B2–U+00B5, 또는 U+00B7–U+00BA \
+> *identifier-head* → U+00BC–U+00BE, U+00C0–U+00D6, U+00D8–U+00F6, 또는 U+00F8–U+00FF \
+> *identifier-head* → U+0100–U+02FF, U+0370–U+167F, U+1681–U+180D, 또는 U+180F–U+1DBF \
 > *identifier-head* → U+1E00–U+1FFF \
-> *identifier-head* → U+200B–U+200D, U+202A–U+202E, U+203F–U+2040, U+2054, or U+2060–U+206F \
-> *identifier-head* → U+2070–U+20CF, U+2100–U+218F, U+2460–U+24FF, or U+2776–U+2793 \
-> *identifier-head* → U+2C00–U+2DFF or U+2E80–U+2FFF \
-> *identifier-head* → U+3004–U+3007, U+3021–U+302F, U+3031–U+303F, or U+3040–U+D7FF \
-> *identifier-head* → U+F900–U+FD3D, U+FD40–U+FDCF, U+FDF0–U+FE1F, or U+FE30–U+FE44 \
+> *identifier-head* → U+200B–U+200D, U+202A–U+202E, U+203F–U+2040, U+2054, 또는 U+2060–U+206F \
+> *identifier-head* → U+2070–U+20CF, U+2100–U+218F, U+2460–U+24FF, 또는 U+2776–U+2793 \
+> *identifier-head* → U+2C00–U+2DFF 또는 U+2E80–U+2FFF \
+> *identifier-head* → U+3004–U+3007, U+3021–U+302F, U+3031–U+303F, 또는 U+3040–U+D7FF \
+> *identifier-head* → U+F900–U+FD3D, U+FD40–U+FDCF, U+FDF0–U+FE1F, 또는 U+FE30–U+FE44 \
 > *identifier-head* → U+FE47–U+FFFD \
-> *identifier-head* → U+10000–U+1FFFD, U+20000–U+2FFFD, U+30000–U+3FFFD, or U+40000–U+4FFFD \
-> *identifier-head* → U+50000–U+5FFFD, U+60000–U+6FFFD, U+70000–U+7FFFD, or U+80000–U+8FFFD \
-> *identifier-head* → U+90000–U+9FFFD, U+A0000–U+AFFFD, U+B0000–U+BFFFD, or U+C0000–U+CFFFD \
-> *identifier-head* → U+D0000–U+DFFFD or U+E0000–U+EFFFD
+> *identifier-head* → U+10000–U+1FFFD, U+20000–U+2FFFD, U+30000–U+3FFFD, 또는 U+40000–U+4FFFD \
+> *identifier-head* → U+50000–U+5FFFD, U+60000–U+6FFFD, U+70000–U+7FFFD, 또는 U+80000–U+8FFFD \
+> *identifier-head* → U+90000–U+9FFFD, U+A0000–U+AFFFD, U+B0000–U+BFFFD, 또는 U+C0000–U+CFFFD \
+> *identifier-head* → U+D0000–U+DFFFD 또는 U+E0000–U+EFFFD
 >
-> *identifier-character* → Digit 0 through 9 \
-> *identifier-character* → U+0300–U+036F, U+1DC0–U+1DFF, U+20D0–U+20FF, or U+FE20–U+FE2F \
+> *identifier-character* → 숫자 0부터 9 \
+> *identifier-character* → U+0300–U+036F, U+1DC0–U+1DFF, U+20D0–U+20FF, 또는 U+FE20–U+FE2F \
 > *identifier-character* → *identifier-head* \
 > *identifier-characters* → *identifier-character* *identifier-characters*_?_
 >
 > *implicit-parameter-name* → **`$`** *decimal-digits* \
 > *property-wrapper-projection* → **`$`** *identifier-characters*
 
-## Keywords and Punctuation
 
-The following keywords are reserved and can't be used as identifiers,
-unless they're escaped with backticks,
-as described above in <doc:LexicalStructure#Identifiers>.
-Keywords other than `inout`, `var`, and `let`
-can be used as parameter names
-in a function declaration or function call
-without being escaped with backticks.
-When a member has the same name as a keyword,
-references to that member don't need to be escaped with backticks,
-except when there's ambiguity between referring to the member
-and using the keyword ---
-for example, `self`, `Type`, and `Protocol`
-have special meaning in an explicit member expression,
-so they must be escaped with backticks in that context.
+## 키워드와 구두점
+
+다음 키워드는 예약어로, 앞서 <doc:LexicalStructure#Identifiers>에서 설명한대로 백틱(`)으로 이스케이프하지 않으면 식별자로 사용할 수 없다. `inout`, `var`, `let`을 제외한 키워드는 함수 선언이나 호출에서 파라미터 이름으로 사용할 때 백틱 없이도 사용할 수 있다. 멤버 이름이 키워드와 동일한 경우, 해당 멤버를 참조할 때 백틱으로 이스케이프할 필요가 없다. 단, 멤버 참조와 키워드 사용 간에 모호성이 발생하는 경우는 예외다. 예를 들어, `self`, `Type`, `Protocol`은 명시적 멤버 표현에서 특별한 의미를 가지므로, 이러한 컨텍스트에서는 반드시 백틱으로 이스케이프해야 한다.
 
 <!--
   - test: `keywords-without-backticks`
@@ -237,15 +183,15 @@ so they must be escaped with backticks in that context.
 -->
 
 <!--
-  NOTE: This list of language keywords and punctuation
-  is derived from the file "swift/include/swift/Parse/Tokens.def"
-  and from "utils/gyb_syntax_support/Token.py",
-  which generates the TokenKinds.def file.
+  NOTE: 이 언어 키워드와 구두점 목록은
+  "swift/include/swift/Parse/Tokens.def" 파일과
+  "utils/gyb_syntax_support/Token.py" 파일에서 파생되었으며,
+  후자는 TokenKinds.def 파일을 생성한다.
 
-  Last updated at Swift commit 2f1987567f5, for Swift 5.4.
+  Swift 5.4 기준, Swift 커밋 2f1987567f5에서 마지막으로 업데이트되었다.
 -->
 
-- Keywords used in declarations:
+- 선언에 사용되는 키워드:
   `associatedtype`,
   `borrowing`,
   `class`,
@@ -272,13 +218,13 @@ so they must be escaped with backticks in that context.
   `struct`,
   `subscript`,
   `typealias`,
-  and `var`.
+  그리고 `var`.
 
 <!--
-  Token.py doesn't include 'open' but DeclNodes.py does.
+  Token.py에는 'open'이 포함되어 있지 않지만, DeclNodes.py에는 포함되어 있다.
 -->
 
-- Keywords used in statements:
+- 구문에 사용되는 키워드:
   `break`,
   `case`,
   `catch`,
@@ -297,8 +243,8 @@ so they must be escaped with backticks in that context.
   `switch`,
   `throw`,
   `where`,
-  and `while`.
-- Keywords used in expressions and types:
+  그리고 `while`.
+- 표현식과 타입에 사용되는 키워드:
   `Any`,
   `as`,
   `await`,
@@ -313,10 +259,10 @@ so they must be escaped with backticks in that context.
   `throw`,
   `throws`,
   `true`,
-  and `try`.
-- Keywords used in patterns:
+  그리고 `try`.
+- 패턴에 사용되는 키워드:
   `_`.
-- Keywords that begin with a number sign (`#`):
+- 숫자 기호(`#`)로 시작하는 키워드:
   `#available`,
   `#colorLiteral`,
   `#else`,
@@ -330,9 +276,8 @@ so they must be escaped with backticks in that context.
   `#sourceLocation`,
   `#unavailable`.
 
-> Note:
-> Prior to Swift 5.9,
-> the following keywords were reserved:
+> 참고:
+> Swift 5.9 이전에는 다음 키워드가 예약어였다:
 > `#column`,
 > `#dsohandle`,
 > `#error`,
@@ -341,8 +286,8 @@ so they must be escaped with backticks in that context.
 > `#file`,
 > `#function`,
 > `#line`,
-> and `#warning`.
-> These are now implemented as macros in the Swift standard library:
+> 그리고 `#warning`.
+> 이제 이들은 Swift 표준 라이브러리의 매크로로 구현되었다:
 > [`column`](https://developer.apple.com/documentation/swift/column()),
 > [`dsohandle`](https://developer.apple.com/documentation/swift/dsohandle()),
 > [`error(_:)`](https://developer.apple.com/documentation/swift/error(_:)),
@@ -351,27 +296,31 @@ so they must be escaped with backticks in that context.
 > [`file`](https://developer.apple.com/documentation/swift/file()),
 > [`function`](https://developer.apple.com/documentation/swift/function()),
 > [`line`](https://developer.apple.com/documentation/swift/line()),
-> and [`warning(_:)`](https://developer.apple.com/documentation/swift/warning(_:)).
+> 그리고 [`warning(_:)`](https://developer.apple.com/documentation/swift/warning(_:)).
 
 <!--
-  Token.py includes #assert,
-  which looks like it's part of an experimental feature
-  based on the pound_assert_disabled diagnostic's error message:
-  #assert is an experimental feature that is currently disabled
+  Token.py에는 #assert가 포함되어 있으며,
+  이는 실험적 기능의 일부로 보인다.
+  pound_assert_disabled 진단의 오류 메시지를 기반으로 추정된다:
+-->
+
+
+#assert는 현재 비활성화된 실험적 기능이다
+
 -->
 
 <!--
-  Token.py includes #fileID,
-  which looks like it's part of a future feature related to
-  -enable-experimental-concise-pound-file (see also Swift commit 0e569f5d9e66)
+  Token.py에 포함된 #fileID는
+  향후 -enable-experimental-concise-pound-file와 관련된 기능의 일부로 보인다
+  (Swift 커밋 0e569f5d9e66 참조).
 -->
 
 <!--
-  Token.py includes 'yield' as a keyword,
-  which looks like it's related to a future feature around memory ownership.
+  Token.py에 포함된 'yield' 키워드는
+  메모리 소유권과 관련된 향후 기능과 연관되어 있다.
 -->
 
-- Keywords reserved in particular contexts:
+- 특정 문맥에서 예약된 키워드:
   `associativity`,
   `async`,
   `convenience`,
@@ -400,37 +349,36 @@ so they must be escaped with backticks in that context.
   `Type`,
   `unowned`,
   `weak`,
-  and `willSet`.
-  Outside the context in which they appear in the grammar,
-  they can be used as identifiers.
+  그리고 `willSet`.
+  이 키워드들은 문법에서 정의된 특정 문맥 외부에서는 식별자로 사용할 수 있다.
 
 <!--
-  NOTE: The list of context-sensitive keywords above
-  is derived from the file "swift/include/swift/AST/Attr.def"
-  where they're marked CONTEXTUAL_SIMPLE_DECL_ATTR.
-  However, not all context-sensitive keywords appear there;
+  참고: 위의 문맥 의존적 키워드 목록은
+  "swift/include/swift/AST/Attr.def" 파일에서 가져왔다.
+  이 파일에서 CONTEXTUAL_SIMPLE_DECL_ATTR로 표시된 키워드들이다.
+  하지만 모든 문맥 의존적 키워드가 여기에 포함되지는 않는다.
 -->
 
-The following tokens are reserved as punctuation
-and can't be used as custom operators:
+다음 토큰들은 구두점으로 예약되어 있으며
+커스텀 연산자로 사용할 수 없다:
 `(`, `)`, `{`, `}`, `[`, `]`,
 `.`, `,`, `:`, `;`, `=`, `@`, `#`,
-`&` (as a prefix operator), `->`, `` ` ``,
-`?`, and `!` (as a postfix operator).
+`&` (접두사 연산자로 사용할 때), `->`, `` ` ``,
+`?`, 그리고 `!` (접미사 연산자로 사용할 때).
 
-## Literals
 
-A *literal* is the source code representation of a value of a type,
-such as a number or string.
+## 리터럴
 
-The following are examples of literals:
+*리터럴*은 숫자나 문자열과 같은 타입의 값을 소스 코드에서 직접 표현한 것이다.
+
+다음은 리터럴의 예제이다:
 
 ```swift
-42               // Integer literal
-3.14159          // Floating-point literal
-"Hello, world!"  // String literal
-/Hello, .*/      // Regular expression literal
-true             // Boolean literal
+42               // 정수 리터럴
+3.14159          // 부동소수점 리터럴
+"Hello, world!"  // 문자열 리터럴
+/Hello, .*/      // 정규 표현식 리터럴
+true             // 불리언 리터럴
 ```
 
 <!--
@@ -460,35 +408,17 @@ true             // Boolean literal
   Tracking bug is <rdar://problem/35301593>
 -->
 
-A literal doesn't have a type on its own.
-Instead, a literal is parsed as having infinite precision and Swift's type inference
-attempts to infer a type for the literal. For example,
-in the declaration `let x: Int8 = 42`,
-Swift uses the explicit type annotation (`: Int8`) to infer
-that the type of the integer literal `42` is `Int8`.
-If there isn't suitable type information available,
-Swift infers that the literal's type is one of the default literal types
-defined in the Swift standard library
-and listed in the table below.
-When specifying the type annotation for a literal value,
-the annotation's type must be a type that can be instantiated from that literal value.
-That is, the type must conform to the Swift standard library protocols
-listed in the table below.
+리터럴 자체는 타입을 가지지 않는다. 대신, 리터럴은 무한한 정밀도로 파싱되며 Swift의 타입 추론이 리터럴에 적합한 타입을 추론한다. 예를 들어, `let x: Int8 = 42` 선언에서 Swift는 명시적 타입 어노테이션(`: Int8`)을 사용해 정수 리터럴 `42`의 타입이 `Int8`임을 추론한다. 적절한 타입 정보가 없을 경우, Swift는 리터럴의 타입을 Swift 표준 라이브러리에 정의된 기본 리터럴 타입 중 하나로 추론한다. 아래 표에서 기본 리터럴 타입을 확인할 수 있다. 리터럴 값에 타입 어노테이션을 지정할 때, 어노테이션의 타입은 해당 리터럴 값으로부터 인스턴스화할 수 있는 타입이어야 한다. 즉, 타입은 아래 표에 나열된 Swift 표준 라이브러리 프로토콜을 준수해야 한다.
 
-| Literal | Default type | Protocol |
+| 리터럴 | 기본 타입 | 프로토콜 |
 | ------- | ------------ | -------- |
-| Integer | `Int` | `ExpressibleByIntegerLiteral` |
-| Floating-point | `Double` | `ExpressibleByFloatLiteral` |
-| String | `String` | `ExpressibleByStringLiteral`, `ExpressibleByUnicodeScalarLiteral` for string literals that contain only a single Unicode scalar, `ExpressibleByExtendedGraphemeClusterLiteral` for string literals that contain only a single extended grapheme cluster |
-| Regular expression | `Regex` | None |
-| Boolean | `Bool` | `ExpressibleByBooleanLiteral` |
+| 정수 | `Int` | `ExpressibleByIntegerLiteral` |
+| 부동소수점 | `Double` | `ExpressibleByFloatLiteral` |
+| 문자열 | `String` | `ExpressibleByStringLiteral`, 단일 유니코드 스칼라만 포함된 문자열 리터럴의 경우 `ExpressibleByUnicodeScalarLiteral`, 단일 확장 그래핌 클러스터만 포함된 문자열 리터럴의 경우 `ExpressibleByExtendedGraphemeClusterLiteral` |
+| 정규 표현식 | `Regex` | 없음 |
+| 불리언 | `Bool` | `ExpressibleByBooleanLiteral` |
 
-For example, in the declaration `let str = "Hello, world"`,
-the default inferred type of the string
-literal `"Hello, world"` is `String`.
-Also, `Int8` conforms to the `ExpressibleByIntegerLiteral` protocol,
-and therefore it can be used in the type annotation for the integer literal `42`
-in the declaration `let x: Int8 = 42`.
+예를 들어, `let str = "Hello, world"` 선언에서 문자열 리터럴 `"Hello, world"`의 기본 추론 타입은 `String`이다. 또한, `Int8`은 `ExpressibleByIntegerLiteral` 프로토콜을 준수하므로, `let x: Int8 = 42` 선언에서 정수 리터럴 `42`의 타입 어노테이션으로 사용할 수 있다.
 
 <!--
   The list of ExpressibleBy... protocols above also appears in Declarations_EnumerationsWithRawCaseValues.
@@ -496,7 +426,7 @@ in the declaration `let x: Int8 = 42`.
   There is no protocol for regex literal in the list because the stdlib intentionally omits that.
 -->
 
-> Grammar of a literal:
+> 리터럴 문법:
 >
 > *literal* → *numeric-literal* | *string-literal* | *regular-expression-literal* | *boolean-literal* | *nil-literal*
 >
@@ -504,53 +434,37 @@ in the declaration `let x: Int8 = 42`.
 > *boolean-literal* → **`true`** | **`false`** \
 > *nil-literal* → **`nil`**
 
-### Integer Literals
 
-*Integer literals* represent integer values of unspecified precision.
-By default, integer literals are expressed in decimal;
-you can specify an alternate base using a prefix.
-Binary literals begin with `0b`,
-octal literals begin with `0o`,
-and hexadecimal literals begin with `0x`.
+### 정수 리터럴
 
-Decimal literals contain the digits `0` through `9`.
-Binary literals contain `0` and `1`,
-octal literals contain `0` through `7`,
-and hexadecimal literals contain `0` through `9`
-as well as `A` through `F` in upper- or lowercase.
+*정수 리터럴*은 정밀도가 명시되지 않은 정수 값을 나타낸다. 기본적으로 정수 리터럴은 10진수로 표현되지만, 접두사를 사용해 다른 진법을 지정할 수 있다. 바이너리 리터럴은 `0b`로 시작하고, 8진수 리터럴은 `0o`로 시작하며, 16진수 리터럴은 `0x`로 시작한다.
 
-Negative integers literals are expressed by prepending a minus sign (`-`)
-to an integer literal, as in `-42`.
+10진수 리터럴은 `0`부터 `9`까지의 숫자를 포함한다. 바이너리 리터럴은 `0`과 `1`을 포함하고, 8진수 리터럴은 `0`부터 `7`까지의 숫자를 포함한다. 16진수 리터럴은 `0`부터 `9`까지의 숫자와 대소문자 `A`부터 `F`까지의 문자를 포함한다.
 
-Underscores (`_`) are allowed between digits for readability,
-but they're ignored and therefore don't affect the value of the literal.
-Integer literals can begin with leading zeros (`0`),
-but they're likewise ignored and don't affect the base or value of the literal.
+음의 정수 리터럴은 정수 리터럴 앞에 마이너스 기호(`-`)를 붙여 표현한다. 예를 들어 `-42`와 같다.
 
-Unless otherwise specified,
-the default inferred type of an integer literal is the Swift standard library type `Int`.
-The Swift standard library also defines types for various sizes of
-signed and unsigned integers,
-as described in <doc:TheBasics#Integers>.
+가독성을 위해 숫자 사이에 언더스코어(`_`)를 사용할 수 있지만, 이는 무시되므로 리터럴의 값에 영향을 미치지 않는다. 정수 리터럴은 앞에 0(`0`)으로 시작할 수 있지만, 이 역시 무시되며 진법이나 값에 영향을 주지 않는다.
+
+별도로 지정하지 않으면 정수 리터럴의 기본 타입은 Swift 표준 라이브러리의 `Int` 타입으로 추론된다. Swift 표준 라이브러리는 다양한 크기의 부호 있는 정수와 부호 없는 정수 타입도 정의하고 있다. 이에 대한 자세한 내용은 <doc:TheBasics#Integers>에서 확인할 수 있다.
 
 <!--
-  TR: The prose assumes underscores only belong between digits.
-  Is there a reason to allow them at the end of a literal?
-  Java and Ruby both require underscores to be between digits.
-  Also, are adjacent underscores meant to be allowed, like 5__000?
-  (REPL supports them as of swift-1.21 but it seems odd.)
+  TR: 언더스코어는 숫자 사이에만 허용된다고 가정한다.
+  리터럴 끝에 언더스코어를 허용해야 하는 이유가 있는가?
+  Java와 Ruby는 모두 언더스코어가 숫자 사이에 있어야 한다고 규정한다.
+  또한, 5__000과 같이 연속된 언더스코어를 허용하는가?
+  (REPL은 swift-1.21부터 이를 지원하지만, 이상해 보인다.)
 -->
 
 <!--
-  NOTE: Updated the syntax-grammar to reflect [Contributor 7746]'s comment in
-  <rdar://problem/15181997> Teach the compiler about a concept of negative integer literals.
-  This feels very strange from a grammatical point of view.
-  Update: This is a parser hack, not a lexer hack. Therefore,
-  it's not part of the grammar for integer literal, contrary to [Contributor 2562]'s claim.
-  (Doug confirmed this, 4/2/2014.)
+  NOTE: [Contributor 7746]의 댓글을 반영해 문법을 업데이트했다.
+  <rdar://problem/15181997> 컴파일러에게 음의 정수 리터럴 개념을 가르치기.
+  이는 문법적 관점에서 매우 이상하게 느껴진다.
+  업데이트: 이는 파서 해킹이며, 렉서 해킹이 아니다. 따라서,
+  [Contributor 2562]의 주장과 달리 정수 리터럴의 문법에 포함되지 않는다.
+  (Doug가 2014년 4월 2일에 확인함.)
 -->
 
-> Grammar of an integer literal:
+> 정수 리터럴 문법:
 >
 > *integer-literal* → *binary-literal* \
 > *integer-literal* → *octal-literal* \
@@ -558,104 +472,72 @@ as described in <doc:TheBasics#Integers>.
 > *integer-literal* → *hexadecimal-literal*
 >
 > *binary-literal* → **`0b`** *binary-digit* *binary-literal-characters*_?_ \
-> *binary-digit* → Digit 0 or 1 \
+> *binary-digit* → 0 또는 1 \
 > *binary-literal-character* → *binary-digit* | **`_`** \
 > *binary-literal-characters* → *binary-literal-character* *binary-literal-characters*_?_
 >
 > *octal-literal* → **`0o`** *octal-digit* *octal-literal-characters*_?_ \
-> *octal-digit* → Digit 0 through 7 \
+> *octal-digit* → 0부터 7까지의 숫자 \
 > *octal-literal-character* → *octal-digit* | **`_`** \
 > *octal-literal-characters* → *octal-literal-character* *octal-literal-characters*_?_
 >
 > *decimal-literal* → *decimal-digit* *decimal-literal-characters*_?_ \
-> *decimal-digit* → Digit 0 through 9 \
+> *decimal-digit* → 0부터 9까지의 숫자 \
 > *decimal-digits* → *decimal-digit* *decimal-digits*_?_ \
 > *decimal-literal-character* → *decimal-digit* | **`_`** \
 > *decimal-literal-characters* → *decimal-literal-character* *decimal-literal-characters*_?_
 >
 > *hexadecimal-literal* → **`0x`** *hexadecimal-digit* *hexadecimal-literal-characters*_?_ \
-> *hexadecimal-digit* → Digit 0 through 9, a through f, or A through F \
+> *hexadecimal-digit* → 0부터 9까지의 숫자, a부터 f, 또는 A부터 F \
 > *hexadecimal-literal-character* → *hexadecimal-digit* | **`_`** \
 > *hexadecimal-literal-characters* → *hexadecimal-literal-character* *hexadecimal-literal-characters*_?_
 
-### Floating-Point Literals
 
-*Floating-point literals* represent floating-point values of unspecified precision.
+### 부동소수점 리터럴
 
-By default, floating-point literals are expressed in decimal (with no prefix),
-but they can also be expressed in hexadecimal (with a `0x` prefix).
+*부동소수점 리터럴*은 정밀도가 명시되지 않은 부동소수점 값을 나타낸다. 기본적으로 부동소수점 리터럴은 10진수로 표현되지만, `0x` 접두사를 사용해 16진수로도 표현할 수 있다.
 
-Decimal floating-point literals consist of a sequence of decimal digits
-followed by either a decimal fraction, a decimal exponent, or both.
-The decimal fraction consists of a decimal point (`.`)
-followed by a sequence of decimal digits.
-The exponent consists of an upper- or lowercase `e` prefix
-followed by a sequence of decimal digits that indicates
-what power of 10 the value preceding the `e` is multiplied by.
-For example, `1.25e2` represents 1.25 x 10²,
-which evaluates to `125.0`.
-Similarly, `1.25e-2` represents 1.25 x 10⁻²,
-which evaluates to `0.0125`.
+10진수 부동소수점 리터럴은 일련의 10진수 숫자 뒤에 소수 부분, 지수 부분, 또는 둘 다가 올 수 있다. 소수 부분은 소수점(`.`) 뒤에 일련의 10진수 숫자로 구성된다. 지수 부분은 대소문자 `e` 접두사와 일련의 10진수 숫자로 구성되며, `e` 앞의 값에 10의 몇 제곱을 곱할지를 나타낸다. 예를 들어, `1.25e2`는 1.25 x 10²를 의미하며, 이는 `125.0`으로 계산된다. 마찬가지로, `1.25e-2`는 1.25 x 10⁻²를 의미하며, 이는 `0.0125`로 계산된다.
 
-Hexadecimal floating-point literals consist of a `0x` prefix,
-followed by an optional hexadecimal fraction,
-followed by a hexadecimal exponent.
-The hexadecimal fraction consists of a decimal point
-followed by a sequence of hexadecimal digits.
-The exponent consists of an upper- or lowercase `p` prefix
-followed by a sequence of decimal digits that indicates
-what power of 2 the value preceding the `p` is multiplied by.
-For example, `0xFp2` represents 15 x 2²,
-which evaluates to `60`.
-Similarly, `0xFp-2` represents 15 x 2⁻²,
-which evaluates to `3.75`.
+16진수 부동소수점 리터럴은 `0x` 접두사 뒤에 선택적인 16진수 소수 부분과 16진수 지수 부분으로 구성된다. 16진수 소수 부분은 소수점 뒤에 일련의 16진수 숫자로 구성된다. 지수 부분은 대소문자 `p` 접두사와 일련의 10진수 숫자로 구성되며, `p` 앞의 값에 2의 몇 제곱을 곱할지를 나타낸다. 예를 들어, `0xFp2`는 15 x 2²를 의미하며, 이는 `60`으로 계산된다. 마찬가지로, `0xFp-2`는 15 x 2⁻²를 의미하며, 이는 `3.75`로 계산된다.
 
-Negative floating-point literals are expressed by prepending a minus sign (`-`)
-to a floating-point literal, as in `-42.5`.
+음수 부동소수점 리터럴은 부동소수점 리터럴 앞에 마이너스 기호(`-`)를 붙여 표현한다. 예를 들어, `-42.5`와 같이 쓸 수 있다.
 
-Underscores (`_`) are allowed between digits for readability,
-but they're ignored and therefore don't affect the value of the literal.
-Floating-point literals can begin with leading zeros (`0`),
-but they're likewise ignored and don't affect the base or value of the literal.
+가독성을 위해 숫자 사이에 언더스코어(`_`)를 사용할 수 있지만, 이는 무시되므로 리터럴의 값에 영향을 미치지 않는다. 부동소수점 리터럴은 앞에 0(`0`)으로 시작할 수 있지만, 이 역시 무시되며 리터럴의 진수나 값에 영향을 주지 않는다.
 
-Unless otherwise specified,
-the default inferred type of a floating-point literal is the Swift standard library type `Double`,
-which represents a 64-bit floating-point number.
-The Swift standard library also defines a `Float` type,
-which represents a 32-bit floating-point number.
+별도로 명시하지 않는 한, 부동소수점 리터럴의 기본 타입은 Swift 표준 라이브러리의 `Double` 타입이다. 이는 64비트 부동소수점 숫자를 나타낸다. Swift 표준 라이브러리는 32비트 부동소수점 숫자를 나타내는 `Float` 타입도 정의한다.
 
-> Grammar of a floating-point literal:
+> 부동소수점 리터럴 문법:
 >
-> *floating-point-literal* → *decimal-literal* *decimal-fraction*_?_ *decimal-exponent*_?_ \
-> *floating-point-literal* → *hexadecimal-literal* *hexadecimal-fraction*_?_ *hexadecimal-exponent*
+> *부동소수점 리터럴* → *10진수 리터럴* *10진수 소수 부분*_?_ *10진수 지수 부분*_?_ \
+> *부동소수점 리터럴* → *16진수 리터럴* *16진수 소수 부분*_?_ *16진수 지수 부분*
 >
-> *decimal-fraction* → **`.`** *decimal-literal* \
-> *decimal-exponent* → *floating-point-e* *sign*_?_ *decimal-literal*
+> *10진수 소수 부분* → **`.`** *10진수 리터럴* \
+> *10진수 지수 부분* → *부동소수점 e* *부호*_?_ *10진수 리터럴*
 >
-> *hexadecimal-fraction* → **`.`** *hexadecimal-digit* *hexadecimal-literal-characters*_?_ \
-> *hexadecimal-exponent* → *floating-point-p* *sign*_?_ *decimal-literal*
+> *16진수 소수 부분* → **`.`** *16진수 숫자* *16진수 리터럴 문자*_?_ \
+> *16진수 지수 부분* → *부동소수점 p* *부호*_?_ *10진수 리터럴*
 >
-> *floating-point-e* → **`e`** | **`E`** \
-> *floating-point-p* → **`p`** | **`P`** \
-> *sign* → **`+`** | **`-`**
+> *부동소수점 e* → **`e`** | **`E`** \
+> *부동소수점 p* → **`p`** | **`P`** \
+> *부호* → **`+`** | **`-`**
 
-### String Literals
 
-A string literal is a sequence of characters surrounded by quotation marks.
-A single-line string literal is surrounded by double quotation marks
-and has the following form:
+### 문자열 리터럴
+
+문자열 리터럴은 따옴표로 둘러싸인 문자 시퀀스다.  
+한 줄 문자열 리터럴은 큰따옴표로 둘러싸이며 다음과 같은 형태를 가진다:
 
 ```swift
 "<#characters#>"
 ```
 
-String literals can't contain
-an unescaped double quotation mark (`"`),
-an unescaped backslash (`\`),
-a carriage return, or a line feed.
+문자열 리터럴은 이스케이프되지 않은 큰따옴표(`"`),  
+이스케이프되지 않은 백슬래시(`\`),  
+캐리지 리턴, 또는 라인 피드를 포함할 수 없다.
 
-A multiline string literal is surrounded by three double quotation marks
-and has the following form:
+여러 줄 문자열 리터럴은 세 개의 큰따옴표로 둘러싸이며  
+다음과 같은 형태를 가진다:
 
 ```swift
 """
@@ -663,77 +545,67 @@ and has the following form:
 """
 ```
 
-Unlike a single-line string literal,
-a multiline string literal can contain
-unescaped double quotation marks (`"`), carriage returns, and line feeds.
-It can't contain three unescaped double quotation marks next to each other.
+한 줄 문자열 리터럴과 달리,  
+여러 줄 문자열 리터럴은 이스케이프되지 않은 큰따옴표(`"`),  
+캐리지 리턴, 라인 피드를 포함할 수 있다.  
+단, 연속된 세 개의 큰따옴표는 포함할 수 없다.
 
-The line break after the `"""`
-that begins the multiline string literal
-isn't part of the string.
-The line break before the `"""`
-that ends the literal is also not part of the string.
-To make a multiline string literal
-that begins or ends with a line feed,
-write a blank line as its first or last line.
+여러 줄 문자열 리터럴을 시작하는 `"""` 뒤의 줄바꿈은  
+문자열의 일부가 아니다.  
+리터럴을 끝내는 `"""` 앞의 줄바꿈도 마찬가지다.  
+줄바꿈으로 시작하거나 끝나는 여러 줄 문자열 리터럴을 만들려면,  
+첫 번째 또는 마지막 줄을 비워두면 된다.
 
-A multiline string literal can be indented
-using any combination of spaces and tabs;
-this indentation isn't included in the string.
-The `"""` that ends the literal
-determines the indentation:
-Every nonblank line in the literal must begin
-with exactly the same indentation
-that appears before the closing `"""`;
-there's no conversion between tabs and spaces.
-You can include additional spaces and tabs after that indentation;
-those spaces and tabs appear in the string.
+여러 줄 문자열 리터럴은 공백과 탭을 조합해 들여쓸 수 있다.  
+이 들여쓰기는 문자열에 포함되지 않는다.  
+리터럴을 끝내는 `"""`가 들여쓰기를 결정한다.  
+리터럴 내의 모든 비어 있지 않은 줄은  
+닫는 `"""` 앞에 있는 들여쓰기와 정확히 일치해야 한다.  
+탭과 공백 간 변환은 없다.  
+들여쓰기 뒤에 추가 공백이나 탭을 넣을 수 있으며,  
+이 공백과 탭은 문자열에 포함된다.
 
-Line breaks in a multiline string literal are
-normalized to use the line feed character.
-Even if your source file has a mix of carriage returns and line feeds,
-all of the line breaks in the string will be the same.
+여러 줄 문자열 리터럴의 줄바꿈은  
+라인 피드 문자로 정규화된다.  
+소스 파일에 캐리지 리턴과 라인 피드가 혼합되어 있어도,  
+문자열 내 모든 줄바꿈은 동일하다.
 
-In a multiline string literal,
-writing a backslash (`\`) at the end of a line
-omits that line break from the string.
-Any whitespace between the backslash and the line break
-is also omitted.
-You can use this syntax
-to hard wrap a multiline string literal in your source code,
-without changing the value of the resulting string.
+여러 줄 문자열 리터럴에서  
+줄 끝에 백슬래시(`\`)를 쓰면  
+해당 줄바꿈이 문자열에서 제외된다.  
+백슬래시와 줄바꿈 사이의 공백도 제외된다.  
+이 구문을 사용해 소스 코드에서 여러 줄 문자열 리터럴을  
+하드 래핑할 수 있으며,  
+결과 문자열의 값은 변하지 않는다.
 
-Special characters
-can be included in string literals
-of both the single-line and multiline forms
-using the following escape sequences:
+특수 문자는 이스케이프 시퀀스를 사용해  
+한 줄 및 여러 줄 문자열 리터럴에 포함할 수 있다:
 
-- Null character (`\0`)
-- Backslash (`\\`)
-- Horizontal tab (`\t`)
-- Line feed (`\n`)
-- Carriage return (`\r`)
-- Double quotation mark (`\"`)
-- Single quotation mark (`\'`)
-- Unicode scalar (`\u{`*n*`}`),
-  where *n* is a hexadecimal number
-  that has one to eight digits
+- 널 문자 (`\0`)
+- 백슬래시 (`\\`)
+- 수평 탭 (`\t`)
+- 라인 피드 (`\n`)
+- 캐리지 리턴 (`\r`)
+- 큰따옴표 (`\"`)
+- 작은따옴표 (`\'`)
+- 유니코드 스칼라 (`\u{`*n*`}`),  
+  여기서 *n*은 1에서 8자리의 16진수다.
 
 <!--
-  The behavior of \n and \r isn't the same as C.
-  We specify exactly what those escapes mean.
-  The behavior on C is platform dependent --
-  in text mode, \n maps to the platform's line separator
-  which could be CR or LF or CRLF.
+  \n과 \r의 동작은 C와 다르다.  
+  이 이스케이프 시퀀스의 의미를 정확히 명시한다.  
+  C에서는 플랫폼에 따라 다르며,  
+  텍스트 모드에서 \n은 플랫폼의 줄 구분자로 매핑된다.  
+  이는 CR, LF, 또는 CRLF일 수 있다.
 -->
 
-The value of an expression can be inserted into a string literal
-by placing the expression in parentheses after a backslash (`\`).
-The interpolated expression can contain a string literal,
-but can't contain an unescaped backslash,
-a carriage return, or a line feed.
+표현식의 값을 문자열 리터럴에 삽입하려면  
+백슬래시(`\`) 뒤에 괄호로 둘러싼 표현식을 넣는다.  
+삽입된 표현식은 문자열 리터럴을 포함할 수 있지만,  
+이스케이프되지 않은 백슬래시,  
+캐리지 리턴, 또는 라인 피드는 포함할 수 없다.
 
-For example, all of the following string literals have the same value:
+예를 들어, 다음 문자열 리터럴은 모두 동일한 값을 가진다:
 
 ```swift
 "1 2 3"
@@ -767,13 +639,13 @@ let x = 3; "1 2 \(x)"
 -->
 
 <!--
-  Refactor the above if possible to avoid using bare expressions.
-  Tracking bug is <rdar://problem/35301593>
+  위 예제를 가능한 한 표현식 없이 리팩토링한다.  
+  추적 버그는 <rdar://problem/35301593>
 -->
 
-A string delimited by extended delimiters is a sequence of characters
-surrounded by quotation marks and a balanced set of one or more number signs (`#`).
-A string delimited by extended delimiters has the following forms:
+확장 구분자로 둘러싼 문자열은  
+따옴표와 하나 이상의 숫자 기호(`#`)로 둘러싸인 문자 시퀀스다.  
+확장 구분자로 둘러싼 문자열은 다음과 같은 형태를 가진다:
 
 ```swift
 #"<#characters#>"#
@@ -783,18 +655,14 @@ A string delimited by extended delimiters has the following forms:
 """#
 ```
 
-Special characters in a string delimited by extended delimiters
-appear in the resulting string as normal characters
-rather than as special characters.
-You can use extended delimiters to create strings with characters
-that would ordinarily have a special effect
-such as generating a string interpolation,
-starting an escape sequence,
-or terminating the string.
+확장 구분자로 둘러싼 문자열의 특수 문자는  
+일반 문자로 처리된다.  
+확장 구분자를 사용해 문자열 보간을 생성하거나,  
+이스케이프 시퀀스를 시작하거나,  
+문자열을 종료하는 등의 특수 효과를 가진 문자를 포함할 수 있다.
 
-The following example shows a string literal
-and a string delimited by extended delimiters
-that create equivalent string values:
+다음 예제는 동일한 문자열 값을 생성하는  
+문자열 리터럴과 확장 구분자로 둘러싼 문자열을 보여준다:
 
 ```swift
 let string = #"\(x) \ " \u{2603}"#
@@ -818,9 +686,9 @@ print(string == escaped)
   ```
 -->
 
-If you use more than one number sign to form
-a string delimited by extended delimiters,
-don't place whitespace in between the number signs:
+확장 구분자를 형성하기 위해  
+하나 이상의 숫자 기호를 사용할 때,  
+숫자 기호 사이에 공백을 넣지 않는다:
 
 <!--
   - test: `extended-string-delimiters`
@@ -852,19 +720,18 @@ print(# # #"Line 1\# # #nLine 2"# # #) // Error
   ```
 -->
 
-Multiline string literals that you create using extended delimiters
-have the same indentation requirements as regular multiline string literals.
+확장 구분자를 사용해 만든 여러 줄 문자열 리터럴은  
+일반 여러 줄 문자열 리터럴과 동일한 들여쓰기 요구사항을 가진다.
 
-The default inferred type of a string literal is `String`.
-For more information about the `String` type,
-see <doc:StringsAndCharacters>
-and [`String`](https://developer.apple.com/documentation/swift/string).
+문자열 리터럴의 기본 추론 타입은 `String`이다.  
+`String` 타입에 대한 자세한 내용은  
+<doc:StringsAndCharacters>와  
+[`String`](https://developer.apple.com/documentation/swift/string)을 참고한다.
 
-String literals that are concatenated by the `+` operator
-are concatenated at compile time.
-For example, the values of `textA` and `textB`
-in the example below are identical ---
-no runtime concatenation is performed.
+`+` 연산자로 연결된 문자열 리터럴은  
+컴파일 시점에 연결된다.  
+예를 들어, 아래 예제의 `textA`와 `textB` 값은 동일하며,  
+런타임에 연결 작업이 수행되지 않는다.
 
 ```swift
 let textA = "Hello " + "world"
@@ -880,7 +747,7 @@ let textB = "Hello world"
   ```
 -->
 
-> Grammar of a string literal:
+> 문자열 리터럴 문법:
 >
 > *string-literal* → *static-string-literal* | *interpolated-string-literal*
 >
@@ -920,14 +787,15 @@ let textB = "Hello world"
 > *escaped-newline* → *escape-sequence* *inline-spaces*_?_ *line-break*
 
 <!--
-  Quoted text resolves to a sequence of escaped characters by way of
-  the quoted-text rule which allows repetition; no need to allow
-  repetition in the quoted-text/escaped-character rule too.
+  인용된 텍스트는 이스케이프된 문자 시퀀스로 해석되며,  
+  quoted-text 규칙을 통해 반복이 허용된다.  
+  quoted-text/escaped-character 규칙에서도 반복을 허용할 필요는 없다.
 -->
 
 <!--
-  Now that single quotes are gone, we don't have a character literal.
-  Because we may one bring them back, here's the old grammar for them:
+  이제 작은따옴표가 사라졌으므로 문자 리터럴이 없다.  
+  언젠가 다시 도입할 수 있으므로,  
+  이전 문자 리터럴 문법은 다음과 같다:
 
   textual-literal -> character-literal | string-literal
 
@@ -936,282 +804,81 @@ let textB = "Hello world"
   quoted-character -> Any Unicode scalar value except ``'``, ``\``, U+000A, or U+000D
 -->
 
-### Regular Expression Literals
 
-A regular expression literal is a sequence of characters
-surrounded by slashes (`/`) with the following form:
+### 정규 표현식 리터럴
+
+정규 표현식 리터럴은 슬래시(`/`)로 둘러싸인 일련의 문자로 다음과 같은 형태를 가진다:
 
 ```swift
-/<#regular expression#>/
+/<#정규 표현식#>/
 ```
 
-Regular expression literals
-must not begin with an unescaped tab or space,
-and they can't contain
-an unescaped slash (`/`),
-a carriage return, or a line feed.
+정규 표현식 리터럴은 탭이나 공백으로 시작할 수 없으며, 이스케이프 되지 않은 슬래시(`/`), 캐리지 리턴, 라인 피드를 포함할 수 없다.
 
-Within a regular expression literal,
-a backslash is understood as a part of that regular expression,
-not just as an escape character like in string literals.
-It indicates that the following special character
-should be interpreted literally,
-or that the following nonspecial character
-should be interpreted in a special way.
-For example,
-`/\(/` matches a single left parenthesis
-and `/\d/` matches a single digit.
+정규 표현식 리터럴 내에서 백슬래시는 단순한 이스케이프 문자가 아니라 정규 표현식의 일부로 해석된다. 이는 뒤에 오는 특수 문자를 문자 그대로 해석하거나, 특수하지 않은 문자를 특수한 방식으로 해석하도록 지시한다. 예를 들어, `/\(/`는 단일 왼쪽 괄호와 일치하고, `/\d/`는 단일 숫자와 일치한다.
 
-<!--
-  OUTLINE
-
-  Doc comments on Regex struct don't have more syntax details,
-  or a cross reference to where you can learn more.
-  We probably need at least some baseline coverage
-  of the supported syntax here.
-  (Unified dialect/superset of POSIX + PCRE 2 + Oniguruma + .NET)
-
-  https://github.com/swiftlang/swift-experimental-string-processing/blob/main/Sources/_StringProcessing/Regex/Core.swift
-
-  Regex literals and the DSL take different approaches to captures.
-  The literals give you more type safety.
-  The DSL lets you access stuff by name.
-
-  From SE-0354:
-  A regex literal may be used with a prefix operator,
-  e.g `let r = ^^/x/` is parsed as `let r = ^^(/x/)`.
-  In this case,
-  when encountering operator characters containing `/` in an expression position,
-  the characters up to the first `/` are split into a prefix operator,
-  and regex literal parsing continues as normal.
--->
-
-A regular expression literal delimited by extended delimiters
-is a sequence of characters surrounded by slashes (`/`)
-and a balanced set of one or more number signs (`#`).
-A regular expression literal
-delimited by extended delimiters has the following forms:
+확장 구분자로 둘러싸인 정규 표현식 리터럴은 슬래시(`/`)와 하나 이상의 숫자 기호(`#`)로 구성된 균형 잡힌 집합으로 둘러싸인 일련의 문자다. 확장 구분자를 사용한 정규 표현식 리터럴은 다음과 같은 형태를 가진다:
 
 ```swift
-#/<#regular expression#>/#
+#/<#정규 표현식#>/#
 
 #/
-<#regular expression#>
+<#정규 표현식#>
 /#
 ```
 
-A regular expression literal that uses extended delimiters
-can begin with an unescaped space or tab,
-contain unescaped slashes (`/`),
-and span across multiple lines.
-For a multiline regular expression literal,
-the opening delimiter must be at the end of a line,
-and the closing delimiter must be on its own line.
-Inside a multiline regular expression literal,
-the extended regular expression syntax is enabled by default ---
-specifically, whitespace is ignored and comments are allowed.
+확장 구분자를 사용한 정규 표현식 리터럴은 이스케이프 되지 않은 공백이나 탭으로 시작할 수 있으며, 이스케이프 되지 않은 슬래시(`/`)를 포함할 수 있고, 여러 줄에 걸쳐 작성할 수 있다. 여러 줄로 된 정규 표현식 리터럴의 경우, 시작 구분자는 줄 끝에 위치해야 하며, 종료 구분자는 별도의 줄에 위치해야 한다. 여러 줄 정규 표현식 리터럴 내에서는 확장 정규 표현식 구문이 기본적으로 활성화된다. 특히, 공백은 무시되고 주석이 허용된다.
 
-<!--
-  TODO As details about the multiline syntax shake out during SE review,
-  like indentation and whitespace,
-  add them above or spin out a separate paragraph.
--->
-
-If you use more than one number sign to form
-a regular expression literal delimited by extended delimiters,
-don't place whitespace in between the number signs:
+확장 구분자를 사용해 정규 표현식 리터럴을 만들 때, 숫자 기호 사이에 공백을 넣지 않도록 주의한다:
 
 ```swift
 let regex1 = ##/abc/##       // OK
 let regex2 = # #/abc/# #     // Error
 ```
 
-<!--
-  - test: `extended-regex-delimiters-err`
+빈 정규 표현식 리터럴을 만들려면 반드시 확장 구분자 구문을 사용해야 한다.
 
-  ```swifttest
-  -> let regex1 = ##/abc/##       // OK
-  -> let regex2 = # #/abc/# #     // Error
-  ```
--->
-
-If you need to make an empty regular expression literal,
-you must use the extended delimiter syntax.
-
-> Grammar of a regular expression literal:
+> 정규 표현식 리터럴의 문법:
 >
-> *regular-expression-literal* → *regular-expression-literal-opening-delimiter* *regular-expression* *regular-expression-literal-closing-delimiter* \
-> *regular-expression* → Any regular expression
+> *정규-표현식-리터럴* → *정규-표현식-리터럴-시작-구분자* *정규-표현식* *정규-표현식-리터럴-종료-구분자* \
+> *정규-표현식* → 모든 정규 표현식
 >
-> *regular-expression-literal-opening-delimiter* → *extended-regular-expression-literal-delimiter*_?_ **`/`** \
-> *regular-expression-literal-closing-delimiter* → **`/`** *extended-regular-expression-literal-delimiter*_?_
+> *정규-표현식-리터럴-시작-구분자* → *확장-정규-표현식-리터럴-구분자*_?_ **`/`** \
+> *정규-표현식-리터럴-종료-구분자* → **`/`** *확장-정규-표현식-리터럴-구분자*_?_
 >
-> *extended-regular-expression-literal-delimiter* → **`#`** *extended-regular-expression-literal-delimiter*_?_
+> *확장-정규-표현식-리터럴-구분자* → **`#`** *확장-정규-표현식-리터럴-구분자*_?_
 
-## Operators
 
-The Swift standard library defines a number of operators for your use,
-many of which are discussed in <doc:BasicOperators>
-and <doc:AdvancedOperators>.
-The present section describes which characters can be used to define custom operators.
+## 연산자
 
-Custom operators can begin with one of the ASCII characters
-`/`, `=`, `-`, `+`, `!`, `*`, `%`, `<`, `>`,
-`&`, `|`, `^`, `?`, or `~`, or one of the Unicode characters
-defined in the grammar below
-(which include characters from the
-*Mathematical Operators*, *Miscellaneous Symbols*, and *Dingbats*
-Unicode blocks, among others).
-After the first character,
-combining Unicode characters are also allowed.
+Swift 표준 라이브러리는 다양한 연산자를 제공한다. 이 중 많은 연산자는 <doc:BasicOperators>와 <doc:AdvancedOperators>에서 다룬다. 이 섹션에서는 커스텀 연산자를 정의할 때 사용할 수 있는 문자에 대해 설명한다.
 
-You can also define custom operators
-that begin with a dot (`.`).
-These operators can contain additional dots.
-For example, `.+.` is treated as a single operator.
-If an operator doesn't begin with a dot,
-it can't contain a dot elsewhere.
-For example, `+.+` is treated as
-the `+` operator followed by the `.+` operator.
+커스텀 연산자는 `/`, `=`, `-`, `+`, `!`, `*`, `%`, `<`, `>`, `&`, `|`, `^`, `?`, `~`와 같은 ASCII 문자로 시작할 수 있다. 또는 아래 문법에 정의된 유니코드 문자로 시작할 수도 있다. 이 유니코드 문자들은 *수학 연산자*, *기타 기호*, *딩벳* 등의 유니코드 블록에 포함된 문자들이다. 첫 번째 문자 이후에는 결합 유니코드 문자도 허용된다.
 
-<!--
-  - test: `dot-operator-must-start-with-dot`
+점(`.`)으로 시작하는 커스텀 연산자를 정의할 수도 있다. 이러한 연산자는 추가 점을 포함할 수 있다. 예를 들어, `.+.`은 단일 연산자로 처리된다. 만약 연산자가 점으로 시작하지 않는다면, 다른 곳에 점을 포함할 수 없다. 예를 들어, `+.+`는 `+` 연산자 뒤에 `.+` 연산자가 오는 것으로 처리된다.
 
-  ```swifttest
-  >> infix operator +.+ ;
-  !$ error: consecutive statements on a line must be separated by ';'
-  !! infix operator +.+ ;
-  !!                 ^
-  !!                 ;
-  !$ error: operator with postfix spacing cannot start a subexpression
-  !! infix operator +.+ ;
-  !!                 ^
-  !$ error: expected expression
-  !! infix operator +.+ ;
-  !!                    ^
-  >> infix operator .+
-  >> infix operator .+.
-  ```
--->
+물음표(`?`)를 포함하는 커스텀 연산자를 정의할 수 있지만, 단독 물음표 문자로만 구성된 연산자는 정의할 수 없다. 또한, 느낌표(`!`)를 포함할 수는 있지만, 후위 연산자는 물음표나 느낌표로 시작할 수 없다.
 
-Although you can define custom operators that contain a question mark (`?`),
-they can't consist of a single question mark character only.
-Additionally, although operators can contain an exclamation point (`!`),
-postfix operators can't begin with either a question mark or an exclamation point.
+> 참고: `=`, `->`, `//`, `/*`, `*/`, `.`, 접두사 연산자 `<`, `&`, `?`, 중위 연산자 `?`, 후위 연산자 `>`, `!`, `?`와 같은 토큰은 예약어다. 이러한 토큰은 오버로드할 수 없으며, 커스텀 연산자로 사용할 수도 없다.
 
-<!--
-  - test: `postfix-operators-dont-need-unique-prefix`
+연산자 주변의 공백은 해당 연산자가 접두사 연산자, 후위 연산자, 중위 연산자 중 어떤 것으로 사용될지를 결정한다. 이 동작은 다음과 같은 규칙을 따른다:
 
-  ```swifttest
-  >> struct Num { var value: Int }
-     postfix operator +
-     postfix operator +*
-     postfix func + (x: Num) -> Int { return x.value + 1 }
-     postfix func +* (x: Num) -> Int { return x.value * 100 }
-  >> let n = Num(value: 5)
-  >> print(n+)
-  << 6
-  >> print(n+*)
-  << 500
-  ```
--->
+- 연산자 양쪽에 공백이 있거나 양쪽 모두 공백이 없으면 중위 연산자로 처리된다. 예를 들어, `a+++b`와 `a +++ b`에서 `+++` 연산자는 중위 연산자로 처리된다.
+- 연산자 왼쪽에만 공백이 있으면 접두사 단항 연산자로 처리된다. 예를 들어, `a +++b`에서 `+++` 연산자는 접두사 단항 연산자로 처리된다.
+- 연산자 오른쪽에만 공백이 있으면 후위 단항 연산자로 처리된다. 예를 들어, `a+++ b`에서 `+++` 연산자는 후위 단항 연산자로 처리된다.
+- 연산자 왼쪽에 공백이 없고 바로 뒤에 점(`.`)이 오면 후위 단항 연산자로 처리된다. 예를 들어, `a+++.b`에서 `+++` 연산자는 후위 단항 연산자로 처리된다(`a+++ .b`가 아니라 `a +++ .b`로 처리된다).
 
-<!--
-  - test: `postfix-operator-cant-start-with-question-mark`
+이 규칙을 적용할 때, 연산자 앞에 오는 `(`, `[`, `{` 문자와 연산자 뒤에 오는 `)`, `]`, `}` 문자, 그리고 `,`, `;`, `:` 문자도 공백으로 간주한다.
 
-  ```swifttest
-  >> postfix operator ?+
-  >> postfix func ?+ (x: Int) -> Int {
-         if x > 10 {
-             return x
-         }
-         return x + 1
-     }
-  >> print(1?+)
-  !$ error: postfix operator names starting with '?' or '!' are disallowed to avoid collisions with built-in unwrapping operators
-  !! postfix operator ?+
-  !!                  ^
-  !$ error: '+' is not a postfix unary operator
-  !! print(1?+)
-  !!         ^
-  ```
--->
+`!`나 `?`와 같은 미리 정의된 연산자 왼쪽에 공백이 없으면, 오른쪽에 공백이 있더라도 후위 연산자로 처리된다. 옵셔널 체이닝 연산자로 `?`를 사용하려면 왼쪽에 공백이 없어야 한다. 삼항 조건 연산자(`?` `:`)로 사용하려면 양쪽에 공백이 있어야 한다.
 
-> Note: The tokens `=`, `->`, `//`, `/*`, `*/`, `.`,
-> the prefix operators `<`, `&`, and `?`,
-> the infix operator `?`,
-> and the postfix operators `>`, `!`, and `?` are reserved.
-> These tokens can't be overloaded, nor can they be used as custom operators.
+중위 연산자의 인수 중 하나가 정규 표현식 리터럴이면, 연산자 양쪽에 공백이 있어야 한다.
 
-The whitespace around an operator is used to determine
-whether an operator is used as a prefix operator, a postfix operator,
-or an infix operator. This behavior has the following rules:
+특정 구조에서 `<`나 `>`로 시작하는 연산자는 두 개 이상의 토큰으로 분리될 수 있다. 나머지 부분도 동일한 방식으로 처리되며 다시 분리될 수 있다. 결과적으로 `Dictionary<String, Array<Int>>`와 같은 구조에서 닫는 `>` 문자를 명확히 구분하기 위해 공백을 추가할 필요가 없다. 이 예제에서 닫는 `>` 문자는 단일 토큰으로 처리되지 않으며, 비트 시프트 `>>` 연산자로 오해되지 않는다.
 
-- If an operator has whitespace around both sides or around neither side,
-  it's treated as an infix operator.
-  As an example, the `+++` operator in `a+++b` and `a +++ b` is treated as an infix operator.
-- If an operator has whitespace on the left side only,
-  it's treated as a prefix unary operator.
-  As an example, the `+++` operator in `a +++b` is treated as a prefix unary operator.
-- If an operator has whitespace on the right side only,
-  it's treated as a postfix unary operator.
-  As an example, the `+++` operator in `a+++ b` is treated as a postfix unary operator.
-- If an operator has no whitespace on the left but is followed immediately by a dot (`.`),
-  it's treated as a postfix unary operator.
-  As an example, the  `+++` operator in `a+++.b` is treated as a postfix unary operator
-  (`a+++ .b` rather than `a +++ .b`).
+새로운 커스텀 연산자를 정의하는 방법은 <doc:AdvancedOperators#Custom-Operators>와 <doc:Declarations#Operator-Declaration>을 참고한다. 기존 연산자를 오버로드하는 방법은 <doc:AdvancedOperators#Operator-Methods>를 참고한다.
 
-For the purposes of these rules,
-the characters `(`, `[`, and `{` before an operator,
-the characters `)`, `]`, and `}` after an operator,
-and the characters `,`, `;`, and `:`
-are also considered whitespace.
-
-If the `!` or `?` predefined operator has no whitespace on the left,
-it's treated as a postfix operator,
-regardless of whether it has whitespace on the right.
-To use the `?` as the optional-chaining operator,
-it must not have whitespace on the left.
-To use it in the ternary conditional (`?` `:`) operator,
-it must have whitespace around both sides.
-
-If one of the arguments to an infix operator is a regular expression literal,
-then the operator must have whitespace around both sides.
-
-In certain constructs, operators with a leading `<` or `>`
-may be split into two or more tokens. The remainder is treated the same way
-and may be split again.
-As a result, you don't need to add whitespace
-to disambiguate between the closing `>` characters in constructs like
-`Dictionary<String, Array<Int>>`.
-In this example, the closing `>` characters aren't treated as a single token
-that may then be misinterpreted as a bit shift `>>` operator.
-
-<!--
-  NOTE: Once the parser sees a < it goes into a pre-scanning lookahead mode.  It
-  matches < and > and looks at what token comes after the > -- if it's a . or
-  a ( it treats the <...> as a generic parameter list, otherwise it treats
-  them as less than and greater than.
-
-  This fails to parse things like x<<2>>(1+2) but it's the same as C#.  So
-  don't write that.
-
-  We call out the > > vs >> because
-  C++ typically needs whitespace to resolve the ambiguity.
--->
-
-To learn how to define new, custom operators,
-see <doc:AdvancedOperators#Custom-Operators> and <doc:Declarations#Operator-Declaration>.
-To learn how to overload existing operators,
-see <doc:AdvancedOperators#Operator-Methods>.
-
-<!--
-  NOTE: The ? is a reserved punctuation.  Optional-chaining (foo?.bar) is actually a
-  monad -- the ? is actually a monadic bind operator.  It is like a burrito.
-  The current list of reserved punctuation is in Tokens.def.
--->
-
-> Grammar of operators:
+> 연산자 문법:
 >
 > *operator* → *operator-head* *operator-characters*_?_ \
 > *operator* → *dot-operator-head* *dot-operator-characters*
@@ -1252,12 +919,4 @@ see <doc:AdvancedOperators#Operator-Methods>.
 > *prefix-operator* → *operator* \
 > *postfix-operator* → *operator*
 
-<!--
-This source file is part of the Swift.org open source project
 
-Copyright (c) 2014 - 2022 Apple Inc. and the Swift project authors
-Licensed under Apache License v2.0 with Runtime Library Exception
-
-See https://swift.org/LICENSE.txt for license information
-See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
--->

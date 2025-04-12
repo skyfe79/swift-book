@@ -1,51 +1,29 @@
-# Enumerations
+# 열거형
 
-Model custom types that define a list of possible values.
+열거형은 가능한 값들의 목록을 정의하는 커스텀 타입을 모델링한다.
 
-An *enumeration* defines a common type for a group of related values
-and enables you to work with those values in a type-safe way within your code.
+*열거형*은 관련된 값들의 그룹을 위한 공통 타입을 정의하고, 코드 내에서 타입 안전한 방식으로 이러한 값을 다룰 수 있게 한다.
 
-If you are familiar with C,
-you will know that C enumerations assign related names to a set of integer values.
-Enumerations in Swift are much more flexible,
-and don't have to provide a value for each case of the enumeration.
-If a value (known as a *raw* value) is provided for each enumeration case,
-the value can be a string, a character,
-or a value of any integer or floating-point type.
+C 언어에 익숙하다면, C의 열거형이 관련된 이름들을 정수 값들의 집합에 할당한다는 것을 알고 있을 것이다. Swift의 열거형은 훨씬 더 유연하며, 각 케이스에 값을 제공할 필요가 없다. 각 열거형 케이스에 값(*원시* 값)이 제공된다면, 이 값은 문자열, 문자, 정수 또는 부동소수점 타입의 값이 될 수 있다.
 
-Alternatively, enumeration cases can specify
-associated values of *any* type to be stored along with each different case value,
-much as unions or variants do in other languages.
-You can define a common set of related cases as part of one enumeration,
-each of which has a different set of values of appropriate types associated with it.
+또는, 열거형 케이스는 각기 다른 케이스 값과 함께 저장될 *어떤* 타입의 연관된 값을 지정할 수 있다. 이는 다른 언어에서의 공용체나 변형체와 유사하다. 하나의 열거형의 일부로 관련된 케이스들의 공통 집합을 정의할 수 있으며, 각 케이스는 적절한 타입의 다른 값 집합을 연관시킬 수 있다.
 
-Enumerations in Swift are first-class types in their own right.
-They adopt many features traditionally supported only by classes,
-such as computed properties to provide additional information about
-the enumeration's current value,
-and instance methods to provide functionality related to
-the values the enumeration represents.
-Enumerations can also define initializers to provide an initial case value;
-can be extended to expand their functionality beyond their original implementation;
-and can conform to protocols to provide standard functionality.
+Swift의 열거형은 그 자체로 퍼스트클래스 타입이다. 열거형은 전통적으로 클래스에서만 지원되던 많은 기능을 채택한다. 예를 들어, 열거형의 현재 값에 대한 추가 정보를 제공하는 계산된 프로퍼티와, 열거형이 나타내는 값과 관련된 기능을 제공하는 인스턴스 메서드가 있다. 열거형은 초기 케이스 값을 제공하기 위해 초기화자를 정의할 수도 있고, 원래 구현을 넘어 기능을 확장하기 위해 확장될 수도 있으며, 표준 기능을 제공하기 위해 프로토콜을 준수할 수도 있다.
 
-For more about these capabilities, see
-<doc:Properties>, <doc:Methods>, <doc:Initialization>,
-<doc:Extensions>, and <doc:Protocols>.
+이러한 기능에 대한 자세한 내용은 <doc:Properties>, <doc:Methods>, <doc:Initialization>, <doc:Extensions>, 그리고 <doc:Protocols>를 참고한다.
 
 <!--
-  TODO: this chapter should probably mention that enums without associated values
-  are hashable and equatable by default (and what that means in practice)
+  TODO: 이 장은 연관된 값이 없는 열거형이 기본적으로 Hashable과 Equatable을 준수한다는 점(그리고 이것이 실제로 무엇을 의미하는지)을 언급해야 할 것이다.
 -->
 
-## Enumeration Syntax
 
-You introduce enumerations with the `enum` keyword
-and place their entire definition within a pair of braces:
+## 열거형 문법
+
+열거형은 `enum` 키워드로 정의하며, 전체 정의를 중괄호(`{}`) 안에 작성한다:
 
 ```swift
 enum SomeEnumeration {
-    // enumeration definition goes here
+    // 열거형 정의가 여기에 들어간다
 }
 ```
 
@@ -54,12 +32,12 @@ enum SomeEnumeration {
 
   ```swifttest
   -> enum SomeEnumeration {
-        // enumeration definition goes here
+        // 열거형 정의가 여기에 들어간다
      }
   ```
 -->
 
-Here's an example for the four main points of a compass:
+다음은 나침반의 네 가지 주요 방향을 나타내는 열거형 예제다:
 
 ```swift
 enum CompassPoint {
@@ -83,21 +61,11 @@ enum CompassPoint {
   ```
 -->
 
-The values defined in an enumeration
-(such as `north`, `south`, `east`, and `west`)
-are its *enumeration cases*.
-You use the `case` keyword to introduce new enumeration cases.
+열거형에서 정의된 값(예: `north`, `south`, `east`, `west`)을 *열거형 케이스*라고 한다. 새로운 열거형 케이스를 정의할 때는 `case` 키워드를 사용한다.
 
-> Note: Swift enumeration cases don't have an integer value set by default,
-> unlike languages like C and Objective-C.
-> In the `CompassPoint` example above,
-> `north`, `south`, `east` and `west`
-> don't implicitly equal
-> `0`, `1`, `2` and `3`.
-> Instead, the different enumeration cases are values in their own right,
-> with an explicitly defined type of `CompassPoint`.
+> 주의: Swift의 열거형 케이스는 C나 Objective-C와 달리 기본적으로 정수값을 가지지 않는다. 위의 `CompassPoint` 예제에서 `north`, `south`, `east`, `west`는 암시적으로 `0`, `1`, `2`, `3`과 같은 값을 가지지 않는다. 대신, 각 열거형 케이스는 그 자체로 `CompassPoint` 타입의 독립적인 값이다.
 
-Multiple cases can appear on a single line, separated by commas:
+여러 케이스를 한 줄에 작성할 때는 쉼표로 구분한다:
 
 ```swift
 enum Planet {
@@ -115,12 +83,7 @@ enum Planet {
   ```
 -->
 
-Each enumeration definition defines a new type.
-Like other types in Swift, their names
-(such as `CompassPoint` and `Planet`)
-start with a capital letter.
-Give enumeration types singular rather than plural names,
-so that they read as self-evident:
+각 열거형 정의는 새로운 타입을 만든다. Swift의 다른 타입과 마찬가지로 열거형 이름(`CompassPoint`, `Planet` 등)은 대문자로 시작한다. 열거형 타입의 이름은 단수형으로 짓는 것이 일반적이며, 이는 코드의 가독성을 높인다:
 
 ```swift
 var directionToHead = CompassPoint.west
@@ -134,10 +97,7 @@ var directionToHead = CompassPoint.west
   ```
 -->
 
-The type of `directionToHead` is inferred
-when it's initialized with one of the possible values of `CompassPoint`.
-Once `directionToHead` is declared as a `CompassPoint`,
-you can set it to a different `CompassPoint` value using a shorter dot syntax:
+`directionToHead`의 타입은 `CompassPoint`의 가능한 값 중 하나로 초기화될 때 추론된다. `directionToHead`가 `CompassPoint` 타입으로 선언되면, 더 짧은 점 문법을 사용해 다른 `CompassPoint` 값을 할당할 수 있다:
 
 ```swift
 directionToHead = .east
@@ -151,13 +111,12 @@ directionToHead = .east
   ```
 -->
 
-The type of `directionToHead` is already known,
-and so you can drop the type when setting its value.
-This makes for highly readable code when working with explicitly typed enumeration values.
+`directionToHead`의 타입이 이미 명확하기 때문에, 값을 설정할 때 타입을 생략할 수 있다. 이는 명시적으로 타입이 지정된 열거형 값을 다룰 때 코드의 가독성을 크게 향상시킨다.
 
-## Matching Enumeration Values with a Switch Statement
 
-You can match individual enumeration values with a `switch` statement:
+## 열거형 값을 Switch 문으로 매칭하기
+
+`switch` 문을 사용해 개별 열거형 값을 매칭할 수 있다:
 
 ```swift
 directionToHead = .south
@@ -193,25 +152,17 @@ case .west:
   ```
 -->
 
-You can read this code as:
+이 코드를 다음과 같이 해석할 수 있다:
 
-“Consider the value of `directionToHead`.
-In the case where it equals `.north`,
-print `"Lots of planets have a north"`.
-In the case where it equals `.south`,
-print `"Watch out for penguins"`.”
+"`directionToHead`의 값을 고려하라.  
+값이 `.north`인 경우, `"Lots of planets have a north"`를 출력한다.  
+값이 `.south`인 경우, `"Watch out for penguins"`를 출력한다."
 
-…and so on.
+이런 식으로 각 경우를 처리한다.
 
-As described in <doc:ControlFlow>,
-a `switch` statement must be exhaustive when considering an enumeration's cases.
-If the `case` for `.west` is omitted,
-this code doesn't compile,
-because it doesn't consider the complete list of `CompassPoint` cases.
-Requiring exhaustiveness ensures that enumeration cases aren't accidentally omitted.
+<doc:ControlFlow>에서 설명한 것처럼, 열거형의 모든 케이스를 고려할 때 `switch` 문은 반드시 완전해야 한다. 만약 `.west` 케이스를 생략하면, 이 코드는 컴파일되지 않는다. `CompassPoint`의 모든 케이스를 고려하지 않았기 때문이다. 이렇게 완전성을 요구함으로써 열거형 케이스가 실수로 누락되는 것을 방지한다.
 
-When it isn't appropriate to provide a `case` for every enumeration case,
-you can provide a `default` case to cover any cases that aren't addressed explicitly:
+모든 열거형 케이스에 대해 `case`를 제공하는 것이 적절하지 않은 경우, 명시적으로 처리되지 않은 케이스를 다루기 위해 `default` 케이스를 제공할 수 있다:
 
 ```swift
 let somePlanet = Planet.earth
@@ -239,15 +190,10 @@ default:
   ```
 -->
 
-## Iterating over Enumeration Cases
 
-For some enumerations,
-it's useful to have a collection of all of that enumeration's cases.
-You enable this by
-writing `: CaseIterable` after the enumeration's name.
-Swift exposes a collection of all the cases
-as an `allCases` property of the enumeration type.
-Here's an example:
+## 열거형 케이스 순회하기
+
+특정 열거형의 모든 케이스를 모아 컬렉션으로 활용할 때가 있다. 이를 위해 열거형 이름 뒤에 `: CaseIterable`을 추가한다. Swift는 열거형 타입의 `allCases` 프로퍼티를 통해 모든 케이스를 컬렉션으로 제공한다. 다음 예제를 살펴보자:
 
 ```swift
 enum Beverage: CaseIterable {
@@ -271,14 +217,7 @@ print("\(numberOfChoices) beverages available")
   ```
 -->
 
-In the example above,
-you write `Beverage.allCases` to access a collection
-that contains all of the cases of the `Beverage` enumeration.
-You can use `allCases` like any other collection ---
-the collection's elements are instances of the enumeration type,
-so in this case they're `Beverage` values.
-The example above counts how many cases there are,
-and the example below uses a `for`-`in` loop to iterate over all the cases.
+위 예제에서 `Beverage.allCases`를 사용해 `Beverage` 열거형의 모든 케이스를 담은 컬렉션에 접근한다. `allCases`는 일반 컬렉션처럼 사용할 수 있다. 컬렉션의 각 요소는 열거형 타입의 인스턴스로, 이 경우 `Beverage` 값이다. 위 예제는 케이스의 개수를 세고, 아래 예제는 `for`-`in` 루프를 사용해 모든 케이스를 순회한다.
 
 ```swift
 for beverage in Beverage.allCases {
@@ -305,49 +244,26 @@ for beverage in Beverage.allCases {
   ```
 -->
 
-The syntax used in the examples above
-marks the enumeration as conforming to the
-[`CaseIterable`](https://developer.apple.com/documentation/swift/caseiterable) protocol.
-For information about protocols, see <doc:Protocols>.
+위 예제에서 사용한 구문은 열거형이 [`CaseIterable`](https://developer.apple.com/documentation/swift/caseiterable) 프로토콜을 준수하도록 표시한다. 프로토콜에 대한 자세한 내용은 <doc:Protocols>를 참고한다.
 
-## Associated Values
 
-The examples in the previous section show how the cases of an enumeration are
-a defined (and typed) value in their own right.
-You can set a constant or variable to `Planet.earth`,
-and check for this value later.
-However, it's sometimes useful to be able to store
-values of other types alongside these case values.
-This additional information is called an *associated value*,
-and it varies each time you use that case as a value in your code.
+## 연관 값
 
-You can define Swift enumerations to store associated values of any given type,
-and the value types can be different for each case of the enumeration if needed.
-Enumerations similar to these are known as
-*discriminated unions*, *tagged unions*, or *variants*
-in other programming languages.
+이전 섹션의 예제들은 열거형의 각 케이스가 독립적으로 정의되고 타입이 지정된 값임을 보여준다. 상수나 변수를 `Planet.earth`로 설정하고, 나중에 이 값을 확인할 수 있다. 하지만 때로는 이러한 케이스 값과 함께 다른 타입의 값을 저장할 수 있으면 유용할 때가 있다. 이 추가 정보를 *연관 값*이라고 부르며, 코드에서 해당 케이스를 값으로 사용할 때마다 달라질 수 있다.
 
-For example, suppose an inventory tracking system needs to
-track products by two different types of barcode.
-Some products are labeled with 1D barcodes in UPC format,
-which uses the numbers `0` to `9`.
-Each barcode has a number system digit,
-followed by five manufacturer code digits and five product code digits.
-These are followed by a check digit to verify that the code has been scanned correctly:
+Swift 열거형은 주어진 타입의 연관 값을 저장하도록 정의할 수 있으며, 필요에 따라 열거형의 각 케이스마다 다른 타입의 값을 사용할 수 있다. 이러한 열거형은 다른 프로그래밍 언어에서 *구별된 공용체*, *태그된 공용체*, 또는 *변형체*로 알려져 있다.
+
+예를 들어, 재고 추적 시스템이 두 가지 다른 타입의 바코드로 제품을 추적해야 한다고 가정해 보자. 일부 제품은 UPC 형식의 1D 바코드로 라벨링되어 있으며, 이는 `0`부터 `9`까지의 숫자를 사용한다. 각 바코드는 숫자 시스템 숫자, 제조업체 코드 다섯 자리, 제품 코드 다섯 자리로 구성된다. 그리고 코드가 올바르게 스캔되었는지 확인하기 위한 검증 숫자가 뒤따른다:
 
 ![](barcode_UPC)
 
-Other products are labeled with 2D barcodes in QR code format,
-which can use any ISO 8859-1 character
-and can encode a string up to 2,953 characters long:
+다른 제품들은 QR 코드 형식의 2D 바코드로 라벨링되어 있으며, ISO 8859-1 문자를 사용할 수 있고 최대 2,953자 길이의 문자열을 인코딩할 수 있다:
 
 ![](barcode_QR)
 
-It's convenient for an inventory tracking system to store UPC barcodes
-as a tuple of four integers,
-and QR code barcodes as a string of any length.
+재고 추적 시스템에서 UPC 바코드를 네 개의 정수로 구성된 튜플로 저장하고, QR 코드 바코드는 임의 길이의 문자열로 저장하는 것이 편리하다.
 
-In Swift, an enumeration to define product barcodes of either type might look like this:
+Swift에서는 두 가지 타입의 제품 바코드를 정의하는 열거형을 다음과 같이 작성할 수 있다:
 
 ```swift
 enum Barcode {
@@ -356,76 +272,29 @@ enum Barcode {
 }
 ```
 
-<!--
-  - test: `enums`
+이것은 다음과 같이 읽을 수 있다:
 
-  ```swifttest
-  -> enum Barcode {
-        case upc(Int, Int, Int, Int)
-        case qrCode(String)
-     }
-  ```
--->
+"`Barcode`라는 열거형 타입을 정의한다. 이 타입은 `upc` 값과 함께 (`Int`, `Int`, `Int`, `Int`) 타입의 연관 값을 가질 수 있거나, `qrCode` 값과 함께 `String` 타입의 연관 값을 가질 수 있다."
 
-This can be read as:
+이 정의는 실제 `Int`나 `String` 값을 제공하지 않는다. 단지 `Barcode` 상수나 변수가 `Barcode.upc` 또는 `Barcode.qrCode`와 같을 때 저장할 수 있는 연관 값의 *타입*을 정의할 뿐이다.
 
-“Define an enumeration type called `Barcode`,
-which can take either a value of `upc`
-with an associated value of type (`Int`, `Int`, `Int`, `Int`),
-or a value of `qrCode` with an associated value of type `String`.”
-
-This definition doesn't provide any actual `Int` or `String` values ---
-it just defines the *type* of associated values
-that `Barcode` constants and variables can store
-when they're equal to `Barcode.upc` or `Barcode.qrCode`.
-
-You can then create new barcodes using either type:
+그런 다음 두 가지 타입 중 하나를 사용해 새로운 바코드를 생성할 수 있다:
 
 ```swift
 var productBarcode = Barcode.upc(8, 85909, 51226, 3)
 ```
 
-<!--
-  - test: `enums`
+이 예제는 `productBarcode`라는 새로운 변수를 생성하고, `Barcode.upc` 값과 함께 `(8, 85909, 51226, 3)`이라는 연관 튜플 값을 할당한다.
 
-  ```swifttest
-  -> var productBarcode = Barcode.upc(8, 85909, 51226, 3)
-  ```
--->
-
-This example creates a new variable called `productBarcode`
-and assigns it a value of `Barcode.upc`
-with an associated tuple value of `(8, 85909, 51226, 3)`.
-
-You can assign the same product a different type of barcode:
+동일한 제품에 다른 타입의 바코드를 할당할 수도 있다:
 
 ```swift
 productBarcode = .qrCode("ABCDEFGHIJKLMNOP")
 ```
 
-<!--
-  - test: `enums`
+이 시점에서 원래의 `Barcode.upc`와 그 정수 값들은 새로운 `Barcode.qrCode`와 그 문자열 값으로 대체된다. `Barcode` 타입의 상수와 변수는 `.upc` 또는 `.qrCode` 중 하나를 저장할 수 있지만, 동시에 둘 다 저장할 수는 없다.
 
-  ```swifttest
-  -> productBarcode = .qrCode("ABCDEFGHIJKLMNOP")
-  ```
--->
-
-At this point,
-the original `Barcode.upc` and its integer values are replaced by
-the new `Barcode.qrCode` and its string value.
-Constants and variables of type `Barcode` can store either a `.upc` or a `.qrCode`
-(together with their associated values),
-but they can store only one of them at any given time.
-
-You can check the different barcode types using a switch statement,
-similar to the example in
-<doc:Enumerations#Matching-Enumeration-Values-with-a-Switch-Statement>.
-This time, however,
-the associated values are extracted as part of the switch statement.
-You extract each associated value as a constant (with the `let` prefix)
-or a variable (with the `var` prefix)
-for use within the `switch` case's body:
+<doc:Enumerations#Matching-Enumeration-Values-with-a-Switch-Statement>의 예제와 유사하게, switch 문을 사용해 다른 바코드 타입을 확인할 수 있다. 그러나 이번에는 연관 값들이 switch 문의 일부로 추출된다. 각 연관 값을 상수(`let` 접두사 사용) 또는 변수(`var` 접두사 사용)로 추출하여 `switch` 케이스의 본문 내에서 사용할 수 있다:
 
 ```swift
 switch productBarcode {
@@ -437,23 +306,7 @@ case .qrCode(let productCode):
 // Prints "QR code: ABCDEFGHIJKLMNOP."
 ```
 
-<!--
-  - test: `enums`
-
-  ```swifttest
-  -> switch productBarcode {
-        case .upc(let numberSystem, let manufacturer, let product, let check):
-           print("UPC: \(numberSystem), \(manufacturer), \(product), \(check).")
-        case .qrCode(let productCode):
-           print("QR code: \(productCode).")
-     }
-  <- QR code: ABCDEFGHIJKLMNOP.
-  ```
--->
-
-If all of the associated values for an enumeration case
-are extracted as constants, or if all are extracted as variables,
-you can place a single `let` or `var` annotation before the case name, for brevity:
+열거형 케이스의 모든 연관 값이 상수로 추출되거나 모두 변수로 추출되는 경우, 간결함을 위해 케이스 이름 앞에 단일 `let` 또는 `var` 어노테이션을 배치할 수 있다:
 
 ```swift
 switch productBarcode {
@@ -465,31 +318,12 @@ case let .qrCode(productCode):
 // Prints "QR code: ABCDEFGHIJKLMNOP."
 ```
 
-<!--
-  - test: `enums`
 
-  ```swifttest
-  -> switch productBarcode {
-        case let .upc(numberSystem, manufacturer, product, check):
-           print("UPC : \(numberSystem), \(manufacturer), \(product), \(check).")
-        case let .qrCode(productCode):
-           print("QR code: \(productCode).")
-     }
-  <- QR code: ABCDEFGHIJKLMNOP.
-  ```
--->
+## 원시 값(Raw Values)
 
-## Raw Values
+<doc:Enumerations#Associated-Values>의 바코드 예제는 열거형의 각 케이스가 서로 다른 타입의 연관 값을 저장할 수 있음을 보여준다. 연관 값 대신, 열거형 케이스는 기본값으로 미리 채워진 원시 값(*raw values*)을 가질 수 있다. 이때 모든 원시 값은 동일한 타입이어야 한다.
 
-The barcode example in <doc:Enumerations#Associated-Values>
-shows how cases of an enumeration can declare that they store
-associated values of different types.
-As an alternative to associated values,
-enumeration cases can come prepopulated with default values
-(called *raw values*),
-which are all of the same type.
-
-Here's an example that stores raw ASCII values alongside named enumeration cases:
+다음은 명명된 열거형 케이스와 함께 원시 ASCII 값을 저장하는 예제다:
 
 ```swift
 enum ASCIIControlCharacter: Character {
@@ -511,36 +345,20 @@ enum ASCIIControlCharacter: Character {
   ```
 -->
 
-Here, the raw values for an enumeration called `ASCIIControlCharacter`
-are defined to be of type `Character`,
-and are set to some of the more common ASCII control characters.
-`Character` values are described in <doc:StringsAndCharacters>.
+여기서 `ASCIIControlCharacter`라는 열거형의 원시 값은 `Character` 타입으로 정의되며, 일반적인 ASCII 제어 문자들로 설정된다. `Character` 값에 대한 자세한 설명은 <doc:StringsAndCharacters>에서 확인할 수 있다.
 
-Raw values can be
-strings, characters, or any of the integer or floating-point number types.
-Each raw value must be unique within its enumeration declaration.
+원시 값은 문자열, 문자, 정수 또는 부동소수점 숫자 타입 중 하나일 수 있다. 각 원시 값은 열거형 선언 내에서 고유해야 한다.
 
-> Note: Raw values are *not* the same as associated values.
-> Raw values are set to prepopulated values
-> when you first define the enumeration in your code,
-> like the three ASCII codes above.
-> The raw value for a particular enumeration case is always the same.
-> Associated values are set when you create a new constant or variable
-> based on one of the enumeration's cases,
-> and can be different each time you do so.
+> 주의: 원시 값은 연관 값과 다르다. 원시 값은 코드에서 열거형을 처음 정의할 때 미리 설정된 값이다. 위의 세 ASCII 코드처럼 특정 열거형 케이스의 원시 값은 항상 동일하다. 반면, 연관 값은 열거형 케이스를 기반으로 새로운 상수나 변수를 생성할 때 설정되며, 매번 다른 값을 가질 수 있다.
 
-### Implicitly Assigned Raw Values
 
-When you're working with enumerations that store integer or string raw values,
-you don't have to explicitly assign a raw value for each case.
-When you don't, Swift automatically assigns the values for you.
+### 암시적으로 할당된 Raw 값
 
-For example, when integers are used for raw values,
-the implicit value for each case is one more than the previous case.
-If the first case doesn't have a value set, its value is `0`.
+정수나 문자열 타입의 raw 값을 저장하는 열거형을 다룰 때, 각 케이스에 대한 raw 값을 명시적으로 할당할 필요가 없다. 값을 할당하지 않으면 Swift가 자동으로 값을 할당해 준다.
 
-The enumeration below is a refinement of the earlier `Planet` enumeration,
-with integer raw values to represent each planet's order from the sun:
+예를 들어, 정수를 raw 값으로 사용하는 경우, 각 케이스의 암시적 값은 이전 케이스보다 1씩 증가한다. 첫 번째 케이스에 값을 설정하지 않으면 해당 값은 `0`이 된다.
+
+아래 열거형은 이전 `Planet` 열거형을 개선한 것으로, 각 행성의 태양으로부터의 순서를 나타내기 위해 정수 raw 값을 사용한다:
 
 ```swift
 enum Planet: Int {
@@ -558,15 +376,11 @@ enum Planet: Int {
   ```
 -->
 
-In the example above,
-`Planet.mercury` has an explicit raw value of `1`,
-`Planet.venus` has an implicit raw value of `2`, and so on.
+위 예제에서 `Planet.mercury`는 명시적으로 `1`이라는 raw 값을 가지고, `Planet.venus`는 암시적으로 `2`라는 raw 값을 가지며, 나머지도 이와 같이 증가한다.
 
-When strings are used for raw values,
-the implicit value for each case is the text of that case's name.
+문자열을 raw 값으로 사용하는 경우, 각 케이스의 암시적 값은 해당 케이스 이름의 텍스트가 된다.
 
-The enumeration below is a refinement of the earlier `CompassPoint` enumeration,
-with string raw values to represent each direction's name:
+아래 열거형은 이전 `CompassPoint` 열거형을 개선한 것으로, 각 방향의 이름을 나타내기 위해 문자열 raw 값을 사용한다:
 
 ```swift
 enum CompassPoint: String {
@@ -584,17 +398,16 @@ enum CompassPoint: String {
   ```
 -->
 
-In the example above,
-`CompassPoint.south` has an implicit raw value of `"south"`, and so on.
+위 예제에서 `CompassPoint.south`는 암시적으로 `"south"`라는 raw 값을 가지며, 나머지도 이와 같이 처리된다.
 
-You access the raw value of an enumeration case with its `rawValue` property:
+열거형 케이스의 raw 값은 `rawValue` 프로퍼티를 통해 접근할 수 있다:
 
 ```swift
 let earthsOrder = Planet.earth.rawValue
-// earthsOrder is 3
+// earthsOrder는 3
 
 let sunsetDirection = CompassPoint.west.rawValue
-// sunsetDirection is "west"
+// sunsetDirection은 "west"
 ```
 
 <!--
@@ -611,19 +424,19 @@ let sunsetDirection = CompassPoint.west.rawValue
   ```
 -->
 
-### Initializing from a Raw Value
 
-If you define an enumeration with a raw-value type,
-the enumeration automatically receives an initializer
-that takes a value of the raw value's type (as a parameter called `rawValue`)
-and returns either an enumeration case or `nil`.
-You can use this initializer to try to create a new instance of the enumeration.
+### 원시 값으로 초기화하기
 
-This example identifies Uranus from its raw value of `7`:
+열거형을 원시 값 타입과 함께 정의하면,
+열거형은 자동으로 `rawValue`라는 매개변수를 받는 초기화 메서드를 제공한다.
+이 초기화 메서드는 원시 값 타입의 값을 받아서 해당하는 열거형 케이스 또는 `nil`을 반환한다.
+이 초기화 메서드를 사용해 새로운 열거형 인스턴스를 생성할 수 있다.
+
+다음 예제는 원시 값 `7`을 사용해 천왕성(`Uranus`)을 식별한다:
 
 ```swift
 let possiblePlanet = Planet(rawValue: 7)
-// possiblePlanet is of type Planet? and equals Planet.uranus
+// possiblePlanet은 Planet? 타입이며 Planet.uranus와 같다
 ```
 
 <!--
@@ -634,35 +447,35 @@ let possiblePlanet = Planet(rawValue: 7)
   >> print(type(of: possiblePlanet))
   << Optional<Planet>
   >> assert(possiblePlanet == .uranus)
-  // possiblePlanet is of type Planet? and equals Planet.uranus
+  // possiblePlanet은 Planet? 타입이며 Planet.uranus와 같다
   ```
 -->
 
-Not all possible `Int` values will find a matching planet, however.
-Because of this, the raw value initializer always returns an *optional* enumeration case.
-In the example above, `possiblePlanet` is of type `Planet?`,
-or “optional `Planet`.”
+그러나 모든 `Int` 값이 해당하는 행성을 찾을 수 있는 것은 아니다.
+따라서 원시 값 초기화 메서드는 항상 *옵셔널* 열거형 케이스를 반환한다.
+위 예제에서 `possiblePlanet`은 `Planet?` 타입,
+즉 "옵셔널 `Planet`"이다.
 
-> Note: The raw value initializer is a failable initializer,
-> because not every raw value will return an enumeration case.
-> For more information, see <doc:Declarations#Failable-Initializers>.
+> 참고: 원시 값 초기화 메서드는 실패 가능한 초기화 메서드(failable initializer)이다.
+> 모든 원시 값이 열거형 케이스를 반환하지 않기 때문이다.
+> 자세한 내용은 <doc:Declarations#Failable-Initializers>를 참고한다.
 
-If you try to find a planet with a position of `11`,
-the optional `Planet` value returned by the raw value initializer will be `nil`:
+위치 `11`에 해당하는 행성을 찾으려고 하면,
+원시 값 초기화 메서드가 반환하는 옵셔널 `Planet` 값은 `nil`이 된다:
 
 ```swift
 let positionToFind = 11
 if let somePlanet = Planet(rawValue: positionToFind) {
     switch somePlanet {
     case .earth:
-        print("Mostly harmless")
+        print("대체로 무해함")
     default:
-        print("Not a safe place for humans")
+        print("인간에게 안전하지 않은 장소")
     }
 } else {
-    print("There isn't a planet at position \(positionToFind)")
+    print("위치 \(positionToFind)에는 행성이 없음")
 }
-// Prints "There isn't a planet at position 11"
+// "위치 11에는 행성이 없음"을 출력
 ```
 
 <!--
@@ -673,38 +486,34 @@ if let somePlanet = Planet(rawValue: positionToFind) {
   -> if let somePlanet = Planet(rawValue: positionToFind) {
         switch somePlanet {
            case .earth:
-              print("Mostly harmless")
+              print("대체로 무해함")
            default:
-              print("Not a safe place for humans")
+              print("인간에게 안전하지 않은 장소")
         }
      } else {
-        print("There isn't a planet at position \(positionToFind)")
+        print("위치 \(positionToFind)에는 행성이 없음")
      }
-  <- There isn't a planet at position 11
+  <- 위치 11에는 행성이 없음
   ```
 -->
 
-This example uses optional binding to try to access a planet with a raw value of `11`.
-The statement `if let somePlanet = Planet(rawValue: 11)` creates an optional `Planet`,
-and sets `somePlanet` to the value of that optional `Planet` if it can be retrieved.
-In this case, it isn't possible to retrieve a planet with a position of `11`,
-and so the `else` branch is executed instead.
+이 예제는 옵셔널 바인딩을 사용해 원시 값 `11`에 해당하는 행성에 접근하려고 시도한다.
+`if let somePlanet = Planet(rawValue: 11)` 문은 옵셔널 `Planet`을 생성하고,
+`somePlanet`을 해당 옵셔널 `Planet`의 값으로 설정한다.
+이 경우, 위치 `11`에 해당하는 행성을 찾을 수 없으므로,
+대신 `else` 분기가 실행된다.
 
 <!--
-  TODO: Switch around the order of this chapter so that all of the non-union stuff
-  is together, and the union bits (aka Associated Values) come last.
+  TODO: 이 장의 순서를 조정해 비연합(non-union) 관련 내용을 모두 함께 묶고,
+  연합(Associated Values) 관련 내용을 마지막으로 이동한다.
 -->
 
-## Recursive Enumerations
 
-A *recursive enumeration* is an enumeration
-that has another instance of the enumeration
-as the associated value for one or more of the enumeration cases.
-You indicate that an enumeration case is recursive
-by writing `indirect` before it,
-which tells the compiler to insert the necessary layer of indirection.
+## 재귀 열거형
 
-For example, here is an enumeration that stores simple arithmetic expressions:
+*재귀 열거형*은 하나 이상의 열거형 케이스가 연관 값으로 동일한 열거형의 인스턴스를 가지는 열거형이다. 재귀 열거형을 정의할 때는 `indirect` 키워드를 사용해 특정 케이스가 재귀적임을 표시한다. 이 키워드를 사용하면 컴파일러가 필요한 간접 참조 계층을 자동으로 추가한다.
+
+예를 들어, 간단한 산술 표현식을 저장하는 열거형을 살펴보자:
 
 ```swift
 enum ArithmeticExpression {
@@ -726,8 +535,7 @@ enum ArithmeticExpression {
   ```
 -->
 
-You can also write `indirect` before the beginning of the enumeration
-to enable indirection for all of the enumeration's cases that have an associated value:
+또한, 열거형 전체에 `indirect` 키워드를 적용해 모든 연관 값을 가진 케이스에 대해 간접 참조를 활성화할 수도 있다:
 
 ```swift
 indirect enum ArithmeticExpression {
@@ -749,21 +557,7 @@ indirect enum ArithmeticExpression {
   ```
 -->
 
-This enumeration can store three kinds of arithmetic expressions:
-a plain number,
-the addition of two expressions,
-and the multiplication of two expressions.
-The `addition` and `multiplication` cases have associated values
-that are also arithmetic expressions ---
-these associated values make it possible to nest expressions.
-For example, the expression `(5 + 4) * 2`
-has a number on the right-hand side of the multiplication
-and another expression on the left-hand side of the multiplication.
-Because the data is nested,
-the enumeration used to store the data also needs to support nesting ---
-this means the enumeration needs to be recursive.
-The code below shows the `ArithmeticExpression` recursive enumeration
-being created for `(5 + 4) * 2`:
+이 열거형은 세 가지 종류의 산술 표현식을 저장할 수 있다: 일반 숫자, 두 표현식의 덧셈, 두 표현식의 곱셈. `addition`과 `multiplication` 케이스는 연관 값으로 산술 표현식을 가지며, 이로 인해 표현식을 중첩할 수 있다. 예를 들어, `(5 + 4) * 2`라는 표현식은 곱셈의 오른쪽에 숫자가 있고, 왼쪽에 또 다른 표현식이 있다. 데이터가 중첩되기 때문에, 이를 저장하기 위한 열거형도 중첩을 지원해야 한다. 즉, 열거형은 재귀적이어야 한다. 아래 코드는 `(5 + 4) * 2`를 위해 `ArithmeticExpression` 재귀 열거형을 생성하는 방법을 보여준다:
 
 ```swift
 let five = ArithmeticExpression.number(5)
@@ -783,9 +577,7 @@ let product = ArithmeticExpression.multiplication(sum, ArithmeticExpression.numb
   ```
 -->
 
-A recursive function is a straightforward way
-to work with data that has a recursive structure.
-For example, here's a function that evaluates an arithmetic expression:
+재귀 구조를 가진 데이터를 다룰 때는 재귀 함수를 사용하는 것이 간단한 방법이다. 예를 들어, 산술 표현식을 평가하는 함수는 다음과 같이 작성할 수 있다:
 
 ```swift
 func evaluate(_ expression: ArithmeticExpression) -> Int {
@@ -823,12 +615,7 @@ print(evaluate(product))
   ```
 -->
 
-This function evaluates a plain number
-by simply returning the associated value.
-It evaluates an addition or multiplication
-by evaluating the expression on the left-hand side,
-evaluating the expression on the right-hand side,
-and then adding them or multiplying them.
+이 함수는 일반 숫자를 평가할 때는 연관 값을 그대로 반환한다. 덧셈이나 곱셈을 평가할 때는 왼쪽 표현식을 평가하고, 오른쪽 표현식을 평가한 다음, 두 결과를 더하거나 곱한다.
 
 <!--
 This source file is part of the Swift.org open source project
@@ -839,3 +626,5 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
+
+

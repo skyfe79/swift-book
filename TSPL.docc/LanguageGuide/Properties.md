@@ -1,12 +1,6 @@
-# Properties
+# 프로퍼티
 
-Access stored and computed values that are part of an instance or type.
-
-*Properties* associate values with a particular class, structure, or enumeration.
-Stored properties store constant and variable values as part of an instance,
-whereas computed properties calculate (rather than store) a value.
-Computed properties are provided by classes, structures, and enumerations.
-Stored properties are provided only by classes and structures.
+프로퍼티는 인스턴스나 타입에 속한 저장된 값이나 계산된 값을 나타낸다. 프로퍼티는 특정 클래스, 구조체, 열거형과 값을 연결한다. 저장 프로퍼티는 인스턴스의 일부로 상수나 변수 값을 저장한다. 반면 계산 프로퍼티는 값을 저장하지 않고 계산한다. 계산 프로퍼티는 클래스, 구조체, 열거형에서 제공한다. 저장 프로퍼티는 클래스와 구조체에서만 제공한다.
 
 <!--
   - test: `enumerationsCantProvideStoredProperties`
@@ -19,14 +13,9 @@ Stored properties are provided only by classes and structures.
   ```
 -->
 
-Stored and computed properties are usually associated with instances of a particular type.
-However, properties can also be associated with the type itself.
-Such properties are known as type properties.
+저장 프로퍼티와 계산 프로퍼티는 보통 특정 타입의 인스턴스와 연결된다. 하지만 프로퍼티는 타입 자체와도 연결할 수 있다. 이러한 프로퍼티를 타입 프로퍼티라고 한다.
 
-In addition, you can define property observers to monitor changes in a property's value,
-which you can respond to with custom actions.
-Property observers can be added to stored properties you define yourself,
-and also to properties that a subclass inherits from its superclass.
+추가로, 프로퍼티 옵저버를 정의해 프로퍼티 값의 변화를 감시하고, 이에 맞춰 커스텀 동작을 수행할 수 있다. 프로퍼티 옵저버는 직접 정의한 저장 프로퍼티에 추가할 수 있으며, 서브클래스가 슈퍼클래스로부터 상속받은 프로퍼티에도 추가할 수 있다.
 
 <!--
   - test: `propertyObserverIntroClaims`
@@ -55,26 +44,16 @@ and also to properties that a subclass inherits from its superclass.
   ```
 -->
 
-You can also use a property wrapper
-to reuse code in the getter and setter of multiple properties.
+또한 프로퍼티 래퍼를 사용해 여러 프로퍼티의 getter와 setter에서 코드를 재사용할 수 있다.
 
-## Stored Properties
 
-In its simplest form, a stored property is a constant or variable
-that's stored as part of an instance of a particular class or structure.
-Stored properties can be either
-*variable stored properties* (introduced by the `var` keyword)
-or *constant stored properties* (introduced by the `let` keyword).
+## 저장 프로퍼티
 
-You can provide a default value for a stored property as part of its definition,
-as described in <doc:Initialization#Default-Property-Values>.
-You can also set and modify the initial value for a stored property during initialization.
-This is true even for constant stored properties,
-as described in <doc:Initialization#Assigning-Constant-Properties-During-Initialization>.
+가장 기본적인 형태에서 저장 프로퍼티는 특정 클래스나 구조체의 인스턴스의 일부로 저장되는 상수나 변수를 의미한다. 저장 프로퍼티는 **변수 저장 프로퍼티**(`var` 키워드로 선언)와 **상수 저장 프로퍼티**(`let` 키워드로 선언)로 구분된다.
 
-The example below defines a structure called `FixedLengthRange`,
-which describes a range of integers
-whose range length can't be changed after it's created:
+저장 프로퍼티를 정의할 때 기본값을 지정할 수 있으며, 이는 <doc:Initialization#Default-Property-Values>에서 설명한 바와 같다. 또한 초기화 과정에서 저장 프로퍼티의 초기값을 설정하거나 수정할 수 있다. 이는 상수 저장 프로퍼티에도 적용되며, <doc:Initialization#Assigning-Constant-Properties-During-Initialization>에서 자세히 다룬다.
+
+아래 예제는 `FixedLengthRange`라는 구조체를 정의한다. 이 구조체는 생성된 후 범위 길이를 변경할 수 없는 정수 범위를 나타낸다:
 
 ```swift
 struct FixedLengthRange {
@@ -82,9 +61,9 @@ struct FixedLengthRange {
     let length: Int
 }
 var rangeOfThreeItems = FixedLengthRange(firstValue: 0, length: 3)
-// the range represents integer values 0, 1, and 2
+// 이 범위는 정수 값 0, 1, 2를 나타낸다
 rangeOfThreeItems.firstValue = 6
-// the range now represents integer values 6, 7, and 8
+// 이제 범위는 정수 값 6, 7, 8을 나타낸다
 ```
 
 <!--
@@ -96,30 +75,24 @@ rangeOfThreeItems.firstValue = 6
         let length: Int
      }
   -> var rangeOfThreeItems = FixedLengthRange(firstValue: 0, length: 3)
-  // the range represents integer values 0, 1, and 2
+  // 이 범위는 정수 값 0, 1, 2를 나타낸다
   -> rangeOfThreeItems.firstValue = 6
-  // the range now represents integer values 6, 7, and 8
+  // 이제 범위는 정수 값 6, 7, 8을 나타낸다
   ```
 -->
 
-Instances of `FixedLengthRange` have
-a variable stored property called `firstValue`
-and a constant stored property called `length`.
-In the example above, `length` is initialized when the new range is created
-and can't be changed thereafter, because it's a constant property.
+`FixedLengthRange`의 인스턴스는 `firstValue`라는 변수 저장 프로퍼티와 `length`라는 상수 저장 프로퍼티를 가진다. 위 예제에서 `length`는 새로운 범위가 생성될 때 초기화되며, 상수 프로퍼티이기 때문에 이후 변경할 수 없다.
 
-### Stored Properties of Constant Structure Instances
 
-If you create an instance of a structure
-and assign that instance to a constant,
-you can't modify the instance's properties,
-even if they were declared as variable properties:
+### 상수 구조체 인스턴스의 저장 프로퍼티
+
+구조체의 인스턴스를 생성하고, 그 인스턴스를 상수에 할당하면, 해당 인스턴스의 프로퍼티가 변수 프로퍼티로 선언되었더라도 수정할 수 없다:
 
 ```swift
 let rangeOfFourItems = FixedLengthRange(firstValue: 0, length: 4)
-// this range represents integer values 0, 1, 2, and 3
+// 이 범위는 정수 값 0, 1, 2, 3을 나타냄
 rangeOfFourItems.firstValue = 6
-// this will report an error, even though firstValue is a variable property
+// firstValue가 변수 프로퍼티임에도 불구하고, 이 코드는 오류를 발생시킴
 ```
 
 <!--
@@ -127,7 +100,7 @@ rangeOfFourItems.firstValue = 6
 
   ```swifttest
   -> let rangeOfFourItems = FixedLengthRange(firstValue: 0, length: 4)
-  // this range represents integer values 0, 1, 2, and 3
+  // 이 범위는 정수 값 0, 1, 2, 3을 나타냄
   -> rangeOfFourItems.firstValue = 6
   !$ error: cannot assign to property: 'rangeOfFourItems' is a 'let' constant
   !! rangeOfFourItems.firstValue = 6
@@ -136,43 +109,31 @@ rangeOfFourItems.firstValue = 6
   !! let rangeOfFourItems = FixedLengthRange(firstValue: 0, length: 4)
   !! ^~~
   !! var
-  // this will report an error, even though firstValue is a variable property
+  // firstValue가 변수 프로퍼티임에도 불구하고, 이 코드는 오류를 발생시킴
   ```
 -->
 
-Because `rangeOfFourItems` is declared as a constant (with the `let` keyword),
-it isn't possible to change its `firstValue` property,
-even though `firstValue` is a variable property.
+`rangeOfFourItems`가 상수(`let` 키워드)로 선언되었기 때문에, `firstValue`가 변수 프로퍼티임에도 불구하고 이를 변경할 수 없다.
 
-This behavior is due to structures being *value types*.
-When an instance of a value type is marked as a constant,
-so are all of its properties.
+이러한 동작은 구조체가 *값 타입*이기 때문이다. 값 타입의 인스턴스가 상수로 표시되면, 그 인스턴스의 모든 프로퍼티도 상수가 된다.
 
-The same isn't true for classes, which are *reference types*.
-If you assign an instance of a reference type to a constant,
-you can still change that instance's variable properties.
+이와 달리 클래스는 *참조 타입*이다. 참조 타입의 인스턴스를 상수에 할당하더라도, 그 인스턴스의 변수 프로퍼티는 여전히 변경할 수 있다.
 
 <!--
-  TODO: this explanation could still do to be improved.
+  TODO: 이 설명은 여전히 개선의 여지가 있음
 -->
 
-### Lazy Stored Properties
+
+### 지연 저장 프로퍼티
 
 <!--
   QUESTION: is this section too complex for this point in the book?
   Should it go in the Default Property Values section of Initialization instead?
 -->
 
-A *lazy stored property* is a property whose initial value isn't calculated
-until the first time it's used.
-You indicate a lazy stored property by writing
-the `lazy` modifier before its declaration.
+*지연 저장 프로퍼티*는 처음 사용될 때까지 초기값이 계산되지 않는 프로퍼티다. 프로퍼티 선언 앞에 `lazy` 수식어를 붙여 지연 저장 프로퍼티를 표시한다.
 
-> Note: You must always declare a lazy property as a variable (with the `var` keyword),
-> because its initial value might not be retrieved until
-> after instance initialization completes.
-> Constant properties must always have a value *before* initialization completes,
-> and therefore can't be declared as lazy.
+> 참고: 지연 프로퍼티는 반드시 변수(`var` 키워드)로 선언해야 한다. 초기값이 인스턴스 초기화가 완료된 후에야 가져올 수 있기 때문이다. 상수 프로퍼티는 초기화가 완료되기 전에 반드시 값을 가져야 하므로, 지연 프로퍼티로 선언할 수 없다.
 
 <!--
   - test: `lazyPropertiesMustAlwaysBeVariables`
@@ -186,43 +147,35 @@ the `lazy` modifier before its declaration.
   ```
 -->
 
-Lazy properties are useful when the initial value for a property
-is dependent on outside factors whose values aren't known
-until after an instance's initialization is complete.
-Lazy properties are also useful when the initial value for a property requires
-complex or computationally expensive setup that shouldn't be performed
-unless or until it's needed.
+지연 프로퍼티는 초기값이 외부 요인에 의존적이고, 해당 값이 인스턴스 초기화가 완료된 후에야 알려질 때 유용하다. 또한 초기값 설정이 복잡하거나 계산 비용이 높아서 필요할 때까지 수행하지 않아야 하는 경우에도 지연 프로퍼티를 사용한다.
 
 <!--
   TODO: add a note that if you assign a value to a lazy property before first access,
   the initial value you give in your code will be ignored.
 -->
 
-The example below uses a lazy stored property to avoid
-unnecessary initialization of a complex class.
-This example defines two classes called `DataImporter` and `DataManager`,
-neither of which is shown in full:
+아래 예제는 지연 저장 프로퍼티를 사용해 복잡한 클래스의 불필요한 초기화를 피하는 방법을 보여준다. 이 예제에서는 `DataImporter`와 `DataManager`라는 두 클래스를 정의하며, 두 클래스 모두 전체 코드를 보여주지는 않는다:
 
 ```swift
 class DataImporter {
     /*
-    DataImporter is a class to import data from an external file.
-    The class is assumed to take a nontrivial amount of time to initialize.
+    DataImporter는 외부 파일에서 데이터를 가져오는 클래스다.
+    이 클래스는 초기화에 상당한 시간이 걸리는 것으로 가정한다.
     */
     var filename = "data.txt"
-    // the DataImporter class would provide data importing functionality here
+    // DataImporter 클래스는 여기서 데이터 가져오기 기능을 제공한다.
 }
 
 class DataManager {
     lazy var importer = DataImporter()
     var data: [String] = []
-    // the DataManager class would provide data management functionality here
+    // DataManager 클래스는 여기서 데이터 관리 기능을 제공한다.
 }
 
 let manager = DataManager()
 manager.data.append("Some data")
 manager.data.append("Some more data")
-// the DataImporter instance for the importer property hasn't yet been created
+// importer 프로퍼티의 DataImporter 인스턴스는 아직 생성되지 않았다.
 ```
 
 <!--
@@ -254,35 +207,18 @@ manager.data.append("Some more data")
   ```
 -->
 
-The `DataManager` class has a stored property called `data`,
-which is initialized with a new, empty array of `String` values.
-Although the rest of its functionality isn't shown,
-the purpose of this `DataManager` class is to manage and provide access to
-this array of `String` data.
+`DataManager` 클래스는 `data`라는 저장 프로퍼티를 가지며, 이 프로퍼티는 빈 `String` 배열로 초기화된다. 나머지 기능은 보여주지 않지만, `DataManager` 클래스의 목적은 이 `String` 데이터 배열을 관리하고 접근을 제공하는 것이다.
 
-Part of the functionality of the `DataManager` class
-is the ability to import data from a file.
-This functionality is provided by the `DataImporter` class,
-which is assumed to take a nontrivial amount of time to initialize.
-This might be because a `DataImporter` instance needs to open a file
-and read its contents into memory when the `DataImporter` instance is initialized.
+`DataManager` 클래스의 기능 중 하나는 파일에서 데이터를 가져오는 것이다. 이 기능은 `DataImporter` 클래스에서 제공하며, `DataImporter` 클래스는 초기화에 상당한 시간이 걸리는 것으로 가정한다. 이는 `DataImporter` 인스턴스가 초기화될 때 파일을 열고 메모리로 내용을 읽어야 하기 때문일 수 있다.
 
-Because it's possible for a `DataManager` instance to manage its data
-without ever importing data from a file,
-`DataManager` doesn't create a new `DataImporter` instance
-when the `DataManager` itself is created.
-Instead, it makes more sense to create the `DataImporter` instance
-if and when it's first used.
+`DataManager` 인스턴스가 파일에서 데이터를 가져오지 않고도 데이터를 관리할 수 있기 때문에, `DataManager`는 자신이 생성될 때 `DataImporter` 인스턴스를 생성하지 않는다. 대신, `DataImporter` 인스턴스가 처음 사용될 때 생성하는 것이 더 합리적이다.
 
-Because it's marked with the `lazy` modifier,
-the `DataImporter` instance for the `importer` property
-is only created when the `importer` property is first accessed,
-such as when its `filename` property is queried:
+`lazy` 수식어가 붙어 있기 때문에, `importer` 프로퍼티의 `DataImporter` 인스턴스는 `importer` 프로퍼티가 처음 접근될 때 생성된다. 예를 들어, `filename` 프로퍼티를 조회할 때 생성된다:
 
 ```swift
 print(manager.importer.filename)
-// the DataImporter instance for the importer property has now been created
-// Prints "data.txt"
+// importer 프로퍼티의 DataImporter 인스턴스가 이제 생성되었다.
+// "data.txt"를 출력한다.
 ```
 
 <!--
@@ -295,43 +231,27 @@ print(manager.importer.filename)
   ```
 -->
 
-> Note: If a property marked with the `lazy` modifier
-> is accessed by multiple threads simultaneously
-> and the property hasn't yet been initialized,
-> there's no guarantee that the property will be initialized only once.
+> 참고: `lazy` 수식어가 붙은 프로퍼티가 여러 스레드에서 동시에 접근되고, 아직 초기화되지 않았다면, 프로퍼티가 단 한 번만 초기화된다는 보장은 없다.
 
 <!--
   6/19/14, 10:54 PM [Contributor 7746]: @lazy isn't thread safe.  Global variables (and static struct/enum fields) *are*.
 -->
 
-### Stored Properties and Instance Variables
 
-If you have experience with Objective-C,
-you may know that it provides *two* ways
-to store values and references as part of a class instance.
-In addition to properties,
-you can use instance variables as a backing store for the values stored in a property.
+### 저장 프로퍼티와 인스턴스 변수
 
-Swift unifies these concepts into a single property declaration.
-A Swift property doesn't have a corresponding instance variable,
-and the backing store for a property isn't accessed directly.
-This approach avoids confusion about how the value is accessed in different contexts
-and simplifies the property's declaration into a single, definitive statement.
-All information about the property ---
-including its name, type, and memory management characteristics ---
-is defined in a single location as part of the type's definition.
+Objective-C 경험이 있다면, 클래스 인스턴스의 일부로 값을 저장하고 참조할 수 있는 *두 가지* 방법을 알고 있을 것이다. 프로퍼티 외에도, 프로퍼티에 저장된 값을 위한 백업 저장소로 인스턴스 변수를 사용할 수 있다.
+
+Swift는 이러한 개념을 단일 프로퍼티 선언으로 통합한다. Swift 프로퍼티는 해당 인스턴스 변수를 가지지 않으며, 프로퍼티의 백업 저장소에 직접 접근하지 않는다. 이 접근 방식은 값이 다양한 상황에서 어떻게 접근되는지에 대한 혼란을 피하고, 프로퍼티 선언을 단일 명확한 문장으로 단순화한다. 프로퍼티에 대한 모든 정보 --- 이름, 타입, 메모리 관리 특성 등 --- 은 타입 정의의 일부로 단일 위치에 정의된다.
 
 <!--
-  TODO: what happens if one property of a constant structure is an object reference?
+  TODO: 상수 구조체의 프로퍼티 중 하나가 객체 참조인 경우 어떻게 되는가?
 -->
 
-## Computed Properties
 
-In addition to stored properties,
-classes, structures, and enumerations can define *computed properties*,
-which don't actually store a value.
-Instead, they provide a getter and an optional setter
-to retrieve and set other properties and values indirectly.
+## 계산 프로퍼티
+
+저장 프로퍼티 외에도, 클래스, 구조체, 열거형은 *계산 프로퍼티*를 정의할 수 있다. 계산 프로퍼티는 실제로 값을 저장하지 않는다. 대신, 다른 프로퍼티와 값을 간접적으로 검색하거나 설정하기 위해 getter와 선택적인 setter를 제공한다.
 
 ```swift
 struct Point {
@@ -358,10 +278,10 @@ struct Rect {
 var square = Rect(origin: Point(x: 0.0, y: 0.0),
     size: Size(width: 10.0, height: 10.0))
 let initialSquareCenter = square.center
-// initialSquareCenter is at (5.0, 5.0)
+// initialSquareCenter는 (5.0, 5.0) 위치에 있다.
 square.center = Point(x: 15.0, y: 15.0)
-print("square.origin is now at (\(square.origin.x), \(square.origin.y))")
-// Prints "square.origin is now at (10.0, 10.0)"
+print("square.origin은 이제 (\(square.origin.x), \(square.origin.y)) 위치에 있다.")
+// 출력: "square.origin은 이제 (10.0, 10.0) 위치에 있다."
 ```
 
 <!--
@@ -400,47 +320,28 @@ print("square.origin is now at (\(square.origin.x), \(square.origin.y))")
   ```
 -->
 
-This example defines three structures for working with geometric shapes:
+이 예제는 기하학적 도형을 다루기 위해 세 가지 구조체를 정의한다:
 
-- `Point` encapsulates the x- and y-coordinate of a point.
-- `Size` encapsulates a `width` and a `height`.
-- `Rect` defines a rectangle by an origin point and a size.
+- `Point`는 점의 x 좌표와 y 좌표를 캡슐화한다.
+- `Size`는 `width`와 `height`를 캡슐화한다.
+- `Rect`는 원점과 크기를 통해 사각형을 정의한다.
 
-The `Rect` structure also provides a computed property called `center`.
-The current center position of a `Rect` can always be determined from its `origin` and `size`,
-and so you don't need to store the center point as an explicit `Point` value.
-Instead, `Rect` defines a custom getter and setter for a computed variable called `center`,
-to enable you to work with the rectangle's `center` as if it were a real stored property.
+`Rect` 구조체는 `center`라는 계산 프로퍼티를 제공한다. `Rect`의 현재 중심 위치는 항상 `origin`과 `size`를 통해 결정할 수 있으므로, 중심점을 명시적인 `Point` 값으로 저장할 필요가 없다. 대신, `Rect`는 `center`라는 계산 변수에 대해 커스텀 getter와 setter를 정의하여, 사각형의 `center`를 마치 실제 저장 프로퍼티처럼 다룰 수 있게 한다.
 
-The example above creates a new `Rect` variable called `square`.
-The `square` variable is initialized with an origin point of `(0, 0)`,
-and a width and height of `10`.
-This square is represented by the light green square in the diagram below.
+위 예제는 `square`라는 새로운 `Rect` 변수를 생성한다. `square` 변수는 원점 `(0, 0)`과 너비 및 높이 `10`으로 초기화된다. 이 사각형은 아래 다이어그램에서 연두색 사각형으로 표시된다.
 
-The `square` variable's `center` property is then accessed through dot syntax (`square.center`),
-which causes the getter for `center` to be called,
-to retrieve the current property value.
-Rather than returning an existing value,
-the getter actually calculates and returns a new `Point` to represent the center of the square.
-As can be seen above, the getter correctly returns a center point of `(5, 5)`.
+`square` 변수의 `center` 프로퍼티는 점 표기법(`square.center`)을 통해 접근되며, 이는 `center`의 getter를 호출하여 현재 프로퍼티 값을 검색한다. getter는 기존 값을 반환하는 대신, 사각형의 중심을 나타내는 새로운 `Point`를 계산하여 반환한다. 위에서 볼 수 있듯이, getter는 정확히 `(5, 5)`의 중심점을 반환한다.
 
-The `center` property is then set to a new value of `(15, 15)`,
-which moves the square up and to the right,
-to the new position shown by the dark green square in the diagram below.
-Setting the `center` property calls the setter for `center`,
-which modifies the `x` and `y` values of the stored `origin` property,
-and moves the square to its new position.
+그런 다음 `center` 프로퍼티를 `(15, 15)`로 설정하여 사각형을 오른쪽 위로 이동시킨다. 이는 아래 다이어그램에서 진한 초록색 사각형으로 표시된 새로운 위치로 이동한다. `center` 프로퍼티를 설정하면 `center`의 setter가 호출되어 저장된 `origin` 프로퍼티의 `x`와 `y` 값을 수정하고, 사각형을 새로운 위치로 이동시킨다.
 
 <!-- Apple Books screenshot begins here. -->
 
 ![](computedProperties)
 
-### Shorthand Setter Declaration
 
-If a computed property's setter doesn't define a name for the new value to be set,
-a default name of `newValue` is used.
-Here's an alternative version of the `Rect` structure
-that takes advantage of this shorthand notation:
+### 짧은 세터 선언
+
+계산 프로퍼티의 세터가 새로운 값에 대한 이름을 정의하지 않으면, 기본적으로 `newValue`라는 이름이 사용된다. 이 짧은 표기법을 활용한 `Rect` 구조체의 대안 버전은 다음과 같다:
 
 ```swift
 struct AlternativeRect {
@@ -484,13 +385,10 @@ struct AlternativeRect {
 
 <!-- Apple Books screenshot ends here. -->
 
-### Shorthand Getter Declaration
 
-If the entire body of a getter is a single expression,
-the getter implicitly returns that expression.
-Here's another version of the `Rect` structure
-that takes advantage of this shorthand notation
-and the shorthand notation for setters:
+### 짧은 Getter 선언
+
+Getter의 전체 본문이 단일 표현식으로 이루어진 경우, getter는 암시적으로 해당 표현식을 반환한다. 다음은 이 짧은 표기법과 세터의 짧은 표기법을 활용한 `Rect` 구조체의 또 다른 버전이다:
 
 ```swift
 struct CompactRect {
@@ -530,21 +428,16 @@ struct CompactRect {
   ```
 -->
 
-Omitting the `return` from a getter
-follows the same rules as omitting `return` from a function,
-as described in <doc:Functions#Functions-With-an-Implicit-Return>.
+Getter에서 `return`을 생략하는 규칙은 함수에서 `return`을 생략하는 규칙과 동일하다. 이에 대한 자세한 내용은 <doc:Functions#Functions-With-an-Implicit-Return>에서 확인할 수 있다.
 
-### Read-Only Computed Properties
 
-A computed property with a getter but no setter is known as a *read-only computed property*.
-A read-only computed property always returns a value,
-and can be accessed through dot syntax, but can't be set to a different value.
+### 읽기 전용 계산 프로퍼티
 
-> Note: You must declare computed properties --- including read-only computed properties ---
-> as variable properties with the `var` keyword, because their value isn't fixed.
-> The `let` keyword is only used for constant properties,
-> to indicate that their values can't be changed once they're set
-> as part of instance initialization.
+getter는 있지만 setter가 없는 계산 프로퍼티를 *읽기 전용 계산 프로퍼티*라고 한다.  
+읽기 전용 계산 프로퍼티는 항상 값을 반환하며, 점 표기법을 통해 접근할 수 있지만 다른 값으로 설정할 수 없다.
+
+> 주의: 계산 프로퍼티(읽기 전용 계산 프로퍼티 포함)는 값이 고정되어 있지 않기 때문에 `var` 키워드를 사용해 변수 프로퍼티로 선언해야 한다.  
+> `let` 키워드는 인스턴스 초기화 시 값이 한 번 설정된 후 변경할 수 없는 상수 프로퍼티에만 사용한다.
 
 <!--
   - test: `readOnlyComputedPropertiesMustBeVariables`
@@ -565,8 +458,7 @@ and can be accessed through dot syntax, but can't be set to a different value.
   ```
 -->
 
-You can simplify the declaration of a read-only computed property
-by removing the `get` keyword and its braces:
+`get` 키워드와 중괄호를 생략하면 읽기 전용 계산 프로퍼티의 선언을 간소화할 수 있다:
 
 ```swift
 struct Cuboid {
@@ -596,15 +488,12 @@ print("the volume of fourByFiveByTwo is \(fourByFiveByTwo.volume)")
   ```
 -->
 
-This example defines a new structure called `Cuboid`,
-which represents a 3D rectangular box with `width`, `height`, and `depth` properties.
-This structure also has a read-only computed property called `volume`,
-which calculates and returns the current volume of the cuboid.
-It doesn't make sense for `volume` to be settable,
-because it would be ambiguous as to which values of `width`, `height`, and `depth`
-should be used for a particular `volume` value.
-Nonetheless, it's useful for a `Cuboid` to provide a read-only computed property
-to enable external users to discover its current calculated volume.
+이 예제는 `Cuboid`라는 새로운 구조체를 정의한다.  
+이 구조체는 `width`, `height`, `depth` 프로퍼티를 가진 3D 직육면체를 나타낸다.  
+또한 `volume`이라는 읽기 전용 계산 프로퍼티를 제공하는데, 이는 현재 직육면체의 부피를 계산해 반환한다.  
+`volume`을 설정 가능하게 만드는 것은 의미가 없다.  
+특정 `volume` 값에 대해 어떤 `width`, `height`, `depth` 값을 사용해야 하는지 모호해지기 때문이다.  
+그럼에도 `Cuboid`가 읽기 전용 계산 프로퍼티를 제공하면 외부 사용자가 현재 계산된 부피를 확인할 수 있어 유용하다.
 
 <!--
   NOTE: getters and setters are also allowed for constants and variables
@@ -621,11 +510,10 @@ to enable external users to discover its current calculated volume.
   (now that the Enumerations chapter no longer has an example of this itself).
 -->
 
-## Property Observers
 
-Property observers observe and respond to changes in a property's value.
-Property observers are called every time a property's value is set,
-even if the new value is the same as the property's current value.
+## 프로퍼티 옵저버
+
+프로퍼티 옵저버는 프로퍼티 값의 변화를 관찰하고 이에 반응한다. 프로퍼티 값이 설정될 때마다 프로퍼티 옵저버가 호출되며, 새로운 값이 현재 값과 동일한 경우에도 호출된다.
 
 <!--
   - test: `observersAreCalledEvenIfNewValueIsTheSameAsOldValue`
@@ -642,18 +530,13 @@ even if the new value is the same as the property's current value.
   ```
 -->
 
-You can add property observers in the following places:
+다음과 같은 위치에 프로퍼티 옵저버를 추가할 수 있다:
 
-- Stored properties that you define
-- Stored properties that you inherit
-- Computed properties that you inherit
+- 직접 정의한 저장 프로퍼티
+- 상속받은 저장 프로퍼티
+- 상속받은 계산 프로퍼티
 
-For an inherited property,
-you add a property observer by overriding that property in a subclass.
-For a computed property that you define,
-use the property's setter to observe and respond to value changes,
-instead of trying to create an observer.
-Overriding properties is described in <doc:Inheritance#Overriding>.
+상속받은 프로퍼티의 경우, 서브클래스에서 해당 프로퍼티를 오버라이드하여 프로퍼티 옵저버를 추가한다. 직접 정의한 계산 프로퍼티의 경우, 옵저버를 생성하려고 시도하는 대신 프로퍼티의 setter를 사용해 값의 변화를 관찰하고 반응한다. 프로퍼티 오버라이드에 대한 자세한 내용은 <doc:Inheritance#Overriding>을 참고한다.
 
 <!--
   - test: `lazyPropertiesCanHaveObservers`
@@ -704,22 +587,14 @@ Overriding properties is described in <doc:Inheritance#Overriding>.
   ```
 -->
 
-You have the option to define either or both of these observers on a property:
+프로퍼티에 다음과 같은 옵저버를 정의할 수 있다:
 
-- `willSet` is called just before the value is stored.
-- `didSet` is called immediately after the new value is stored.
+- `willSet`: 값이 저장되기 직전에 호출된다.
+- `didSet`: 새로운 값이 저장된 직후에 호출된다.
 
-If you implement a `willSet` observer,
-it's passed the new property value as a constant parameter.
-You can specify a name for this parameter as part of your `willSet` implementation.
-If you don't write the parameter name and parentheses within your implementation,
-the parameter is made available with a default parameter name of `newValue`.
+`willSet` 옵저버를 구현하면, 새로운 프로퍼티 값이 상수 파라미터로 전달된다. 이 파라미터의 이름을 `willSet` 구현의 일부로 지정할 수 있다. 파라미터 이름과 괄호를 생략하면, 기본 파라미터 이름인 `newValue`를 사용할 수 있다.
 
-Similarly, if you implement a `didSet` observer,
-it's passed a constant parameter containing the old property value.
-You can name the parameter or use the default parameter name of `oldValue`.
-If you assign a value to a property within its own `didSet` observer,
-the new value that you assign replaces the one that was just set.
+마찬가지로, `didSet` 옵저버를 구현하면, 이전 프로퍼티 값이 상수 파라미터로 전달된다. 파라미터 이름을 지정하거나 기본 파라미터 이름인 `oldValue`를 사용할 수 있다. `didSet` 옵저버 내에서 프로퍼티에 값을 할당하면, 방금 설정된 값을 대체한다.
 
 <!--
   - test: `assigningANewValueInADidSetReplacesTheNewValue`
@@ -733,15 +608,9 @@ the new value that you assign replaces the one that was just set.
   ```
 -->
 
-> Note: The `willSet` and `didSet` observers of superclass properties
-> are called when a property is set in a subclass initializer,
-> after the superclass initializer has been called.
-> They aren't called while a class is setting its own properties,
-> before the superclass initializer has been called.
+> Note: 서브클래스 초기화에서 프로퍼티를 설정할 때, 슈퍼클래스 초기화가 호출된 후에 슈퍼클래스 프로퍼티의 `willSet`과 `didSet` 옵저버가 호출된다. 슈퍼클래스 초기화가 호출되기 전에 클래스가 자신의 프로퍼티를 설정하는 동안에는 옵저버가 호출되지 않는다.
 >
-> For more information about initializer delegation,
-> see <doc:Initialization#Initializer-Delegation-for-Value-Types>
-> and <doc:Initialization#Initializer-Delegation-for-Class-Types>.
+> 초기화 위임에 대한 자세한 내용은 <doc:Initialization#Initializer-Delegation-for-Value-Types>와 <doc:Initialization#Initializer-Delegation-for-Class-Types>를 참고한다.
 
 <!--
   - test: `observersDuringInitialization`
@@ -771,11 +640,7 @@ the new value that you assign replaces the one that was just set.
   ```
 -->
 
-Here's an example of `willSet` and `didSet` in action.
-The example below defines a new class called `StepCounter`,
-which tracks the total number of steps that a person takes while walking.
-This class might be used with input data from a pedometer or other step counter
-to keep track of a person's exercise during their daily routine.
+다음은 `willSet`과 `didSet`이 동작하는 예시다. 아래 예시는 `StepCounter`라는 새로운 클래스를 정의하며, 이 클래스는 사람이 걷는 동안의 총 걸음 수를 추적한다. 이 클래스는 만보기나 다른 걸음 수 측정기의 입력 데이터와 함께 사용해 일상적인 운동량을 추적하는 데 활용할 수 있다.
 
 ```swift
 class StepCounter {
@@ -831,31 +696,15 @@ stepCounter.totalSteps = 896
   ```
 -->
 
-The `StepCounter` class declares a `totalSteps` property of type `Int`.
-This is a stored property with `willSet` and `didSet` observers.
+`StepCounter` 클래스는 `Int` 타입의 `totalSteps` 프로퍼티를 선언한다. 이 프로퍼티는 `willSet`과 `didSet` 옵저버가 있는 저장 프로퍼티다.
 
-The `willSet` and `didSet` observers for `totalSteps` are called
-whenever the property is assigned a new value.
-This is true even if the new value is the same as the current value.
+`totalSteps` 프로퍼티의 `willSet`과 `didSet` 옵저버는 프로퍼티에 새로운 값이 할당될 때마다 호출된다. 새로운 값이 현재 값과 동일한 경우에도 호출된다.
 
-This example's `willSet` observer uses
-a custom parameter name of `newTotalSteps` for the upcoming new value.
-In this example, it simply prints out the value that's about to be set.
+이 예시에서 `willSet` 옵저버는 새로운 값에 대해 `newTotalSteps`라는 커스텀 파라미터 이름을 사용한다. 이 옵저버는 설정될 값을 단순히 출력한다.
 
-The `didSet` observer is called after the value of `totalSteps` is updated.
-It compares the new value of `totalSteps` against the old value.
-If the total number of steps has increased,
-a message is printed to indicate how many new steps have been taken.
-The `didSet` observer doesn't provide a custom parameter name for the old value,
-and the default name of `oldValue` is used instead.
+`didSet` 옵저버는 `totalSteps` 값이 업데이트된 후에 호출된다. 이 옵저버는 `totalSteps`의 새로운 값과 이전 값을 비교한다. 총 걸음 수가 증가한 경우, 추가된 걸음 수를 나타내는 메시지를 출력한다. `didSet` 옵저버는 이전 값에 대해 커스텀 파라미터 이름을 제공하지 않으며, 기본 이름인 `oldValue`를 사용한다.
 
-> Note: If you pass a property that has observers
-> to a function as an in-out parameter,
-> the `willSet` and `didSet` observers are always called.
-> This is because of the copy-in copy-out memory model for in-out parameters:
-> The value is always written back to the property at the end of the function.
-> For a detailed discussion of the behavior of in-out parameters,
-> see <doc:Declarations#In-Out-Parameters>.
+> Note: 옵저버가 있는 프로퍼티를 함수에 in-out 파라미터로 전달하면, `willSet`과 `didSet` 옵저버가 항상 호출된다. 이는 in-out 파라미터의 copy-in copy-out 메모리 모델 때문이다: 함수가 끝날 때 항상 프로퍼티에 값이 다시 쓰여진다. in-out 파라미터의 동작에 대한 자세한 설명은 <doc:Declarations#In-Out-Parameters>를 참고한다.
 
 <!--
   - test: `observersCalledAfterInout`
@@ -880,27 +729,12 @@ and the default name of `oldValue` is used instead.
   Provide an example of it here.
 -->
 
-## Property Wrappers
 
-A property wrapper adds a layer of separation
-between code that manages how a property is stored
-and the code that defines a property.
-For example,
-if you have properties that
-provide thread-safety checks
-or store their underlying data in a database,
-you have to write that code on every property.
-When you use a property wrapper,
-you write the management code once when you define the wrapper,
-and then reuse that management code by applying it to multiple properties.
+## 프로퍼티 래퍼
 
-To define a property wrapper,
-you make a structure, enumeration, or class
-that defines a `wrappedValue` property.
-In the code below,
-the `TwelveOrLess` structure ensures that
-the value it wraps always contains a number less than or equal to 12.
-If you ask it to store a larger number, it stores 12 instead.
+프로퍼티 래퍼는 프로퍼티의 저장 방식을 관리하는 코드와 프로퍼티를 정의하는 코드 사이에 분리 계층을 추가한다. 예를 들어, 스레드 안전성 검사를 제공하거나 기본 데이터를 데이터베이스에 저장하는 프로퍼티가 있다면, 매번 해당 코드를 작성해야 한다. 프로퍼티 래퍼를 사용하면 래퍼를 정의할 때 관리 코드를 한 번 작성하고, 이를 여러 프로퍼티에 재사용할 수 있다.
+
+프로퍼티 래퍼를 정의하려면 `wrappedValue` 프로퍼티를 정의하는 구조체, 열거형, 또는 클래스를 만든다. 아래 코드에서 `TwelveOrLess` 구조체는 래핑된 값이 항상 12 이하의 숫자를 포함하도록 보장한다. 더 큰 숫자를 저장하려고 하면 대신 12를 저장한다.
 
 ```swift
 @propertyWrapper
@@ -929,35 +763,27 @@ struct TwelveOrLess {
 -->
 
 <!--
-  No init(wrappedValue:) in this example -- that's in a later example.
-  Always initializing the wrapped value is a simpler starting point.
+  이 예제에서는 init(wrappedValue:)가 없음. 이는 나중 예제에서 다룸.
+  래핑된 값을 항상 초기화하는 것이 더 간단한 시작점임.
 -->
 
-The setter ensures that new values are less than or equal to 12,
-and the getter returns the stored value.
+세터는 새로운 값이 12 이하인지 확인하고, 게터는 저장된 값을 반환한다.
 
-> Note: The declaration for `number` in the example above
-> marks the variable as `private`,
-> which ensures `number` is used only
-> in the implementation of `TwelveOrLess`.
-> Code that's written anywhere else
-> accesses the value using the getter and setter for `wrappedValue`,
-> and can't use `number` directly.
-> For information about `private`, see <doc:AccessControl>.
+> 참고: 위 예제에서 `number`의 선언은 변수를 `private`로 표시하여, `number`가 `TwelveOrLess`의 구현에서만 사용되도록 보장한다. 다른 곳에서 작성된 코드는 `wrappedValue`의 게터와 세터를 통해 값에 접근하며, `number`에 직접 접근할 수 없다. `private`에 대한 자세한 정보는 <doc:AccessControl>을 참고한다.
 
 <!--
-  In this example,
-  the number is stored in the wrapper's private ``number`` property,
-  but you could write a version of ``EvenNumber``
-  that implements ``wrappedValue`` as a stored property
-  and uses ``didSet`` to ensure the number is always even.
+  이 예제에서,
+  숫자는 래퍼의 private ``number`` 프로퍼티에 저장되지만,
+  ``wrappedValue``를 저장 프로퍼티로 구현하고
+  ``didSet``을 사용하여 숫자가 항상 짝수가 되도록 보장하는
+  ``EvenNumber`` 버전을 작성할 수도 있다.
 
-  However, the general framing we use in the docs
-  is that didSet is mostly for reacting to the new value,
-  not changing it,
-  so I'm not highlighting that fact here.
-  The order of operations for willSet, set, and didSet is well defined,
-  but might be something you have to pay attention to.
+  그러나 문서에서 사용하는 일반적인 프레임은
+  didSet이 주로 새로운 값에 반응하는 데 사용되며,
+  값을 변경하는 데 사용되지 않는다는 것이므로,
+  여기서는 그 사실을 강조하지 않는다.
+  willSet, set, didSet의 작업 순서는 잘 정의되어 있지만,
+  주의해야 할 사항일 수 있다.
 -->
 
 <!--
@@ -989,12 +815,7 @@ and the getter returns the stored value.
   ```
 -->
 
-You apply a wrapper to a property
-by writing the wrapper's name before the property
-as an attribute.
-Here's a structure that stores a rectangle
-that uses the `TwelveOrLess` property wrapper
-to ensure its dimensions are always 12 or less:
+프로퍼티 래퍼를 프로퍼티에 적용하려면, 프로퍼티 앞에 래퍼 이름을 속성으로 작성한다. 다음은 `TwelveOrLess` 프로퍼티 래퍼를 사용하여 사각형의 크기가 항상 12 이하가 되도록 보장하는 구조체이다:
 
 ```swift
 struct SmallRectangle {
@@ -1038,27 +859,9 @@ print(rectangle.height)
   ```
 -->
 
-The `height` and `width` properties get their initial values
-from the definition of `TwelveOrLess`,
-which sets `TwelveOrLess.number` to zero.
-The setter in `TwelveOrLess` treats 10 as a valid value
-so storing the number 10 in `rectangle.height` proceeds as written.
-However, 24 is larger than `TwelveOrLess` allows,
-so trying to store 24 end up setting `rectangle.height`
-to 12 instead, the largest allowed value.
+`height`와 `width` 프로퍼티는 `TwelveOrLess`의 정의에서 초기값을 가져오며, `TwelveOrLess.number`를 0으로 설정한다. `TwelveOrLess`의 세터는 10을 유효한 값으로 처리하므로, `rectangle.height`에 10을 저장하는 것은 정상적으로 진행된다. 그러나 24는 `TwelveOrLess`가 허용하는 값보다 크므로, 24를 저장하려고 하면 `rectangle.height`가 허용된 최대값인 12로 설정된다.
 
-When you apply a wrapper to a property,
-the compiler synthesizes code that provides storage for the wrapper
-and code that provides access to the property through the wrapper.
-(The property wrapper is responsible for storing the wrapped value,
-so there's no synthesized code for that.)
-You could write code that uses the behavior of a property wrapper,
-without taking advantage of the special attribute syntax.
-For example,
-here's a version of `SmallRectangle`
-from the previous code listing
-that wraps its properties in the `TwelveOrLess` structure explicitly,
-instead of writing `@TwelveOrLess` as an attribute:
+프로퍼티 래퍼를 프로퍼티에 적용하면, 컴파일러는 래퍼를 위한 저장소를 제공하는 코드와 래퍼를 통해 프로퍼티에 접근하는 코드를 합성한다. (프로퍼티 래퍼는 래핑된 값을 저장하는 역할을 하므로, 이를 위한 합성 코드는 없다.) 특별한 속성 구문을 사용하지 않고도 프로퍼티 래퍼의 동작을 사용하는 코드를 작성할 수 있다. 예를 들어, 다음은 이전 코드 목록에서 `@TwelveOrLess`를 속성으로 작성하는 대신, `TwelveOrLess` 구조체로 프로퍼티를 명시적으로 래핑한 `SmallRectangle`의 버전이다:
 
 ```swift
 struct SmallRectangle {
@@ -1094,26 +897,12 @@ struct SmallRectangle {
   ```
 -->
 
-The `_height` and `_width` properties
-store an instance of the property wrapper, `TwelveOrLess`.
-The getter and setter for `height` and `width`
-wrap access to the `wrappedValue` property.
+`_height`와 `_width` 프로퍼티는 프로퍼티 래퍼인 `TwelveOrLess`의 인스턴스를 저장한다. `height`와 `width`의 게터와 세터는 `wrappedValue` 프로퍼티에 대한 접근을 래핑한다.
 
-### Setting Initial Values for Wrapped Properties
 
-The code in the examples above
-sets the initial value for the wrapped property
-by giving `number` an initial value in the definition of `TwelveOrLess`.
-Code that uses this property wrapper
-can't specify a different initial value for a property
-that's wrapped by `TwelveOrLess` ---
-for example,
-the definition of `SmallRectangle`
-can't give `height` or `width` initial values.
-To support setting an initial value or other customization,
-the property wrapper needs to add an initializer.
-Here's an expanded version of `TwelveOrLess` called `SmallNumber`
-that defines initializers that set the wrapped and maximum value:
+### 래핑된 프로퍼티의 초기값 설정
+
+위 예제의 코드는 `TwelveOrLess` 정의에서 `number`에 초기값을 할당함으로써 래핑된 프로퍼티의 초기값을 설정한다. `TwelveOrLess`로 래핑된 프로퍼티를 사용하는 코드는 해당 프로퍼티에 다른 초기값을 지정할 수 없다. 예를 들어, `SmallRectangle`의 정의에서 `height`나 `width`에 초기값을 할당할 수 없다. 초기값을 설정하거나 다른 커스터마이징을 지원하기 위해, 프로퍼티 래퍼는 초기화자를 추가해야 한다. 다음은 `SmallNumber`라는 이름으로 확장된 버전의 `TwelveOrLess`로, 래핑된 값과 최대값을 설정하는 초기화자를 정의한다.
 
 ```swift
 @propertyWrapper
@@ -1141,56 +930,9 @@ struct SmallNumber {
 }
 ```
 
-<!--
-  - test: `property-wrapper-init, property-wrapper-mixed-init`
+`SmallNumber`의 정의는 세 가지 초기화자(`init()`, `init(wrappedValue:)`, `init(wrappedValue:maximum:)`)를 포함한다. 아래 예제들은 이러한 초기화자를 사용해 래핑된 값과 최대값을 설정한다. 초기화와 초기화자 문법에 대한 자세한 내용은 <doc:Initialization>을 참고한다.
 
-  ```swifttest
-  -> @propertyWrapper
-  -> struct SmallNumber {
-         private var maximum: Int
-         private var number: Int
-
-         var wrappedValue: Int {
-             get { return number }
-             set { number = min(newValue, maximum) }
-         }
-
-         init() {
-             maximum = 12
-             number = 0
-         }
-         init(wrappedValue: Int) {
-             maximum = 12
-             number = min(wrappedValue, maximum)
-         }
-         init(wrappedValue: Int, maximum: Int) {
-             self.maximum = maximum
-             number = min(wrappedValue, maximum)
-         }
-     }
-  ```
--->
-
-<!--
-  The initializers above could be written to use
-  init(wrappedValue:maximum:) as the designated initializer,
-  with the other two calling it instead of doing initialization.
-  However, in this case, the initialization logic is small enough
-  that the risk of bugs isn't significant,
-  and the reader hasn't seen init syntax/rules in detail yet
-  so it's clearer to make each init stand on its own.
--->
-
-The definition of `SmallNumber` includes three initializers ---
-`init()`, `init(wrappedValue:)`, and `init(wrappedValue:maximum:)` ---
-which the examples below use
-to set the wrapped value and the maximum value.
-For information about initialization and initializer syntax,
-see <doc:Initialization>.
-
-When you apply a wrapper to a property and you don't specify an initial value,
-Swift uses the `init()` initializer to set up the wrapper.
-For example:
+프로퍼티에 래퍼를 적용하고 초기값을 지정하지 않으면, Swift는 `init()` 초기화자를 사용해 래퍼를 설정한다. 예를 들어:
 
 ```swift
 struct ZeroRectangle {
@@ -1203,57 +945,9 @@ print(zeroRectangle.height, zeroRectangle.width)
 // Prints "0 0"
 ```
 
-<!--
-  - test: `property-wrapper-init`
+`height`와 `width`를 래핑하는 `SmallNumber` 인스턴스는 `SmallNumber()`를 호출해 생성된다. 이 초기화자 내부의 코드는 기본값인 0과 12를 사용해 초기 래핑 값과 초기 최대값을 설정한다. 프로퍼티 래퍼는 여전히 모든 초기값을 제공한다. 이전 예제에서 `SmallRectangle`에 `TwelveOrLess`를 사용한 것과 달리, `SmallNumber`는 프로퍼티 선언의 일부로 이러한 초기값을 작성하는 것도 지원한다.
 
-  ```swifttest
-  -> struct ZeroRectangle {
-  ->     @SmallNumber var height: Int
-  ->     @SmallNumber var width: Int
-  -> }
-
-  -> var zeroRectangle = ZeroRectangle()
-  -> print(zeroRectangle.height, zeroRectangle.width)
-  <- 0 0
-  ```
--->
-
-<!--
-  - test: `property-wrapper-init`
-
-  ```swifttest
-  -> struct ZeroRectangle_equiv {
-         private var _height = SmallNumber()
-         private var _width = SmallNumber()
-         var height: Int {
-             get { return _height.wrappedValue }
-             set { _height.wrappedValue = newValue }
-         }
-         var width: Int {
-             get { return _width.wrappedValue }
-             set { _width.wrappedValue = newValue }
-         }
-     }
-  -> var zeroRectangle_equiv = ZeroRectangle_equiv()
-  -> print(zeroRectangle_equiv.height, zeroRectangle_equiv.width)
-  <- 0 0
-  ```
--->
-
-The instances of `SmallNumber` that wrap `height` and `width`
-are created by calling `SmallNumber()`.
-The code inside that initializer
-sets the initial wrapped value and the initial maximum value,
-using the default values of zero and 12.
-The property wrapper still provides all of the initial values,
-like the earlier example that used `TwelveOrLess` in `SmallRectangle`.
-Unlike that example,
-`SmallNumber` also supports writing those initial values
-as part of declaring the property.
-
-When you specify an initial value for the property,
-Swift uses the `init(wrappedValue:)` initializer to set up the wrapper.
-For example:
+프로퍼티에 초기값을 지정하면, Swift는 `init(wrappedValue:)` 초기화자를 사용해 래퍼를 설정한다. 예를 들어:
 
 ```swift
 struct UnitRectangle {
@@ -1266,54 +960,9 @@ print(unitRectangle.height, unitRectangle.width)
 // Prints "1 1"
 ```
 
-<!--
-  - test: `property-wrapper-init`
+프로퍼티에 `= 1`을 작성하면, 이는 `init(wrappedValue:)` 초기화자를 호출하는 것으로 변환된다. `height`와 `width`를 래핑하는 `SmallNumber` 인스턴스는 `SmallNumber(wrappedValue: 1)`을 호출해 생성된다. 초기화자는 여기서 지정한 래핑 값을 사용하고, 기본 최대값인 12를 사용한다.
 
-  ```swifttest
-  -> struct UnitRectangle {
-  ->     @SmallNumber var height: Int = 1
-  ->     @SmallNumber var width: Int = 1
-  -> }
-
-  -> var unitRectangle = UnitRectangle()
-  -> print(unitRectangle.height, unitRectangle.width)
-  <- 1 1
-  ```
--->
-
-<!--
-  - test: `property-wrapper-init`
-
-  ```swifttest
-  -> struct UnitRectangle_equiv {
-         private var _height = SmallNumber(wrappedValue: 1)
-         private var _width = SmallNumber(wrappedValue: 1)
-         var height: Int {
-             get { return _height.wrappedValue }
-             set { _height.wrappedValue = newValue }
-         }
-         var width: Int {
-             get { return _width.wrappedValue }
-             set { _width.wrappedValue = newValue }
-         }
-     }
-  -> var unitRectangle_equiv = UnitRectangle_equiv()
-  -> print(unitRectangle_equiv.height, unitRectangle_equiv.width)
-  <- 1 1
-  ```
--->
-
-When you write `= 1` on a property with a wrapper,
-that's translated into a call to the `init(wrappedValue:)` initializer.
-The instances of `SmallNumber` that wrap `height` and `width`
-are created by calling `SmallNumber(wrappedValue: 1)`.
-The initializer uses the wrapped value that's specified here,
-and it uses the default maximum value of 12.
-
-When you write arguments in parentheses after the custom attribute,
-Swift uses the initializer that accepts those arguments to set up the wrapper.
-For example, if you provide an initial value and a maximum value,
-Swift uses the `init(wrappedValue:maximum:)` initializer:
+커스텀 속성 뒤에 괄호 안에 인수를 작성하면, Swift는 해당 인수를 받는 초기화자를 사용해 래퍼를 설정한다. 예를 들어, 초기값과 최대값을 제공하면 Swift는 `init(wrappedValue:maximum:)` 초기화자를 사용한다:
 
 ```swift
 struct NarrowRectangle {
@@ -1331,69 +980,11 @@ print(narrowRectangle.height, narrowRectangle.width)
 // Prints "5 4"
 ```
 
-<!--
-  - test: `property-wrapper-init`
+`height`를 래핑하는 `SmallNumber` 인스턴스는 `SmallNumber(wrappedValue: 2, maximum: 5)`를 호출해 생성되고, `width`를 래핑하는 인스턴스는 `SmallNumber(wrappedValue: 3, maximum: 4)`를 호출해 생성된다.
 
-  ```swifttest
-  -> struct NarrowRectangle {
-  ->     @SmallNumber(wrappedValue: 2, maximum: 5) var height: Int
-  ->     @SmallNumber(wrappedValue: 3, maximum: 4) var width: Int
-  -> }
+프로퍼티 래퍼에 인수를 포함하면, 래퍼를 생성할 때 초기 상태를 설정하거나 다른 옵션을 전달할 수 있다. 이 구문은 프로퍼티 래퍼를 사용하는 가장 일반적인 방법이다. 속성에 필요한 인수를 제공하면, 이는 초기화자로 전달된다.
 
-  -> var narrowRectangle = NarrowRectangle()
-  -> print(narrowRectangle.height, narrowRectangle.width)
-  <- 2 3
-
-  -> narrowRectangle.height = 100
-  -> narrowRectangle.width = 100
-  -> print(narrowRectangle.height, narrowRectangle.width)
-  <- 5 4
-  ```
--->
-
-<!--
-  - test: `property-wrapper-init`
-
-  ```swifttest
-  -> struct NarrowRectangle_equiv {
-         private var _height = SmallNumber(wrappedValue: 2, maximum: 5)
-         private var _width = SmallNumber(wrappedValue: 3, maximum: 4)
-         var height: Int {
-             get { return _height.wrappedValue }
-             set { _height.wrappedValue = newValue }
-         }
-         var width: Int {
-             get { return _width.wrappedValue }
-             set { _width.wrappedValue = newValue }
-         }
-     }
-  -> var narrowRectangle_equiv = NarrowRectangle_equiv()
-  -> print(narrowRectangle_equiv.height, narrowRectangle_equiv.width)
-  <- 2 3
-  -> narrowRectangle_equiv.height = 100
-  -> narrowRectangle_equiv.width = 100
-  -> print(narrowRectangle_equiv.height, narrowRectangle_equiv.width)
-  <- 5 4
-  ```
--->
-
-The instance of `SmallNumber` that wraps `height`
-is created by calling `SmallNumber(wrappedValue: 2, maximum: 5)`,
-and the instance that wraps `width`
-is created by calling `SmallNumber(wrappedValue: 3, maximum: 4)`.
-
-By including arguments to the property wrapper,
-you can set up the initial state in the wrapper
-or pass other options to the wrapper when it's created.
-This syntax is the most general way to use a property wrapper.
-You can provide whatever arguments you need to the attribute,
-and they're passed to the initializer.
-
-When you include property wrapper arguments,
-you can also specify an initial value using assignment.
-Swift treats the assignment like a `wrappedValue` argument
-and uses the initializer that accepts the arguments you include.
-For example:
+프로퍼티 래퍼 인수를 포함할 때, 할당을 사용해 초기값을 지정할 수도 있다. Swift는 이 할당을 `wrappedValue` 인수처럼 취급하고, 포함한 인수를 받는 초기화자를 사용한다. 예를 들어:
 
 ```swift
 struct MixedRectangle {
@@ -1410,49 +1001,14 @@ print(mixedRectangle.height)
 // Prints "12"
 ```
 
-<!--
-  - test: `property-wrapper-mixed-init`
+`height`를 래핑하는 `SmallNumber` 인스턴스는 `SmallNumber(wrappedValue: 1)`을 호출해 생성되며, 이는 기본 최대값인 12를 사용한다. `width`를 래핑하는 인스턴스는 `SmallNumber(wrappedValue: 2, maximum: 9)`를 호출해 생성된다.
 
-  ```swifttest
-  -> struct MixedRectangle {
-  ->     @SmallNumber var height: Int = 1
-  ->     @SmallNumber(maximum: 9) var width: Int = 2
-  -> }
 
-  -> var mixedRectangle = MixedRectangle()
-  -> print(mixedRectangle.height)
-  <- 1
+### 프로퍼티 래퍼에서 값 투영하기
 
-  -> mixedRectangle.height = 20
-  -> print(mixedRectangle.height)
-  <- 12
-  ```
--->
+프로퍼티 래퍼는 래핑된 값 외에도 추가 기능을 제공할 수 있다. 이를 위해 *투영된 값(projected value)*을 정의한다. 예를 들어, 데이터베이스 접근을 관리하는 프로퍼티 래퍼는 투영된 값에 `flushDatabaseConnection()` 메서드를 노출할 수 있다. 투영된 값의 이름은 래핑된 값과 동일하지만, 달러 기호(`$`)로 시작한다. 코드에서 `$`로 시작하는 프로퍼티를 정의할 수 없기 때문에, 투영된 값은 정의한 프로퍼티와 충돌하지 않는다.
 
-The instance of `SmallNumber` that wraps `height`
-is created by calling `SmallNumber(wrappedValue: 1)`,
-which uses the default maximum value of 12.
-The instance that wraps `width`
-is created by calling `SmallNumber(wrappedValue: 2, maximum: 9)`.
-
-### Projecting a Value From a Property Wrapper
-
-In addition to the wrapped value,
-a property wrapper can expose additional functionality
-by defining a *projected value* ---
-for example, a property wrapper that manages access to a database
-can expose a `flushDatabaseConnection()` method on its projected value.
-The name of the projected value is the same as the wrapped value,
-except it begins with a dollar sign (`$`).
-Because your code can't define properties that start with `$`
-the projected value never interferes with properties you define.
-
-In the `SmallNumber` example above,
-if you try to set the property to a number that's too large,
-the property wrapper adjusts the number before storing it.
-The code below adds a `projectedValue` property to the `SmallNumber` structure
-to keep track of whether the property wrapper
-adjusted the new value for the property before storing that new value.
+앞서 살펴본 `SmallNumber` 예제에서, 프로퍼티에 너무 큰 값을 설정하려고 하면 프로퍼티 래퍼는 값을 조정한 후 저장한다. 아래 코드는 `SmallNumber` 구조체에 `projectedValue` 프로퍼티를 추가하여, 프로퍼티 래퍼가 새 값을 저장하기 전에 값을 조정했는지 여부를 추적한다.
 
 ```swift
 @propertyWrapper
@@ -1492,71 +1048,11 @@ print(someStructure.$someNumber)
 // Prints "true"
 ```
 
-<!--
-  - test: `small-number-wrapper-projection`
+`someStructure.$someNumber`를 작성하면 래퍼의 투영된 값에 접근한다. 4와 같은 작은 숫자를 저장한 후에는 `someStructure.$someNumber`의 값이 `false`이다. 하지만 55와 같이 너무 큰 숫자를 저장하려고 하면 투영된 값은 `true`가 된다.
 
-  ```swifttest
-  -> @propertyWrapper
-  -> struct SmallNumber {
-         private var number: Int
-         private(set) var projectedValue: Bool
+프로퍼티 래퍼는 투영된 값으로 어떤 타입의 값이든 반환할 수 있다. 이 예제에서는 프로퍼티 래퍼가 숫자가 조정되었는지 여부만 노출하므로, 불리언 값을 투영된 값으로 노출한다. 더 많은 정보를 노출해야 하는 래퍼는 다른 타입의 인스턴스를 반환하거나, `self`를 반환하여 래퍼 인스턴스 자체를 투영된 값으로 노출할 수 있다.
 
-         var wrappedValue: Int {
-             get { return number }
-             set {
-                 if newValue > 12 {
-                     number = 12
-                     projectedValue = true
-                 } else {
-                     number = newValue
-                     projectedValue = false
-                 }
-             }
-         }
-
-         init() {
-             self.number = 0
-             self.projectedValue = false
-         }
-     }
-  -> struct SomeStructure {
-  ->     @SmallNumber var someNumber: Int
-  -> }
-  -> var someStructure = SomeStructure()
-
-  -> someStructure.someNumber = 4
-  -> print(someStructure.$someNumber)
-  <- false
-
-  -> someStructure.someNumber = 55
-  -> print(someStructure.$someNumber)
-  <- true
-  ```
--->
-
-Writing `someStructure.$someNumber` accesses the wrapper's projected value.
-After storing a small number like four,
-the value of `someStructure.$someNumber` is `false`.
-However,
-the projected value is `true`
-after trying to store a number that's too large, like 55.
-
-A property wrapper can return a value of any type as its projected value.
-In this example,
-the property wrapper exposes only one piece of information ---
-whether the number was adjusted ---
-so it exposes that Boolean value as its projected value.
-A wrapper that needs to expose more information
-can return an instance of some other type,
-or it can return `self`
-to expose the instance of the wrapper as its projected value.
-
-When you access a projected value from code that's part of the type,
-like a property getter or an instance method,
-you can omit `self.` before the property name,
-just like accessing other properties.
-The code in the following example refers to the projected value
-of the wrapper around `height` and `width` as `$height` and `$width`:
+타입의 일부인 코드(예: 프로퍼티 게터나 인스턴스 메서드)에서 투영된 값에 접근할 때는, 다른 프로퍼티에 접근할 때와 마찬가지로 프로퍼티 이름 앞에 `self.`를 생략할 수 있다. 다음 예제의 코드는 `height`와 `width` 주변의 래퍼의 투영된 값을 `$height`와 `$width`로 참조한다:
 
 ```swift
 enum Size {
@@ -1581,76 +1077,16 @@ struct SizedRectangle {
 }
 ```
 
-<!--
-  - test: `small-number-wrapper-projection`
+프로퍼티 래퍼 구문은 게터와 세터가 있는 프로퍼티에 대한 문법적 설탕(syntactic sugar)일 뿐이므로, `height`와 `width`에 접근하는 것은 다른 프로퍼티에 접근하는 것과 동일하게 동작한다. 예를 들어, `resize(to:)`의 코드는 프로퍼티 래퍼를 사용하여 `height`와 `width`에 접근한다. `resize(to: .large)`를 호출하면, `.large`에 대한 스위치 케이스가 사각형의 높이와 너비를 100으로 설정한다. 래퍼는 이 프로퍼티의 값이 12보다 크지 않도록 방지하고, 값을 조정했다는 사실을 기록하기 위해 투영된 값을 `true`로 설정한다. `resize(to:)`의 끝에서, 반환문은 `$height`와 `$width`를 확인하여 프로퍼티 래퍼가 `height` 또는 `width`를 조정했는지 여부를 결정한다.
 
-  ```swifttest
-  -> enum Size {
-         case small, large
-     }
 
-  -> struct SizedRectangle {
-  ->     @SmallNumber var height: Int
-  ->     @SmallNumber var width: Int
+## 전역 변수와 지역 변수
 
-         mutating func resize(to size: Size) -> Bool {
-             switch size {
-                 case .small:
-                     height = 10
-                     width = 20
-                 case .large:
-                     height = 100
-                     width = 100
-             }
-             return $height || $width
-         }
-     }
-  >> var r = SizedRectangle()
-  >> print(r.height, r.width)
-  << 0 0
-  >> var adj = r.resize(to: .large)
-  >> print(adj, r.height, r.width)
-  << true 12 12
-  ```
--->
+앞서 설명한 계산 프로퍼티와 프로퍼티 관찰 기능은 *전역 변수*와 *지역 변수*에서도 사용할 수 있다. 전역 변수는 함수, 메서드, 클로저, 타입 컨텍스트 외부에서 정의된 변수를 의미한다. 반면 지역 변수는 함수, 메서드, 클로저 컨텍스트 내부에서 정의된 변수를 말한다.
 
-Because property wrapper syntax is just syntactic sugar
-for a property with a getter and a setter,
-accessing `height` and `width`
-behaves the same as accessing any other property.
-For example,
-the code in `resize(to:)` accesses `height` and `width`
-using their property wrapper.
-If you call `resize(to: .large)`,
-the switch case for `.large` sets the rectangle's height and width to 100.
-The wrapper prevents the value of those properties
-from being larger than 12,
-and it sets the projected value to `true`,
-to record the fact that it adjusted their values.
-At the end of `resize(to:)`,
-the return statement checks `$height` and `$width`
-to determine whether
-the property wrapper adjusted either `height` or `width`.
+지금까지 다룬 전역 변수와 지역 변수는 모두 *저장 변수*였다. 저장 변수는 저장 프로퍼티와 마찬가지로 특정 타입의 값을 저장하고, 그 값을 설정하거나 가져올 수 있다.
 
-## Global and Local Variables
-
-The capabilities described above for computing and observing properties
-are also available to *global variables* and *local variables*.
-Global variables are variables that are defined outside of any
-function, method, closure, or type context.
-Local variables are variables that are defined within
-a function, method, or closure context.
-
-The global and local variables you have encountered in previous chapters
-have all been *stored variables*.
-Stored variables, like stored properties,
-provide storage for a value of a certain type and allow that value to be set and retrieved.
-
-However, you can also define *computed variables*
-and define observers for stored variables,
-in either a global or local scope.
-Computed variables calculate their value, rather than storing it,
-and they're written in the same way as computed properties.
+하지만 전역 또는 지역 범위에서 *계산 변수*를 정의하거나 저장 변수에 관찰자를 추가할 수도 있다. 계산 변수는 값을 저장하지 않고 계산하며, 계산 프로퍼티와 동일한 방식으로 작성한다.
 
 <!--
   - test: `computedVariables`
@@ -1675,27 +1111,21 @@ and they're written in the same way as computed properties.
   ```
 -->
 
-> Note: Global constants and variables are always computed lazily,
-> in a similar manner to <doc:Properties#Lazy-Stored-Properties>.
-> Unlike lazy stored properties,
-> global constants and variables don't need to be marked with the `lazy` modifier.
+> 참고: 전역 상수와 변수는 지연 계산 프로퍼티와 유사한 방식으로 항상 지연 계산된다. 하지만 지연 저장 프로퍼티와 달리 전역 상수와 변수는 `lazy` 수식어를 붙일 필요가 없다.
 >
-> Local constants and variables are never computed lazily.
+> 반면 지역 상수와 변수는 절대 지연 계산되지 않는다.
 
-You can apply a property wrapper to a local stored variable,
-but not to a global variable or a computed variable.
-For example,
-in the code below, `myNumber` uses `SmallNumber` as a property wrapper.
+프로퍼티 래퍼는 지역 저장 변수에 적용할 수 있지만, 전역 변수나 계산 변수에는 적용할 수 없다. 예를 들어, 아래 코드에서 `myNumber`는 `SmallNumber`를 프로퍼티 래퍼로 사용한다.
 
 ```swift
 func someFunction() {
     @SmallNumber var myNumber: Int = 0
 
     myNumber = 10
-    // now myNumber is 10
+    // 이제 myNumber는 10
 
     myNumber = 24
-    // now myNumber is 12
+    // 이제 myNumber는 12
 }
 ```
 
@@ -1707,11 +1137,11 @@ func someFunction() {
   ->     @SmallNumber var myNumber: Int = 0
 
          myNumber = 10
-         // now myNumber is 10
+         // 이제 myNumber는 10
   >>     print(myNumber)
 
          myNumber = 24
-         // now myNumber is 12
+         // 이제 myNumber는 12
   >>     print(myNumber)
      }
   >> someFunction()
@@ -1720,73 +1150,43 @@ func someFunction() {
   ```
 -->
 
-Like when you apply `SmallNumber` to a property,
-setting the value of `myNumber` to 10 is valid.
-Because the property wrapper doesn't allow values higher than 12,
-it sets `myNumber` to 12 instead of 24.
+프로퍼티에 `SmallNumber`를 적용할 때와 마찬가지로, `myNumber`의 값을 10으로 설정하는 것은 유효하다. 하지만 프로퍼티 래퍼가 12보다 큰 값을 허용하지 않기 때문에, `myNumber`는 24 대신 12로 설정된다.
 
 <!--
-  The discussion of local variables with property wrappers
-  has to come later, because we need to use init(wrappedValue:)
-  to work around <rdar://problem/74616133>.
+  프로퍼티 래퍼를 사용한 지역 변수에 대한 논의는 나중에 진행한다.
+  <rdar://problem/74616133> 문제를 해결하기 위해 init(wrappedValue:)를 사용해야 하기 때문이다.
 -->
 
 <!--
-  TODO: clarify what we mean by "global variables" here.
-  According to [Contributor 6004], anything defined in a playground, REPL, or in main.swift
-  is a local variable in top-level code, not a global variable.
+  TODO: 여기서 말하는 "전역 변수"가 정확히 무엇을 의미하는지 명확히 해야 한다.
+  [Contributor 6004]에 따르면, 플레이그라운드, REPL, main.swift에서 정의된 모든 것은 전역 변수가 아니라 최상위 코드의 지역 변수다.
 -->
 
 <!--
-  TODO: this also makes it impossible (at present) to test the "always lazy" assertion.
+  TODO: 이로 인해 현재 "항상 지연 계산" 주장을 테스트할 수 없다.
 -->
 
-## Type Properties
 
-Instance properties are properties that belong to an instance of a particular type.
-Every time you create a new instance of that type,
-it has its own set of property values, separate from any other instance.
+## 타입 프로퍼티
 
-You can also define properties that belong to the type itself,
-not to any one instance of that type.
-There will only ever be one copy of these properties,
-no matter how many instances of that type you create.
-These kinds of properties are called *type properties*.
+인스턴스 프로퍼티는 특정 타입의 인스턴스에 속하는 프로퍼티다. 해당 타입의 새로운 인스턴스를 생성할 때마다, 각 인스턴스는 다른 인스턴스와 독립적인 프로퍼티 값을 가진다.
 
-Type properties are useful for defining values that are universal to
-*all* instances of a particular type,
-such as a constant property that all instances can use
-(like a static constant in C),
-or a variable property that stores a value that's global to all instances of that type
-(like a static variable in C).
+타입 자체에 속하는 프로퍼티를 정의할 수도 있다. 이러한 프로퍼티는 타입의 인스턴스가 아닌 타입 자체에 속하며, 해당 타입의 인스턴스를 아무리 많이 생성하더라도 단 하나의 복사본만 존재한다. 이런 종류의 프로퍼티를 *타입 프로퍼티*라고 한다.
 
-Stored type properties can be variables or constants.
-Computed type properties are always declared as variable properties,
-in the same way as computed instance properties.
+타입 프로퍼티는 특정 타입의 *모든* 인스턴스에 공통적으로 적용되는 값을 정의하는 데 유용하다. 예를 들어, 모든 인스턴스가 사용할 수 있는 상수 프로퍼티(C의 정적 상수와 유사)나, 해당 타입의 모든 인스턴스에 전역적으로 적용되는 값을 저장하는 변수 프로퍼티(C의 정적 변수와 유사)를 정의할 때 사용할 수 있다.
 
-> Note: Unlike stored instance properties,
-> you must always give stored type properties a default value.
-> This is because the type itself doesn't have an initializer
-> that can assign a value to a stored type property at initialization time.
+저장된 타입 프로퍼티는 변수나 상수로 선언할 수 있다. 계산된 타입 프로퍼티는 계산된 인스턴스 프로퍼티와 마찬가지로 항상 변수 프로퍼티로 선언된다.
+
+> 주의: 저장된 인스턴스 프로퍼티와 달리, 저장된 타입 프로퍼티는 항상 기본값을 지정해야 한다. 이는 타입 자체가 초기화 시 저장된 타입 프로퍼티에 값을 할당할 수 있는 초기화 메서드를 가지고 있지 않기 때문이다.
 >
-> Stored type properties are lazily initialized on their first access.
-> They're guaranteed to be initialized only once,
-> even when accessed by multiple threads simultaneously,
-> and they don't need to be marked with the `lazy` modifier.
+> 저장된 타입 프로퍼티는 처음 접근할 때 지연 초기화된다. 여러 스레드가 동시에 접근하더라도 단 한 번만 초기화되도록 보장되며, `lazy` 수정자로 표시할 필요가 없다.
 
-### Type Property Syntax
 
-In C and Objective-C, you define static constants and variables associated with a type
-as *global* static variables.
-In Swift, however, type properties are written as part of the type's definition,
-within the type's outer curly braces,
-and each type property is explicitly scoped to the type it supports.
+### 타입 프로퍼티 문법
 
-You define type properties with the `static` keyword.
-For computed type properties for class types,
-you can use the `class` keyword instead
-to allow subclasses to override the superclass’s implementation.
-The example below shows the syntax for stored and computed type properties:
+C와 Objective-C에서는 타입과 관련된 정적 상수와 변수를 *전역* 정적 변수로 정의한다. 반면 Swift에서는 타입 프로퍼티를 타입 정의의 일부로 작성하며, 타입의 외부 중괄호 안에 위치한다. 각 타입 프로퍼티는 해당 타입에 명시적으로 범위가 지정된다.
+
+타입 프로퍼티는 `static` 키워드로 정의한다. 클래스 타입의 계산된 타입 프로퍼티의 경우, `class` 키워드를 사용해 서브클래스가 슈퍼클래스의 구현을 재정의할 수 있게 한다. 아래 예제는 저장된 타입 프로퍼티와 계산된 타입 프로퍼티의 문법을 보여준다:
 
 ```swift
 struct SomeStructure {
@@ -1866,26 +1266,23 @@ class SomeClass {
   ```
 -->
 
-> Note: The computed type property examples above are for read-only computed type properties,
-> but you can also define read-write computed type properties
-> with the same syntax as for computed instance properties.
+> 참고: 위의 계산된 타입 프로퍼티 예제는 읽기 전용 계산된 타입 프로퍼티를 보여준다. 하지만 계산된 인스턴스 프로퍼티와 동일한 문법으로 읽기-쓰기 계산된 타입 프로퍼티도 정의할 수 있다.
 
-### Querying and Setting Type Properties
 
-Type properties are queried and set with dot syntax, just like instance properties.
-However, type properties are queried and set on the *type*, not on an instance of that type.
-For example:
+### 타입 프로퍼티 조회 및 설정
+
+타입 프로퍼티는 인스턴스 프로퍼티와 마찬가지로 점 문법을 사용해 조회하고 설정한다. 하지만 타입 프로퍼티는 인스턴스가 아닌 타입 자체에 대해 조회하고 설정한다. 예를 들어:
 
 ```swift
 print(SomeStructure.storedTypeProperty)
-// Prints "Some value."
+// "Some value." 출력
 SomeStructure.storedTypeProperty = "Another value."
 print(SomeStructure.storedTypeProperty)
-// Prints "Another value."
+// "Another value." 출력
 print(SomeEnumeration.computedTypeProperty)
-// Prints "6"
+// "6" 출력
 print(SomeClass.computedTypeProperty)
-// Prints "27"
+// "27" 출력
 ```
 
 <!--
@@ -1904,21 +1301,13 @@ print(SomeClass.computedTypeProperty)
   ```
 -->
 
-The examples that follow use two stored type properties as part of a structure
-that models an audio level meter for a number of audio channels.
-Each channel has an integer audio level between `0` and `10` inclusive.
+다음 예제에서는 오디오 채널의 음량을 측정하는 오디오 레벨 미터를 모델링하는 구조체의 일부로 두 개의 저장 타입 프로퍼티를 사용한다. 각 채널은 `0`부터 `10`까지의 정수 값을 가진다.
 
-The figure below illustrates how two of these audio channels can be combined
-to model a stereo audio level meter.
-When a channel's audio level is `0`, none of the lights for that channel are lit.
-When the audio level is `10`, all of the lights for that channel are lit.
-In this figure, the left channel has a current level of `9`,
-and the right channel has a current level of `7`:
+아래 그림은 두 오디오 채널을 결합해 스테레오 오디오 레벨 미터를 모델링하는 방법을 보여준다. 채널의 음량이 `0`이면 해당 채널의 모든 불이 꺼진다. 음량이 `10`이면 모든 불이 켜진다. 이 그림에서 왼쪽 채널의 현재 레벨은 `9`, 오른쪽 채널의 현재 레벨은 `7`이다:
 
 ![](staticPropertiesVUMeter)
 
-The audio channels described above are represented by
-instances of the `AudioChannel` structure:
+위에서 설명한 오디오 채널은 `AudioChannel` 구조체의 인스턴스로 표현된다:
 
 ```swift
 struct AudioChannel {
@@ -1927,11 +1316,11 @@ struct AudioChannel {
     var currentLevel: Int = 0 {
         didSet {
             if currentLevel > AudioChannel.thresholdLevel {
-                // cap the new audio level to the threshold level
+                // 새 오디오 레벨을 임계값으로 제한
                 currentLevel = AudioChannel.thresholdLevel
             }
             if currentLevel > AudioChannel.maxInputLevelForAllChannels {
-                // store this as the new overall maximum input level
+                // 이를 새로운 전체 최대 입력 레벨로 저장
                 AudioChannel.maxInputLevelForAllChannels = currentLevel
             }
         }
@@ -1949,11 +1338,11 @@ struct AudioChannel {
         var currentLevel: Int = 0 {
            didSet {
               if currentLevel > AudioChannel.thresholdLevel {
-                 // cap the new audio level to the threshold level
+                 // 새 오디오 레벨을 임계값으로 제한
                  currentLevel = AudioChannel.thresholdLevel
               }
               if currentLevel > AudioChannel.maxInputLevelForAllChannels {
-                 // store this as the new overall maximum input level
+                 // 이를 새로운 전체 최대 입력 레벨로 저장
                  AudioChannel.maxInputLevelForAllChannels = currentLevel
               }
            }
@@ -1962,40 +1351,20 @@ struct AudioChannel {
   ```
 -->
 
-The `AudioChannel` structure defines two stored type properties to support its functionality.
-The first, `thresholdLevel`, defines the maximum threshold value an audio level can take.
-This is a constant value of `10` for all `AudioChannel` instances.
-If an audio signal comes in with a higher value than `10`,
-it will be capped to this threshold value (as described below).
+`AudioChannel` 구조체는 기능을 지원하기 위해 두 개의 저장 타입 프로퍼티를 정의한다. 첫 번째는 `thresholdLevel`로, 오디오 레벨이 가질 수 있는 최대 임계값을 정의한다. 이 값은 모든 `AudioChannel` 인스턴스에 대해 `10`으로 고정된다. 만약 `10`보다 높은 값이 들어오면 이 임계값으로 제한된다(아래에서 설명).
 
-The second type property is
-a variable stored property called `maxInputLevelForAllChannels`.
-This keeps track of the maximum input value that has been received
-by *any* `AudioChannel` instance.
-It starts with an initial value of `0`.
+두 번째 타입 프로퍼티는 `maxInputLevelForAllChannels`라는 변수 저장 프로퍼티다. 이 프로퍼티는 *모든* `AudioChannel` 인스턴스가 받은 최대 입력 값을 추적한다. 초기값은 `0`이다.
 
-The `AudioChannel` structure also defines
-a stored instance property called `currentLevel`,
-which represents the channel's current audio level on a scale of `0` to `10`.
+`AudioChannel` 구조체는 또한 `currentLevel`이라는 저장 인스턴스 프로퍼티를 정의한다. 이 프로퍼티는 `0`부터 `10`까지의 스케일로 채널의 현재 오디오 레벨을 나타낸다.
 
-The `currentLevel` property has a `didSet` property observer
-to check the value of `currentLevel` whenever it's set.
-This observer performs two checks:
+`currentLevel` 프로퍼티는 값이 설정될 때마다 `currentLevel`의 값을 확인하는 `didSet` 프로퍼티 옵저버를 가지고 있다. 이 옵저버는 두 가지 검사를 수행한다:
 
-- If the new value of `currentLevel` is greater than the allowed `thresholdLevel`,
-  the property observer caps `currentLevel` to `thresholdLevel`.
-- If the new value of `currentLevel` (after any capping) is higher than
-  any value previously received by *any* `AudioChannel` instance,
-  the property observer stores the new `currentLevel` value in
-  the `maxInputLevelForAllChannels` type property.
+- `currentLevel`의 새 값이 허용된 `thresholdLevel`보다 크면, 프로퍼티 옵저버는 `currentLevel`을 `thresholdLevel`로 제한한다.
+- (제한 후) `currentLevel`의 새 값이 *모든* `AudioChannel` 인스턴스가 이전에 받은 값보다 크면, 프로퍼티 옵저버는 새 `currentLevel` 값을 `maxInputLevelForAllChannels` 타입 프로퍼티에 저장한다.
 
-> Note: In the first of these two checks,
-> the `didSet` observer sets `currentLevel` to a different value.
-> This doesn't, however, cause the observer to be called again.
+> 참고: 두 검사 중 첫 번째에서 `didSet` 옵저버는 `currentLevel`을 다른 값으로 설정한다. 하지만 이로 인해 옵저버가 다시 호출되지는 않는다.
 
-You can use the `AudioChannel` structure to create
-two new audio channels called `leftChannel` and `rightChannel`,
-to represent the audio levels of a stereo sound system:
+`AudioChannel` 구조체를 사용해 스테레오 사운드 시스템의 오디오 레벨을 나타내는 `leftChannel`과 `rightChannel`이라는 두 개의 새 오디오 채널을 생성할 수 있다:
 
 ```swift
 var leftChannel = AudioChannel()
@@ -2011,16 +1380,14 @@ var rightChannel = AudioChannel()
   ```
 -->
 
-If you set the `currentLevel` of the *left* channel to `7`,
-you can see that the `maxInputLevelForAllChannels` type property
-is updated to equal `7`:
+*왼쪽* 채널의 `currentLevel`을 `7`로 설정하면, `maxInputLevelForAllChannels` 타입 프로퍼티가 `7`로 업데이트되는 것을 확인할 수 있다:
 
 ```swift
 leftChannel.currentLevel = 7
 print(leftChannel.currentLevel)
-// Prints "7"
+// "7" 출력
 print(AudioChannel.maxInputLevelForAllChannels)
-// Prints "7"
+// "7" 출력
 ```
 
 <!--
@@ -2035,17 +1402,14 @@ print(AudioChannel.maxInputLevelForAllChannels)
   ```
 -->
 
-If you try to set the `currentLevel` of the *right* channel to `11`,
-you can see that the right channel's `currentLevel` property
-is capped to the maximum value of `10`,
-and the `maxInputLevelForAllChannels` type property is updated to equal `10`:
+*오른쪽* 채널의 `currentLevel`을 `11`로 설정하려고 하면, 오른쪽 채널의 `currentLevel` 프로퍼티가 최대값인 `10`으로 제한되고, `maxInputLevelForAllChannels` 타입 프로퍼티가 `10`으로 업데이트되는 것을 확인할 수 있다:
 
 ```swift
 rightChannel.currentLevel = 11
 print(rightChannel.currentLevel)
-// Prints "10"
+// "10" 출력
 print(AudioChannel.maxInputLevelForAllChannels)
-// Prints "10"
+// "10" 출력
 ```
 
 <!--
@@ -2069,3 +1433,5 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
+
+

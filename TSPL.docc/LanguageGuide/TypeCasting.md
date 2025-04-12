@@ -1,33 +1,19 @@
-# Type Casting
+# 타입 캐스팅
 
-Determine a value's runtime type and give it more specific type information.
+값의 런타임 타입을 확인하고 더 구체적인 타입 정보를 제공한다.
 
-*Type casting* is a way to check the type of an instance,
-or to treat that instance as a different
-superclass or subclass from somewhere else in its own class hierarchy.
+*타입 캐스팅*은 인스턴스의 타입을 확인하거나, 해당 인스턴스를 클래스 계층 구조 내의 다른 슈퍼클래스나 서브클래스로 취급하는 방법이다.
 
-Type casting in Swift is implemented with the `is` and `as` operators.
-These two operators provide a simple and expressive way
-to check the type of a value or cast a value to a different type.
+Swift에서 타입 캐스팅은 `is`와 `as` 연산자를 통해 구현된다. 이 두 연산자는 값의 타입을 확인하거나 값을 다른 타입으로 캐스팅하는 간단하고 명확한 방법을 제공한다.
 
-You can also use type casting to check whether a type conforms to a protocol,
-as described in <doc:Protocols#Checking-for-Protocol-Conformance>.
+타입 캐스팅을 사용해 특정 프로토콜을 준수하는지 여부를 확인할 수도 있다. 자세한 내용은 <doc:Protocols#Checking-for-Protocol-Conformance>를 참고한다.
 
-## Defining a Class Hierarchy for Type Casting
 
-You can use type casting with a hierarchy of classes and subclasses
-to check the type of a particular class instance
-and to cast that instance to another class within the same hierarchy.
-The three code snippets below define a hierarchy of classes
-and an array containing instances of those classes,
-for use in an example of type casting.
+## 타입 캐스팅을 위한 클래스 계층 구조 정의
 
-The first snippet defines a new base class called `MediaItem`.
-This class provides basic functionality for any kind of item that appears
-in a digital media library.
-Specifically, it declares a `name` property of type `String`,
-and an `init(name:)` initializer.
-(It's assumed that all media items, including all movies and songs, will have a name.)
+클래스와 서브클래스로 이루어진 계층 구조를 활용하면 특정 클래스 인스턴스의 타입을 확인하고, 동일한 계층 구조 내에서 다른 클래스로 캐스팅할 수 있다. 아래 세 개의 코드 스니펫은 타입 캐스팅 예제를 위해 클래스 계층 구조와 해당 클래스의 인스턴스를 포함한 배열을 정의한다.
+
+첫 번째 스니펫은 `MediaItem`이라는 새로운 기본 클래스를 정의한다. 이 클래스는 디지털 미디어 라이브러리에 등장하는 모든 종류의 아이템에 대한 기본 기능을 제공한다. 구체적으로, `String` 타입의 `name` 프로퍼티와 `init(name:)` 초기화 메서드를 선언한다. (모든 미디어 아이템, 영화와 노래를 포함해 이름을 가진다고 가정한다.)
 
 ```swift
 class MediaItem {
@@ -51,12 +37,7 @@ class MediaItem {
   ```
 -->
 
-The next snippet defines two subclasses of `MediaItem`.
-The first subclass, `Movie`, encapsulates additional information about a movie or film.
-It adds a `director` property on top of the base `MediaItem` class,
-with a corresponding initializer.
-The second subclass, `Song`, adds an `artist` property and initializer
-on top of the base class:
+다음 스니펫은 `MediaItem`의 두 서브클래스를 정의한다. 첫 번째 서브클래스인 `Movie`는 영화나 필름에 대한 추가 정보를 캡슐화한다. 기본 `MediaItem` 클래스 위에 `director` 프로퍼티와 해당 초기화 메서드를 추가한다. 두 번째 서브클래스인 `Song`은 기본 클래스 위에 `artist` 프로퍼티와 초기화 메서드를 추가한다:
 
 ```swift
 class Movie: MediaItem {
@@ -98,13 +79,7 @@ class Song: MediaItem {
   ```
 -->
 
-The final snippet creates a constant array called `library`,
-which contains two `Movie` instances and three `Song` instances.
-The type of the `library` array is inferred
-by initializing it with the contents of an array literal.
-Swift's type checker is able to deduce that `Movie` and `Song` have
-a common superclass of `MediaItem`,
-and so it infers a type of `[MediaItem]` for the `library` array:
+마지막 스니펫은 `library`라는 상수 배열을 생성한다. 이 배열은 두 개의 `Movie` 인스턴스와 세 개의 `Song` 인스턴스를 포함한다. `library` 배열의 타입은 배열 리터럴의 내용으로 초기화함으로써 추론된다. Swift의 타입 체커는 `Movie`와 `Song`이 `MediaItem`이라는 공통의 슈퍼클래스를 가지고 있다는 것을 추론할 수 있으므로, `library` 배열의 타입을 `[MediaItem]`으로 추론한다:
 
 ```swift
 let library = [
@@ -134,24 +109,14 @@ let library = [
   ```
 -->
 
-The items stored in `library` are still `Movie` and `Song` instances behind the scenes.
-However, if you iterate over the contents of this array,
-the items you receive back are typed as `MediaItem`,
-and not as `Movie` or `Song`.
-In order to work with them as their native type,
-you need to *check* their type,
-or *downcast* them to a different type,
-as described below.
+`library`에 저장된 아이템은 여전히 `Movie`와 `Song` 인스턴스다. 그러나 이 배열의 내용을 반복적으로 탐색하면, 반환되는 아이템은 `MediaItem` 타입으로 간주되며, `Movie`나 `Song`으로 간주되지 않는다. 이들을 원래 타입으로 다루려면, 아래에서 설명한 대로 타입을 *확인*하거나 다른 타입으로 *다운캐스팅*해야 한다.
 
-## Checking Type
 
-Use the *type check operator* (`is`) to check
-whether an instance is of a certain subclass type.
-The type check operator returns `true` if the instance is of that subclass type
-and `false` if it's not.
+## 타입 확인하기
 
-The example below defines two variables, `movieCount` and `songCount`,
-which count the number of `Movie` and `Song` instances in the `library` array:
+*타입 확인 연산자* (`is`)를 사용해 인스턴스가 특정 서브클래스 타입인지 확인할 수 있다. 타입 확인 연산자는 인스턴스가 해당 서브클래스 타입이면 `true`를 반환하고, 그렇지 않으면 `false`를 반환한다.
+
+아래 예제는 `library` 배열에서 `Movie`와 `Song` 인스턴스의 개수를 세는 `movieCount`와 `songCount` 변수를 정의한다:
 
 ```swift
 var movieCount = 0
@@ -189,54 +154,24 @@ print("Media library contains \(movieCount) movies and \(songCount) songs")
   ```
 -->
 
-This example iterates through all items in the `library` array.
-On each pass, the `for`-`in` loop sets the `item` constant
-to the next `MediaItem` in the array.
+이 예제는 `library` 배열의 모든 항목을 순회한다. 각 반복에서 `for`-`in` 루프는 `item` 상수에 배열의 다음 `MediaItem`을 할당한다.
 
-`item is Movie` returns `true` if the current `MediaItem`
-is a `Movie` instance and `false` if it's not.
-Similarly, `item is Song` checks whether the item is a `Song` instance.
-At the end of the `for`-`in` loop, the values of `movieCount` and `songCount`
-contain a count of how many `MediaItem` instances were found of each type.
+`item is Movie`는 현재 `MediaItem`이 `Movie` 인스턴스인 경우 `true`를 반환하고, 그렇지 않으면 `false`를 반환한다. 마찬가지로, `item is Song`은 항목이 `Song` 인스턴스인지 확인한다. `for`-`in` 루프가 끝나면, `movieCount`와 `songCount`에는 각 타입의 `MediaItem` 인스턴스 개수가 저장된다.
 
-## Downcasting
 
-A constant or variable of a certain class type may actually refer to
-an instance of a subclass behind the scenes.
-Where you believe this is the case,
-you can try to *downcast* to the subclass type
-with a *type cast operator* (`as?` or `as!`).
+## 다운캐스팅
 
-Because downcasting can fail,
-the type cast operator comes in two different forms.
-The conditional form, `as?`, returns an optional value of the type you are trying to downcast to.
-The forced form, `as!`, attempts the downcast and force-unwraps the result
-as a single compound action.
+특정 클래스 타입의 상수나 변수가 실제로는 하위 클래스의 인스턴스를 참조할 수 있다. 이런 경우를 의심할 때, *타입 캐스트 연산자*(`as?` 또는 `as!`)를 사용해 하위 클래스 타입으로 *다운캐스팅*을 시도할 수 있다.
 
-Use the conditional form of the type cast operator (`as?`)
-when you aren't sure if the downcast will succeed.
-This form of the operator will always return an optional value,
-and the value will be `nil` if the downcast was not possible.
-This enables you to check for a successful downcast.
+다운캐스팅은 실패할 수 있기 때문에, 타입 캐스트 연산자는 두 가지 형태로 제공된다. 조건부 형태인 `as?`는 다운캐스팅하려는 타입의 옵셔널 값을 반환한다. 강제 형태인 `as!`는 다운캐스팅을 시도하고 결과를 강제 언래핑하는 단일 동작을 수행한다.
 
-Use the forced form of the type cast operator (`as!`)
-only when you are sure that the downcast will always succeed.
-This form of the operator will trigger a runtime error
-if you try to downcast to an incorrect class type.
+다운캐스팅이 성공할지 확신할 수 없을 때는 조건부 형태의 타입 캐스트 연산자(`as?`)를 사용한다. 이 연산자는 항상 옵셔널 값을 반환하며, 다운캐스팅이 불가능한 경우 `nil`을 반환한다. 이를 통해 다운캐스팅이 성공했는지 확인할 수 있다.
 
-The example below iterates over each `MediaItem` in `library`,
-and prints an appropriate description for each item.
-To do this, it needs to access each item as a true `Movie` or `Song`,
-and not just as a `MediaItem`.
-This is necessary in order for it to be able to access
-the `director` or `artist` property of a `Movie` or `Song`
-for use in the description.
+다운캐스팅이 항상 성공할 것이라고 확신할 때만 강제 형태의 타입 캐스트 연산자(`as!`)를 사용한다. 이 연산자는 잘못된 클래스 타입으로 다운캐스팅을 시도할 경우 런타임 오류를 발생시킨다.
 
-In this example, each item in the array might be a `Movie`,
-or it might be a `Song`.
-You don't know in advance which actual class to use for each item,
-and so it's appropriate to use the conditional form of the type cast operator (`as?`)
-to check the downcast each time through the loop:
+아래 예제는 `library`에 있는 각 `MediaItem`을 순회하며, 각 항목에 대한 적절한 설명을 출력한다. 이를 위해 각 항목을 `Movie` 또는 `Song`으로 접근해야 한다. 단순히 `MediaItem`으로 접근하는 것만으로는 충분하지 않다. 설명에 사용하기 위해 `Movie`의 `director` 속성이나 `Song`의 `artist` 속성에 접근해야 하기 때문이다.
+
+이 예제에서 배열의 각 항목은 `Movie`일 수도 있고 `Song`일 수도 있다. 각 항목에 대해 어떤 클래스를 사용해야 할지 미리 알 수 없기 때문에, 반복문을 통해 매번 다운캐스팅을 확인하기 위해 조건부 형태의 타입 캐스트 연산자(`as?`)를 사용하는 것이 적절하다:
 
 ```swift
 for item in library {
@@ -274,36 +209,15 @@ for item in library {
   ```
 -->
 
-The example starts by trying to downcast the current `item` as a `Movie`.
-Because `item` is a `MediaItem` instance, it's possible that it *might* be a `Movie`;
-equally, it's also possible that it might be a `Song`,
-or even just a base `MediaItem`.
-Because of this uncertainty, the `as?` form of the type cast operator returns an *optional* value
-when attempting to downcast to a subclass type.
-The result of `item as? Movie` is of type `Movie?`, or “optional `Movie`”.
+이 예제는 현재 `item`을 `Movie`로 다운캐스팅하는 것으로 시작한다. `item`은 `MediaItem` 인스턴스이기 때문에 `Movie`일 가능성이 있다. 동시에 `Song`일 수도 있고, 단순히 기본 `MediaItem`일 수도 있다. 이러한 불확실성 때문에, 하위 클래스 타입으로 다운캐스팅을 시도할 때 `as?` 형태의 타입 캐스트 연산자는 *옵셔널* 값을 반환한다. `item as? Movie`의 결과는 `Movie?` 타입, 즉 "옵셔널 `Movie`"이다.
 
-Downcasting to `Movie` fails when applied to
-the `Song` instances in the library array.
-To cope with this, the example above uses optional binding
-to check whether the optional `Movie` actually contains a value
-(that is, to find out whether the downcast succeeded.)
-This optional binding is written “`if let movie = item as? Movie`”,
-which can be read as:
+`library` 배열에 있는 `Song` 인스턴스에 `Movie`로 다운캐스팅을 시도하면 실패한다. 이를 처리하기 위해 위 예제는 옵셔널 바인딩을 사용해 옵셔널 `Movie`가 실제로 값을 포함하는지 확인한다(즉, 다운캐스팅이 성공했는지 확인한다). 이 옵셔널 바인딩은 “`if let movie = item as? Movie`”로 작성되며, 다음과 같이 읽을 수 있다:
 
-“Try to access `item` as a `Movie`.
-If this is successful,
-set a new temporary constant called `movie` to
-the value stored in the returned optional `Movie`.”
+“`item`을 `Movie`로 접근해 보라. 성공한다면, 반환된 옵셔널 `Movie`에 저장된 값을 `movie`라는 새로운 임시 상수로 설정하라.”
 
-If the downcasting succeeds, the properties of `movie` are then used
-to print a description for that `Movie` instance, including the name of its `director`.
-A similar principle is used to check for `Song` instances,
-and to print an appropriate description (including `artist` name)
-whenever a `Song` is found in the library.
+다운캐스팅이 성공하면, `movie`의 속성을 사용해 해당 `Movie` 인스턴스에 대한 설명을 출력한다. 여기에는 `director`의 이름이 포함된다. `Song` 인스턴스를 확인하고, `library`에서 `Song`을 찾을 때마다 `artist` 이름을 포함한 적절한 설명을 출력하기 위해 비슷한 원칙이 적용된다.
 
-> Note: Casting doesn't actually modify the instance or change its values.
-> The underlying instance remains the same; it's simply treated and accessed
-> as an instance of the type to which it has been cast.
+> 참고: 캐스팅은 실제로 인스턴스를 수정하거나 값을 변경하지 않는다. 기본 인스턴스는 동일하게 유지되며, 단순히 캐스팅된 타입의 인스턴스로 취급되고 접근된다.
 
 <!--
   TODO: This example should be followed by the same example written with switch,
@@ -317,20 +231,17 @@ whenever a `Song` is found in the library.
   The reference shows the behavior in a contrived example.
 -->
 
-## Type Casting for Any and AnyObject
 
-Swift provides two special types for working with nonspecific types:
+## Any와 AnyObject를 위한 타입 캐스팅
 
-- `Any` can represent an instance of any type at all, including function types.
-- `AnyObject` can represent an instance of any class type.
+Swift는 비특정 타입을 다루기 위해 두 가지 특별한 타입을 제공한다:
 
-Use `Any` and `AnyObject` only when you explicitly need
-the behavior and capabilities they provide.
-It's always better to be specific about the types you expect to work with in your code.
+- `Any`는 함수 타입을 포함한 모든 타입의 인스턴스를 나타낼 수 있다.
+- `AnyObject`는 모든 클래스 타입의 인스턴스를 나타낼 수 있다.
 
-Here's an example of using `Any` to work with a mix of different types,
-including function types and nonclass types.
-The example creates an array called `things`, which can store values of type `Any`:
+`Any`와 `AnyObject`는 명시적으로 그 기능과 동작이 필요할 때만 사용한다. 코드에서 다루는 타입을 구체적으로 지정하는 것이 항상 더 좋다.
+
+다음은 `Any`를 사용해 함수 타입과 비클래스 타입을 포함한 다양한 타입을 다루는 예제다. 이 예제는 `Any` 타입의 값을 저장할 수 있는 `things`라는 배열을 생성한다:
 
 ```swift
 var things: [Any] = []
@@ -362,20 +273,9 @@ things.append({ (name: String) -> String in "Hello, \(name)" })
   ```
 -->
 
-The `things` array contains
-two `Int` values, two `Double` values, a `String` value,
-a tuple of type `(Double, Double)`,
-the movie “Ghostbusters”,
-and a closure expression that takes a `String` value
-and returns another `String` value.
+`things` 배열은 두 개의 `Int` 값, 두 개의 `Double` 값, 하나의 `String` 값, `(Double, Double)` 타입의 튜플, "Ghostbusters" 영화, 그리고 `String` 값을 받아 다른 `String` 값을 반환하는 클로저 표현식을 포함한다.
 
-To discover the specific type of a constant or variable
-that's known only to be of type `Any` or `AnyObject`,
-you can use an `is` or `as` pattern in a `switch` statement's cases.
-The example below iterates over the items in the `things` array
-and queries the type of each item with a `switch` statement.
-Several of the `switch` statement's cases bind their matched value to
-a constant of the specified type to enable its value to be printed:
+`Any` 또는 `AnyObject` 타입으로만 알려진 상수나 변수의 구체적인 타입을 확인하려면, `switch` 문의 케이스에서 `is` 또는 `as` 패턴을 사용할 수 있다. 아래 예제는 `things` 배열의 각 항목을 반복하며 `switch` 문을 사용해 각 항목의 타입을 확인한다. 여러 `switch` 케이스는 매칭된 값을 특정 타입의 상수에 바인딩해 그 값을 출력한다:
 
 ```swift
 for thing in things {
@@ -453,17 +353,12 @@ for thing in things {
   ```
 -->
 
-> Note: The `Any` type represents values of any type, including optional types.
-> Swift gives you a warning if you use an optional value
-> where a value of type `Any` is expected.
-> If you really do need to use an optional value as an `Any` value,
-> you can use the `as` operator to explicitly cast the optional to `Any`,
-> as shown below.
+> 참고: `Any` 타입은 옵셔널 타입을 포함한 모든 타입의 값을 나타낼 수 있다. `Any` 타입이 예상되는 곳에 옵셔널 값을 사용하면 Swift는 경고를 표시한다. 만약 옵셔널 값을 `Any` 값으로 사용해야 한다면, 아래와 같이 `as` 연산자를 사용해 명시적으로 옵셔널을 `Any`로 캐스팅할 수 있다.
 >
 > ```swift
 > let optionalNumber: Int? = 3
-> things.append(optionalNumber)        // Warning
-> things.append(optionalNumber as Any) // No warning
+> things.append(optionalNumber)        // 경고
+> things.append(optionalNumber as Any) // 경고 없음
 > ```
 
 <!--
@@ -471,23 +366,23 @@ for thing in things {
 
   ```swifttest
   -> let optionalNumber: Int? = 3
-  -> things.append(optionalNumber)        // Warning
+  -> things.append(optionalNumber)        // 경고
   !$ warning: expression implicitly coerced from 'Int?' to 'Any'
-  !! things.append(optionalNumber)        // Warning
+  !! things.append(optionalNumber)        // 경고
   !!               ^~~~~~~~~~~~~~
   !$ note: provide a default value to avoid this warning
-  !! things.append(optionalNumber)        // Warning
+  !! things.append(optionalNumber)        // 경고
   !!               ^~~~~~~~~~~~~~
   !!                              ?? <#default value#>
   !$ note: force-unwrap the value to avoid this warning
-  !! things.append(optionalNumber)        // Warning
+  !! things.append(optionalNumber)        // 경고
   !!               ^~~~~~~~~~~~~~
   !!                              !
   !$ note: explicitly cast to 'Any' with 'as Any' to silence this warning
-  !! things.append(optionalNumber)        // Warning
+  !! things.append(optionalNumber)        // 경고
   !!               ^~~~~~~~~~~~~~
   !!                              as Any
-  -> things.append(optionalNumber as Any) // No warning
+  -> things.append(optionalNumber as Any) // 경고 없음
   ```
 -->
 
@@ -531,3 +426,5 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
+
+

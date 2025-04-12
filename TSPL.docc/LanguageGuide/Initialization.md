@@ -1,49 +1,30 @@
-# Initialization
+# 초기화
 
-Set the initial values for a type's stored properties and perform one-time setup.
+타입의 저장 프로퍼티에 초기값을 설정하고, 한 번만 실행되는 설정 작업을 수행한다.
 
-*Initialization* is the process of preparing an instance of
-a class, structure, or enumeration for use.
-This process involves setting an initial value for each stored property on that instance
-and performing any other setup or initialization that's required
-before the new instance is ready for use.
+*초기화*는 클래스, 구조체, 열거형의 인스턴스를 사용할 준비를 하는 과정이다. 이 과정은 인스턴스의 각 저장 프로퍼티에 초기값을 할당하고, 새로운 인스턴스가 사용되기 전에 필요한 추가 설정 작업을 수행하는 것을 포함한다.
 
-You implement this initialization process by defining *initializers*,
-which are like special methods that can be called
-to create a new instance of a particular type.
-Unlike Objective-C initializers, Swift initializers don't return a value.
-Their primary role is to ensure that new instances of a type
-are correctly initialized before they're used for the first time.
+이 초기화 과정은 *초기화 메서드*를 정의해 구현한다. 초기화 메서드는 특정 타입의 새 인스턴스를 생성하기 위해 호출할 수 있는 특수한 메서드와 같다. Objective-C의 초기화 메서드와 달리 Swift의 초기화 메서드는 값을 반환하지 않는다. 주요 역할은 타입의 새 인스턴스가 처음 사용되기 전에 올바르게 초기화되는 것을 보장하는 것이다.
 
-Instances of class types can also implement a *deinitializer*,
-which performs any custom cleanup just before an instance of that class is deallocated.
-For more information about deinitializers, see <doc:Deinitialization>.
+클래스 타입의 인스턴스는 *디이니셜라이저*도 구현할 수 있다. 디이니셜라이저는 클래스 인스턴스가 메모리에서 해제되기 직전에 커스텀 정리 작업을 수행한다. 디이니셜라이저에 대한 자세한 내용은 <doc:Deinitialization>을 참고한다.
 
-## Setting Initial Values for Stored Properties
 
-Classes and structures *must* set all of their stored properties
-to an appropriate initial value by the time
-an instance of that class or structure is created.
-Stored properties can't be left in an indeterminate state.
+## 저장 프로퍼티의 초기값 설정
 
-You can set an initial value for a stored property within an initializer,
-or by assigning a default property value as part of the property's definition.
-These actions are described in the following sections.
+클래스와 구조체는 해당 클래스나 구조체의 인스턴스가 생성될 때, 모든 저장 프로퍼티에 적절한 초기값을 반드시 설정해야 한다. 저장 프로퍼티를 불확실한 상태로 둘 수 없다.
 
-> Note: When you assign a default value to a stored property,
-> or set its initial value within an initializer,
-> the value of that property is set directly,
-> without calling any property observers.
+저장 프로퍼티의 초기값은 이니셜라이저 내부에서 설정하거나, 프로퍼티 정의의 일부로 기본값을 할당하는 방식으로 설정할 수 있다. 이 두 가지 방법에 대해 다음 섹션에서 자세히 설명한다.
 
-### Initializers
+> 주의: 저장 프로퍼티에 기본값을 할당하거나 이니셜라이저 내부에서 초기값을 설정할 때, 해당 프로퍼티의 값은 프로퍼티 옵저버를 호출하지 않고 직접 설정된다.
 
-*Initializers* are called to create a new instance of a particular type.
-In its simplest form, an initializer is like an instance method with no parameters,
-written using the `init` keyword:
+
+### 초기화 메서드
+
+*초기화 메서드*는 특정 타입의 새 인스턴스를 생성하기 위해 호출된다. 가장 간단한 형태의 초기화 메서드는 매개변수가 없는 인스턴스 메서드와 같으며, `init` 키워드를 사용해 작성한다:
 
 ```swift
 init() {
-    // perform some initialization here
+    // 초기화 작업을 여기에 수행
 }
 ```
 
@@ -53,16 +34,13 @@ init() {
   ```swifttest
   >> class Test {
   -> init() {
-        // perform some initialization here
+        // 초기화 작업을 여기에 수행
      }
   >> }
   ```
 -->
 
-The example below defines a new structure called `Fahrenheit`
-to store temperatures expressed in the Fahrenheit scale.
-The `Fahrenheit` structure has one stored property,
-`temperature`, which is of type `Double`:
+아래 예제는 화씨 온도를 저장하기 위해 `Fahrenheit`라는 새로운 구조체를 정의한다. `Fahrenheit` 구조체는 `Double` 타입의 저장 프로퍼티인 `temperature`를 하나 가지고 있다:
 
 ```swift
 struct Fahrenheit {
@@ -73,7 +51,7 @@ struct Fahrenheit {
 }
 var f = Fahrenheit()
 print("The default temperature is \(f.temperature)° Fahrenheit")
-// Prints "The default temperature is 32.0° Fahrenheit"
+// "The default temperature is 32.0° Fahrenheit" 출력
 ```
 
 <!--
@@ -92,32 +70,23 @@ print("The default temperature is \(f.temperature)° Fahrenheit")
   ```
 -->
 
-The structure defines a single initializer, `init`, with no parameters,
-which initializes the stored temperature with a value of `32.0`
-(the freezing point of water in degrees Fahrenheit).
+이 구조체는 매개변수가 없는 단일 초기화 메서드 `init`을 정의하며, 이 메서드는 저장된 온도를 `32.0`(화씨 온도에서 물의 어는점)으로 초기화한다.
 
-### Default Property Values
 
-You can set the initial value of a stored property from within an initializer,
-as shown above.
-Alternatively, specify a *default property value*
-as part of the property's declaration.
-You specify a default property value by assigning an initial value to the property
-when it's defined.
+### 기본 프로퍼티 값
 
-> Note: If a property always takes the same initial value,
-> provide a default value rather than setting a value within an initializer.
-> The end result is the same,
-> but the default value ties the property's initialization more closely to its declaration.
-> It makes for shorter, clearer initializers
-> and enables you to infer the type of the property from its default value.
-> The default value also makes it easier for you to take advantage of
-> default initializers and initializer inheritance,
-> as described later in this chapter.
+저장 프로퍼티의 초기값은 이니셜라이저 내부에서 설정할 수 있다. 
+또는 프로퍼티 선언 시 *기본 프로퍼티 값*을 지정할 수도 있다. 
+프로퍼티를 정의할 때 초기값을 할당함으로써 기본 프로퍼티 값을 지정한다.
 
-You can write the `Fahrenheit` structure from above in a simpler form
-by providing a default value for its `temperature` property
-at the point that the property is declared:
+> 참고: 프로퍼티가 항상 동일한 초기값을 가지는 경우, 이니셜라이저 내부에서 값을 설정하는 대신 기본값을 제공하는 것이 좋다. 
+> 최종 결과는 동일하지만, 기본값을 사용하면 프로퍼티 초기화를 선언부와 더 밀접하게 연결할 수 있다. 
+> 이렇게 하면 이니셜라이저가 더 짧고 명확해지며, 기본값으로부터 프로퍼티의 타입을 추론할 수 있다. 
+> 또한 기본값을 사용하면 기본 이니셜라이저와 이니셜라이저 상속을 더 쉽게 활용할 수 있다. 
+> 이에 대해서는 이 장의 뒷부분에서 자세히 설명한다.
+
+앞서 살펴본 `Fahrenheit` 구조체를 더 간단하게 작성할 수 있다. 
+프로퍼티 선언 시점에 `temperature` 프로퍼티의 기본값을 제공하면 된다:
 
 ```swift
 struct Fahrenheit {
@@ -135,26 +104,17 @@ struct Fahrenheit {
   ```
 -->
 
-## Customizing Initialization
 
-You can customize the initialization process
-with input parameters and optional property types,
-or by assigning constant properties during initialization,
-as described in the following sections.
+## 초기화 과정 커스텀하기
 
-### Initialization Parameters
+다음 섹션에서 설명하는 대로, 입력 인자와 선택적 프로퍼티 타입을 사용하거나 초기화 과정에서 상수 프로퍼티를 할당하는 방식으로 초기화 과정을 커스텀할 수 있다.
 
-You can provide *initialization parameters* as part of an initializer's definition,
-to define the types and names of values that customize the initialization process.
-Initialization parameters have the same capabilities and syntax
-as function and method parameters.
 
-The following example defines a structure called `Celsius`,
-which stores temperatures expressed in degrees Celsius.
-The `Celsius` structure implements two custom initializers called
-`init(fromFahrenheit:)` and `init(fromKelvin:)`,
-which initialize a new instance of the structure
-with a value from a different temperature scale:
+### 초기화 매개변수
+
+초기화 매개변수는 초기화 과정을 커스텀화하기 위해 초기화 정의의 일부로 제공할 수 있다. 초기화 매개변수는 함수와 메서드 매개변수와 동일한 기능과 문법을 가진다.
+
+다음 예제는 섭씨 온도를 저장하는 `Celsius` 구조체를 정의한다. `Celsius` 구조체는 두 개의 커스텀 초기화 메서드인 `init(fromFahrenheit:)`와 `init(fromKelvin:)`을 구현한다. 이 초기화 메서드는 다른 온도 단위에서 값을 받아 새로운 구조체 인스턴스를 초기화한다:
 
 ```swift
 struct Celsius {
@@ -194,43 +154,30 @@ let freezingPointOfWater = Celsius(fromKelvin: 273.15)
   ```
 -->
 
-The first initializer has a single initialization parameter
-with an argument label of `fromFahrenheit` and a parameter name of `fahrenheit`.
-The second initializer has a single initialization parameter
-with an argument label of `fromKelvin` and a parameter name of `kelvin`.
-Both initializers convert their single argument into
-the corresponding Celsius value
-and store this value in a property called `temperatureInCelsius`.
+첫 번째 초기화 메서드는 `fromFahrenheit`라는 인자 레이블과 `fahrenheit`라는 매개변수 이름을 가진 단일 초기화 매개변수를 갖는다. 두 번째 초기화 메서드는 `fromKelvin`이라는 인자 레이블과 `kelvin`이라는 매개변수 이름을 가진 단일 초기화 매개변수를 갖는다. 두 초기화 메서드는 각각 단일 인자를 받아 해당하는 섭씨 값으로 변환하고, 이 값을 `temperatureInCelsius`라는 프로퍼티에 저장한다.
 
 <!--
-  TODO: I need to provide an example of default values for initializer parameters,
-  to show they can help you to get multiple initializers "for free" (after a fashion).
+  TODO: 초기화 매개변수의 기본값 예시를 제공하여, 여러 초기화 메서드를 "무료로" 얻는 방법을 보여줄 필요가 있음.
 -->
 
-### Parameter Names and Argument Labels
 
-As with function and method parameters,
-initialization parameters can have both a parameter name
-for use within the initializer's body
-and an argument label for use when calling the initializer.
+### 파라미터 이름과 인자 레이블
 
-However, initializers don't have an identifying function name before their parentheses
-in the way that functions and methods do.
-Therefore, the names and types of an initializer's parameters
-play a particularly important role in identifying which initializer should be called.
-Because of this, Swift provides an automatic argument label
-for *every* parameter in an initializer if you don't provide one.
+함수와 메서드의 파라미터와 마찬가지로,  
+초기화 파라미터도 초기화 본문 내에서 사용할 파라미터 이름과  
+초기화를 호출할 때 사용할 인자 레이블을 가질 수 있다.
 
-The following example defines a structure called `Color`,
-with three constant properties called `red`, `green`, and `blue`.
-These properties store a value between `0.0` and `1.0`
-to indicate the amount of red, green, and blue in the color.
+하지만 초기화는 함수나 메서드와 달리 괄호 앞에 식별 가능한 함수 이름이 없다.  
+따라서 초기화 파라미터의 이름과 타입은 어떤 초기화를 호출할지 결정하는 데 중요한 역할을 한다.  
+이 때문에 Swift는 초기화 파라미터에 인자 레이블을 명시하지 않으면 *모든* 파라미터에 자동으로 인자 레이블을 제공한다.
 
-`Color` provides an initializer with
-three appropriately named parameters of type `Double`
-for its red, green, and blue components.
-`Color` also provides a second initializer with a single `white` parameter,
-which is used to provide the same value for all three color components.
+아래 예제는 `Color`라는 구조체를 정의한다.  
+이 구조체는 `red`, `green`, `blue`라는 세 개의 상수 프로퍼티를 가지며,  
+각 프로퍼티는 `0.0`에서 `1.0` 사이의 값을 저장해 색상의 빨강, 초록, 파랑 정도를 나타낸다.
+
+`Color`는 빨강, 초록, 파랑 값을 설정하는 세 개의 `Double` 타입 파라미터를 가진 초기화를 제공한다.  
+또한 `white`라는 단일 파라미터를 가진 두 번째 초기화도 제공하는데,  
+이 초기화는 세 가지 색상 프로퍼티에 동일한 값을 할당한다.
 
 ```swift
 struct Color {
@@ -268,8 +215,7 @@ struct Color {
   ```
 -->
 
-Both initializers can be used to create a new `Color` instance,
-by providing named values for each initializer parameter:
+두 초기화 모두 각 파라미터에 이름을 붙여 값을 전달함으로써 새로운 `Color` 인스턴스를 생성할 수 있다:
 
 ```swift
 let magenta = Color(red: 1.0, green: 0.0, blue: 1.0)
@@ -288,14 +234,12 @@ let halfGray = Color(white: 0.5)
   ```
 -->
 
-Note that it isn't possible to call these initializers
-without using argument labels.
-Argument labels must always be used in an initializer if they're defined,
-and omitting them is a compile-time error:
+이 초기화를 호출할 때는 반드시 인자 레이블을 사용해야 한다.  
+인자 레이블이 정의된 경우 이를 생략하면 컴파일 타임 오류가 발생한다:
 
 ```swift
 let veryGreen = Color(0.0, 1.0, 0.0)
-// this reports a compile-time error - argument labels are required
+// 이 코드는 컴파일 타임 오류를 발생시킨다 - 인자 레이블이 필요하다
 ```
 
 <!--
@@ -303,7 +247,7 @@ let veryGreen = Color(0.0, 1.0, 0.0)
 
   ```swifttest
   -> let veryGreen = Color(0.0, 1.0, 0.0)
-  // this reports a compile-time error - argument labels are required
+  // 이 코드는 컴파일 타임 오류를 발생시킨다 - 인자 레이블이 필요하다
   !$ error: missing argument labels 'red:green:blue:' in call
   !! let veryGreen = Color(0.0, 1.0, 0.0)
   !! ^
@@ -311,16 +255,12 @@ let veryGreen = Color(0.0, 1.0, 0.0)
   ```
 -->
 
-### Initializer Parameters Without Argument Labels
 
-If you don't want to use an argument label for an initializer parameter,
-write an underscore (`_`) instead of an explicit argument label for that parameter
-to override the default behavior.
+### 인자 레이블이 없는 초기화 매개변수
 
-Here's an expanded version of the `Celsius` example
-from <doc:Initialization#Initialization-Parameters> above,
-with an additional initializer to create a new `Celsius` instance
-from a `Double` value that's already in the Celsius scale:
+초기화 매개변수에 인자 레이블을 사용하고 싶지 않다면, 명시적 인자 레이블 대신 밑줄(`_`)을 사용해 기본 동작을 재정의할 수 있다.
+
+앞서 <doc:Initialization#Initialization-Parameters>에서 다룬 `Celsius` 예제를 확장해, 이미 섭씨 단위인 `Double` 값으로 새로운 `Celsius` 인스턴스를 생성하는 추가 초기화 메서드를 구현해 보자.
 
 ```swift
 struct Celsius {
@@ -336,7 +276,7 @@ struct Celsius {
     }
 }
 let bodyTemperature = Celsius(37.0)
-// bodyTemperature.temperatureInCelsius is 37.0
+// bodyTemperature.temperatureInCelsius는 37.0이다
 ```
 
 <!--
@@ -361,23 +301,14 @@ let bodyTemperature = Celsius(37.0)
   ```
 -->
 
-The initializer call `Celsius(37.0)` is clear in its intent
-without the need for an argument label.
-It's therefore appropriate to write this initializer as `init(_ celsius: Double)`
-so that it can be called by providing an unnamed `Double` value.
+`Celsius(37.0)`과 같은 초기화 호출은 인자 레이블 없이도 의도가 명확하다. 따라서 이 초기화 메서드를 `init(_ celsius: Double)`로 작성해 이름 없는 `Double` 값을 제공하는 방식으로 호출할 수 있다.
 
-### Optional Property Types
 
-If your custom type has a stored property that's logically allowed to have “no value” ---
-perhaps because its value can't be set during initialization,
-or because it's allowed to have “no value” at some later point ---
-declare the property with an *optional* type.
-Properties of optional type are automatically initialized with a value of `nil`,
-indicating that the property is deliberately intended to have “no value yet”
-during initialization.
+### 옵셔널 프로퍼티 타입
 
-The following example defines a class called `SurveyQuestion`,
-with an optional `String` property called `response`:
+커스텀 타입에 저장 프로퍼티가 "값 없음"을 허용해야 하는 경우, 이를 옵셔널 타입으로 선언한다. 이는 초기화 중에 값을 설정할 수 없거나, 나중에 "값 없음"이 허용되는 경우에 유용하다. 옵셔널 타입의 프로퍼티는 자동으로 `nil` 값으로 초기화되며, 이는 초기화 시점에 "아직 값이 없음"을 의도적으로 나타낸다.
+
+다음 예제는 `SurveyQuestion`이라는 클래스를 정의하며, 옵셔널 `String` 타입의 `response` 프로퍼티를 가진다:
 
 ```swift
 class SurveyQuestion {
@@ -417,19 +348,12 @@ cheeseQuestion.response = "Yes, I do like cheese."
   ```
 -->
 
-The response to a survey question can't be known until it's asked,
-and so the `response` property is declared with a type of `String?`,
-or “optional `String`”.
-It's automatically assigned a default value of `nil`, meaning “no string yet”,
-when a new instance of `SurveyQuestion` is initialized.
+설문 질문에 대한 응답은 질문이 나오기 전까지 알 수 없기 때문에, `response` 프로퍼티는 `String?` 또는 "옵셔널 `String`" 타입으로 선언된다. `SurveyQuestion`의 새 인스턴스가 초기화될 때, 이 프로퍼티는 자동으로 "아직 문자열 없음"을 의미하는 `nil` 기본값으로 설정된다.
 
-### Assigning Constant Properties During Initialization
 
-You can assign a value to a constant property
-at any point during initialization,
-as long as it's set to a definite value by the time initialization finishes.
-Once a constant property is assigned a value,
-it can't be further modified.
+### 초기화 과정에서 상수 프로퍼티 할당하기
+
+상수 프로퍼티는 초기화가 완료될 때까지 명확한 값을 할당하기만 하면, 초기화 과정 중 어느 시점에서든 값을 할당할 수 있다. 상수 프로퍼티에 값이 한 번 할당되면, 이후에는 값을 변경할 수 없다.
 
 <!--
   - test: `constantPropertyAssignment`
@@ -475,16 +399,9 @@ it can't be further modified.
   ```
 -->
 
-> Note: For class instances,
-> a constant property can be modified during initialization
-> only by the class that introduces it.
-> It can't be modified by a subclass.
+> 참고: 클래스 인스턴스의 경우, 상수 프로퍼티는 해당 프로퍼티를 선언한 클래스에서만 초기화 과정 중에 수정할 수 있다. 하위 클래스에서는 수정할 수 없다.
 
-You can revise the `SurveyQuestion` example from above to use
-a constant property rather than a variable property for the `text` property of the question,
-to indicate that the question doesn't change once an instance of `SurveyQuestion` is created.
-Even though the `text` property is now a constant,
-it can still be set within the class's initializer:
+앞서 살펴본 `SurveyQuestion` 예제를 수정해 질문의 `text` 프로퍼티를 변수 프로퍼티가 아닌 상수 프로퍼티로 사용할 수 있다. 이렇게 하면 `SurveyQuestion` 인스턴스가 생성된 후 질문이 변경되지 않음을 나타낼 수 있다. `text` 프로퍼티가 상수로 선언되었더라도, 클래스의 초기화 메서드 내에서 값을 설정할 수 있다:
 
 ```swift
 class SurveyQuestion {
@@ -499,7 +416,7 @@ class SurveyQuestion {
 }
 let beetsQuestion = SurveyQuestion(text: "How about beets?")
 beetsQuestion.ask()
-// Prints "How about beets?"
+// "How about beets?" 출력
 beetsQuestion.response = "I also like beets. (But not with cheese.)"
 ```
 
@@ -524,14 +441,10 @@ beetsQuestion.response = "I also like beets. (But not with cheese.)"
   ```
 -->
 
-## Default Initializers
 
-Swift provides a *default initializer*
-for any structure or class
-that provides default values for all of its properties
-and doesn't provide at least one initializer itself.
-The default initializer simply creates a new instance
-with all of its properties set to their default values.
+## 기본 초기화 구문
+
+Swift는 모든 프로퍼티에 기본값이 설정되어 있고, 별도의 초기화 구문을 제공하지 않는 구조체나 클래스에 대해 *기본 초기화 구문*을 자동으로 제공한다. 이 기본 초기화 구문은 모든 프로퍼티를 기본값으로 설정한 새로운 인스턴스를 생성한다.
 
 <!--
   - test: `defaultInitializersForStructAndClass`
@@ -547,9 +460,7 @@ with all of its properties set to their default values.
   ```
 -->
 
-This example defines a class called `ShoppingListItem`,
-which encapsulates the name, quantity, and purchase state
-of an item in a shopping list:
+다음 예제는 `ShoppingListItem`이라는 클래스를 정의한다. 이 클래스는 쇼핑 목록에 있는 항목의 이름, 수량, 구매 상태를 캡슐화한다.
 
 ```swift
 class ShoppingListItem {
@@ -573,25 +484,12 @@ var item = ShoppingListItem()
   ```
 -->
 
-Because all properties of the `ShoppingListItem` class have default values,
-and because it's a base class with no superclass,
-`ShoppingListItem` automatically gains a default initializer implementation
-that creates a new instance with all of its properties set to their default values.
-(The `name` property is an optional `String` property,
-and so it automatically receives a default value of `nil`,
-even though this value isn't written in the code.)
-The example above uses the default initializer for the `ShoppingListItem` class
-to create a new instance of the class with initializer syntax,
-written as `ShoppingListItem()`,
-and assigns this new instance to a variable called `item`.
+`ShoppingListItem` 클래스의 모든 프로퍼티는 기본값을 가지고 있으며, 슈퍼클래스가 없는 기본 클래스이기 때문에, Swift는 자동으로 기본 초기화 구문을 제공한다. 이 초기화 구문은 모든 프로퍼티를 기본값으로 설정한 새로운 인스턴스를 생성한다. (`name` 프로퍼티는 옵셔널 `String` 타입이므로, 코드에 명시적으로 작성되지 않았더라도 기본값으로 `nil`이 할당된다.) 위 예제에서는 `ShoppingListItem` 클래스의 기본 초기화 구문을 사용해 `ShoppingListItem()` 구문으로 새로운 인스턴스를 생성하고, 이를 `item`이라는 변수에 할당한다.
 
-### Memberwise Initializers for Structure Types
 
-Structure types automatically receive a *memberwise initializer*
-if they don't define any of their own custom initializers.
-Unlike a default initializer,
-the structure receives a memberwise initializer
-even if it has stored properties that don't have default values.
+### 구조체 타입의 멤버 초기화
+
+구조체 타입은 커스텀 초기화를 정의하지 않으면 자동으로 *멤버 초기화*를 제공한다. 기본 초기화와 달리, 구조체는 기본값이 없는 저장 프로퍼티가 있어도 멤버 초기화를 받는다.
 
 <!--
   - test: `memberwiseInitializersDontRequireDefaultStoredPropertyValues`
@@ -605,19 +503,11 @@ even if it has stored properties that don't have default values.
   ```
 -->
 
-The memberwise initializer is a shorthand way
-to initialize the member properties of new structure instances.
-Initial values for the properties of the new instance
-can be passed to the memberwise initializer by name.
+멤버 초기화는 새로운 구조체 인스턴스의 멤버 프로퍼티를 초기화하는 간편한 방법이다. 새 인스턴스의 프로퍼티 초기값을 이름으로 전달할 수 있다.
 
-The example below defines a structure called `Size`
-with two properties called `width` and `height`.
-Both properties are inferred to be of type `Double`
-by assigning a default value of `0.0`.
+아래 예제는 `width`와 `height`라는 두 프로퍼티를 가진 `Size` 구조체를 정의한다. 두 프로퍼티는 기본값 `0.0`을 할당함으로써 `Double` 타입으로 추론된다.
 
-The `Size` structure automatically receives an `init(width:height:)`
-memberwise initializer,
-which you can use to initialize a new `Size` instance:
+`Size` 구조체는 자동으로 `init(width:height:)` 멤버 초기화를 제공하며, 이를 사용해 새로운 `Size` 인스턴스를 초기화할 수 있다:
 
 ```swift
 struct Size {
@@ -637,15 +527,7 @@ let twoByTwo = Size(width: 2.0, height: 2.0)
   ```
 -->
 
-When you call a memberwise initializer,
-you can omit values for any properties
-that have default values.
-In the example above,
-the `Size` structure has a default value
-for both its `height` and `width` properties.
-You can omit either property or both properties,
-and the initializer uses the default value for anything you omit.
-For example:
+멤버 초기화를 호출할 때, 기본값이 있는 프로퍼티는 생략할 수 있다. 위 예제에서 `Size` 구조체는 `height`와 `width` 프로퍼티 모두 기본값을 가지고 있다. 두 프로퍼티 중 하나 또는 둘 다 생략할 수 있으며, 초기화는 생략된 프로퍼티에 대해 기본값을 사용한다. 예를 들어:
 
 ```swift
 let zeroByTwo = Size(height: 2.0)
@@ -671,46 +553,20 @@ print(zeroByZero.width, zeroByZero.height)
   ```
 -->
 
-## Initializer Delegation for Value Types
 
-Initializers can call other initializers to perform part of an instance's initialization.
-This process, known as *initializer delegation*,
-avoids duplicating code across multiple initializers.
+## 값 타입의 이니셜라이저 위임
 
-The rules for how initializer delegation works,
-and for what forms of delegation are allowed,
-are different for value types and class types.
-Value types (structures and enumerations) don't support inheritance,
-and so their initializer delegation process is relatively simple,
-because they can only delegate to another initializer that they provide themselves.
-Classes, however, can inherit from other classes,
-as described in <doc:Inheritance>.
-This means that classes have additional responsibilities for ensuring that
-all stored properties they inherit are assigned a suitable value during initialization.
-These responsibilities are described in
-<doc:Initialization#Class-Inheritance-and-Initialization> below.
+이니셜라이저는 다른 이니셜라이저를 호출해 인스턴스 초기화의 일부를 수행할 수 있다. 이를 *이니셜라이저 위임*이라고 하며, 여러 이니셜라이저 간에 코드 중복을 방지한다.
 
-For value types, you use `self.init` to refer to other initializers
-from the same value type when writing your own custom initializers.
-You can call `self.init` only from within an initializer.
+이니셜라이저 위임이 어떻게 동작하는지, 그리고 어떤 형태의 위임이 허용되는지는 값 타입과 클래스 타입에 따라 다르다. 값 타입(구조체와 열거형)은 상속을 지원하지 않기 때문에, 이니셜라이저 위임 과정이 상대적으로 간단하다. 값 타입은 자신이 제공한 다른 이니셜라이저에게만 위임할 수 있다. 반면 클래스는 다른 클래스를 상속할 수 있으며, 이는 초기화 과정에서 상속된 모든 저장 프로퍼티에 적절한 값을 할당해야 하는 추가적인 책임이 있음을 의미한다. 이러한 책임은 <doc:Initialization#Class-Inheritance-and-Initialization>에서 자세히 설명한다.
 
-Note that if you define a custom initializer for a value type,
-you will no longer have access to the default initializer
-(or the memberwise initializer, if it's a structure) for that type.
-This constraint prevents a situation in which additional essential setup
-provided in a more complex initializer
-is accidentally circumvented by someone using one of the automatic initializers.
+값 타입의 경우, 커스텀 이니셜라이저를 작성할 때 동일한 값 타입의 다른 이니셜라이저를 참조하기 위해 `self.init`을 사용한다. `self.init`은 이니셜라이저 내부에서만 호출할 수 있다.
 
-> Note: If you want your custom value type to be initializable with
-> the default initializer and memberwise initializer,
-> and also with your own custom initializers,
-> write your custom initializers in an extension
-> rather than as part of the value type's original implementation.
-> For more information, see <doc:Extensions>.
+값 타입에 커스텀 이니셜라이저를 정의하면, 해당 타입의 기본 이니셜라이저(또는 구조체인 경우 멤버와이즈 이니셜라이저)에 더 이상 접근할 수 없다. 이 제약은 더 복잡한 이니셜라이저에서 제공하는 추가적인 필수 설정이 자동 이니셜라이저를 사용하는 과정에서 실수로 우회되는 상황을 방지한다.
 
-The following example defines a custom `Rect` structure to represent a geometric rectangle.
-The example requires two supporting structures called `Size` and `Point`,
-both of which provide default values of `0.0` for all of their properties:
+> 참고: 커스텀 값 타입이 기본 이니셜라이저와 멤버와이즈 이니셜라이저, 그리고 자신의 커스텀 이니셜라이저로 모두 초기화될 수 있도록 하려면, 커스텀 이니셜라이저를 값 타입의 원래 구현 부분이 아닌 익스텐션에 작성해야 한다. 자세한 내용은 <doc:Extensions>를 참고하라.
+
+다음 예제는 기하학적 사각형을 나타내는 커스텀 `Rect` 구조체를 정의한다. 이 예제는 모든 프로퍼티에 기본값 `0.0`을 제공하는 `Size`와 `Point`라는 두 개의 지원 구조체를 필요로 한다:
 
 ```swift
 struct Size {
@@ -734,12 +590,7 @@ struct Point {
   ```
 -->
 
-You can initialize the `Rect` structure below in one of three ways ---
-by using its default zero-initialized `origin` and `size` property values,
-by providing a specific origin point and size,
-or by providing a specific center point and size.
-These initialization options are represented by
-three custom initializers that are part of the `Rect` structure's definition:
+아래 `Rect` 구조체는 세 가지 방법으로 초기화할 수 있다. 기본적으로 `origin`과 `size` 프로퍼티 값을 0으로 초기화하거나, 특정 원점과 크기를 제공하거나, 특정 중심점과 크기를 제공하는 방법이다. 이러한 초기화 옵션은 `Rect` 구조체 정의에 포함된 세 가지 커스텀 이니셜라이저로 표현된다:
 
 ```swift
 struct Rect {
@@ -779,20 +630,11 @@ struct Rect {
   ```
 -->
 
-The first `Rect` initializer, `init()`,
-is functionally the same as the default initializer that the structure would have received
-if it didn't have its own custom initializers.
-This initializer has an empty body,
-represented by an empty pair of curly braces `{}`.
-Calling this initializer returns a `Rect` instance whose
-`origin` and `size` properties are both initialized with
-the default values of `Point(x: 0.0, y: 0.0)`
-and `Size(width: 0.0, height: 0.0)`
-from their property definitions:
+첫 번째 `Rect` 이니셜라이저인 `init()`은 구조체가 커스텀 이니셜라이저를 가지지 않았을 때 받을 기본 이니셜라이저와 기능적으로 동일하다. 이 이니셜라이저는 빈 본문을 가지며, 빈 중괄호 `{}`로 표현된다. 이 이니셜라이저를 호출하면 `origin`과 `size` 프로퍼티가 각각 `Point(x: 0.0, y: 0.0)`과 `Size(width: 0.0, height: 0.0)`의 기본값으로 초기화된 `Rect` 인스턴스를 반환한다:
 
 ```swift
 let basicRect = Rect()
-// basicRect's origin is (0.0, 0.0) and its size is (0.0, 0.0)
+// basicRect의 origin은 (0.0, 0.0)이고 size는 (0.0, 0.0)이다
 ```
 
 <!--
@@ -800,21 +642,17 @@ let basicRect = Rect()
 
   ```swifttest
   -> let basicRect = Rect()
-  /> basicRect's origin is (\(basicRect.origin.x), \(basicRect.origin.y)) and its size is (\(basicRect.size.width), \(basicRect.size.height))
-  </ basicRect's origin is (0.0, 0.0) and its size is (0.0, 0.0)
+  /> basicRect의 origin은 (\(basicRect.origin.x), \(basicRect.origin.y))이고 size는 (\(basicRect.size.width), \(basicRect.size.height))이다
+  </ basicRect의 origin은 (0.0, 0.0)이고 size는 (0.0, 0.0)이다
   ```
 -->
 
-The second `Rect` initializer, `init(origin:size:)`,
-is functionally the same as the memberwise initializer that the structure would have received
-if it didn't have its own custom initializers.
-This initializer simply assigns the `origin` and `size` argument values to
-the appropriate stored properties:
+두 번째 `Rect` 이니셜라이저인 `init(origin:size:)`는 구조체가 커스텀 이니셜라이저를 가지지 않았을 때 받을 멤버와이즈 이니셜라이저와 기능적으로 동일하다. 이 이니셜라이저는 단순히 `origin`과 `size` 인자 값을 해당 저장 프로퍼티에 할당한다:
 
 ```swift
 let originRect = Rect(origin: Point(x: 2.0, y: 2.0),
     size: Size(width: 5.0, height: 5.0))
-// originRect's origin is (2.0, 2.0) and its size is (5.0, 5.0)
+// originRect의 origin은 (2.0, 2.0)이고 size는 (5.0, 5.0)이다
 ```
 
 <!--
@@ -823,21 +661,17 @@ let originRect = Rect(origin: Point(x: 2.0, y: 2.0),
   ```swifttest
   -> let originRect = Rect(origin: Point(x: 2.0, y: 2.0),
         size: Size(width: 5.0, height: 5.0))
-  /> originRect's origin is (\(originRect.origin.x), \(originRect.origin.y)) and its size is (\(originRect.size.width), \(originRect.size.height))
-  </ originRect's origin is (2.0, 2.0) and its size is (5.0, 5.0)
+  /> originRect의 origin은 (\(originRect.origin.x), \(originRect.origin.y))이고 size는 (\(originRect.size.width), \(originRect.size.height))이다
+  </ originRect의 origin은 (2.0, 2.0)이고 size는 (5.0, 5.0)이다
   ```
 -->
 
-The third `Rect` initializer, `init(center:size:)`, is slightly more complex.
-It starts by calculating an appropriate origin point based on
-a `center` point and a `size` value.
-It then calls (or *delegates*) to the `init(origin:size:)` initializer,
-which stores the new origin and size values in the appropriate properties:
+세 번째 `Rect` 이니셜라이저인 `init(center:size:)`는 조금 더 복잡하다. 이 이니셜라이저는 `center` 점과 `size` 값을 기반으로 적절한 원점을 계산한다. 그런 다음 `init(origin:size:)` 이니셜라이저를 호출(또는 *위임*)하여 새로운 원점과 크기 값을 해당 프로퍼티에 저장한다:
 
 ```swift
 let centerRect = Rect(center: Point(x: 4.0, y: 4.0),
     size: Size(width: 3.0, height: 3.0))
-// centerRect's origin is (2.5, 2.5) and its size is (3.0, 3.0)
+// centerRect의 origin은 (2.5, 2.5)이고 size는 (3.0, 3.0)이다
 ```
 
 <!--
@@ -846,63 +680,43 @@ let centerRect = Rect(center: Point(x: 4.0, y: 4.0),
   ```swifttest
   -> let centerRect = Rect(center: Point(x: 4.0, y: 4.0),
         size: Size(width: 3.0, height: 3.0))
-  /> centerRect's origin is (\(centerRect.origin.x), \(centerRect.origin.y)) and its size is (\(centerRect.size.width), \(centerRect.size.height))
-  </ centerRect's origin is (2.5, 2.5) and its size is (3.0, 3.0)
+  /> centerRect의 origin은 (\(centerRect.origin.x), \(centerRect.origin.y))이고 size는 (\(centerRect.size.width), \(centerRect.size.height))이다
+  </ centerRect의 origin은 (2.5, 2.5)이고 size는 (3.0, 3.0)이다
   ```
 -->
 
-The `init(center:size:)` initializer could have assigned
-the new values of `origin` and `size` to the appropriate properties itself.
-However, it's more convenient (and clearer in intent)
-for the `init(center:size:)` initializer to take advantage of an existing initializer
-that already provides exactly that functionality.
+`init(center:size:)` 이니셜라이저는 새로운 `origin`과 `size` 값을 직접 해당 프로퍼티에 할당할 수도 있었다. 그러나 이미 해당 기능을 제공하는 기존 이니셜라이저를 활용하는 것이 더 편리하고 의도가 명확하다.
 
-> Note: For an alternative way to write this example without defining
-> the `init()` and `init(origin:size:)` initializers yourself,
-> see <doc:Extensions>.
+> 참고: `init()`과 `init(origin:size:)` 이니셜라이저를 직접 정의하지 않고 이 예제를 작성하는 다른 방법은 <doc:Extensions>를 참고하라.
 
-## Class Inheritance and Initialization
 
-All of a class's stored properties ---
-including any properties the class inherits from its superclass ---
-*must* be assigned an initial value during initialization.
+## 클래스 상속과 초기화
 
-Swift defines two kinds of initializers for class types
-to help ensure all stored properties receive an initial value.
-These are known as designated initializers and convenience initializers.
+클래스의 모든 저장 프로퍼티는 ---
+슈퍼클래스로부터 상속받은 프로퍼티를 포함하여 ---
+초기화 과정에서 반드시 초기값을 할당해야 한다.
 
-### Designated Initializers and Convenience Initializers
+Swift는 클래스 타입을 위해 두 가지 초기화 메서드를 정의한다.
+이를 통해 모든 저장 프로퍼티가 초기값을 받도록 보장한다.
+이 두 가지 초기화 메서드는 지정 초기화 메서드(designated initializer)와 편의 초기화 메서드(convenience initializer)로 알려져 있다.
 
-*Designated initializers* are the primary initializers for a class.
-A designated initializer fully initializes all properties introduced by that class
-and calls an appropriate superclass initializer
-to continue the initialization process up the superclass chain.
 
-Classes tend to have very few designated initializers,
-and it's quite common for a class to have only one.
-Designated initializers are “funnel” points through which initialization takes place,
-and through which the initialization process continues up the superclass chain.
+### 지정 이니셜라이저와 편의 이니셜라이저
 
-Every class must have at least one designated initializer.
-In some cases, this requirement is satisfied
-by inheriting one or more designated initializers from a superclass,
-as described in <doc:Initialization#Automatic-Initializer-Inheritance> below.
+**지정 이니셜라이저**는 클래스의 주요 초기화 메서드다. 지정 이니셜라이저는 해당 클래스에서 도입한 모든 프로퍼티를 완전히 초기화하고, 슈퍼클래스 체인을 따라 초기화를 계속하기 위해 적절한 슈퍼클래스 이니셜라이저를 호출한다.
 
-*Convenience initializers* are secondary, supporting initializers for a class.
-You can define a convenience initializer to call a designated initializer
-from the same class as the convenience initializer
-with some of the designated initializer's parameters set to default values.
-You can also define a convenience initializer to create
-an instance of that class for a specific use case or input value type.
+클래스는 일반적으로 지정 이니셜라이저를 거의 가지지 않으며, 하나만 갖는 경우가 흔하다. 지정 이니셜라이저는 초기화가 이루어지는 "깔대기" 지점이며, 이를 통해 초기화 프로세스가 슈퍼클래스 체인을 따라 계속된다.
 
-You don't have to provide convenience initializers if your class doesn't require them.
-Create convenience initializers whenever a shortcut to a common initialization pattern
-will save time or make initialization of the class clearer in intent.
+모든 클래스는 최소한 하나의 지정 이니셜라이저를 가져야 한다. 어떤 경우에는 슈퍼클래스로부터 하나 이상의 지정 이니셜라이저를 상속받아 이 요구 사항을 충족한다. 이에 대한 자세한 내용은 아래 <doc:Initialization#Automatic-Initializer-Inheritance>에서 확인할 수 있다.
 
-### Syntax for Designated and Convenience Initializers
+**편의 이니셜라이저**는 클래스의 보조 초기화 메서드다. 편의 이니셜라이저는 동일한 클래스의 지정 이니셜라이저를 호출하되, 지정 이니셜라이저의 일부 매개변수를 기본값으로 설정할 수 있다. 또한 특정 사용 사례나 입력 값 타입에 맞게 클래스의 인스턴스를 생성하기 위해 편의 이니셜라이저를 정의할 수도 있다.
 
-Designated initializers for classes are written in the same way as
-simple initializers for value types:
+편의 이니셜라이저는 클래스에 필요하지 않다면 제공하지 않아도 된다. 일반적인 초기화 패턴을 단축하는 것이 시간을 절약하거나 클래스 초기화의 의도를 더 명확히 할 때 편의 이니셜라이저를 생성한다.
+
+
+### 지정 초기화 메서드와 편의 초기화 메서드 문법
+
+클래스의 지정 초기화 메서드는 값 타입의 간단한 초기화 메서드와 동일한 방식으로 작성한다:
 
 ```swift
 init(<#parameters#>) {
@@ -910,9 +724,7 @@ init(<#parameters#>) {
 }
 ```
 
-Convenience initializers are written in the same style,
-but with the `convenience` modifier placed before the `init` keyword,
-separated by a space:
+편의 초기화 메서드는 동일한 스타일로 작성하지만, `init` 키워드 앞에 `convenience` 수식어를 공백으로 구분하여 추가한다:
 
 ```swift
 convenience init(<#parameters#>) {
@@ -920,312 +732,118 @@ convenience init(<#parameters#>) {
 }
 ```
 
-### Initializer Delegation for Class Types
 
-To simplify the relationships between designated and convenience initializers,
-Swift applies the following three rules for delegation calls between initializers:
+### 클래스 타입의 초기화 위임
 
-- term **Rule 1**:
-  A designated initializer must call a designated initializer from its immediate superclass.
+지정 초기화 메서드와 편의 초기화 메서드 간의 관계를 단순화하기 위해, Swift는 초기화 메서드 간의 위임 호출에 대해 다음과 같은 세 가지 규칙을 적용한다:
 
-- term **Rule 2**:
-  A convenience initializer must call another initializer from the *same* class.
+- **규칙 1**:
+  지정 초기화 메서드는 반드시 바로 위의 슈퍼클래스에 있는 지정 초기화 메서드를 호출해야 한다.
 
-- term **Rule 3**:
-  A convenience initializer must ultimately call a designated initializer.
+- **규칙 2**:
+  편의 초기화 메서드는 반드시 *같은* 클래스 내의 다른 초기화 메서드를 호출해야 한다.
 
-A simple way to remember this is:
+- **규칙 3**:
+  편의 초기화 메서드는 궁극적으로 지정 초기화 메서드를 호출해야 한다.
 
-- Designated initializers must always delegate *up*.
-- Convenience initializers must always delegate *across*.
+이 규칙을 쉽게 기억하는 방법은 다음과 같다:
 
-These rules are illustrated in the figure below:
+- 지정 초기화 메서드는 항상 *위로* 위임한다.
+- 편의 초기화 메서드는 항상 *가로로* 위임한다.
+
+이 규칙은 아래 그림에서 설명한다:
 
 ![](initializerDelegation01)
 
-Here, the superclass has a single designated initializer and two convenience initializers.
-One convenience initializer calls another convenience initializer,
-which in turn calls the single designated initializer.
-This satisfies rules 2 and 3 from above.
-The superclass doesn't itself have a further superclass, and so rule 1 doesn't apply.
+이 그림에서 슈퍼클래스는 하나의 지정 초기화 메서드와 두 개의 편의 초기화 메서드를 가지고 있다. 하나의 편의 초기화 메서드는 다른 편의 초기화 메서드를 호출하고, 이 편의 초기화 메서드는 다시 지정 초기화 메서드를 호출한다. 이는 위의 규칙 2와 3을 만족한다. 슈퍼클래스는 더 이상의 슈퍼클래스를 가지지 않으므로, 규칙 1은 적용되지 않는다.
 
-The subclass in this figure has two designated initializers and one convenience initializer.
-The convenience initializer must call one of the two designated initializers,
-because it can only call another initializer from the same class.
-This satisfies rules 2 and 3 from above.
-Both designated initializers must call the single designated initializer
-from the superclass, to satisfy rule 1 from above.
+이 그림의 서브클래스는 두 개의 지정 초기화 메서드와 하나의 편의 초기화 메서드를 가지고 있다. 편의 초기화 메서드는 같은 클래스 내의 다른 초기화 메서드만 호출할 수 있으므로, 두 지정 초기화 메서드 중 하나를 호출해야 한다. 이는 위의 규칙 2와 3을 만족한다. 두 지정 초기화 메서드는 모두 슈퍼클래스의 지정 초기화 메서드를 호출해야 하며, 이는 위의 규칙 1을 만족한다.
 
-> Note: These rules don't affect how users of your classes *create* instances of each class.
-> Any initializer in the diagram above can be used to create
-> a fully initialized instance of the class they belong to.
-> The rules only affect how you write the implementation of the class's initializers.
+> 참고: 이 규칙들은 클래스의 사용자가 각 클래스의 인스턴스를 *생성*하는 방식에 영향을 미치지 않는다. 위 그림에 나온 어떤 초기화 메서드도 해당 클래스의 완전히 초기화된 인스턴스를 생성하는 데 사용할 수 있다. 이 규칙들은 단지 클래스의 초기화 메서드를 구현하는 방식에만 영향을 미친다.
 
-The figure below shows a more complex class hierarchy for four classes.
-It illustrates how the designated initializers in this hierarchy
-act as “funnel” points for class initialization,
-simplifying the interrelationships among classes in the chain:
+아래 그림은 네 개의 클래스로 이루어진 더 복잡한 클래스 계층 구조를 보여준다. 이 그림은 이 계층 구조에서 지정 초기화 메서드가 클래스 초기화의 "깔대기" 역할을 하여, 클래스 간의 상호 관계를 단순화하는 방식을 설명한다:
 
 ![](initializerDelegation02)
 
-### Two-Phase Initialization
 
-Class initialization in Swift is a two-phase process.
-In the first phase, each stored property is assigned an initial value
-by the class that introduced it.
-Once the initial state for every stored property has been determined,
-the second phase begins,
-and each class is given the opportunity to customize its stored properties further
-before the new instance is considered ready for use.
+### 두 단계 초기화
 
-The use of a two-phase initialization process makes initialization safe,
-while still giving complete flexibility to each class in a class hierarchy.
-Two-phase initialization prevents property values
-from being accessed before they're initialized,
-and prevents property values from being set to a different value
-by another initializer unexpectedly.
+Swift에서 클래스 초기화는 두 단계로 이루어진다. 첫 번째 단계에서는 클래스가 도입한 모든 저장 프로퍼티에 초기값을 할당한다. 모든 저장 프로퍼티의 초기 상태가 결정되면 두 번째 단계가 시작되며, 각 클래스는 새로운 인스턴스가 사용 준비가 되기 전에 저장 프로퍼티를 추가로 커스터마이징할 수 있다.
 
-> Note: Swift's two-phase initialization process is similar to initialization in Objective-C.
-> The main difference is that during phase 1,
-> Objective-C assigns zero or null values (such as `0` or `nil`) to every property.
-> Swift's initialization flow is more flexible
-> in that it lets you set custom initial values,
-> and can cope with types for which `0` or `nil` isn't a valid default value.
+두 단계 초기화 프로세스는 초기화를 안전하게 만드는 동시에 클래스 계층 구조 내에서 각 클래스에 완전한 유연성을 제공한다. 이 방식은 프로퍼티 값이 초기화되기 전에 접근되는 것을 방지하고, 다른 초기화 메서드에 의해 예기치 않게 값이 변경되는 것을 막는다.
 
-Swift's compiler performs four helpful safety-checks to make sure that
-two-phase initialization is completed without error:
+> 참고: Swift의 두 단계 초기화 프로세스는 Objective-C의 초기화와 유사하다. 주요 차이점은 첫 번째 단계에서 Objective-C는 모든 프로퍼티에 `0` 또는 `nil`과 같은 값을 할당한다는 점이다. Swift는 더 유연하게 초기화를 진행하며, 사용자가 커스텀 초기값을 설정할 수 있고, `0` 또는 `nil`이 유효한 기본값이 아닌 타입도 처리할 수 있다.
 
-- term **Safety check 1**:
-  A designated initializer must ensure that all of the properties introduced by its class
-  are initialized before it delegates up to a superclass initializer.
+Swift 컴파일러는 두 단계 초기화가 오류 없이 완료되도록 네 가지 안전 검사를 수행한다:
 
-As mentioned above,
-the memory for an object is only considered fully initialized
-once the initial state of all of its stored properties is known.
-In order for this rule to be satisfied, a designated initializer must make sure that
-all of its own properties are initialized before it hands off up the chain.
+- **안전 검사 1**: 지정 초기화 메서드는 클래스가 도입한 모든 프로퍼티가 초기화된 후에 상위 클래스 초기화 메서드로 위임해야 한다.
 
-- term **Safety check 2**:
-  A designated initializer must delegate up to a superclass initializer
-  before assigning a value to an inherited property.
-  If it doesn't, the new value the designated initializer assigns
-  will be overwritten by the superclass as part of its own initialization.
+위에서 언급한 대로, 객체의 메모리는 모든 저장 프로퍼티의 초기 상태가 확인된 후에야 완전히 초기화된 것으로 간주된다. 이 규칙을 충족하려면 지정 초기화 메서드는 모든 프로퍼티가 초기화된 후에 상위 클래스 초기화 메서드로 위임해야 한다.
 
-- term **Safety check 3**:
-  A convenience initializer must delegate to another initializer
-  before assigning a value to *any* property
-  (including properties defined by the same class).
-  If it doesn't, the new value the convenience initializer assigns
-  will be overwritten by its own class's designated initializer.
+- **안전 검사 2**: 지정 초기화 메서드는 상속된 프로퍼티에 값을 할당하기 전에 상위 클래스 초기화 메서드로 위임해야 한다. 그렇지 않으면 지정 초기화 메서드가 할당한 새로운 값은 상위 클래스의 초기화 과정에서 덮어씌워질 수 있다.
 
-- term **Safety check 4**:
-  An initializer can't call any instance methods,
-  read the values of any instance properties,
-  or refer to `self` as a value
-  until after the first phase of initialization is complete.
+- **안전 검사 3**: 편의 초기화 메서드는 모든 프로퍼티(동일 클래스에서 정의한 프로퍼티 포함)에 값을 할당하기 전에 다른 초기화 메서드로 위임해야 한다. 그렇지 않으면 편의 초기화 메서드가 할당한 새로운 값은 해당 클래스의 지정 초기화 메서드에 의해 덮어씌워질 수 있다.
 
-The class instance isn't fully valid until the first phase ends.
-Properties can only be accessed, and methods can only be called,
-once the class instance is known to be valid at the end of the first phase.
+- **안전 검사 4**: 초기화 메서드는 첫 번째 초기화 단계가 완료될 때까지 인스턴스 메서드를 호출하거나, 인스턴스 프로퍼티 값을 읽거나, `self`를 값으로 참조할 수 없다.
 
-Here's how two-phase initialization plays out, based on the four safety checks above:
+첫 번째 단계가 끝날 때까지 클래스 인스턴스는 완전히 유효하지 않다. 프로퍼티는 첫 번째 단계가 끝난 후에야 접근할 수 있고, 메서드는 첫 번째 단계가 끝난 후에야 호출할 수 있다.
 
-**Phase 1**
+위의 네 가지 안전 검사를 기반으로 두 단계 초기화가 어떻게 진행되는지 살펴보자.
 
-- A designated or convenience initializer is called on a class.
-- Memory for a new instance of that class is allocated.
-  The memory isn't yet initialized.
-- A designated initializer for that class confirms that
-  all stored properties introduced by that class have a value.
-  The memory for these stored properties is now initialized.
-- The designated initializer hands off to a superclass initializer to perform the same task
-  for its own stored properties.
-- This continues up the class inheritance chain until the top of the chain is reached.
-- Once the top of the chain is reached,
-  and the final class in the chain has ensured that all of its stored properties have a value,
-  the instance's memory is considered to be fully initialized, and phase 1 is complete.
+**1단계**
 
-**Phase 2**
+- 클래스의 지정 초기화 메서드 또는 편의 초기화 메서드가 호출된다.
+- 클래스의 새로운 인스턴스에 대한 메모리가 할당된다. 이 메모리는 아직 초기화되지 않았다.
+- 클래스의 지정 초기화 메서드는 클래스가 도입한 모든 저장 프로퍼티가 값을 가지고 있는지 확인한다. 이 저장 프로퍼티의 메모리가 이제 초기화된다.
+- 지정 초기화 메서드는 상위 클래스 초기화 메서드로 위임하여 동일한 작업을 수행한다.
+- 이 과정은 클래스 상속 체인의 최상위에 도달할 때까지 계속된다.
+- 체인의 최상위에 도달하고, 체인의 마지막 클래스가 모든 저장 프로퍼티가 값을 가지고 있는지 확인하면, 인스턴스의 메모리가 완전히 초기화된 것으로 간주되며 1단계가 완료된다.
 
-- Working back down from the top of the chain,
-  each designated initializer in the chain has the option to customize the instance further.
-  Initializers are now able to access `self`
-  and can modify its properties, call its instance methods, and so on.
-- Finally, any convenience initializers in the chain have the option
-  to customize the instance and to work with `self`.
+**2단계**
 
-Here's how phase 1 looks for an initialization call for a hypothetical subclass and superclass:
+- 체인의 최상위에서 다시 아래로 내려가며, 체인의 각 지정 초기화 메서드는 인스턴스를 추가로 커스터마이징할 수 있다. 이제 초기화 메서드는 `self`에 접근할 수 있고, 프로퍼티를 수정하거나 인스턴스 메서드를 호출할 수 있다.
+- 마지막으로, 체인의 편의 초기화 메서드는 인스턴스를 커스터마이징하고 `self`를 사용할 수 있다.
+
+다음은 가상의 하위 클래스와 상위 클래스에 대한 초기화 호출의 1단계를 보여준다:
 
 ![](twoPhaseInitialization01)
 
-In this example, initialization begins with a call to
-a convenience initializer on the subclass.
-This convenience initializer can't yet modify any properties.
-It delegates across to a designated initializer from the same class.
+이 예제에서 초기화는 하위 클래스의 편의 초기화 메서드 호출로 시작된다. 이 편의 초기화 메서드는 아직 프로퍼티를 수정할 수 없다. 동일한 클래스의 지정 초기화 메서드로 위임한다.
 
-The designated initializer makes sure that all of the subclass's properties have a value,
-as per safety check 1. It then calls a designated initializer on its superclass
-to continue the initialization up the chain.
+지정 초기화 메서드는 안전 검사 1에 따라 하위 클래스의 모든 프로퍼티가 값을 가지고 있는지 확인한다. 그런 다음 상위 클래스의 지정 초기화 메서드를 호출하여 초기화를 계속한다.
 
-The superclass's designated initializer makes sure that
-all of the superclass properties have a value.
-There are no further superclasses to initialize,
-and so no further delegation is needed.
+상위 클래스의 지정 초기화 메서드는 상위 클래스의 모든 프로퍼티가 값을 가지고 있는지 확인한다. 더 이상 초기화할 상위 클래스가 없으므로 추가 위임이 필요하지 않다.
 
-As soon as all properties of the superclass have an initial value,
-its memory is considered fully initialized, and phase 1 is complete.
+상위 클래스의 모든 프로퍼티가 초기값을 가지면 메모리가 완전히 초기화된 것으로 간주되며 1단계가 완료된다.
 
-Here's how phase 2 looks for the same initialization call:
+다음은 동일한 초기화 호출의 2단계를 보여준다:
 
 ![](twoPhaseInitialization02)
 
-The superclass's designated initializer now has an opportunity
-to customize the instance further
-(although it doesn't have to).
+상위 클래스의 지정 초기화 메서드는 이제 인스턴스를 추가로 커스터마이징할 수 있다(필수는 아님).
 
-Once the superclass's designated initializer is finished,
-the subclass's designated initializer can perform additional customization
-(although again, it doesn't have to).
+상위 클래스의 지정 초기화 메서드가 완료되면, 하위 클래스의 지정 초기화 메서드도 추가 커스터마이징을 수행할 수 있다(필수는 아님).
 
-Finally, once the subclass's designated initializer is finished,
-the convenience initializer that was originally called
-can perform additional customization.
+마지막으로, 하위 클래스의 지정 초기화 메서드가 완료되면, 처음 호출된 편의 초기화 메서드가 추가 커스터마이징을 수행할 수 있다.
 
-### Initializer Inheritance and Overriding
 
-Unlike subclasses in Objective-C,
-Swift subclasses don't inherit their superclass initializers by default.
-Swift's approach prevents a situation in which a simple initializer from a superclass
-is inherited by a more specialized subclass
-and is used to create a new instance of the subclass
-that isn't fully or correctly initialized.
+### 초기화 상속과 재정의
 
-> Note: Superclass initializers *are* inherited in certain circumstances,
-> but only when it's safe and appropriate to do so.
-> For more information, see <doc:Initialization#Automatic-Initializer-Inheritance> below.
+Objective-C의 서브클래스와 달리, Swift의 서브클래스는 기본적으로 슈퍼클래스의 초기화 메서드를 상속하지 않는다. 이는 슈퍼클래스의 간단한 초기화 메서드가 더 특수화된 서브클래스에 상속되어, 완전히 또는 올바르게 초기화되지 않은 서브클래스의 인스턴스를 생성하는 상황을 방지하기 위함이다.
 
-If you want a custom subclass to present
-one or more of the same initializers as its superclass,
-you can provide a custom implementation of those initializers within the subclass.
+> 주의: 특정 상황에서는 슈퍼클래스의 초기화 메서드가 상속되지만, 이는 안전하고 적절한 경우에만 해당한다. 자세한 내용은 아래 <doc:Initialization#Automatic-Initializer-Inheritance>를 참고한다.
 
-When you write a subclass initializer that matches a superclass *designated* initializer,
-you are effectively providing an override of that designated initializer.
-Therefore, you must write the `override` modifier before the subclass's initializer definition.
-This is true even if you are overriding an automatically provided default initializer,
-as described in <doc:Initialization#Default-Initializers>.
+커스텀 서브클래스가 슈퍼클래스와 동일한 초기화 메서드를 제공하려면, 서브클래스 내에서 해당 초기화 메서드를 직접 구현해야 한다.
 
-As with an overridden property, method or subscript,
-the presence of the `override` modifier prompts Swift to check that
-the superclass has a matching designated initializer to be overridden,
-and validates that the parameters for your overriding initializer have been specified as intended.
+서브클래스의 초기화 메서드가 슈퍼클래스의 **지정 초기화 메서드(designated initializer)**와 일치하면, 해당 지정 초기화 메서드를 재정의하는 것이다. 따라서 서브클래스의 초기화 메서드 정의 앞에 `override` 수식어를 반드시 붙여야 한다. 이는 <doc:Initialization#Default-Initializers>에서 설명한 것처럼, 자동으로 제공된 기본 초기화 메서드를 재정의하는 경우에도 마찬가지다.
 
-> Note: You always write the `override` modifier when overriding a superclass designated initializer,
-> even if your subclass's implementation of the initializer is a convenience initializer.
+재정의된 프로퍼티, 메서드, 서브스크립트와 마찬가지로, `override` 수식어는 Swift가 슈퍼클래스에 재정의할 지정 초기화 메서드가 있는지 확인하고, 재정의 초기화 메서드의 매개변수가 의도한 대로 지정되었는지 검증하도록 한다.
 
-<!--
-  - test: `youHaveToWriteOverrideWhenOverridingADesignatedInitializer`
+> 주의: 슈퍼클래스의 지정 초기화 메서드를 재정의할 때는 항상 `override` 수식어를 작성해야 한다. 서브클래스의 초기화 메서드 구현이 편의 초기화 메서드(convenience initializer)인 경우에도 마찬가지다.
 
-  ```swifttest
-  -> class C {
-        init() {}
-     }
-  -> class D1: C {
-        // this is correct
-        override init() {}
-     }
-  -> class D2: C {
-        // this isn't correct
-        init() {}
-     }
-  !$ error: overriding declaration requires an 'override' keyword
-  !! init() {}
-  !! ^
-  !! override
-  !$ note: overridden declaration is here
-  !! init() {}
-  !! ^
-  ```
--->
+반대로, 서브클래스의 초기화 메서드가 슈퍼클래스의 **편의 초기화 메서드(convenience initializer)**와 일치하면, 슈퍼클래스의 편의 초기화 메서드는 서브클래스에서 직접 호출할 수 없다. 따라서 서브클래스는 (엄밀히 말하면) 슈퍼클래스의 초기화 메서드를 재정의하는 것이 아니다. 결과적으로, 슈퍼클래스의 편의 초기화 메서드와 일치하는 구현을 제공할 때는 `override` 수식어를 작성하지 않는다.
 
-<!--
-  - test: `youHaveToWriteOverrideEvenWhenOverridingADefaultInitializer`
-
-  ```swifttest
-  -> class C {
-        var i = 0
-     }
-  -> class D1: C {
-        // this is correct
-        override init() {}
-     }
-  -> class D2: C {
-        // this isn't correct
-        init() {}
-     }
-  !$ error: overriding declaration requires an 'override' keyword
-  !! init() {}
-  !! ^
-  !! override
-  !$ note: overridden declaration is here
-  !! class C {
-  !! ^
-  ```
--->
-
-Conversely, if you write a subclass initializer that matches a superclass *convenience* initializer,
-that superclass convenience initializer can never be called directly by your subclass,
-as per the rules described above in <doc:Initialization#Initializer-Delegation-for-Class-Types>.
-Therefore, your subclass is not (strictly speaking) providing an override of the superclass initializer.
-As a result, you don't write the `override` modifier when providing
-a matching implementation of a superclass convenience initializer.
-
-<!--
-  - test: `youDoNotAndCannotWriteOverrideWhenOverridingAConvenienceInitializer`
-
-  ```swifttest
-  -> class C {
-        var i: Int
-        init(someInt: Int) {
-           i = someInt
-        }
-        convenience init() {
-           self.init(someInt: 42)
-        }
-     }
-  -> class D1: C {
-        // override for designated, so needs the override modifier
-        override init(someInt: Int) {
-           super.init(someInt: someInt)
-        }
-        // not technically an override, so doesn't need the override modifier
-        convenience init() {
-           self.init(someInt: 42)
-        }
-     }
-  -> class D2: C {
-        // override for designated, so needs the override modifier
-        override init(someInt: Int) {
-           super.init(someInt: someInt)
-        }
-        // this isn't correct - "override" isn't required
-        override convenience init() {
-           self.init(someInt: 42)
-        }
-     }
-  !$ error: initializer does not override a designated initializer from its superclass
-  !! override convenience init() {
-  !! ~~~~~~~~             ^
-  !$ note: attempt to override convenience initializer here
-  !! convenience init() {
-  !! ^
-  ```
--->
-
-The example below defines a base class called `Vehicle`.
-This base class declares a stored property called `numberOfWheels`,
-with a default `Int` value of `0`.
-The `numberOfWheels` property is used by a computed property called `description`
-to create a `String` description of the vehicle's characteristics:
+아래 예제는 `Vehicle`이라는 기본 클래스를 정의한다. 이 클래스는 `numberOfWheels`라는 저장 프로퍼티를 선언하며, 기본값으로 `0`을 가진다. `numberOfWheels` 프로퍼티는 `description`이라는 계산 프로퍼티에서 사용되어 차량의 특성을 설명하는 `String`을 생성한다:
 
 ```swift
 class Vehicle {
@@ -1236,25 +854,7 @@ class Vehicle {
 }
 ```
 
-<!--
-  - test: `initializerInheritance`
-
-  ```swifttest
-  -> class Vehicle {
-        var numberOfWheels = 0
-        var description: String {
-           return "\(numberOfWheels) wheel(s)"
-        }
-     }
-  ```
--->
-
-The `Vehicle` class provides a default value for its only stored property,
-and doesn't provide any custom initializers itself.
-As a result, it automatically receives a default initializer,
-as described in <doc:Initialization#Default-Initializers>.
-The default initializer (when available) is always a designated initializer for a class,
-and can be used to create a new `Vehicle` instance with a `numberOfWheels` of `0`:
+`Vehicle` 클래스는 유일한 저장 프로퍼티에 기본값을 제공하며, 커스텀 초기화 메서드를 직접 구현하지 않는다. 따라서 <doc:Initialization#Default-Initializers>에서 설명한 것처럼, 기본 초기화 메서드를 자동으로 받는다. 기본 초기화 메서드는 (사용 가능한 경우) 항상 클래스의 지정 초기화 메서드이며, `numberOfWheels`가 `0`인 새로운 `Vehicle` 인스턴스를 생성하는 데 사용할 수 있다:
 
 ```swift
 let vehicle = Vehicle()
@@ -1262,17 +862,7 @@ print("Vehicle: \(vehicle.description)")
 // Vehicle: 0 wheel(s)
 ```
 
-<!--
-  - test: `initializerInheritance`
-
-  ```swifttest
-  -> let vehicle = Vehicle()
-  -> print("Vehicle: \(vehicle.description)")
-  </ Vehicle: 0 wheel(s)
-  ```
--->
-
-The next example defines a subclass of `Vehicle` called `Bicycle`:
+다음 예제는 `Vehicle`의 서브클래스인 `Bicycle`을 정의한다:
 
 ```swift
 class Bicycle: Vehicle {
@@ -1283,33 +873,11 @@ class Bicycle: Vehicle {
 }
 ```
 
-<!--
-  - test: `initializerInheritance`
+`Bicycle` 서브클래스는 커스텀 지정 초기화 메서드인 `init()`을 정의한다. 이 지정 초기화 메서드는 `Bicycle`의 슈퍼클래스인 `Vehicle`의 지정 초기화 메서드와 일치하므로, `Bicycle` 버전의 초기화 메서드에는 `override` 수식어가 붙는다.
 
-  ```swifttest
-  -> class Bicycle: Vehicle {
-        override init() {
-           super.init()
-           numberOfWheels = 2
-        }
-     }
-  ```
--->
+`Bicycle`의 `init()` 초기화 메서드는 `super.init()`을 호출하여 시작한다. 이는 `Bicycle` 클래스의 슈퍼클래스인 `Vehicle`의 기본 초기화 메서드를 호출한다. 이렇게 하면 `Bicycle`이 프로퍼티를 수정하기 전에 `Vehicle`이 상속된 `numberOfWheels` 프로퍼티를 초기화할 수 있다. `super.init()`을 호출한 후, `numberOfWheels`의 원래 값은 새로운 값인 `2`로 대체된다.
 
-The `Bicycle` subclass defines a custom designated initializer, `init()`.
-This designated initializer matches a designated initializer from the superclass of `Bicycle`,
-and so the `Bicycle` version of this initializer is marked with the `override` modifier.
-
-The `init()` initializer for `Bicycle` starts by calling `super.init()`,
-which calls the default initializer for the `Bicycle` class's superclass, `Vehicle`.
-This ensures that the `numberOfWheels` inherited property is initialized by `Vehicle`
-before `Bicycle` has the opportunity to modify the property.
-After calling `super.init()`,
-the original value of `numberOfWheels` is replaced with a new value of `2`.
-
-If you create an instance of `Bicycle`,
-you can call its inherited `description` computed property
-to see how its `numberOfWheels` property has been updated:
+`Bicycle`의 인스턴스를 생성하면, 상속된 `description` 계산 프로퍼티를 호출하여 `numberOfWheels` 프로퍼티가 어떻게 업데이트되었는지 확인할 수 있다:
 
 ```swift
 let bicycle = Bicycle()
@@ -1317,36 +885,16 @@ print("Bicycle: \(bicycle.description)")
 // Bicycle: 2 wheel(s)
 ```
 
-<!--
-  - test: `initializerInheritance`
+서브클래스의 초기화 메서드가 초기화 프로세스의 2단계에서 아무런 커스터마이징을 수행하지 않고, 슈퍼클래스에 동기식이고 매개변수가 없는 지정 초기화 메서드가 있다면, 서브클래스의 모든 저장 프로퍼티에 값을 할당한 후 `super.init()` 호출을 생략할 수 있다. 슈퍼클래스의 초기화 메서드가 비동기식이라면, `await super.init()`을 명시적으로 작성해야 한다.
 
-  ```swifttest
-  -> let bicycle = Bicycle()
-  -> print("Bicycle: \(bicycle.description)")
-  </ Bicycle: 2 wheel(s)
-  ```
--->
-
-If a subclass initializer performs no customization
-in phase 2 of the initialization process,
-and the superclass has a synchronous, zero-argument designated initializer,
-you can omit a call to `super.init()`
-after assigning values to all of the subclass's stored properties.
-If the superclass's initializer is asynchronous,
-you need to write `await super.init()` explicitly.
-
-This example defines another subclass of `Vehicle`, called `Hoverboard`.
-In its initializer, the `Hoverboard` class sets only its `color` property.
-Instead of making an explicit call to `super.init()`,
-this initializer relies on an implicit call to its superclass's initializer
-to complete the process.
+이 예제는 `Vehicle`의 또 다른 서브클래스인 `Hoverboard`를 정의한다. 초기화 메서드에서 `Hoverboard` 클래스는 `color` 프로퍼티만 설정한다. `super.init()`을 명시적으로 호출하는 대신, 이 초기화 메서드는 슈퍼클래스의 초기화 메서드를 암시적으로 호출하여 프로세스를 완료한다.
 
 ```swift
 class Hoverboard: Vehicle {
     var color: String
     init(color: String) {
         self.color = color
-        // super.init() implicitly called here
+        // super.init()이 여기서 암시적으로 호출됨
     }
     override var description: String {
         return "\(super.description) in a beautiful \(color)"
@@ -1354,25 +902,7 @@ class Hoverboard: Vehicle {
 }
 ```
 
-<!--
-  - test: `initializerInheritance`
-
-  ```swifttest
-  -> class Hoverboard: Vehicle {
-         var color: String
-         init(color: String) {
-             self.color = color
-             // super.init() implicitly called here
-         }
-         override var description: String {
-             return "\(super.description) in a beautiful \(color)"
-         }
-     }
-  ```
--->
-
-An instance of `Hoverboard` uses the default number of wheels
-supplied by the `Vehicle` initializer.
+`Hoverboard`의 인스턴스는 `Vehicle` 초기화 메서드에서 제공된 기본 바퀴 수를 사용한다.
 
 ```swift
 let hoverboard = Hoverboard(color: "silver")
@@ -1380,107 +910,42 @@ print("Hoverboard: \(hoverboard.description)")
 // Hoverboard: 0 wheel(s) in a beautiful silver
 ```
 
-<!--
-  - test: `initializerInheritance`
+> 주의: 서브클래스는 초기화 중에 상속된 변수 프로퍼티를 수정할 수 있지만, 상속된 상수 프로퍼티는 수정할 수 없다.
 
-  ```swifttest
-  -> let hoverboard = Hoverboard(color: "silver")
-  -> print("Hoverboard: \(hoverboard.description)")
-  </ Hoverboard: 0 wheel(s) in a beautiful silver
-  ```
--->
 
-> Note: Subclasses can modify inherited variable properties during initialization,
-> but can't modify inherited constant properties.
+### 자동 초기화 상속
 
-<!--
-  - test: `youCantModifyInheritedConstantPropertiesFromASuperclass`
+앞서 언급했듯이, 하위 클래스는 기본적으로 상위 클래스의 초기화 메서드를 상속받지 않는다. 하지만 특정 조건을 충족하면 상위 클래스의 초기화 메서드를 자동으로 상속받을 수 있다. 이는 실제로 많은 일반적인 상황에서 초기화 메서드를 재정의할 필요가 없고, 안전한 경우 최소한의 노력으로 상위 클래스의 초기화 메서드를 상속받을 수 있음을 의미한다.
 
-  ```swifttest
-  -> class C {
-        let constantProperty: Int
-        var variableProperty: Int
-        init() {
-           // this is fine - a class can set its own constant and variable properties during init
-           constantProperty = 0
-           variableProperty = 0
-        }
-     }
-  -> class D1: C {
-        override init() {
-           // this is fine - a subclass can set its superclass's variable properties during init
-           super.init()
-           variableProperty = 0
-        }
-     }
-  -> class D2: C {
-        override init() {
-           // this is wrong - a subclass can't set its superclass's constant properties during init
-           super.init()
-           constantProperty = 0
-        }
-     }
-  !$ error: cannot assign to property: 'constantProperty' is a 'let' constant
-  !! constantProperty = 0
-  !! ^~~~~~~~~~~~~~~~
-  !$ note: change 'let' to 'var' to make it mutable
-  !! let constantProperty: Int
-  !! ^~~
-  !! var
-  ```
--->
+하위 클래스에서 새로 추가한 프로퍼티에 기본값을 제공한다는 전제 하에, 다음 두 가지 규칙이 적용된다:
 
-### Automatic Initializer Inheritance
+- **규칙 1**:  
+  하위 클래스가 지정 초기화 메서드를 정의하지 않으면, 상위 클래스의 모든 지정 초기화 메서드를 자동으로 상속받는다.
 
-As mentioned above,
-subclasses don't inherit their superclass initializers by default.
-However, superclass initializers *are* automatically inherited if certain conditions are met.
-In practice, this means that
-you don't need to write initializer overrides in many common scenarios,
-and can inherit your superclass initializers with minimal effort whenever it's safe to do so.
+- **규칙 2**:  
+  하위 클래스가 상위 클래스의 모든 지정 초기화 메서드를 구현하면(규칙 1에 따라 상속받거나, 하위 클래스 정의의 일부로 커스텀 구현을 제공), 상위 클래스의 모든 편의 초기화 메서드를 자동으로 상속받는다.
 
-Assuming that you provide default values for any new properties you introduce in a subclass,
-the following two rules apply:
+이 규칙들은 하위 클래스가 추가적인 편의 초기화 메서드를 정의하는 경우에도 적용된다.
 
-- term **Rule 1**:
-  If your subclass doesn't define any designated initializers,
-  it automatically inherits all of its superclass designated initializers.
-
-- term **Rule 2**:
-  If your subclass provides an implementation of
-  *all* of its superclass designated initializers ---
-  either by inheriting them as per rule 1,
-  or by providing a custom implementation as part of its definition ---
-  then it automatically inherits all of the superclass convenience initializers.
-
-These rules apply even if your subclass adds further convenience initializers.
-
-> Note: A subclass can implement a superclass designated initializer
-> as a subclass convenience initializer as part of satisfying rule 2.
+> 참고: 하위 클래스는 규칙 2를 충족하기 위해 상위 클래스의 지정 초기화 메서드를 하위 클래스의 편의 초기화 메서드로 구현할 수 있다.
 
 <!--
-  TODO: feedback from Beto is that this note is a little hard to parse.
-  Perhaps this point should be left until the later "in action" example,
-  where this principle is demonstrated?
+  TODO: Beto의 피드백에 따르면 이 설명이 조금 이해하기 어렵다고 합니다.
+  이 부분은 나중에 "실제 예제"에서 설명하는 것이 더 나을지 고민 중입니다.
+  해당 원칙을 보여주는 예제를 통해 설명하는 게 더 명확할 수 있습니다.
 -->
 
 <!--
-  TODO: There are rare cases in which we automatically insert a call to super.init() for you.
-  When is this? Either way, I need to mention it in here.
+  TODO: 드물게 super.init() 호출을 자동으로 삽입하는 경우가 있습니다.
+  언제 이런 일이 발생하는지 설명이 필요합니다. 어쨌든 이 부분을 여기에 언급해야 합니다.
 -->
 
-### Designated and Convenience Initializers in Action
 
-The following example shows designated initializers, convenience initializers,
-and automatic initializer inheritance in action.
-This example defines a hierarchy of three classes called
-`Food`, `RecipeIngredient`, and `ShoppingListItem`,
-and demonstrates how their initializers interact.
+### 지정 이니셜라이저와 편의 이니셜라이저의 실제 활용
 
-The base class in the hierarchy is called `Food`,
-which is a simple class to encapsulate the name of a foodstuff.
-The `Food` class introduces a single `String` property called `name`
-and provides two initializers for creating `Food` instances:
+다음 예제는 지정 이니셜라이저, 편의 이니셜라이저, 그리고 자동 이니셜라이저 상속이 어떻게 동작하는지 보여준다. 이 예제에서는 `Food`, `RecipeIngredient`, `ShoppingListItem`이라는 세 클래스의 계층 구조를 정의하고, 이들의 이니셜라이저가 어떻게 상호작용하는지 설명한다.
+
+계층 구조의 기본 클래스는 `Food`로, 음식의 이름을 캡슐화하는 간단한 클래스다. `Food` 클래스는 `name`이라는 단일 `String` 프로퍼티를 가지며, `Food` 인스턴스를 생성하기 위한 두 이니셜라이저를 제공한다:
 
 ```swift
 class Food {
@@ -1510,18 +975,15 @@ class Food {
   ```
 -->
 
-The figure below shows the initializer chain for the `Food` class:
+아래 그림은 `Food` 클래스의 이니셜라이저 체인을 보여준다:
 
 ![](initializersExample01)
 
-Classes don't have a default memberwise initializer,
-and so the `Food` class provides a designated initializer
-that takes a single argument called `name`.
-This initializer can be used to create a new `Food` instance with a specific name:
+클래스는 기본 멤버와이즈 이니셜라이저를 제공하지 않기 때문에, `Food` 클래스는 `name`이라는 단일 인자를 받는 지정 이니셜라이저를 제공한다. 이 이니셜라이저를 사용해 특정 이름을 가진 새로운 `Food` 인스턴스를 생성할 수 있다:
 
 ```swift
 let namedMeat = Food(name: "Bacon")
-// namedMeat's name is "Bacon"
+// namedMeat의 name은 "Bacon"
 ```
 
 <!--
@@ -1534,22 +996,13 @@ let namedMeat = Food(name: "Bacon")
   ```
 -->
 
-The `init(name: String)` initializer from the `Food` class
-is provided as a *designated* initializer,
-because it ensures that all stored properties of
-a new `Food` instance are fully initialized.
-The `Food` class doesn't have a superclass,
-and so the `init(name: String)` initializer doesn't need to call `super.init()`
-to complete its initialization.
+`Food` 클래스의 `init(name: String)` 이니셜라이저는 *지정* 이니셜라이저로, 새로운 `Food` 인스턴스의 모든 저장 프로퍼티가 완전히 초기화되도록 보장한다. `Food` 클래스는 슈퍼클래스를 가지지 않기 때문에, `init(name: String)` 이니셜라이저는 초기화를 완료하기 위해 `super.init()`을 호출할 필요가 없다.
 
-The `Food` class also provides a *convenience* initializer, `init()`, with no arguments.
-The `init()` initializer provides a default placeholder name for a new food
-by delegating across to the `Food` class's `init(name: String)` with
-a `name` value of `[Unnamed]`:
+`Food` 클래스는 또한 인자가 없는 *편의* 이니셜라이저인 `init()`을 제공한다. `init()` 이니셜라이저는 `name` 값으로 `[Unnamed]`를 전달하여 `Food` 클래스의 `init(name: String)` 이니셜라이저를 호출함으로써, 새로운 음식에 대한 기본 이름을 제공한다:
 
 ```swift
 let mysteryMeat = Food()
-// mysteryMeat's name is "[Unnamed]"
+// mysteryMeat의 name은 "[Unnamed]"
 ```
 
 <!--
@@ -1562,11 +1015,7 @@ let mysteryMeat = Food()
   ```
 -->
 
-The second class in the hierarchy is a subclass of `Food` called `RecipeIngredient`.
-The `RecipeIngredient` class models an ingredient in a cooking recipe.
-It introduces an `Int` property called `quantity`
-(in addition to the `name` property it inherits from `Food`)
-and defines two initializers for creating `RecipeIngredient` instances:
+계층 구조의 두 번째 클래스는 `Food`의 서브클래스인 `RecipeIngredient`다. `RecipeIngredient` 클래스는 요리 재료를 모델링한다. 이 클래스는 `Food`로부터 상속받은 `name` 프로퍼티 외에 `quantity`라는 `Int` 프로퍼티를 추가하고, `RecipeIngredient` 인스턴스를 생성하기 위한 두 이니셜라이저를 정의한다:
 
 ```swift
 class RecipeIngredient: Food {
@@ -1598,53 +1047,21 @@ class RecipeIngredient: Food {
   ```
 -->
 
-The figure below shows the initializer chain for the `RecipeIngredient` class:
+아래 그림은 `RecipeIngredient` 클래스의 이니셜라이저 체인을 보여준다:
 
 ![](initializersExample02)
 
-The `RecipeIngredient` class has a single designated initializer,
-`init(name: String, quantity: Int)`,
-which can be used to populate all of the properties of a new `RecipeIngredient` instance.
-This initializer starts by assigning
-the passed `quantity` argument to the `quantity` property,
-which is the only new property introduced by `RecipeIngredient`.
-After doing so, the initializer delegates up to
-the `init(name: String)` initializer of the `Food` class.
-This process satisfies safety check 1
-from <doc:Initialization#Two-Phase-Initialization> above.
+`RecipeIngredient` 클래스는 단일 지정 이니셜라이저인 `init(name: String, quantity: Int)`를 가지며, 이를 통해 새로운 `RecipeIngredient` 인스턴스의 모든 프로퍼티를 초기화할 수 있다. 이 이니셜라이저는 전달된 `quantity` 인자를 `RecipeIngredient`가 추가한 유일한 프로퍼티인 `quantity`에 할당하는 것으로 시작한다. 이후 이 이니셜라이저는 `Food` 클래스의 `init(name: String)` 이니셜라이저를 호출한다. 이 과정은 <doc:Initialization#Two-Phase-Initialization>에서 설명한 안전 검사 1을 충족한다.
 
-`RecipeIngredient` also defines a convenience initializer, `init(name: String)`,
-which is used to create a `RecipeIngredient` instance by name alone.
-This convenience initializer assumes a quantity of `1`
-for any `RecipeIngredient` instance that's created without an explicit quantity.
-The definition of this convenience initializer makes
-`RecipeIngredient` instances quicker and more convenient to create,
-and avoids code duplication when creating
-several single-quantity `RecipeIngredient` instances.
-This convenience initializer simply delegates across to the class's designated initializer,
-passing in a `quantity` value of `1`.
+`RecipeIngredient`는 또한 `init(name: String)`이라는 편의 이니셜라이저를 정의한다. 이 편의 이니셜라이저는 이름만으로 `RecipeIngredient` 인스턴스를 생성할 때 사용된다. 이 편의 이니셜라이저는 명시적인 수량 없이 생성된 `RecipeIngredient` 인스턴스의 수량을 `1`로 가정한다. 이 편의 이니셜라이저를 정의함으로써, `RecipeIngredient` 인스턴스를 더 빠르고 편리하게 생성할 수 있으며, 여러 단일 수량의 `RecipeIngredient` 인스턴스를 생성할 때 코드 중복을 피할 수 있다. 이 편의 이니셜라이저는 단순히 클래스의 지정 이니셜라이저를 호출하며, `quantity` 값으로 `1`을 전달한다.
 
-The `init(name: String)` convenience initializer provided by `RecipeIngredient`
-takes the same parameters as the `init(name: String)` *designated* initializer from `Food`.
-Because this convenience initializer overrides a designated initializer from its superclass,
-it must be marked with the `override` modifier
-(as described in <doc:Initialization#Initializer-Inheritance-and-Overriding>).
+`RecipeIngredient`가 제공하는 `init(name: String)` 편의 이니셜라이저는 `Food`의 `init(name: String)` *지정* 이니셜라이저와 동일한 매개변수를 가진다. 이 편의 이니셜라이저는 슈퍼클래스의 지정 이니셜라이저를 오버라이드하기 때문에, `override` 수식어로 표시해야 한다 (이는 <doc:Initialization#Initializer-Inheritance-and-Overriding>에서 설명한 바와 같다).
 
-Even though `RecipeIngredient` provides
-the `init(name: String)` initializer as a convenience initializer,
-`RecipeIngredient` has nonetheless provided an implementation of
-all of its superclass's designated initializers.
-Therefore, `RecipeIngredient` automatically inherits
-all of its superclass's convenience initializers too.
+비록 `RecipeIngredient`가 `init(name: String)` 이니셜라이저를 편의 이니셜라이저로 제공하지만, `RecipeIngredient`는 여전히 슈퍼클래스의 모든 지정 이니셜라이저를 구현했다. 따라서 `RecipeIngredient`는 슈퍼클래스의 모든 편의 이니셜라이저도 자동으로 상속받는다.
 
-In this example, the superclass for `RecipeIngredient` is `Food`,
-which has a single convenience initializer called `init()`.
-This initializer is therefore inherited by `RecipeIngredient`.
-The inherited version of `init()` functions in exactly the same way as the `Food` version,
-except that it delegates to the `RecipeIngredient` version of `init(name: String)`
-rather than the `Food` version.
+이 예제에서 `RecipeIngredient`의 슈퍼클래스는 `Food`이며, `Food`는 `init()`이라는 단일 편의 이니셜라이저를 가진다. 따라서 이 이니셜라이저는 `RecipeIngredient`에 의해 상속된다. 상속된 `init()` 이니셜라이저는 `Food` 버전과 정확히 동일하게 동작하지만, `Food` 버전 대신 `RecipeIngredient` 버전의 `init(name: String)`을 호출한다.
 
-All three of these initializers can be used to create new `RecipeIngredient` instances:
+이 세 이니셜라이저를 모두 사용해 새로운 `RecipeIngredient` 인스턴스를 생성할 수 있다:
 
 ```swift
 let oneMysteryItem = RecipeIngredient()
@@ -1662,16 +1079,9 @@ let sixEggs = RecipeIngredient(name: "Eggs", quantity: 6)
   ```
 -->
 
-The third and final class in the hierarchy is
-a subclass of `RecipeIngredient` called `ShoppingListItem`.
-The `ShoppingListItem` class models a recipe ingredient as it appears in a shopping list.
+계층 구조의 세 번째이자 마지막 클래스는 `RecipeIngredient`의 서브클래스인 `ShoppingListItem`이다. `ShoppingListItem` 클래스는 쇼핑 리스트에 나타나는 요리 재료를 모델링한다.
 
-Every item in the shopping list starts out as “unpurchased”.
-To represent this fact,
-`ShoppingListItem` introduces a Boolean property called `purchased`,
-with a default value of `false`.
-`ShoppingListItem` also adds a computed `description` property,
-which provides a textual description of a `ShoppingListItem` instance:
+쇼핑 리스트의 모든 항목은 "구매되지 않음" 상태로 시작한다. 이를 나타내기 위해 `ShoppingListItem`은 기본값이 `false`인 `purchased`라는 불리언 프로퍼티를 추가한다. 또한 `ShoppingListItem`은 `description`이라는 계산 프로퍼티를 추가하는데, 이 프로퍼티는 `ShoppingListItem` 인스턴스에 대한 텍스트 설명을 제공한다:
 
 ```swift
 class ShoppingListItem: RecipeIngredient {
@@ -1699,21 +1109,15 @@ class ShoppingListItem: RecipeIngredient {
   ```
 -->
 
-> Note: `ShoppingListItem` doesn't define an initializer to provide
-> an initial value for `purchased`,
-> because items in a shopping list (as modeled here) always start out unpurchased.
+> 참고: `ShoppingListItem`은 `purchased`에 대한 초기값을 제공하기 위해 이니셜라이저를 정의하지 않는다. 여기서 모델링한 쇼핑 리스트의 항목은 항상 "구매되지 않음" 상태로 시작하기 때문이다.
 
-Because it provides a default value for all of the properties it introduces
-and doesn't define any initializers itself,
-`ShoppingListItem` automatically inherits
-*all* of the designated and convenience initializers from its superclass.
+`ShoppingListItem`은 추가한 모든 프로퍼티에 기본값을 제공하고, 이니셜라이저를 직접 정의하지 않기 때문에, 슈퍼클래스의 *모든* 지정 이니셜라이저와 편의 이니셜라이저를 자동으로 상속받는다.
 
-The figure below shows the overall initializer chain for all three classes:
+아래 그림은 세 클래스의 전체 이니셜라이저 체인을 보여준다:
 
 ![](initializersExample03)
 
-You can use all three of the inherited initializers
-to create a new `ShoppingListItem` instance:
+상속받은 세 이니셜라이저를 모두 사용해 새로운 `ShoppingListItem` 인스턴스를 생성할 수 있다:
 
 ```swift
 var breakfastList = [
@@ -1751,49 +1155,16 @@ for item in breakfastList {
   ```
 -->
 
-Here, a new array called `breakfastList` is created from
-an array literal containing three new `ShoppingListItem` instances.
-The type of the array is inferred to be `[ShoppingListItem]`.
-After the array is created,
-the name of the `ShoppingListItem` at the start of the array
-is changed from `"[Unnamed]"` to `"Orange juice"`
-and it's marked as having been purchased.
-Printing the description of each item in the array
-shows that their default states have been set as expected.
+여기서 `breakfastList`라는 새로운 배열은 세 개의 새로운 `ShoppingListItem` 인스턴스를 포함하는 배열 리터럴로 생성된다. 배열의 타입은 `[ShoppingListItem]`으로 추론된다. 배열이 생성된 후, 배열의 첫 번째 `ShoppingListItem`의 이름이 `"[Unnamed]"`에서 `"Orange juice"`로 변경되고, 구매된 것으로 표시된다. 배열의 각 항목에 대한 설명을 출력하면, 기본 상태가 예상대로 설정되었음을 확인할 수 있다.
 
-<!--
-  TODO: talk about the general factory initializer pattern,
-  and how Swift's approach to initialization removes the need for most factories.
--->
 
-<!--
-  NOTE: We import some Obj-C-imported factory initializers as init() -> MyType,
-  but you can't currently write these in Swift yourself.
-  After conferring with Doug, I've decided not to include these in the Guide
-  if you can't write them yourself in pure Swift.
--->
+## 실패 가능한 이니셜라이저
 
-<!--
-  TODO: Feedback from Beto is that it would be useful to indicate the flow
-  through these inherited initializers.
--->
+클래스, 구조체, 열거형을 정의할 때 초기화가 실패할 수 있는 상황을 고려해야 할 때가 있다. 이는 잘못된 초기화 매개변수 값, 필요한 외부 리소스의 부재, 또는 초기화를 성공적으로 완료할 수 없는 다른 조건에 의해 발생할 수 있다.
 
-## Failable Initializers
+초기화가 실패할 수 있는 상황을 처리하기 위해, 클래스, 구조체, 열거형 정의 내에 하나 이상의 실패 가능한 이니셜라이저를 정의할 수 있다. 실패 가능한 이니셜라이저는 `init` 키워드 뒤에 물음표를 붙여서 작성한다(`init?`).
 
-It's sometimes useful to define a class, structure, or enumeration
-for which initialization can fail.
-This failure might be triggered by invalid initialization parameter values,
-the absence of a required external resource,
-or some other condition that prevents initialization from succeeding.
-
-To cope with initialization conditions that can fail,
-define one or more failable initializers as part of
-a class, structure, or enumeration definition.
-You write a failable initializer
-by placing a question mark after the `init` keyword (`init?`).
-
-> Note: You can't define a failable and a nonfailable initializer
-> with the same parameter types and names.
+> 참고: 동일한 매개변수 타입과 이름을 가진 실패 가능한 이니셜라이저와 실패 불가능한 이니셜라이저를 동시에 정의할 수 없다.
 
 <!--
   - test: `failableAndNonFailableInitializersCannotMatch`
@@ -1813,21 +1184,11 @@ by placing a question mark after the `init` keyword (`init?`).
   ```
 -->
 
-A failable initializer creates an *optional* value of the type it initializes.
-You write `return nil` within a failable initializer
-to indicate a point at which initialization failure can be triggered.
+실패 가능한 이니셜라이저는 초기화하는 타입의 옵셔널 값을 생성한다. 초기화가 실패할 수 있는 지점을 나타내기 위해 이니셜라이저 내부에서 `return nil`을 사용한다.
 
-> Note: Strictly speaking, initializers don't return a value.
-> Rather, their role is to ensure that `self` is fully and correctly initialized
-> by the time that initialization ends.
-> Although you write `return nil` to trigger an initialization failure,
-> you don't use the `return` keyword to indicate initialization success.
+> 참고: 엄밀히 말하면, 이니셜라이저는 값을 반환하지 않는다. 이니셜라이저의 역할은 초기화가 끝날 때 `self`가 완전하고 올바르게 초기화되도록 보장하는 것이다. 초기화 실패를 나타내기 위해 `return nil`을 사용하지만, 초기화 성공을 나타내기 위해 `return` 키워드를 사용하지는 않는다.
 
-For instance, failable initializers are implemented for numeric type conversions.
-To ensure conversion between numeric types maintains the value exactly,
-use the `init(exactly:)` initializer.
-If the type conversion can't maintain the value,
-the initializer fails.
+예를 들어, 숫자 타입 변환을 위해 실패 가능한 이니셜라이저가 구현될 수 있다. 숫자 타입 간의 변환에서 값을 정확히 유지하기 위해 `init(exactly:)` 이니셜라이저를 사용한다. 타입 변환이 값을 유지할 수 없는 경우, 이니셜라이저는 실패한다.
 
 ```swift
 let wholeNumber: Double = 12345.0
@@ -1869,13 +1230,7 @@ if valueChanged == nil {
   ```
 -->
 
-The example below defines a structure called `Animal`,
-with a constant `String` property called `species`.
-The `Animal` structure also defines a failable initializer
-with a single parameter called `species`.
-This initializer checks if the `species` value passed to the initializer is an empty string.
-If an empty string is found, an initialization failure is triggered.
-Otherwise, the `species` property's value is set, and initialization succeeds:
+아래 예제는 `species`라는 상수 `String` 프로퍼티를 가진 `Animal` 구조체를 정의한다. `Animal` 구조체는 `species`라는 단일 매개변수를 받는 실패 가능한 이니셜라이저도 정의한다. 이 이니셜라이저는 전달된 `species` 값이 빈 문자열인지 확인한다. 빈 문자열이 발견되면 초기화가 실패한다. 그렇지 않으면 `species` 프로퍼티의 값이 설정되고 초기화가 성공한다:
 
 ```swift
 struct Animal {
@@ -1901,8 +1256,7 @@ struct Animal {
   ```
 -->
 
-You can use this failable initializer to try to initialize a new `Animal` instance
-and to check if initialization succeeded:
+이 실패 가능한 이니셜라이저를 사용해 새로운 `Animal` 인스턴스를 초기화하고 초기화가 성공했는지 확인할 수 있다:
 
 ```swift
 let someCreature = Animal(species: "Giraffe")
@@ -1928,8 +1282,7 @@ if let giraffe = someCreature {
   ```
 -->
 
-If you pass an empty string value to the failable initializer's `species` parameter,
-the initializer triggers an initialization failure:
+실패 가능한 이니셜라이저의 `species` 매개변수에 빈 문자열 값을 전달하면, 이니셜라이저는 초기화 실패를 트리거한다:
 
 ```swift
 let anonymousCreature = Animal(species: "")
@@ -1955,25 +1308,14 @@ if anonymousCreature == nil {
   ```
 -->
 
-> Note: Checking for an empty string value (such as `""` rather than `"Giraffe"`)
-> isn't the same as checking for `nil` to indicate the absence of an *optional* `String` value.
-> In the example above, an empty string (`""`) is a valid, non-optional `String`.
-> However, it's not appropriate for an animal
-> to have an empty string as the value of its `species` property.
-> To model this restriction,
-> the failable initializer triggers an initialization failure if an empty string is found.
+> 참고: 빈 문자열 값(예: `""`)을 확인하는 것은 옵셔널 `String` 값의 부재를 나타내는 `nil`을 확인하는 것과 다르다. 위 예제에서 빈 문자열(`""`)은 유효한, 옵셔널이 아닌 `String` 값이다. 그러나 동물이 `species` 프로퍼티의 값으로 빈 문자열을 갖는 것은 적절하지 않다. 이 제약을 모델링하기 위해, 실패 가능한 이니셜라이저는 빈 문자열이 발견되면 초기화 실패를 트리거한다.
 
-### Failable Initializers for Enumerations
 
-You can use a failable initializer to select an appropriate enumeration case
-based on one or more parameters.
-The initializer can then fail if the provided parameters
-don't match an appropriate enumeration case.
+### 열거형의 실패 가능 초기화
 
-The example below defines an enumeration called `TemperatureUnit`,
-with three possible states (`kelvin`, `celsius`, and `fahrenheit`).
-A failable initializer is used to find an appropriate enumeration case
-for a `Character` value representing a temperature symbol:
+실패 가능 초기화를 사용하면 하나 이상의 매개변수에 따라 적절한 열거형 케이스를 선택할 수 있다. 제공된 매개변수가 적절한 열거형 케이스와 일치하지 않으면 초기화가 실패할 수 있다.
+
+아래 예제는 `TemperatureUnit`이라는 열거형을 정의한다. 이 열거형은 세 가지 가능한 상태(`kelvin`, `celsius`, `fahrenheit`)를 가진다. 실패 가능 초기화는 온도 기호를 나타내는 `Character` 값에 대해 적절한 열거형 케이스를 찾는 데 사용된다:
 
 ```swift
 enum TemperatureUnit {
@@ -2015,10 +1357,7 @@ enum TemperatureUnit {
   ```
 -->
 
-You can use this failable initializer to choose
-an appropriate enumeration case for the three possible states
-and to cause initialization to fail if the parameter doesn't match one of these
-states:
+이 실패 가능 초기화를 사용하여 세 가지 가능한 상태에 대해 적절한 열거형 케이스를 선택할 수 있다. 매개변수가 이 상태 중 하나와 일치하지 않으면 초기화가 실패한다:
 
 ```swift
 let fahrenheitUnit = TemperatureUnit(symbol: "F")
@@ -2052,17 +1391,12 @@ if unknownUnit == nil {
   ```
 -->
 
-### Failable Initializers for Enumerations with Raw Values
 
-Enumerations with raw values automatically receive a failable initializer,
-`init?(rawValue:)`,
-that takes a parameter called `rawValue` of the appropriate raw-value type
-and selects a matching enumeration case if one is found,
-or triggers an initialization failure if no matching value exists.
+### 원시 값을 가진 열거형의 실패 가능 초기화
 
-You can rewrite the `TemperatureUnit` example from above
-to use raw values of type `Character`
-and to take advantage of the `init?(rawValue:)` initializer:
+원시 값을 가진 열거형은 자동으로 실패 가능 초기화 메서드 `init?(rawValue:)`를 제공한다. 이 메서드는 적절한 원시 값 타입의 `rawValue` 매개변수를 받아, 일치하는 열거형 케이스를 찾으면 해당 케이스를 선택하고, 일치하는 값이 없으면 초기화에 실패한다.
+
+앞서 살펴본 `TemperatureUnit` 예제를 `Character` 타입의 원시 값을 사용하도록 수정하고, `init?(rawValue:)` 초기화 메서드를 활용할 수 있다:
 
 ```swift
 enum TemperatureUnit: Character {
@@ -2104,15 +1438,12 @@ if unknownUnit == nil {
   ```
 -->
 
-### Propagation of Initialization Failure
 
-A failable initializer of a class, structure, or enumeration
-can delegate across to another failable initializer from the same class, structure, or enumeration.
-Similarly, a subclass failable initializer can delegate up to a superclass failable initializer.
+### 초기화 실패의 전파
 
-In either case, if you delegate to another initializer that causes initialization to fail,
-the entire initialization process fails immediately,
-and no further initialization code is executed.
+클래스, 구조체, 열거형의 실패 가능 초기화 메서드는 동일한 클래스, 구조체, 열거형 내의 다른 실패 가능 초기화 메서드로 위임할 수 있다. 마찬가지로, 하위 클래스의 실패 가능 초기화 메서드는 상위 클래스의 실패 가능 초기화 메서드로 위임할 수 있다.
+
+두 경우 모두, 초기화를 실패하게 만드는 다른 초기화 메서드로 위임하면 초기화 프로세스가 즉시 실패하며, 이후의 초기화 코드는 실행되지 않는다.
 
 <!--
   - test: `delegatingAcrossInAStructurePropagatesInitializationFailureImmediately`
@@ -2121,7 +1452,7 @@ and no further initialization code is executed.
   -> struct S {
         init?(string1: String) {
            self.init(string2: string1)
-           print("Hello!") // this should never be printed, because initialization has already failed
+           print("Hello!") // 이 코드는 실행되지 않음. 초기화가 이미 실패했기 때문
         }
         init?(string2: String) { return nil }
      }
@@ -2137,7 +1468,7 @@ and no further initialization code is executed.
   -> class C {
         convenience init?(string1: String) {
            self.init(string2: string1)
-           print("Hello!") // this should never be printed, because initialization has already failed
+           print("Hello!") // 이 코드는 실행되지 않음. 초기화가 이미 실패했기 때문
         }
         init?(string2: String) { return nil }
      }
@@ -2156,7 +1487,7 @@ and no further initialization code is executed.
   -> class D: C {
         init?(string2: String) {
            super.init(string1: string2)
-           print("Hello!") // this should never be printed, because initialization has already failed
+           print("Hello!") // 이 코드는 실행되지 않음. 초기화가 이미 실패했기 때문
         }
      }
   -> let d = D(string2: "bing")
@@ -2164,14 +1495,9 @@ and no further initialization code is executed.
   ```
 -->
 
-> Note: A failable initializer can also delegate to a nonfailable initializer.
-> Use this approach if you need to add a potential failure state
-> to an existing initialization process that doesn't otherwise fail.
+> 참고: 실패 가능 초기화 메서드는 실패하지 않는 초기화 메서드로도 위임할 수 있다. 기존의 실패하지 않는 초기화 프로세스에 실패 가능 상태를 추가해야 할 때 이 방식을 사용한다.
 
-The example below defines a subclass of `Product` called `CartItem`.
-The `CartItem` class models an item in an online shopping cart.
-`CartItem` introduces a stored constant property called `quantity`
-and ensures that this property always has a value of at least `1`:
+아래 예제는 `Product` 클래스의 하위 클래스인 `CartItem`을 정의한다. `CartItem` 클래스는 온라인 쇼핑 카트의 항목을 모델링한다. `CartItem`은 `quantity`라는 저장 상수 프로퍼티를 도입하고, 이 프로퍼티의 값이 항상 `1` 이상이 되도록 보장한다:
 
 ```swift
 class Product {
@@ -2216,24 +1542,15 @@ class CartItem: Product {
   ```
 -->
 
-The failable initializer for `CartItem` starts by
-validating that it has received a `quantity` value of `1` or more.
-If the `quantity` is invalid,
-the entire initialization process fails immediately
-and no further initialization code is executed.
-Likewise, the failable initializer for `Product`
-checks the `name` value,
-and the initializer process fails immediately
-if `name` is the empty string.
+`CartItem`의 실패 가능 초기화 메서드는 먼저 `quantity` 값이 `1` 이상인지 검증한다. `quantity` 값이 유효하지 않으면 초기화 프로세스가 즉시 실패하며, 이후의 초기화 코드는 실행되지 않는다. 마찬가지로, `Product`의 실패 가능 초기화 메서드는 `name` 값을 검사하고, `name`이 빈 문자열이면 초기화 프로세스가 즉시 실패한다.
 
-If you create a `CartItem` instance with a nonempty name and a quantity of `1` or more,
-initialization succeeds:
+`CartItem` 인스턴스를 빈 문자열이 아닌 이름과 `1` 이상의 `quantity` 값으로 생성하면 초기화가 성공한다:
 
 ```swift
 if let twoSocks = CartItem(name: "sock", quantity: 2) {
     print("Item: \(twoSocks.name), quantity: \(twoSocks.quantity)")
 }
-// Prints "Item: sock, quantity: 2"
+// 출력: "Item: sock, quantity: 2"
 ```
 
 <!--
@@ -2247,8 +1564,7 @@ if let twoSocks = CartItem(name: "sock", quantity: 2) {
   ```
 -->
 
-If you try to create a `CartItem` instance with a `quantity` value of `0`,
-the `CartItem` initializer causes initialization to fail:
+`quantity` 값이 `0`인 `CartItem` 인스턴스를 생성하려고 하면, `CartItem` 초기화 메서드가 초기화를 실패하게 만든다:
 
 ```swift
 if let zeroShirts = CartItem(name: "shirt", quantity: 0) {
@@ -2256,7 +1572,7 @@ if let zeroShirts = CartItem(name: "shirt", quantity: 0) {
 } else {
     print("Unable to initialize zero shirts")
 }
-// Prints "Unable to initialize zero shirts"
+// 출력: "Unable to initialize zero shirts"
 ```
 
 <!--
@@ -2272,8 +1588,7 @@ if let zeroShirts = CartItem(name: "shirt", quantity: 0) {
   ```
 -->
 
-Similarly, if you try to create a `CartItem` instance with an empty `name` value,
-the superclass `Product` initializer causes initialization to fail:
+마찬가지로, 빈 문자열인 `name` 값으로 `CartItem` 인스턴스를 생성하려고 하면, 상위 클래스인 `Product`의 초기화 메서드가 초기화를 실패하게 만든다:
 
 ```swift
 if let oneUnnamed = CartItem(name: "", quantity: 1) {
@@ -2281,7 +1596,7 @@ if let oneUnnamed = CartItem(name: "", quantity: 1) {
 } else {
     print("Unable to initialize one unnamed product")
 }
-// Prints "Unable to initialize one unnamed product"
+// 출력: "Unable to initialize one unnamed product"
 ```
 
 <!--
@@ -2297,21 +1612,14 @@ if let oneUnnamed = CartItem(name: "", quantity: 1) {
   ```
 -->
 
-### Overriding a Failable Initializer
 
-You can override a superclass failable initializer in a subclass,
-just like any other initializer.
-Alternatively, you can override a superclass failable initializer
-with a subclass *nonfailable* initializer.
-This enables you to define a subclass for which initialization can't fail,
-even though initialization of the superclass is allowed to fail.
+### 실패 가능한 이니셜라이저 오버라이딩
 
-Note that if you override a failable superclass initializer with a nonfailable subclass initializer,
-the only way to delegate up to the superclass initializer
-is to force-unwrap the result of the failable superclass initializer.
+서브클래스에서 슈퍼클래스의 실패 가능한 이니셜라이저를 오버라이드할 수 있다. 이는 다른 이니셜라이저를 오버라이드하는 것과 동일하다. 또는 슈퍼클래스의 실패 가능한 이니셜라이저를 서브클래스의 **실패 불가능한** 이니셜라이저로 오버라이드할 수도 있다. 이를 통해 슈퍼클래스의 초기화가 실패할 수 있더라도, 서브클래스의 초기화는 실패하지 않도록 정의할 수 있다.
 
-> Note: You can override a failable initializer with a nonfailable initializer
-> but not the other way around.
+실패 가능한 슈퍼클래스 이니셜라이저를 실패 불가능한 서브클래스 이니셜라이저로 오버라이드하는 경우, 슈퍼클래스 이니셜라이저를 호출하려면 실패 가능한 슈퍼클래스 이니셜라이저의 결과를 강제 언래핑해야 한다.
+
+> 참고: 실패 가능한 이니셜라이저를 실패 불가능한 이니셜라이저로 오버라이드할 수 있지만, 그 반대는 불가능하다.
 
 <!--
   - test: `youCannotOverrideANonFailableInitializerWithAFailableInitializer`
@@ -2332,17 +1640,14 @@ is to force-unwrap the result of the failable superclass initializer.
   ```
 -->
 
-The example below defines a class called `Document`.
-This class models a document that can be initialized with
-a `name` property that's either a nonempty string value or `nil`,
-but can't be an empty string:
+아래 예제는 `Document`라는 클래스를 정의한다. 이 클래스는 `name` 프로퍼티가 비어 있지 않은 문자열 값이거나 `nil`일 때 초기화되는 문서를 모델링한다. 하지만 빈 문자열은 허용하지 않는다.
 
 ```swift
 class Document {
     var name: String?
-    // this initializer creates a document with a nil name value
+    // 이 이니셜라이저는 name 값이 nil인 문서를 생성한다
     init() {}
-    // this initializer creates a document with a nonempty name value
+    // 이 이니셜라이저는 name 값이 비어 있지 않은 문자열인 문서를 생성한다
     init?(name: String) {
         if name.isEmpty { return nil }
         self.name = name
@@ -2356,9 +1661,9 @@ class Document {
   ```swifttest
   -> class Document {
         var name: String?
-        // this initializer creates a document with a nil name value
+        // 이 이니셜라이저는 name 값이 nil인 문서를 생성한다
         init() {}
-        // this initializer creates a document with a nonempty name value
+        // 이 이니셜라이저는 name 값이 비어 있지 않은 문자열인 문서를 생성한다
         init?(name: String) {
            if name.isEmpty { return nil }
            self.name = name
@@ -2367,13 +1672,7 @@ class Document {
   ```
 -->
 
-The next example defines a subclass of `Document` called `AutomaticallyNamedDocument`.
-The `AutomaticallyNamedDocument` subclass overrides
-both of the designated initializers introduced by `Document`.
-These overrides ensure that an `AutomaticallyNamedDocument` instance has
-an initial `name` value of `"[Untitled]"`
-if the instance is initialized without a name,
-or if an empty string is passed to the `init(name:)` initializer:
+다음 예제는 `Document`의 서브클래스인 `AutomaticallyNamedDocument`를 정의한다. `AutomaticallyNamedDocument` 서브클래스는 `Document`에서 도입한 모든 지정 이니셜라이저를 오버라이드한다. 이 오버라이드는 `AutomaticallyNamedDocument` 인스턴스가 이름 없이 초기화되거나 `init(name:)` 이니셜라이저에 빈 문자열이 전달된 경우, 초기 `name` 값을 `"[Untitled]"`로 설정한다.
 
 ```swift
 class AutomaticallyNamedDocument: Document {
@@ -2413,19 +1712,9 @@ class AutomaticallyNamedDocument: Document {
   ```
 -->
 
-The `AutomaticallyNamedDocument` overrides its superclass's
-failable `init?(name:)` initializer with a nonfailable `init(name:)` initializer.
-Because `AutomaticallyNamedDocument` copes with the empty string case
-in a different way than its superclass,
-its initializer doesn't need to fail,
-and so it provides a nonfailable version of the initializer instead.
+`AutomaticallyNamedDocument`는 슈퍼클래스의 실패 가능한 `init?(name:)` 이니셜라이저를 실패 불가능한 `init(name:)` 이니셜라이저로 오버라이드한다. `AutomaticallyNamedDocument`는 빈 문자열 케이스를 슈퍼클래스와 다른 방식으로 처리하므로, 이니셜라이저가 실패할 필요가 없으며, 실패 불가능한 버전의 이니셜라이저를 제공한다.
 
-You can use forced unwrapping in an initializer
-to call a failable initializer from the superclass
-as part of the implementation of a subclass's nonfailable initializer.
-For example, the `UntitledDocument` subclass below is always named `"[Untitled]"`,
-and it uses the failable `init(name:)` initializer
-from its superclass during initialization.
+이니셜라이저 내에서 강제 언래핑을 사용해 슈퍼클래스의 실패 가능한 이니셜라이저를 호출할 수 있다. 이를 통해 서브클래스의 실패 불가능한 이니셜라이저를 구현할 수 있다. 예를 들어, 아래의 `UntitledDocument` 서브클래스는 항상 `"[Untitled]"`라는 이름을 가지며, 초기화 과정에서 슈퍼클래스의 실패 가능한 `init(name:)` 이니셜라이저를 사용한다.
 
 ```swift
 class UntitledDocument: Document {
@@ -2447,28 +1736,14 @@ class UntitledDocument: Document {
   ```
 -->
 
-In this case, if the `init(name:)` initializer of the superclass
-were ever called with an empty string as the name,
-the forced unwrapping operation would result in a runtime error.
-However, because it's called with a string literal,
-you can see that the initializer won't fail,
-so no runtime error can occur in this case.
+이 경우, 슈퍼클래스의 `init(name:)` 이니셜라이저에 빈 문자열이 전달되면 강제 언래핑 연산으로 인해 런타임 오류가 발생한다. 하지만 문자열 리터럴을 사용해 호출하므로, 이니셜라이저가 실패하지 않음을 알 수 있으며, 이 경우 런타임 오류가 발생하지 않는다.
 
-### The init! Failable Initializer
 
-You typically define a failable initializer
-that creates an optional instance of the appropriate type
-by placing a question mark after the `init` keyword (`init?`).
-Alternatively, you can define a failable initializer that creates
-an implicitly unwrapped optional instance of the appropriate type.
-Do this by placing an exclamation point after the `init` keyword (`init!`)
-instead of a question mark.
+### 실패 가능 초기화 구문: init!
 
-You can delegate from `init?` to `init!` and vice versa,
-and you can override `init?` with `init!` and vice versa.
-You can also delegate from `init` to `init!`,
-although doing so will trigger an assertion
-if the `init!` initializer causes initialization to fail.
+일반적으로 실패 가능 초기화 구문을 정의할 때는 `init` 키워드 뒤에 물음표(`init?`)를 붙여 적절한 타입의 옵셔널 인스턴스를 생성한다. 반대로, `init` 키워드 뒤에 느낌표(`init!`)를 붙여 적절한 타입의 암시적 언래핑 옵셔널 인스턴스를 생성하는 초기화 구문을 정의할 수도 있다.
+
+`init?`에서 `init!`로, 또는 `init!`에서 `init?`로 위임할 수 있다. 또한 `init?`를 `init!`로, 또는 `init!`를 `init?`로 재정의할 수도 있다. `init`에서 `init!`로 위임하는 것도 가능하지만, 이 경우 `init!` 초기화 구문이 실패하면 어설션이 발생한다.
 
 <!--
   - test: `structuresCanDelegateAcrossFromOptionalToIUO`
@@ -2642,15 +1917,15 @@ if the `init!` initializer causes initialization to fail.
   ```
 -->
 
-## Required Initializers
 
-Write the `required` modifier before the definition of a class initializer
-to indicate that every subclass of the class must implement that initializer:
+## 필수 이니셜라이저
+
+클래스 이니셜라이저 정의 앞에 `required` 수식어를 붙이면, 해당 클래스의 모든 서브클래스가 반드시 이 이니셜라이저를 구현해야 함을 나타낸다:
 
 ```swift
 class SomeClass {
     required init() {
-        // initializer implementation goes here
+        // 이니셜라이저 구현
     }
 }
 ```
@@ -2661,7 +1936,7 @@ class SomeClass {
   ```swifttest
   -> class SomeClass {
         required init() {
-           // initializer implementation goes here
+           // 이니셜라이저 구현
         }
      }
   ```
@@ -2677,10 +1952,10 @@ class SomeClass {
   -> class D: C {
         init() {}
      }
-  !$ error: 'required' initializer 'init(i:)' must be provided by subclass of 'C'
+  !$ error: 'C' 클래스의 서브클래스는 'required' 이니셜라이저 'init(i:)'를 제공해야 함
   !! }
   !! ^
-  !$ note: 'required' initializer is declared in superclass here
+  !$ note: 'required' 이니셜라이저는 여기서 선언됨
   !!    required init(i: Int) {}
   !!             ^
   ```
@@ -2699,24 +1974,21 @@ class SomeClass {
   -> class D: C {
         init(s: String) {}
      }
-  !$ error: 'required' initializer 'init(i:)' must be provided by subclass of 'C'
+  !$ error: 'C' 클래스의 서브클래스는 'required' 이니셜라이저 'init(i:)'를 제공해야 함
   !! }
   !! ^
-  !$ note: 'required' initializer is declared in superclass here
+  !$ note: 'required' 이니셜라이저는 여기서 선언됨
   !!    required convenience init(i: Int) {
   !!                         ^
   ```
 -->
 
-You must also write the `required` modifier before
-every subclass implementation of a required initializer,
-to indicate that the initializer requirement applies to further subclasses in the chain.
-You don't write the `override` modifier when overriding a required designated initializer:
+필수 이니셜라이저를 서브클래스에서 구현할 때도 `required` 수식어를 반드시 붙여야 한다. 이는 이니셜라이저 요구사항이 더 하위의 서브클래스 체인까지 적용됨을 나타낸다. 필수 지정 이니셜라이저를 오버라이드할 때는 `override` 수식어를 붙이지 않는다:
 
 ```swift
 class SomeSubclass: SomeClass {
     required init() {
-        // subclass implementation of the required initializer goes here
+        // 필수 이니셜라이저의 서브클래스 구현
     }
 }
 ```
@@ -2727,7 +1999,7 @@ class SomeSubclass: SomeClass {
   ```swifttest
   -> class SomeSubclass: SomeClass {
         required init() {
-           // subclass implementation of the required initializer goes here
+           // 필수 이니셜라이저의 서브클래스 구현
         }
      }
   ```
@@ -2743,18 +2015,17 @@ class SomeSubclass: SomeClass {
   -> class D: C {
         override required init() {}
      }
-  !$ warning: 'override' is implied when overriding a required initializer
+  !$ warning: 필수 이니셜라이저를 오버라이드할 때 'override'는 암시적으로 적용됨
   !!    override required init() {}
   !! ~~~~~~~~~         ^
   !!-
-  !$ note: overridden required initializer is here
+  !$ note: 오버라이드된 필수 이니셜라이저는 여기에 선언됨
   !!    required init() {}
   !!             ^
   ```
 -->
 
-> Note: You don't have to provide an explicit implementation of a required initializer
-> if you can satisfy the requirement with an inherited initializer.
+> 참고: 상속된 이니셜라이저로 요구사항을 충족할 수 있다면, 필수 이니셜라이저를 명시적으로 구현할 필요가 없다.
 
 <!--
   - test: `youCanSatisfyARequiredDesignatedInitializerWithAnInheritedInitializer`
@@ -2788,37 +2059,28 @@ class SomeSubclass: SomeClass {
 -->
 
 <!--
-  FIXME: This section still doesn't describe why required initializers are useful.
-  This is because the reason for their usefulness -
-  construction through a metatype of some protocol type with an initializer requirement -
-  used to be broken due to
-  <rdar://problem/13695680> Constructor requirements in protocols (needed for NSCoding).
-  As of early 2015 that bug has been fixed.
-  See the corresponding FIXME in the Protocols chapter introduction too.
+  FIXME: 이 섹션은 아직 필수 이니셜라이저가 왜 유용한지 설명하지 않음.
+  이니셜라이저 요구사항이 있는 프로토콜 타입의 메타타입을 통해 생성할 때 유용함.
+  이전에는 이 기능이 동작하지 않았음:
+  <rdar://problem/13695680> 프로토콜의 생성자 요구사항 (NSCoding에 필요).
+  2015년 초에 이 버그가 수정됨.
+  프로토콜 챕터 소개의 해당 FIXME도 참고.
 -->
 
-## Setting a Default Property Value with a Closure or Function
 
-If a stored property's default value requires some customization or setup,
-you can use a closure or global function to provide
-a customized default value for that property.
-Whenever a new instance of the type that the property belongs to is initialized,
-the closure or function is called,
-and its return value is assigned as the property's default value.
+## 클로저나 함수를 사용해 기본 프로퍼티 값 설정하기
 
-These kinds of closures or functions typically create
-a temporary value of the same type as the property,
-tailor that value to represent the desired initial state,
-and then return that temporary value to be used as the property's default value.
+저장 프로퍼티의 기본값에 특정한 설정이나 초기화가 필요하다면, 클로저나 전역 함수를 사용해 프로퍼티에 맞춤 기본값을 제공할 수 있다. 프로퍼티가 속한 타입의 새 인스턴스가 초기화될 때마다 클로저나 함수가 호출되고, 반환된 값이 프로퍼티의 기본값으로 할당된다.
 
-Here's a skeleton outline of how a closure can be used
-to provide a default property value:
+이런 종류의 클로저나 함수는 일반적으로 프로퍼티와 동일한 타입의 임시 값을 생성하고, 그 값을 원하는 초기 상태에 맞게 조정한 뒤, 임시 값을 반환하여 프로퍼티의 기본값으로 사용한다.
+
+다음은 클로저를 사용해 기본 프로퍼티 값을 제공하는 기본 구조다:
 
 ```swift
 class SomeClass {
     let someProperty: SomeType = {
-        // create a default value for someProperty inside this closure
-        // someValue must be of the same type as SomeType
+        // 클로저 내부에서 someProperty의 기본값 생성
+        // someValue는 SomeType과 동일한 타입이어야 함
         return someValue
     }()
 }
@@ -2831,8 +2093,8 @@ class SomeClass {
   >> class SomeType {}
   -> class SomeClass {
         let someProperty: SomeType = {
-           // create a default value for someProperty inside this closure
-           // someValue must be of the same type as SomeType
+           // 클로저 내부에서 someProperty의 기본값 생성
+           // someValue는 SomeType과 동일한 타입이어야 함
   >>       let someValue = SomeType()
            return someValue
         }()
@@ -2840,44 +2102,17 @@ class SomeClass {
   ```
 -->
 
-Note that the closure's end curly brace is followed by an empty pair of parentheses.
-This tells Swift to execute the closure immediately.
-If you omit these parentheses,
-you are trying to assign the closure itself to the property,
-and not the return value of the closure.
+클로저의 닫는 중괄호 뒤에 빈 괄호 쌍이 붙어 있다는 점에 주목하자. 이는 Swift에게 클로저를 즉시 실행하라고 지시한다. 이 괄호를 생략하면 클로저 자체를 프로퍼티에 할당하려는 것으로 간주되며, 클로저의 반환값이 아니다.
 
-<!--
-  TODO: feedback from Peter is that this is very close to the syntax for
-  a computed property that doesn't define a separate getter.
-  He's right, and it would be good to provide an additional example -
-  perhaps with a stored property that's assigned the result of a function -
-  to make the difference more explicit.
--->
+> 주의: 클로저를 사용해 프로퍼티를 초기화할 때, 클로저가 실행되는 시점에는 인스턴스의 나머지 부분이 아직 초기화되지 않았다는 점을 기억하자. 즉, 클로저 내부에서는 다른 프로퍼티 값에 접근할 수 없으며, 기본값이 설정된 프로퍼티라도 마찬가지다. 또한 암시적인 `self` 프로퍼티를 사용하거나 인스턴스의 메서드를 호출할 수도 없다.
 
-> Note: If you use a closure to initialize a property,
-> remember that the rest of the instance hasn't yet been initialized
-> at the point that the closure is executed.
-> This means that you can't access any other property values from within your closure,
-> even if those properties have default values.
-> You also can't use the implicit `self` property,
-> or call any of the instance's methods.
-
-The example below defines a structure called `Chessboard`,
-which models a board for the game of chess.
-Chess is played on an 8 x 8 board,
-with alternating black and white squares.
+아래 예제는 체스 게임을 위한 보드를 모델링하는 `Chessboard` 구조체를 정의한다. 체스는 8x8 크기의 보드에서 진행되며, 검은색과 흰색 칸이 번갈아 나타난다.
 
 ![](chessBoard)
 
-To represent this game board,
-the `Chessboard` structure has a single property called `boardColors`,
-which is an array of 64 `Bool` values.
-A value of `true` in the array represents a black square
-and a value of `false` represents a white square.
-The first item in the array represents the top left square on the board
-and the last item in the array represents the bottom right square on the board.
+이 게임 보드를 표현하기 위해 `Chessboard` 구조체는 `boardColors`라는 단일 프로퍼티를 가지고 있다. 이 프로퍼티는 64개의 `Bool` 값으로 이루어진 배열이며, 배열의 값이 `true`면 검은색 칸, `false`면 흰색 칸을 나타낸다. 배열의 첫 번째 항목은 보드의 왼쪽 상단 칸을, 마지막 항목은 오른쪽 하단 칸을 나타낸다.
 
-The `boardColors` array is initialized with a closure to set up its color values:
+`boardColors` 배열은 클로저를 사용해 초기화되며, 각 칸의 색상을 설정한다:
 
 ```swift
 struct Chessboard {
@@ -2923,22 +2158,14 @@ struct Chessboard {
   ```
 -->
 
-Whenever a new `Chessboard` instance is created, the closure is executed,
-and the default value of `boardColors` is calculated and returned.
-The closure in the example above calculates and sets
-the appropriate color for each square on the board
-in a temporary array called `temporaryBoard`,
-and returns this temporary array as the closure's return value
-once its setup is complete.
-The returned array value is stored in `boardColors`
-and can be queried with the `squareIsBlackAt(row:column:)` utility function:
+새로운 `Chessboard` 인스턴스가 생성될 때마다 클로저가 실행되고, `boardColors`의 기본값이 계산되어 반환된다. 위 예제의 클로저는 `temporaryBoard`라는 임시 배열을 사용해 보드의 각 칸에 적절한 색상을 계산하고 설정한 뒤, 설정이 완료되면 이 임시 배열을 클로저의 반환값으로 반환한다. 반환된 배열 값은 `boardColors`에 저장되며, `squareIsBlackAt(row:column:)` 유틸리티 함수를 통해 조회할 수 있다:
 
 ```swift
 let board = Chessboard()
 print(board.squareIsBlackAt(row: 0, column: 1))
-// Prints "true"
+// "true" 출력
 print(board.squareIsBlackAt(row: 7, column: 7))
-// Prints "false"
+// "false" 출력
 ```
 
 <!--
@@ -2963,3 +2190,5 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
+
+

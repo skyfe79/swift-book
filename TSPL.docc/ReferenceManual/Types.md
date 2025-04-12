@@ -1,40 +1,17 @@
-# Types
+# 타입
 
-Use built-in named and compound types.
+Swift에서 타입은 크게 두 가지로 나뉜다: 이름 있는 타입(named type)과 복합 타입(compound type).  
+*이름 있는 타입*은 정의할 때 특정 이름을 부여할 수 있는 타입을 말한다. 클래스, 구조체, 열거형, 프로토콜이 여기에 속한다. 예를 들어, 사용자가 정의한 `MyClass`라는 클래스의 인스턴스는 `MyClass` 타입을 가진다. 사용자가 정의한 이름 있는 타입 외에도, Swift 표준 라이브러리는 배열, 딕셔너리, 옵셔널 값 등을 표현하는 여러 이름 있는 타입을 제공한다.
 
-In Swift, there are two kinds of types: named types and compound types.
-A *named type* is a type that can be given a particular name when it's defined.
-Named types include classes, structures, enumerations, and protocols.
-For example,
-instances of a user-defined class named `MyClass` have the type `MyClass`.
-In addition to user-defined named types,
-the Swift standard library defines many commonly used named types,
-including those that represent arrays, dictionaries, and optional values.
+다른 언어에서 기본형(primitive type)으로 여겨지는 타입들(예: 숫자, 문자, 문자열을 표현하는 타입)도 Swift에서는 이름 있는 타입이다. 이들은 Swift 표준 라이브러리에서 구조체로 정의되고 구현된다. 이름 있는 타입이기 때문에, 프로그램의 필요에 맞게 동작을 확장할 수 있다. 확장 방법은 <doc:Extensions>와 <doc:Declarations#Extension-Declaration>에서 자세히 다룬다.
 
-Data types that are normally considered basic or primitive in other languages ---
-such as types that represent numbers, characters, and strings ---
-are actually named types,
-defined and implemented in the Swift standard library using structures.
-Because they're named types,
-you can extend their behavior to suit the needs of your program,
-using an extension declaration,
-discussed in <doc:Extensions> and <doc:Declarations#Extension-Declaration>.
+*복합 타입*은 이름이 없는 타입으로, Swift 언어 자체에서 정의된다. 복합 타입에는 함수 타입과 튜플 타입이 있다. 복합 타입은 이름 있는 타입과 다른 복합 타입을 포함할 수 있다. 예를 들어, 튜플 타입 `(Int, (Int, Int))`은 두 요소를 포함한다: 첫 번째는 이름 있는 타입 `Int`, 두 번째는 또 다른 복합 타입 `(Int, Int)`.
 
-A *compound type* is a type without a name, defined in the Swift language itself.
-There are two compound types: function types and tuple types.
-A compound type may contain named types and other compound types.
-For example, the tuple type `(Int, (Int, Int))` contains two elements:
-The first is the named type `Int`,
-and the second is another compound type `(Int, Int)`.
+이름 있는 타입이나 복합 타입 주위에 괄호를 추가할 수 있다. 하지만 타입에 괄호를 추가해도 아무런 효과가 없다. 예를 들어, `(Int)`는 `Int`와 동일하다.
 
-You can put parentheses around a named type or a compound type.
-However, adding parentheses around a type doesn't have any effect.
-For example, `(Int)` is equivalent to `Int`.
+이 장에서는 Swift 언어 자체에서 정의된 타입을 설명하고, Swift의 타입 추론 동작에 대해 알아본다.
 
-This chapter discusses the types defined in the Swift language itself
-and describes the type inference behavior of Swift.
-
-> Grammar of a type:
+> 타입 문법:
 >
 > *type* → *function-type* \
 > *type* → *array-type* \
@@ -51,11 +28,12 @@ and describes the type inference behavior of Swift.
 > *type* → *self-type* \
 > *type* → **`(`** *type* **`)`**
 
-## Type Annotation
 
-A *type annotation* explicitly specifies the type of a variable or expression.
-Type annotations begin with a colon (`:`) and end with a type,
-as the following examples show:
+## 타입 어노테이션
+
+*타입 어노테이션*은 변수나 표현식의 타입을 명시적으로 지정한다.  
+타입 어노테이션은 콜론(`:`)으로 시작하고 타입으로 끝난다.  
+다음 예제를 통해 확인할 수 있다:
 
 ```swift
 let someTuple: (Double, Double) = (3.14159, 2.71828)
@@ -71,32 +49,23 @@ func someFunction(a: Int) { /* ... */ }
   ```
 -->
 
-In the first example,
-the expression `someTuple` is specified to have the tuple type `(Double, Double)`.
-In the second example,
-the parameter `a` to the function `someFunction` is specified to have the type `Int`.
+첫 번째 예제에서 `someTuple` 표현식은 튜플 타입 `(Double, Double)`으로 지정된다.  
+두 번째 예제에서는 함수 `someFunction`의 매개변수 `a`가 `Int` 타입으로 지정된다.
 
-Type annotations can contain an optional list of type attributes before the type.
+타입 어노테이션은 타입 앞에 선택적인 타입 속성 목록을 포함할 수 있다.
 
-> Grammar of a type annotation:
+> 타입 어노테이션 문법:
 >
 > *type-annotation* → **`:`** *attributes*_?_ *type*
 
-## Type Identifier
 
-A *type identifier* refers to either a named type
-or a type alias of a named or compound type.
+## 타입 식별자
 
-Most of the time, a type identifier directly refers to a named type
-with the same name as the identifier.
-For example, `Int` is a type identifier that directly refers to the named type `Int`,
-and the type identifier `Dictionary<String, Int>` directly refers
-to the named type `Dictionary<String, Int>`.
+*타입 식별자*는 이름이 있는 타입이나, 이름이 있거나 복합 타입의 타입 별칭을 가리킨다.
 
-There are two cases in which a type identifier doesn't refer to a type with the same name.
-In the first case, a type identifier refers to a type alias of a named or compound type.
-For instance, in the example below,
-the use of `Point` in the type annotation refers to the tuple type `(Int, Int)`.
+대부분의 경우, 타입 식별자는 해당 식별자와 동일한 이름을 가진 이름이 있는 타입을 직접 참조한다. 예를 들어, `Int`는 이름이 있는 타입 `Int`를 직접 참조하는 타입 식별자이며, `Dictionary<String, Int>`는 이름이 있는 타입 `Dictionary<String, Int>`를 직접 참조하는 타입 식별자이다.
+
+타입 식별자가 동일한 이름의 타입을 참조하지 않는 두 가지 경우가 있다. 첫 번째 경우는 타입 식별자가 이름이 있거나 복합 타입의 타입 별칭을 참조하는 경우이다. 예를 들어, 아래 예제에서 타입 주석에 사용된 `Point`는 튜플 타입 `(Int, Int)`를 참조한다.
 
 ```swift
 typealias Point = (Int, Int)
@@ -112,10 +81,7 @@ let origin: Point = (0, 0)
   ```
 -->
 
-In the second case, a type identifier uses dot (`.`) syntax to refer to named types
-declared in other modules or nested within other types.
-For example, the type identifier in the following code references the named type `MyType`
-that's declared in the `ExampleModule` module.
+두 번째 경우는 타입 식별자가 점(`.`) 문법을 사용해 다른 모듈에 선언된 이름이 있는 타입이나 다른 타입 내에 중첩된 타입을 참조하는 경우이다. 예를 들어, 다음 코드에서 타입 식별자는 `ExampleModule` 모듈에 선언된 이름이 있는 타입 `MyType`을 참조한다.
 
 ```swift
 var someValue: ExampleModule.MyType
@@ -132,30 +98,25 @@ var someValue: ExampleModule.MyType
   ```
 -->
 
-> Grammar of a type identifier:
+> 타입 식별자의 문법:
 >
 > *type-identifier* → *type-name* *generic-argument-clause*_?_ | *type-name* *generic-argument-clause*_?_ **`.`** *type-identifier* \
 > *type-name* → *identifier*
 
-## Tuple Type
 
-A *tuple type* is a comma-separated list of types, enclosed in parentheses.
+## 튜플 타입
 
-You can use a tuple type as the return type of a function
-to enable the function to return a single tuple containing multiple values.
-You can also name the elements of a tuple type and use those names to refer to
-the values of the individual elements. An element name consists of an identifier
-followed immediately by a colon (:). For an example that demonstrates both of
-these features, see <doc:Functions#Functions-with-Multiple-Return-Values>.
+튜플 타입은 괄호로 둘러싸인 쉼표로 구분된 타입 목록이다. 
 
-When an element of a tuple type has a name,
-that name is part of the type.
+함수의 반환 타입으로 튜플 타입을 사용하면 여러 값을 포함한 단일 튜플을 반환할 수 있다. 또한 튜플 타입의 각 요소에 이름을 붙이고, 그 이름을 통해 개별 요소의 값을 참조할 수 있다. 요소 이름은 식별자와 바로 뒤에 오는 콜론(:)으로 구성된다. 이러한 기능을 보여주는 예제는 <doc:Functions#Functions-with-Multiple-Return-Values>를 참고한다.
+
+튜플 타입의 요소에 이름이 붙으면, 그 이름은 타입의 일부가 된다.
 
 ```swift
-var someTuple = (top: 10, bottom: 12)  // someTuple is of type (top: Int, bottom: Int)
-someTuple = (top: 4, bottom: 42) // OK: names match
-someTuple = (9, 99)              // OK: names are inferred
-someTuple = (left: 5, right: 5)  // Error: names don't match
+var someTuple = (top: 10, bottom: 12)  // someTuple의 타입은 (top: Int, bottom: Int)
+someTuple = (top: 4, bottom: 42) // OK: 이름이 일치함
+someTuple = (9, 99)              // OK: 이름이 추론됨
+someTuple = (left: 5, right: 5)  // Error: 이름이 일치하지 않음
 ```
 
 <!--
@@ -172,98 +133,42 @@ someTuple = (left: 5, right: 5)  // Error: names don't match
   ```
 -->
 
-All tuple types contain two or more types,
-except for `Void` which is a type alias for the empty tuple type, `()`.
+모든 튜플 타입은 두 개 이상의 타입을 포함한다. 단, `Void`는 빈 튜플 타입인 `()`의 별칭이다.
 
-> Grammar of a tuple type:
+> 튜플 타입 문법:
 >
 > *tuple-type* → **`(`** **`)`** | **`(`** *tuple-type-element* **`,`** *tuple-type-element-list* **`)`** \
 > *tuple-type-element-list* → *tuple-type-element* | *tuple-type-element* **`,`** *tuple-type-element-list* \
 > *tuple-type-element* → *element-name* *type-annotation* | *type* \
 > *element-name* → *identifier*
 
-## Function Type
 
-A *function type* represents the type of a function, method, or closure
-and consists of a parameter and return type separated by an arrow (`->`):
+## 함수 타입
+
+*함수 타입*은 함수, 메서드, 클로저의 타입을 나타낸다. 함수 타입은 화살표(`->`)로 구분된 매개변수 타입과 반환 타입으로 구성된다:
 
 ```swift
-(<#parameter type#>) -> <#return type#>
+(<#매개변수 타입#>) -> <#반환 타입#>
 ```
 
-The *parameter type* is comma-separated list of types.
-Because the *return type* can be a tuple type,
-function types support functions and methods
-that return multiple values.
+*매개변수 타입*은 쉼표로 구분된 타입 목록이다. *반환 타입*은 튜플 타입일 수 있으므로, 함수 타입은 여러 값을 반환하는 함수와 메서드를 지원한다.
 
-A parameter of the function type `() -> T`
-(where `T` is any type)
-can apply the `autoclosure` attribute
-to implicitly create a closure at its call sites.
-This provides a syntactically convenient way
-to defer the evaluation of an expression
-without needing to write an explicit closure
-when you call the function.
-For an example of an autoclosure function type parameter,
-see <doc:Closures#Autoclosures>.
+함수 타입 `() -> T`(여기서 `T`는 임의의 타입)의 매개변수는 `autoclosure` 속성을 적용해 호출 지점에서 암시적으로 클로저를 생성할 수 있다. 이를 통해 명시적 클로저 작성 없이도 표현식의 평가를 지연하는 구문적 편의를 제공한다. `autoclosure` 함수 타입 매개변수의 예제는 <doc:Closures#Autoclosures>를 참고한다.
 
-A function type can have variadic parameters in its *parameter type*.
-Syntactically,
-a variadic parameter consists of a base type name followed immediately by three dots (`...`),
-as in `Int...`. A variadic parameter is treated as an array that contains elements
-of the base type name. For instance, the variadic parameter `Int...` is treated
-as `[Int]`. For an example that uses a variadic parameter,
-see <doc:Functions#Variadic-Parameters>.
+함수 타입의 *매개변수 타입*에는 가변 인자를 사용할 수 있다. 구문적으로 가변 인자는 기본 타입 이름 뒤에 점 세 개(`...`)를 붙여 표현한다. 예를 들어 `Int...`와 같다. 가변 인자는 기본 타입의 요소를 포함하는 배열로 처리된다. 예를 들어 `Int...`는 `[Int]`로 처리된다. 가변 인자를 사용하는 예제는 <doc:Functions#Variadic-Parameters>를 참고한다.
 
-To specify an in-out parameter, prefix the parameter type with the `inout` keyword.
-You can't mark a variadic parameter or a return type with the `inout` keyword.
-In-out parameters are discussed in <doc:Functions#In-Out-Parameters>.
+입출력 매개변수를 지정하려면 매개변수 타입 앞에 `inout` 키워드를 붙인다. 가변 인자나 반환 타입에는 `inout` 키워드를 사용할 수 없다. 입출력 매개변수에 대한 자세한 내용은 <doc:Functions#In-Out-Parameters>에서 다룬다.
 
-If a function type has only one parameter
-and that parameter's type is a tuple type,
-then the tuple type must be parenthesized when writing the function's type.
-For example,
-`((Int, Int)) -> Void`
-is the type of a function that takes a single parameter
-of the tuple type `(Int, Int)`
-and doesn't return any value.
-In contrast, without parentheses,
-`(Int, Int) -> Void` is the type
-of a function that takes two `Int` parameters
-and doesn't return any value.
-Likewise, because `Void` is a type alias for `()`,
-the function type `(Void) -> Void`
-is the same as `(()) -> ()` ---
-a function that takes a single argument that's an empty tuple.
-These types aren't the same as `() -> ()` ---
-a function that takes no arguments.
+함수 타입에 매개변수가 하나뿐이고 그 매개변수의 타입이 튜플 타입이라면, 함수 타입을 작성할 때 튜플 타입을 괄호로 감싸야 한다. 예를 들어 `((Int, Int)) -> Void`는 튜플 타입 `(Int, Int)`의 단일 매개변수를 받고 아무 값도 반환하지 않는 함수의 타입이다. 반면 괄호 없이 `(Int, Int) -> Void`는 두 개의 `Int` 매개변수를 받고 아무 값도 반환하지 않는 함수의 타입이다. 마찬가지로 `Void`는 `()`의 타입 별칭이므로 `(Void) -> Void`는 `(()) -> ()`와 같다. 이는 빈 튜플을 단일 인자로 받는 함수를 의미한다. 이 타입들은 인자를 받지 않는 함수인 `() -> ()`와는 다르다.
 
-Argument names in functions and methods
-aren't part of the corresponding function type.
-For example:
-
-<!--
-  - test: `argument-names`
-
-  ```swifttest
-  -> func someFunction(left: Int, right: Int) {}
-  -> func anotherFunction(left: Int, right: Int) {}
-  -> func functionWithDifferentLabels(top: Int, bottom: Int) {}
-
-  -> var f = someFunction // The type of f is (Int, Int) -> Void, not (left: Int, right: Int) -> Void.
-  >> print(type(of: f))
-  << (Int, Int) -> ()
-  -> f = anotherFunction              // OK
-  -> f = functionWithDifferentLabels  // OK
-  ```
--->
+함수와 메서드의 인자 이름은 해당 함수 타입의 일부가 아니다. 예를 들어:
 
 ```swift
 func someFunction(left: Int, right: Int) {}
 func anotherFunction(left: Int, right: Int) {}
 func functionWithDifferentLabels(top: Int, bottom: Int) {}
 
-var f = someFunction // The type of f is (Int, Int) -> Void, not (left: Int, right: Int) -> Void.
+var f = someFunction // f의 타입은 (Int, Int) -> Void이며, (left: Int, right: Int) -> Void가 아니다.
 f = anotherFunction              // OK
 f = functionWithDifferentLabels  // OK
 
@@ -274,34 +179,7 @@ func functionWithDifferentNumberOfArguments(left: Int, right: Int, top: Int) {}
 f = functionWithDifferentNumberOfArguments // Error
 ```
 
-<!--
-  - test: `argument-names-err`
-
-  ```swifttest
-  -> func someFunction(left: Int, right: Int) {}
-  -> func anotherFunction(left: Int, right: Int) {}
-  -> func functionWithDifferentLabels(top: Int, bottom: Int) {}
-
-  -> var f = someFunction // The type of f is (Int, Int) -> Void, not (left: Int, right: Int) -> Void.
-  -> f = anotherFunction              // OK
-  -> f = functionWithDifferentLabels  // OK
-
-  -> func functionWithDifferentArgumentTypes(left: Int, right: String) {}
-  -> f = functionWithDifferentArgumentTypes     // Error
-  !$ error: cannot assign value of type '(Int, String) -> ()' to type '(Int, Int) -> ()'
-  !! f = functionWithDifferentArgumentTypes     // Error
-  !! ^
-
-  -> func functionWithDifferentNumberOfArguments(left: Int, right: Int, top: Int) {}
-  -> f = functionWithDifferentNumberOfArguments // Error
-  !$ error: type of expression is ambiguous without more context
-  !! f = functionWithDifferentNumberOfArguments // Error
-  !! ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ```
--->
-
-Because argument labels aren't part of a function's type,
-you omit them when writing a function type.
+인자 레이블은 함수 타입의 일부가 아니므로, 함수 타입을 작성할 때는 이를 생략한다.
 
 ```swift
 var operation: (lhs: Int, rhs: Int) -> Int     // Error
@@ -309,119 +187,32 @@ var operation: (_ lhs: Int, _ rhs: Int) -> Int // OK
 var operation: (Int, Int) -> Int               // OK
 ```
 
-<!--
-  - test: `omit-argument-names-in-function-type`
+함수 타입에 화살표(`->`)가 여러 개 포함된 경우, 함수 타입은 오른쪽에서 왼쪽으로 그룹화된다. 예를 들어 `(Int) -> (Int) -> Int`는 `(Int) -> ((Int) -> Int)`로 이해된다. 즉, `Int`를 받아 `Int`를 받고 반환하는 또 다른 함수를 반환하는 함수를 의미한다.
 
-  ```swifttest
-  -> var operation: (lhs: Int, rhs: Int) -> Int     // Error
-  !$ error: function types cannot have argument labels; use '_' before 'lhs'
-  !!    var operation: (lhs: Int, rhs: Int) -> Int     // Error
-  !!                    ^
-  !!                    _
-  !$ error: function types cannot have argument labels; use '_' before 'rhs'
-  !!    var operation: (lhs: Int, rhs: Int) -> Int     // Error
-  !!                              ^
-  !!                              _
-  !$ error: invalid redeclaration of 'operation'
-  !! var operation: (_ lhs: Int, _ rhs: Int) -> Int // OK
-  !!     ^
-  !$ note: 'operation' previously declared here
-  !! var operation: (lhs: Int, rhs: Int) -> Int     // Error
-  !!     ^
-  !$ error: invalid redeclaration of 'operation'
-  !! var operation: (Int, Int) -> Int               // OK
-  !!     ^
-  !$ note: 'operation' previously declared here
-  !! var operation: (lhs: Int, rhs: Int) -> Int     // Error
-  !!     ^
-  -> var operation: (_ lhs: Int, _ rhs: Int) -> Int // OK
-  -> var operation: (Int, Int) -> Int               // OK
-  ```
--->
+에러를 던지거나 다시 던지는 함수의 함수 타입은 `throws` 키워드를 포함해야 한다. `throws` 뒤에 괄호로 에러 타입을 지정할 수 있다. 던지는 에러 타입은 `Error` 프로토콜을 준수해야 한다. 타입을 지정하지 않고 `throws`만 작성하는 것은 `throws(any Error)`와 같다. `throws`를 생략하는 것은 `throws(Never)`와 같다. 함수가 던지는 에러 타입은 `Error`를 준수하는 모든 타입이 될 수 있으며, 제네릭 타입, 박스형 프로토콜 타입, 불투명 타입을 포함한다.
 
-If a function type includes more than a single arrow (`->`),
-the function types are grouped from right to left.
-For example,
-the function type `(Int) -> (Int) -> Int` is understood as `(Int) -> ((Int) -> Int)` ---
-that is, a function that takes an `Int` and returns
-another function that takes and returns an `Int`.
+함수가 던지는 에러 타입은 해당 함수 타입의 일부이며, 에러 타입 간의 하위 타입 관계는 해당 함수 타입 간의 하위 타입 관계를 의미한다. 예를 들어 커스텀 `MyError` 타입을 선언하면, 일부 함수 타입 간의 관계는 다음과 같이 상위 타입에서 하위 타입 순으로 나열된다:
 
-Function types for functions
-that can throw or rethrow an error must include the `throws` keyword.
-You can include a type after `throws` in parentheses
-to specify the type of error that the function throws.
-The throw error type must conform to the `Error` protocol.
-Writing `throws` without specifying a type
-is the same as writing `throws(any Error)`.
-Omitting `throws` is the same as writing `throws(Never)`.
-The error type that a function throws
-can be any type that conforms to `Error`,
-including generic types, boxed protocol types, and opaque types.
+1. 모든 에러를 던지는 함수, `throws(any Error)`로 표시
+1. 특정 에러를 던지는 함수, `throws(MyError)`로 표시
+1. 에러를 던지지 않는 함수, `throws(Never)`로 표시
 
-The type of error that a function throws is part of that function's type,
-and a subtype relationship between error types
-means the corresponding function types are also subtypes.
-For example, if you declare a custom `MyError` type,
-the relationship between some function types is as follows,
-from supertype to subtype:
+이러한 하위 타입 관계의 결과로:
 
-1. Functions that throw any error, marked `throws(any Error)`
-1. Functions that throw a specific error, marked `throws(MyError)`
-1. Functions that don't throw, marked `throws(Never)`
+- 에러를 던지지 않는 함수는 에러를 던지는 함수와 동일한 위치에서 사용할 수 있다.
+- 구체적인 에러 타입을 던지는 함수는 에러를 던지는 함수와 동일한 위치에서 사용할 수 있다.
+- 더 구체적인 에러 타입을 던지는 함수는 더 일반적인 에러 타입을 던지는 함수와 동일한 위치에서 사용할 수 있다.
 
-As a result of these subtype relationships:
+함수 타입에서 던지는 에러 타입으로 연관 타입이나 제네릭 타입 매개변수를 사용하면, 해당 연관 타입이나 제네릭 타입 매개변수는 암시적으로 `Error` 프로토콜을 준수해야 한다.
 
-- You can use a nonthrowing function
-  in the same places as a throwing function.
-- You can use a function that throws a concrete error type
-  in the same places as a throwing function.
-- You can use a function that throws a more specific error type
-  in the same places as a function that throws a more general error type.
+에러를 던지고 다시 던지는 함수에 대한 자세한 내용은 <doc:Declarations#Throwing-Functions-and-Methods>와 <doc:Declarations#Rethrowing-Functions-and-Methods>를 참고한다.
 
-If you use an associated type or a generic type parameter
-as the thrown error type in a function type,
-then that associated type or generic type parameter
-is implicitly required to conform to the `Error` protocol.
+비동기 함수의 함수 타입은 `async` 키워드로 표시해야 한다. `async` 키워드는 함수 타입의 일부이며, 동기 함수는 비동기 함수의 하위 타입이다. 따라서 동기 함수는 비동기 함수와 동일한 위치에서 사용할 수 있다. 비동기 함수에 대한 자세한 내용은 <doc:Declarations#Asynchronous-Functions-and-Methods>를 참고한다.
 
-Throwing and rethrowing functions are described in
-<doc:Declarations#Throwing-Functions-and-Methods>
-and <doc:Declarations#Rethrowing-Functions-and-Methods>.
 
-Function types for asynchronous functions
-must be marked with the `async` keyword.
-The `async` keyword is part of a function's type,
-and synchronous functions are subtypes of asynchronous functions.
-As a result, you can use a synchronous function
-in the same places as an asynchronous one.
-For information about asynchronous functions,
-see <doc:Declarations#Asynchronous-Functions-and-Methods>.
+### 논에스케이핑 클로저의 제약 사항
 
-<!--
-  - test: `function-arrow-is-right-associative`
-
-  ```swifttest
-  >> func f(i: Int) -> (Int) -> Int {
-  >>     func g(j: Int) -> Int {
-  >>         return i + j
-  >>     }
-  >>     return g
-  >> }
-
-  >> let a: (Int) -> (Int) -> Int = f
-  >> let r0 = a(3)(5)
-  >> assert(r0 == 8)
-
-  >> let b: (Int) -> ((Int) -> Int) = f
-  >> let r1 = b(3)(5)
-  >> assert(r1 == 8)
-  ```
--->
-
-### Restrictions for Nonescaping Closures
-
-A parameter that's a nonescaping function
-can't be stored in a property, variable, or constant of type `Any`,
-because that might allow the value to escape.
+논에스케이핑 함수 타입의 파라미터는 `Any` 타입의 프로퍼티, 변수, 상수에 저장할 수 없다. 이는 값이 탈출할 가능성을 열어두기 때문이다.
 
 <!--
   - test: `cant-store-nonescaping-as-Any`
@@ -434,24 +225,19 @@ because that might allow the value to escape.
   ```
 -->
 
-A parameter that's a nonescaping function
-can't be passed as an argument to another nonescaping function parameter.
-This restriction helps Swift perform
-more of its checks for conflicting access to memory
-at compile time instead of at runtime.
-For example:
+논에스케이핑 함수 타입의 파라미터는 다른 논에스케이핑 함수 파라미터에 인자로 전달할 수 없다. 이 제약은 Swift가 런타임이 아닌 컴파일 타임에 메모리 접근 충돌을 더 많이 검사할 수 있도록 돕는다. 예를 들어:
 
 ```swift
 let external: (() -> Void) -> Void = { _ in () }
 func takesTwoFunctions(first: (() -> Void) -> Void, second: (() -> Void) -> Void) {
-    first { first {} }       // Error
-    second { second {}  }    // Error
+    first { first {} }       // 오류
+    second { second {}  }    // 오류
 
-    first { second {} }      // Error
-    second { first {} }      // Error
+    first { second {} }      // 오류
+    second { first {} }      // 오류
 
-    first { external {} }    // OK
-    external { first {} }    // OK
+    first { external {} }    // 정상
+    external { first {} }    // 정상
 }
 ```
 
@@ -461,59 +247,44 @@ func takesTwoFunctions(first: (() -> Void) -> Void, second: (() -> Void) -> Void
   ```swifttest
   -> let external: (() -> Void) -> Void = { _ in () }
   -> func takesTwoFunctions(first: (() -> Void) -> Void, second: (() -> Void) -> Void) {
-         first { first {} }       // Error
-         second { second {}  }    // Error
+         first { first {} }       // 오류
+         second { second {}  }    // 오류
 
-         first { second {} }      // Error
-         second { first {} }      // Error
+         first { second {} }      // 오류
+         second { first {} }      // 오류
 
-         first { external {} }    // OK
-         external { first {} }    // OK
+         first { external {} }    // 정상
+         external { first {} }    // 정상
      }
   !$ error: passing a closure which captures a non-escaping function parameter 'first' to a call to a non-escaping function parameter can allow re-entrant modification of a variable
-  !! first { first {} }       // Error
+  !! first { first {} }       // 오류
   !! ^
   !$ error: passing a closure which captures a non-escaping function parameter 'second' to a call to a non-escaping function parameter can allow re-entrant modification of a variable
-  !! second { second {}  }    // Error
+  !! second { second {}  }    // 오류
   !! ^
   !$ error: passing a closure which captures a non-escaping function parameter 'second' to a call to a non-escaping function parameter can allow re-entrant modification of a variable
-  !! first { second {} }      // Error
+  !! first { second {} }      // 오류
   !! ^
   !$ error: passing a closure which captures a non-escaping function parameter 'first' to a call to a non-escaping function parameter can allow re-entrant modification of a variable
-  !! second { first {} }      // Error
+  !! second { first {} }      // 오류
   !! ^
   ```
 -->
 
-In the code above,
-both of the parameters to `takesTwoFunctions(first:second:)` are functions.
-Neither parameter is marked `@escaping`,
-so they're both nonescaping as a result.
+위 코드에서 `takesTwoFunctions(first:second:)`의 두 파라미터는 모두 함수 타입이다. 두 파라미터 모두 `@escaping`으로 표시되지 않았기 때문에 논에스케이핑 함수로 간주된다.
 
-The four function calls marked "Error" in the example above
-cause compiler errors.
-Because the `first` and `second` parameters
-are nonescaping functions,
-they can't be passed as arguments to another nonescaping function parameter.
-In contrast,
-the two function calls marked "OK" don't cause a compiler error.
-These function calls don't violate the restriction
-because `external` isn't one of the parameters of `takesTwoFunctions(first:second:)`.
+예제에서 "오류"로 표시된 네 개의 함수 호출은 컴파일 오류를 발생시킨다. `first`와 `second` 파라미터가 논에스케이핑 함수이기 때문에, 이들을 다른 논에스케이핑 함수 파라미터에 인자로 전달할 수 없다. 반면, "정상"으로 표시된 두 함수 호출은 컴파일 오류를 발생시키지 않는다. 이 함수 호출들은 `external`이 `takesTwoFunctions(first:second:)`의 파라미터가 아니기 때문에 제약을 위반하지 않는다.
 
-If you need to avoid this restriction, mark one of the parameters as escaping,
-or temporarily convert one of the nonescaping function parameters to an escaping function
-by using the `withoutActuallyEscaping(_:do:)` function.
-For information about avoiding conflicting access to memory,
-see <doc:MemorySafety>.
+이 제약을 피하려면 파라미터 중 하나를 에스케이핑으로 표시하거나, `withoutActuallyEscaping(_:do:)` 함수를 사용해 논에스케이핑 함수 파라미터를 일시적으로 에스케이핑 함수로 변환하면 된다. 메모리 접근 충돌을 피하는 방법에 대한 자세한 내용은 <doc:MemorySafety>를 참고한다.
 
-> Grammar of a function type:
+> 함수 타입의 문법:
 >
 > *function-type* → *attributes*_?_ *function-type-argument-clause* **`async`**_?_ *throws-clause*_?_ **`->`** *type*
 >
 > *function-type-argument-clause* → **`(`** **`)`** \
 > *function-type-argument-clause* → **`(`** *function-type-argument-list* **`...`**_?_ **`)`**
 >
-> *function-type-argument-list* → *function-type-argument* | *function-type-argument* **`,`** *function-type-argument-list* \
+> *function-type-argument-list* → *function-type-argument* | *function-type-argument**`,`** *function-type-argument-list* \
 > *function-type-argument* → *attributes*_?_ *parameter-modifier*_?_ *type* | *argument-label* *type-annotation* \
 > *argument-label* → *identifier*
 >
@@ -535,16 +306,16 @@ see <doc:MemorySafety>.
       var myPolymorphicF = polymorphicF
 -->
 
-## Array Type
 
-The Swift language provides the following syntactic sugar for the Swift standard library
-`Array<Element>` type:
+## 배열 타입
+
+Swift 언어는 Swift 표준 라이브러리의 `Array<Element>` 타입에 대해 다음과 같은 문법적 편의를 제공한다:
 
 ```swift
-[<#type#>]
+[<#타입#>]
 ```
 
-In other words, the following two declarations are equivalent:
+즉, 다음 두 선언은 동일하다:
 
 ```swift
 let someArray: Array<String> = ["Alex", "Brian", "Dave"]
@@ -561,16 +332,9 @@ let someArray: [String] = ["Alex", "Brian", "Dave"]
   ```
 -->
 
-In both cases, the constant `someArray`
-is declared as an array of strings. The elements of an array can be accessed
-through subscripting by specifying a valid index value in square brackets:
-`someArray[0]` refers to the element at index 0, `"Alex"`.
+두 경우 모두 상수 `someArray`는 문자열 배열로 선언된다. 배열의 엘리먼트는 대괄호 안에 유효한 인덱스 값을 지정하여 접근할 수 있다. 예를 들어 `someArray[0]`은 인덱스 0에 위치한 `"Alex"`를 참조한다.
 
-You can create multidimensional arrays by nesting pairs of square brackets,
-where the name of the base type of the elements is contained in the innermost
-pair of square brackets.
-For example, you can create
-a three-dimensional array of integers using three sets of square brackets:
+다차원 배열을 만들려면 대괄호 쌍을 중첩하면 된다. 이때 엘리먼트의 기본 타입 이름은 가장 안쪽의 대괄호 쌍에 위치한다. 예를 들어, 세 개의 대괄호 쌍을 사용해 3차원 정수 배열을 만들 수 있다:
 
 ```swift
 var array3D: [[[Int]]] = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
@@ -584,30 +348,24 @@ var array3D: [[[Int]]] = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
   ```
 -->
 
-When accessing the elements in a multidimensional array,
-the left-most subscript index refers to the element at that index in the outermost
-array. The next subscript index to the right refers to the element
-at that index in the array that's nested one level in. And so on. This means that in
-the example above, `array3D[0]` refers to `[[1, 2], [3, 4]]`,
-`array3D[0][1]` refers to `[3, 4]`, and `array3D[0][1][1]` refers to the value 4.
+다차원 배열의 엘리먼트에 접근할 때, 가장 왼쪽의 인덱스는 가장 바깥쪽 배열의 해당 인덱스에 위치한 엘리먼트를 참조한다. 그 다음 오른쪽의 인덱스는 한 단계 안쪽에 중첩된 배열의 해당 인덱스 엘리먼트를 참조한다. 이와 같은 방식으로 계속 진행된다. 위 예제에서 `array3D[0]`은 `[[1, 2], [3, 4]]`를, `array3D[0][1]`은 `[3, 4]`를, `array3D[0][1][1]`은 값 4를 참조한다.
 
-For a detailed discussion of the Swift standard library `Array` type,
-see <doc:CollectionTypes#Arrays>.
+Swift 표준 라이브러리 `Array` 타입에 대한 자세한 내용은 <doc:CollectionTypes#Arrays>를 참고한다.
 
-> Grammar of an array type:
+> 배열 타입 문법:
 >
-> *array-type* → **`[`** *type* **`]`**
+> *array-type* → **`[`** *타입* **`]`**
 
-## Dictionary Type
 
-The Swift language provides the following syntactic sugar for the Swift standard library
-`Dictionary<Key, Value>` type:
+## 딕셔너리 타입
+
+Swift 언어는 Swift 표준 라이브러리의 `Dictionary<Key, Value>` 타입에 대해 다음과 같은 문법적 설탕을 제공한다:
 
 ```swift
-[<#key type#>: <#value type#>]
+[<#키 타입#>: <#값 타입#>]
 ```
 
-In other words, the following two declarations are equivalent:
+즉, 다음 두 선언은 동일하다:
 
 ```swift
 let someDictionary: [String: Int] = ["Alex": 31, "Paul": 39]
@@ -624,36 +382,27 @@ let someDictionary: Dictionary<String, Int> = ["Alex": 31, "Paul": 39]
   ```
 -->
 
-In both cases, the constant `someDictionary`
-is declared as a dictionary with strings as keys and integers as values.
+두 경우 모두, 상수 `someDictionary`는 문자열을 키로, 정수를 값으로 가지는 딕셔너리로 선언된다.
 
-The values of a dictionary can be accessed through subscripting
-by specifying the corresponding key in
-square brackets: `someDictionary["Alex"]` refers to the value associated
-with the key `"Alex"`.
-The subscript returns an optional value of the dictionary's value type.
-If the specified key isn't contained in the dictionary,
-the subscript returns `nil`.
+딕셔너리의 값은 대괄호 안에 해당 키를 지정해 접근할 수 있다. 예를 들어 `someDictionary["Alex"]`는 키 `"Alex"`와 연결된 값을 가리킨다. 서브스크립트는 딕셔너리의 값 타입의 옵셔널 값을 반환한다. 지정된 키가 딕셔너리에 없으면 서브스크립트는 `nil`을 반환한다.
 
-The key type of a dictionary must conform to the Swift standard library `Hashable` protocol.
+딕셔너리의 키 타입은 Swift 표준 라이브러리의 `Hashable` 프로토콜을 준수해야 한다.
 
 <!--
   Used to have an xref to :ref:`CollectionTypes_HashValuesForSetTypes` here.
   But it doesn't really work now that the Hashable content moved from Dictionary to Set.
 -->
 
-For a detailed discussion of the Swift standard library `Dictionary` type,
-see <doc:CollectionTypes#Dictionaries>.
+Swift 표준 라이브러리의 `Dictionary` 타입에 대한 자세한 설명은 <doc:CollectionTypes#Dictionaries>를 참조한다.
 
-> Grammar of a dictionary type:
+> 딕셔너리 타입 문법:
 >
 > *dictionary-type* → **`[`** *type* **`:`** *type* **`]`**
 
-## Optional Type
 
-The Swift language defines the postfix `?` as syntactic sugar for
-the named type `Optional<Wrapped>`, which is defined in the Swift standard library.
-In other words, the following two declarations are equivalent:
+## 옵셔널 타입
+
+Swift 언어에서는 `?` 접미사를 `Optional<Wrapped>` 타입에 대한 문법적 설탕(syntactic sugar)으로 정의한다. 이 타입은 Swift 표준 라이브러리에 정의되어 있다. 즉, 아래 두 선언은 동일한 의미를 가진다:
 
 ```swift
 var optionalInteger: Int?
@@ -670,28 +419,20 @@ var optionalInteger: Optional<Int>
 -->
 
 <!--
-  We can't test the code listing above,
-  because of the redeclaration of optionalInteger,
-  so we at least test that the syntax shown in it compiles.
+  위 코드 목록은 optionalInteger의 재선언으로 인해 테스트할 수 없으므로,
+  적어도 표시된 문법이 컴파일되는지 확인한다.
 -->
 
-In both cases, the variable `optionalInteger`
-is declared to have the type of an optional integer.
-Note that no whitespace may appear between the type and the `?`.
+두 경우 모두, `optionalInteger` 변수는 옵셔널 정수 타입으로 선언된다. 타입과 `?` 사이에 공백이 없어야 한다는 점에 유의한다.
 
-The type `Optional<Wrapped>` is an enumeration with two cases, `none` and `some(Wrapped)`,
-which are used to represent values that may or may not be present.
-Any type can be explicitly declared to be (or implicitly converted to) an optional type.
-If you don't provide an initial value when you declare an
-optional variable or property, its value automatically defaults to `nil`.
+`Optional<Wrapped>` 타입은 두 가지 케이스(`none`과 `some(Wrapped)`)를 가진 열거형이다. 이 타입은 값이 존재할 수도 있고 없을 수도 있는 상황을 표현한다. 모든 타입은 명시적으로 옵셔널 타입으로 선언하거나 암시적으로 변환할 수 있다. 옵셔널 변수나 프로퍼티를 선언할 때 초기값을 제공하지 않으면, 자동으로 `nil`로 초기화된다.
 
 <!--
-  TODO Add a link to the Optional Enum Reference page.
-  For more information about the Optional type, see ...
+  TODO Optional Enum Reference 페이지로 링크 추가.
+  옵셔널 타입에 대한 더 많은 정보는 ...을 참조한다.
 -->
 
-If an instance of an optional type contains a value,
-you can access that value using the postfix operator `!`, as shown below:
+옵셔널 타입의 인스턴스가 값을 포함하고 있다면, 아래와 같이 `!` 접미사 연산자를 사용해 그 값에 접근할 수 있다:
 
 ```swift
 optionalInteger = 42
@@ -711,129 +452,78 @@ optionalInteger! // 42
 -->
 
 <!--
-  Refactor the above if possible to avoid using bare expressions.
-  Tracking bug is <rdar://problem/35301593>
+  가능하다면 위 코드를 리팩토링해 bare expression 사용을 피한다.
+  추적 중인 버그는 <rdar://problem/35301593>
 -->
 
-Using the `!` operator to unwrap an optional
-that has a value of `nil` results in a runtime error.
+값이 `nil`인 옵셔널에 `!` 연산자를 사용하면 런타임 오류가 발생한다.
 
-You can also use optional chaining and optional binding to conditionally perform an
-operation on an optional expression. If the value is `nil`,
-no operation is performed and therefore no runtime error is produced.
+옵셔널 체이닝과 옵셔널 바인딩을 사용해 옵셔널 표현식에 조건부로 연산을 수행할 수도 있다. 값이 `nil`인 경우, 연산이 수행되지 않으므로 런타임 오류가 발생하지 않는다.
 
-For more information and to see examples that show how to use optional types,
-see <doc:TheBasics#Optionals>.
+옵셔널 타입 사용법에 대한 더 많은 정보와 예제는 <doc:TheBasics#Optionals>를 참조한다.
 
-> Grammar of an optional type:
+> 옵셔널 타입의 문법:
 >
 > *optional-type* → *type* **`?`**
 
-## Implicitly Unwrapped Optional Type
 
-The Swift language defines the postfix `!` as syntactic sugar for
-the named type `Optional<Wrapped>`, which is defined in the Swift standard library,
-with the additional behavior that
-it's automatically unwrapped when it's accessed.
-If you try to use an implicitly unwrapped optional that has a value of `nil`,
-you'll get a runtime error.
-With the exception of the implicit unwrapping behavior,
-the following two declarations are equivalent:
+## 암시적 옵셔널 언래핑 타입
+
+Swift 언어에서 `!` 접미사는 Swift 표준 라이브러리에 정의된 `Optional<Wrapped>` 타입에 대한 문법적 편의 기능이다. 이 타입은 접근 시 자동으로 언래핑되는 추가 동작을 가진다. 만약 값이 `nil`인 암시적 옵셔널을 사용하려고 하면 런타임 오류가 발생한다. 암시적 언래핑 동작을 제외하면, 아래 두 선언은 동일하다:
 
 ```swift
 var implicitlyUnwrappedString: String!
 var explicitlyUnwrappedString: Optional<String>
 ```
 
-Note that no whitespace may appear between the type and the `!`.
+타입과 `!` 사이에 공백이 없어야 한다는 점에 유의한다.
 
-Because implicit unwrapping
-changes the meaning of the declaration that contains that type,
-optional types that are nested inside a tuple type or a generic type
---- such as the element types of a dictionary or array ---
-can't be marked as implicitly unwrapped.
-For example:
+암시적 언래핑은 해당 타입을 포함하는 선언의 의미를 변경한다. 따라서 튜플 타입이나 제네릭 타입 내부에 중첩된 옵셔널 타입(예: 딕셔너리나 배열의 요소 타입)은 암시적 언래핑으로 표시할 수 없다. 예를 들어:
 
 ```swift
-let tupleOfImplicitlyUnwrappedElements: (Int!, Int!)  // Error
-let implicitlyUnwrappedTuple: (Int, Int)!             // OK
+let tupleOfImplicitlyUnwrappedElements: (Int!, Int!)  // 오류
+let implicitlyUnwrappedTuple: (Int, Int)!             // 정상
 
-let arrayOfImplicitlyUnwrappedElements: [Int!]        // Error
-let implicitlyUnwrappedArray: [Int]!                  // OK
+let arrayOfImplicitlyUnwrappedElements: [Int!]        // 오류
+let implicitlyUnwrappedArray: [Int]!                  // 정상
 ```
 
-Because implicitly unwrapped optionals
-have the same `Optional<Wrapped>` type as optional values,
-you can use implicitly unwrapped optionals
-in all the same places in your code
-that you can use optionals.
-For example, you can assign values of implicitly unwrapped
-optionals to variables, constants, and properties of optionals, and vice versa.
+암시적 옵셔널은 일반 옵셔널 값과 동일한 `Optional<Wrapped>` 타입을 가지기 때문에, 코드 내에서 옵셔널을 사용할 수 있는 모든 곳에서 암시적 옵셔널을 사용할 수 있다. 예를 들어, 암시적 옵셔널 값을 옵셔널 변수, 상수, 프로퍼티에 할당할 수 있고, 그 반대도 가능하다.
 
-As with optionals, if you don't provide an initial value when you declare an
-implicitly unwrapped optional variable or property,
-its value automatically defaults to `nil`.
+옵셔널과 마찬가지로, 암시적 옵셔널 변수나 프로퍼티를 선언할 때 초기값을 제공하지 않으면 자동으로 `nil`로 초기화된다.
 
-Use optional chaining to conditionally perform an
-operation on an implicitly unwrapped optional expression.
-If the value is `nil`,
-no operation is performed and therefore no runtime error is produced.
+옵셔널 체이닝을 사용해 암시적 옵셔널 표현식에 대한 작업을 조건적으로 수행할 수 있다. 값이 `nil`인 경우, 작업이 수행되지 않으므로 런타임 오류가 발생하지 않는다.
 
-For more information about implicitly unwrapped optional types,
-see <doc:TheBasics#Implicitly-Unwrapped-Optionals>.
+암시적 옵셔널 타입에 대한 더 자세한 정보는 <doc:TheBasics#Implicitly-Unwrapped-Optionals>를 참고한다.
 
-> Grammar of an implicitly unwrapped optional type:
+> 암시적 옵셔널 타입 문법:
 >
 > *implicitly-unwrapped-optional-type* → *type* **`!`**
 
-## Protocol Composition Type
 
-A *protocol composition type* defines a type that conforms to each protocol
-in a list of specified protocols,
-or a type that's a subclass of a given class
-and conforms to each protocol in a list of specified protocols.
-Protocol composition types may be used only when specifying a type
-in type annotations,
-in generic parameter clauses,
-and in generic `where` clauses.
+## 프로토콜 합성 타입
+
+*프로토콜 합성 타입*은 지정된 프로토콜 목록의 각 프로토콜을 준수하는 타입을 정의한다. 또는 주어진 클래스의 서브클래스이면서 지정된 프로토콜 목록의 각 프로토콜을 준수하는 타입을 정의한다. 프로토콜 합성 타입은 타입 어노테이션, 제네릭 매개변수 절, 그리고 제네릭 `where` 절에서 타입을 지정할 때만 사용할 수 있다.
 
 <!--
-  In places where a comma-separated list of types is allowed,
-  the P&Q syntax isn't allowed.
+  타입을 쉼표로 구분하여 나열할 수 있는 곳에서는 P&Q 구문을 사용할 수 없다.
 -->
 
-Protocol composition types have the following form:
+프로토콜 합성 타입은 다음과 같은 형태를 가진다:
 
 ```swift
 <#Protocol 1#> & <#Protocol 2#>
 ```
 
-A protocol composition type allows you to specify a value whose type conforms to the requirements
-of multiple protocols without explicitly defining a new, named protocol
-that inherits from each protocol you want the type to conform to.
-For example,
-you can use the protocol composition type `ProtocolA & ProtocolB & ProtocolC`
-instead of declaring a new protocol
-that inherits from `ProtocolA`, `ProtocolB`, and `ProtocolC`.
-Likewise, you can use `SuperClass & ProtocolA`
-instead of declaring a new protocol
-that's a subclass of `SuperClass` and conforms to `ProtocolA`.
+프로토콜 합성 타입을 사용하면 여러 프로토콜의 요구 사항을 준수하는 타입의 값을 지정할 수 있다. 이때 새로운 이름을 가진 프로토콜을 명시적으로 정의할 필요가 없다. 예를 들어, `ProtocolA`, `ProtocolB`, `ProtocolC`를 상속받는 새로운 프로토콜을 선언하는 대신 `ProtocolA & ProtocolB & ProtocolC`와 같은 프로토콜 합성 타입을 사용할 수 있다. 마찬가지로, `SuperClass`의 서브클래스이면서 `ProtocolA`를 준수하는 새로운 프로토콜을 선언하는 대신 `SuperClass & ProtocolA`를 사용할 수 있다.
 
-Each item in a protocol composition list is one of the following;
-the list can contain at most one class:
+프로토콜 합성 목록의 각 항목은 다음 중 하나이며, 목록에는 최대 하나의 클래스만 포함될 수 있다:
 
-- The name of a class
-- The name of a protocol
-- A type alias whose underlying type
-  is a protocol composition type, a protocol, or a class.
+- 클래스의 이름
+- 프로토콜의 이름
+- 프로토콜 합성 타입, 프로토콜, 또는 클래스를 기본 타입으로 하는 타입 별칭
 
-When a protocol composition type contains type aliases,
-it's possible for the same protocol to appear
-more than once in the definitions ---
-duplicates are ignored.
-For example,
-the definition of `PQR` in the code below
-is equivalent to `P & Q & R`.
+프로토콜 합성 타입에 타입 별칭이 포함된 경우, 동일한 프로토콜이 정의에서 여러 번 나타날 수 있다. 이때 중복된 항목은 무시된다. 예를 들어, 아래 코드에서 `PQR`의 정의는 `P & Q & R`과 동일하다.
 
 ```swift
 typealias PQ = P & Q
@@ -852,136 +542,71 @@ typealias PQR = PQ & Q & R
   ```
 -->
 
-> Grammar of a protocol composition type:
+> 프로토콜 합성 타입의 문법:
 >
 > *protocol-composition-type* → *type-identifier* **`&`** *protocol-composition-continuation* \
 > *protocol-composition-continuation* → *type-identifier* | *protocol-composition-type*
 
-## Opaque Type
 
-An *opaque type* defines a type
-that conforms to a protocol or protocol composition,
-without specifying the underlying concrete type.
+## 불투명 타입
 
-Opaque types appear as the return type of a function or subscript,
-as the type of a parameter to a function, subscript, or initializer,
-or as the type of a property.
-Opaque types can't appear as part of a tuple type or a generic type,
-such as the element type of an array or the wrapped type of an optional.
+*불투명 타입*은 구체적인 타입을 명시하지 않고, 프로토콜 또는 프로토콜 합성을 준수하는 타입을 정의한다.
 
-Opaque types have the following form:
+불투명 타입은 함수나 서브스크립트의 반환 타입, 함수, 서브스크립트, 또는 이니셜라이저의 파라미터 타입, 또는 프로퍼티의 타입으로 사용된다. 불투명 타입은 튜플 타입이나 제네릭 타입의 일부로는 사용할 수 없다. 예를 들어, 배열의 요소 타입이나 옵셔널의 래핑 타입으로는 사용할 수 없다.
+
+불투명 타입은 다음과 같은 형태를 가진다:
 
 ```swift
 some <#constraint#>
 ```
 
-The *constraint* is a class type,
-protocol type,
-protocol composition type,
-or `Any`.
-A value can be used as an instance of the opaque type
-only if it's an instance of a type
-that conforms to the listed protocol or protocol composition,
-or inherits from the listed class.
-Code that interacts with an opaque value
-can use the value only in ways
-that are part of the interface defined by the *constraint*.
+여기서 *constraint*는 클래스 타입, 프로토콜 타입, 프로토콜 합성 타입, 또는 `Any`가 될 수 있다. 값은 불투명 타입의 인스턴스로 사용될 수 있는데, 이 값은 나열된 프로토콜 또는 프로토콜 합성을 준수하거나, 나열된 클래스를 상속받는 타입의 인스턴스여야 한다. 불투명 값과 상호작용하는 코드는 *constraint*에 의해 정의된 인터페이스의 일부인 방식으로만 값을 사용할 수 있다.
 
-<!--
-  The wording above intentionally follows generic constraints
-  because the meaning here and there is the same,
-  and the compiler uses the same machinery for both under the hood.
--->
+컴파일 시점에 불투명 타입의 값은 특정한 구체적인 타입을 가지며, Swift는 이 타입을 최적화에 사용할 수 있다. 그러나 불투명 타입은 구체적인 타입에 대한 정보가 넘어갈 수 없는 경계를 형성한다.
 
-At compile time,
-a value whose type is opaque has a specific concrete type,
-and Swift can use that underlying type for optimizations.
-However,
-the opaque type forms a boundary
-that information about that underlying type can't cross.
+프로토콜 선언에는 불투명 타입을 포함할 수 없다. 클래스는 nonfinal 메서드의 반환 타입으로 불투명 타입을 사용할 수 없다.
 
-Protocol declarations can't include opaque types.
-Classes can't use an opaque type as the return type of a nonfinal method.
+불투명 타입을 반환 타입으로 사용하는 함수는 동일한 구체적인 타입을 공유하는 값을 반환해야 한다. 반환 타입은 함수의 제네릭 타입 파라미터의 일부인 타입을 포함할 수 있다. 예를 들어, `someFunction<T>()`라는 함수는 `T` 타입이나 `Dictionary<String, T>` 타입의 값을 반환할 수 있다.
 
-A function that uses an opaque type as its return type
-must return values that share a single underlying type.
-The return type can include types
-that are part of the function's generic type parameters.
-For example, a function `someFunction<T>()`
-could return a value of type `T` or `Dictionary<String, T>`.
-
-Writing an opaque type for a parameter
-is syntactic sugar for using a generic type,
-without specifying a name for the generic type parameter.
-The implicit generic type parameter has a constraint
-that requires it to conform to the protocol named in the opaque type.
-If you write multiple opaque types,
-each one makes its own generic type parameter.
-For example, the following declarations are equivalent:
+파라미터에 대한 불투명 타입을 작성하는 것은 제네릭 타입을 사용하는 것과 동일하지만, 제네릭 타입 파라미터의 이름을 지정하지 않는다. 암시적인 제네릭 타입 파라미터는 불투명 타입에 명시된 프로토콜을 준수해야 한다는 제약을 가진다. 여러 불투명 타입을 작성하면, 각각은 자체적인 제네릭 타입 파라미터를 만든다. 예를 들어, 다음 두 선언은 동일하다:
 
 ```swift
 func someFunction(x: some MyProtocol, y: some MyProtocol) { }
 func someFunction<T1: MyProtocol, T2: MyProtocol>(x: T1, y: T2) { }
 ```
 
-In the second declaration,
-because the generic type parameters `T1` and `T2` have names,
-you can refer use these types elsewhere in the code.
-In contrast,
-the generic type parameters in the first declaration
-don't have names and can't be referenced in other code.
+두 번째 선언에서 제네릭 타입 파라미터 `T1`과 `T2`는 이름을 가지므로, 코드의 다른 부분에서 이 타입들을 참조할 수 있다. 반면, 첫 번째 선언의 제네릭 타입 파라미터는 이름이 없으며 다른 코드에서 참조할 수 없다.
 
-You can't use an opaque type in the type of a variadic parameter.
+가변 인자 파라미터의 타입으로는 불투명 타입을 사용할 수 없다.
 
-You can't use an opaque type
-as a parameter to a function type being returned,
-or as a parameter in a parameter type that's a function type.
-In these positions,
-the function's caller would have to construct a value
-of that unknown type.
+반환되는 함수 타입의 파라미터로, 또는 파라미터 타입이 함수 타입인 경우의 파라미터로 불투명 타입을 사용할 수 없다. 이러한 위치에서는 함수의 호출자가 알 수 없는 타입의 값을 생성해야 하기 때문이다.
 
 ```swift
 protocol MyProtocol { }
-func badFunction() -> (some MyProtocol) -> Void { }  // Error
-func anotherBadFunction(callback: (some MyProtocol) -> Void) { }  // Error
+func badFunction() -> (some MyProtocol) -> Void { }  // 에러
+func anotherBadFunction(callback: (some MyProtocol) -> Void) { }  // 에러
 ```
 
-> Grammar of an opaque type:
+> 불투명 타입의 문법:
 >
 > *opaque-type* → **`some`** *type*
 
-## Boxed Protocol Type
 
-A *boxed protocol type* defines a type
-that conforms to a protocol or protocol composition,
-with the ability for that conforming type
-to vary while the program is running.
+## 박싱된 프로토콜 타입
 
-Boxed protocol types have the following form:
+*박싱된 프로토콜 타입*은 프로토콜 또는 프로토콜 합성을 준수하는 타입을 정의한다. 이 타입은 프로그램이 실행되는 동안 준수하는 타입이 변할 수 있는 특징을 가진다.
+
+박싱된 프로토콜 타입은 다음과 같은 형태를 가진다:
 
 ```swift
 any <#constraint#>
 ```
 
-The *constraint* is a protocol type,
-protocol composition type,
-a metatype of a protocol type,
-or a metatype of a protocol composition type.
+여기서 *constraint*는 프로토콜 타입, 프로토콜 합성 타입, 프로토콜 타입의 메타타입, 또는 프로토콜 합성 타입의 메타타입이다.
 
-At runtime,
-an instance of a boxed protocol type can contain a value
-of any type that satisfies the *constraint*.
-This behavior contrasts with how an opaque types work,
-where there is some specific conforming type known at compile time.
-The additional level of indirection that's used
-when working with a boxed protocol type is called *boxing*.
-Boxing typically requires a separate memory allocation for storage
-and an additional level of indirection for access,
-which incurs a performance cost at runtime.
+런타임에 박싱된 프로토콜 타입의 인스턴스는 *constraint*를 만족하는 어떤 타입의 값이라도 포함할 수 있다. 이 동작은 컴파일 타임에 특정 준수 타입이 알려지는 불투명 타입과는 대조적이다. 박싱된 프로토콜 타입을 다룰 때 사용되는 추가적인 간접 참조를 *박싱*이라고 한다. 박싱은 일반적으로 별도의 메모리 할당과 접근을 위한 추가적인 간접 참조를 필요로 하며, 이는 런타임에 성능 비용을 발생시킨다.
 
-Applying `any` to the `Any` or `AnyObject` types
-has no effect,
-because those types are already boxed protocol types.
+`Any` 또는 `AnyObject` 타입에 `any`를 적용해도 아무런 효과가 없다. 이 타입들은 이미 박싱된 프로토콜 타입이기 때문이다.
 
 <!--
   - test: `any-any-does-nothing`
@@ -1015,31 +640,18 @@ Contrast P.Type with (any P.Type) and (any P).Type
 https://github.com/swiftlang/swift-evolution/blob/main/proposals/0335-existential-any.md#metatypes
 -->
 
-> Grammar of a boxed protocol type:
+> 박싱된 프로토콜 타입의 문법:
 >
 > *boxed-protocol-type* → **`any`** *type*
 
-## Metatype Type
 
-A *metatype type* refers to the type of any type,
-including class types, structure types, enumeration types, and protocol types.
+## 메타타입 타입
 
-The metatype of a class, structure, or enumeration type is
-the name of that type followed by `.Type`.
-The metatype of a protocol type --- not the concrete type that
-conforms to the protocol at runtime ---
-is the name of that protocol followed by `.Protocol`.
-For example, the metatype of the class type `SomeClass` is `SomeClass.Type`
-and the metatype of the protocol `SomeProtocol` is `SomeProtocol.Protocol`.
+*메타타입 타입*은 클래스 타입, 구조체 타입, 열거형 타입, 프로토콜 타입을 포함한 모든 타입의 타입을 말한다.
 
-You can use the postfix `self` expression to access a type as a value.
-For example, `SomeClass.self` returns `SomeClass` itself,
-not an instance of `SomeClass`.
-And `SomeProtocol.self` returns `SomeProtocol` itself,
-not an instance of a type that conforms to `SomeProtocol` at runtime.
-You can call the `type(of:)` function with an instance of a type
-to access that instance's dynamic, runtime type as a value,
-as the following example shows:
+클래스, 구조체, 또는 열거형 타입의 메타타입은 해당 타입 이름 뒤에 `.Type`을 붙인다. 프로토콜 타입의 메타타입은 해당 프로토콜 이름 뒤에 `.Protocol`을 붙인다. 이때 프로토콜을 준수하는 런타임의 구체적인 타입이 아니라 프로토콜 자체를 의미한다. 예를 들어, 클래스 타입 `SomeClass`의 메타타입은 `SomeClass.Type`이고, 프로토콜 `SomeProtocol`의 메타타입은 `SomeProtocol.Protocol`이다.
+
+`self` 접미사 표현을 사용하면 타입을 값으로 접근할 수 있다. 예를 들어, `SomeClass.self`는 `SomeClass` 자체를 반환하며, `SomeClass`의 인스턴스가 아니다. 마찬가지로 `SomeProtocol.self`는 `SomeProtocol` 자체를 반환하며, 런타임에 해당 프로토콜을 준수하는 타입의 인스턴스가 아니다. `type(of:)` 함수를 사용하면 특정 인스턴스의 동적 런타임 타입을 값으로 접근할 수 있다. 다음 예제를 참고하자:
 
 ```swift
 class SomeBaseClass {
@@ -1053,10 +665,10 @@ class SomeSubClass: SomeBaseClass {
     }
 }
 let someInstance: SomeBaseClass = SomeSubClass()
-// The compile-time type of someInstance is SomeBaseClass,
-// and the runtime type of someInstance is SomeSubClass
+// someInstance의 컴파일 타임 타입은 SomeBaseClass,
+// 런타임 타입은 SomeSubClass
 type(of: someInstance).printClassName()
-// Prints "SomeSubClass"
+// "SomeSubClass" 출력
 ```
 
 <!--
@@ -1081,15 +693,9 @@ type(of: someInstance).printClassName()
   ```
 -->
 
-For more information,
-see [`type(of:)`](https://developer.apple.com/documentation/swift/2885064-type)
-in the Swift standard library.
+자세한 내용은 Swift 표준 라이브러리의 [`type(of:)`](https://developer.apple.com/documentation/swift/2885064-type)를 참고하자.
 
-Use an initializer expression to construct an instance of a type
-from that type's metatype value.
-For class instances,
-the initializer that's called must be marked with the `required` keyword
-or the entire class marked with the `final` keyword.
+타입의 메타타입 값을 사용해 해당 타입의 인스턴스를 생성하려면 초기화 표현식을 사용한다. 클래스 인스턴스의 경우, 호출되는 초기화 메서드는 `required` 키워드로 표시되어야 하거나, 전체 클래스가 `final` 키워드로 표시되어야 한다.
 
 ```swift
 class AnotherSubClass: SomeBaseClass {
@@ -1123,20 +729,19 @@ let anotherInstance = metatype.init(string: "some string")
   ```
 -->
 
-> Grammar of a metatype type:
+> 메타타입 타입의 문법:
 >
 > *metatype-type* → *type* **`.`** **`Type`** | *type* **`.`** **`Protocol`**
 
-## Any Type
 
-The `Any` type can contain values from all other types.
-`Any` can be used as the concrete type
-for an instance of any of the following types:
+## Any 타입
 
-- A class, structure, or enumeration
-- A metatype, such as `Int.self`
-- A tuple with any types of components
-- A closure or function type
+`Any` 타입은 다른 모든 타입의 값을 포함할 수 있다. `Any`는 다음과 같은 타입의 인스턴스에 대한 구체적인 타입으로 사용할 수 있다:
+
+- 클래스, 구조체, 열거형
+- `Int.self`와 같은 메타타입
+- 다양한 타입의 구성 요소를 가진 튜플
+- 클로저 또는 함수 타입
 
 ```swift
 let mixed: [Any] = ["one", 2, true, (4, 5.3), { () -> Int in return 6 }]
@@ -1150,16 +755,7 @@ let mixed: [Any] = ["one", 2, true, (4, 5.3), { () -> Int in return 6 }]
   ```
 -->
 
-When you use `Any` as a concrete type for an instance,
-you need to cast the instance to a known type
-before you can access its properties or methods.
-Instances with a concrete type of `Any`
-maintain their original dynamic type
-and can be cast to that type using one of the type-cast operators ---
-`as`, `as?`, or `as!`.
-For example,
-use `as?` to conditionally downcast the first object in a heterogeneous array
-to a `String` as follows:
+`Any`를 인스턴스의 구체적인 타입으로 사용할 때는, 해당 인스턴스의 프로퍼티나 메서드에 접근하기 전에 알려진 타입으로 캐스팅해야 한다. `Any` 타입으로 선언된 인스턴스는 원래의 동적 타입을 유지하며, 타입 캐스팅 연산자(`as`, `as?`, `as!`)를 사용해 해당 타입으로 캐스팅할 수 있다. 예를 들어, 이종 타입의 배열에서 첫 번째 객체를 `String`으로 조건부 다운캐스팅하려면 다음과 같이 `as?`를 사용한다:
 
 ```swift
 if let first = mixed.first as? String {
@@ -1179,77 +775,29 @@ if let first = mixed.first as? String {
   ```
 -->
 
-For more information about casting, see <doc:TypeCasting>.
+캐스팅에 대한 더 자세한 정보는 <doc:TypeCasting>을 참고한다.
 
-The `AnyObject` protocol is similar to the `Any` type.
-All classes implicitly conform to `AnyObject`.
-Unlike `Any`,
-which is defined by the language,
-`AnyObject` is defined by the Swift standard library.
-For more information, see
-<doc:Protocols#Class-Only-Protocols>
-and [`AnyObject`](https://developer.apple.com/documentation/swift/anyobject).
+`AnyObject` 프로토콜은 `Any` 타입과 유사하다. 모든 클래스는 암시적으로 `AnyObject`를 준수한다. `Any`가 언어 자체에 의해 정의되는 것과 달리, `AnyObject`는 Swift 표준 라이브러리에 의해 정의된다. 더 자세한 정보는 <doc:Protocols#Class-Only-Protocols>와 [`AnyObject`](https://developer.apple.com/documentation/swift/anyobject)를 참고한다.
 
-> Grammar of an Any type:
+> Any 타입의 문법:
 >
 > *any-type* → **`Any`**
 
-## Self Type
 
-The `Self` type isn't a specific type,
-but rather lets you conveniently refer to the current type
-without repeating or knowing that type's name.
+## Self 타입
 
-In a protocol declaration or a protocol member declaration,
-the `Self` type refers to the eventual type that conforms to the protocol.
+`Self` 타입은 특정 타입을 가리키는 것이 아니라, 현재 타입을 반복하거나 그 이름을 알지 않고도 편리하게 참조할 수 있게 해준다.
 
-In a structure, class, or enumeration declaration,
-the `Self` type refers to the type introduced by the declaration.
-Inside the declaration for a member of a type,
-the `Self` type refers to that type.
-In the members of a class declaration,
-`Self` can appear only as follows:
+프로토콜 선언이나 프로토콜 멤버 선언에서 `Self` 타입은 해당 프로토콜을 준수하는 최종 타입을 가리킨다.
 
-- As the return type of a method
-- As the return type of a read-only subscript
-- As the type of a read-only computed property
-- In the body of a method
+구조체, 클래스, 열거형 선언에서 `Self` 타입은 해당 선언에 의해 도입된 타입을 가리킨다. 타입의 멤버 선언 내부에서 `Self` 타입은 해당 타입을 가리킨다. 클래스 선언의 멤버에서 `Self`는 다음과 같은 경우에만 사용할 수 있다:
 
-For example,
-the code below shows an instance method `f`
-whose return type is `Self`.
+- 메서드의 반환 타입으로
+- 읽기 전용 서브스크립트의 반환 타입으로
+- 읽기 전용 계산 프로퍼티의 타입으로
+- 메서드의 본문 내에서
 
-<!--
-  - test: `self-in-class-cant-be-a-parameter-type`
-
-  ```swifttest
-  -> class C { func f(c: Self) { } }
-  !$ error: covariant 'Self' or 'Self?' can only appear as the type of a property, subscript or method result; did you mean 'C'?
-  !! class C { func f(c: Self) { } }
-  !!                     ^~~~
-  !!                     C
-  ```
--->
-
-<!--
-  - test: `self-in-class-can-be-a-subscript-param`
-
-  ```swifttest
-  >> class C { subscript(s: Int) -> Self { return self } }
-  >> let c = C()
-  >> _ = c[12]
-  ```
--->
-
-<!--
-  - test: `self-in-class-can-be-a-computed-property-type`
-
-  ```swifttest
-  >> class C { var s: Self { return self } }
-  >> let c = C()
-  >> _ = c.s
-  ```
--->
+예를 들어, 아래 코드는 반환 타입이 `Self`인 인스턴스 메서드 `f`를 보여준다.
 
 ```swift
 class Superclass {
@@ -1257,124 +805,56 @@ class Superclass {
 }
 let x = Superclass()
 print(type(of: x.f()))
-// Prints "Superclass"
+// "Superclass" 출력
 
 class Subclass: Superclass { }
 let y = Subclass()
 print(type(of: y.f()))
-// Prints "Subclass"
+// "Subclass" 출력
 
 let z: Superclass = Subclass()
 print(type(of: z.f()))
-// Prints "Subclass"
+// "Subclass" 출력
 ```
 
-<!--
-  - test: `self-gives-dynamic-type`
+위 예제의 마지막 부분은 `Self`가 변수 자체의 컴파일 타입인 `Superclass`가 아니라, `z` 값의 런타임 타입인 `Subclass`를 가리킨다는 것을 보여준다.
 
-  ```swifttest
-  -> class Superclass {
-         func f() -> Self { return self }
-     }
-  -> let x = Superclass()
-  -> print(type(of: x.f()))
-  <- Superclass
+중첩된 타입 선언 내부에서 `Self` 타입은 가장 안쪽의 타입 선언에 의해 도입된 타입을 가리킨다.
 
-  -> class Subclass: Superclass { }
-  -> let y = Subclass()
-  -> print(type(of: y.f()))
-  <- Subclass
+`Self` 타입은 Swift 표준 라이브러리의 [`type(of:)`](https://developer.apple.com/documentation/swift/2885064-type) 함수와 동일한 타입을 가리킨다. 현재 타입의 멤버에 접근하기 위해 `Self.someStaticMember`를 작성하는 것은 `type(of: self).someStaticMember`를 작성하는 것과 동일하다.
 
-  -> let z: Superclass = Subclass()
-  -> print(type(of: z.f()))
-  <- Subclass
-  ```
--->
-
-The last part of the example above shows that
-`Self` refers to the runtime type `Subclass` of the value of `z`,
-not the compile-time type `Superclass` of the variable itself.
-
-<!--
-  TODO: Using Self as the return type from a subscript or property doesn't
-  currently work.  The compiler allows it, but you get the wrong type back,
-  and the compiler doesn't enforce that the subscript/property must be
-  read-only.  See https://bugs.swift.org/browse/SR-10326
--->
-
-Inside a nested type declaration,
-the `Self` type refers to the type
-introduced by the innermost type declaration.
-
-The `Self` type refers to the same type
-as the [`type(of:)`](https://developer.apple.com/documentation/swift/2885064-type)
-function in the Swift standard library.
-Writing `Self.someStaticMember` to access a member of the current type
-is the same as writing `type(of: self).someStaticMember`.
-
-> Grammar of a Self type:
+> Self 타입의 문법:
 >
 > *self-type* → **`Self`**
 
-## Type Inheritance Clause
 
-A *type inheritance clause* is used to specify which class a named type inherits from
-and which protocols a named type conforms to.
-A type inheritance clause begins with a colon (`:`),
-followed by a list of type identifiers.
+## 타입 상속 절
 
-Class types can inherit from a single superclass and conform to any number of protocols.
-When defining a class,
-the name of the superclass must appear first in the list of type identifiers,
-followed by any number of protocols the class must conform to.
-If the class doesn't inherit from another class,
-the list can begin with a protocol instead.
-For an extended discussion and several examples of class inheritance,
-see <doc:Inheritance>.
+*타입 상속 절*은 특정 타입이 어떤 클래스를 상속받는지, 그리고 어떤 프로토콜을 준수하는지 명시할 때 사용한다. 타입 상속 절은 콜론(`:`)으로 시작하며, 그 뒤에 타입 식별자 목록이 이어진다.
 
-Other named types can only inherit from or conform to a list of protocols.
-Protocol types can inherit from any number of other protocols.
-When a protocol type inherits from other protocols,
-the set of requirements from those other protocols are aggregated together,
-and any type that inherits from the current protocol must conform to all of those requirements.
+클래스 타입은 하나의 슈퍼클래스로부터 상속받을 수 있고, 여러 프로토콜을 준수할 수 있다. 클래스를 정의할 때, 슈퍼클래스의 이름은 타입 식별자 목록의 맨 앞에 위치해야 하며, 그 뒤에 준수해야 할 프로토콜 목록이 이어진다. 만약 클래스가 다른 클래스를 상속받지 않는다면, 목록은 프로토콜로 시작할 수 있다. 클래스 상속에 대한 자세한 설명과 여러 예제는 <doc:Inheritance>를 참고한다.
 
-A type inheritance clause in an enumeration definition can be either a list of protocols,
-or in the case of an enumeration that assigns raw values to its cases,
-a single, named type that specifies the type of those raw values.
-For an example of an enumeration definition that uses a type inheritance clause
-to specify the type of its raw values, see <doc:Enumerations#Raw-Values>.
+다른 명명된 타입은 오직 프로토콜 목록만 상속받거나 준수할 수 있다. 프로토콜 타입은 여러 다른 프로토콜을 상속받을 수 있다. 프로토콜 타입이 다른 프로토콜을 상속받을 때, 해당 프로토콜들의 요구사항이 모두 집합되며, 현재 프로토콜을 상속받는 타입은 모든 요구사항을 준수해야 한다.
 
-> Grammar of a type inheritance clause:
+열거형 정의에서 타입 상속 절은 프로토콜 목록이 될 수 있다. 또는, 열거형이 각 케이스에 원시 값을 할당하는 경우, 해당 원시 값의 타입을 지정하는 단일 명명된 타입이 될 수도 있다. 원시 값 타입을 지정하기 위해 타입 상속 절을 사용하는 열거형 정의 예제는 <doc:Enumerations#Raw-Values>를 참고한다.
+
+> 타입 상속 절의 문법:
 >
 > *type-inheritance-clause* → **`:`** *type-inheritance-list* \
 > *type-inheritance-list* → *attributes*_?_ *type-identifier* | *attributes*_?_ *type-identifier* **`,`** *type-inheritance-list*
 
-## Type Inference
 
-Swift uses *type inference* extensively,
-allowing you to omit the type or part of the type of many variables and expressions in your code.
-For example,
-instead of writing `var x: Int = 0`, you can write `var x = 0`,
-omitting the type completely ---
-the compiler correctly infers that `x` names a value of type `Int`.
-Similarly, you can omit part of a type when the full type can be inferred from context.
-For example, if you write `let dict: Dictionary = ["A": 1]`,
-the compiler infers that `dict` has the type `Dictionary<String, Int>`.
+## 타입 추론
 
-In both of the examples above,
-the type information is passed up from the leaves of the expression tree to its root.
-That is,
-the type of `x` in `var x: Int = 0` is inferred by first checking the type of `0`
-and then passing this type information up to the root (the variable `x`).
+Swift는 *타입 추론*을 광범위하게 사용한다. 이를 통해 코드에서 많은 변수와 표현식의 타입 또는 타입의 일부를 생략할 수 있다. 예를 들어, `var x: Int = 0` 대신 `var x = 0`으로 작성하면 타입을 완전히 생략할 수 있다. 이 경우 컴파일러는 `x`가 `Int` 타입의 값을 가진다는 것을 올바르게 추론한다. 마찬가지로, 전체 타입이 문맥에서 추론될 수 있다면 타입의 일부를 생략할 수도 있다. 예를 들어, `let dict: Dictionary = ["A": 1]`이라고 작성하면 컴파일러는 `dict`의 타입이 `Dictionary<String, Int>`라는 것을 추론한다.
 
-In Swift, type information can also flow in the opposite direction --- from the root down to the leaves.
-In the following example, for instance,
-the explicit type annotation (`: Float`) on the constant `eFloat`
-causes the numeric literal `2.71828` to have an inferred type of `Float` instead of `Double`.
+위의 두 예제에서 타입 정보는 표현식 트리의 리프에서 루트로 전달된다. 즉, `var x: Int = 0`에서 `x`의 타입은 먼저 `0`의 타입을 확인한 다음 이 타입 정보를 루트(변수 `x`)로 전달하여 추론된다.
+
+Swift에서는 타입 정보가 반대 방향으로도 흐를 수 있다. 즉, 루트에서 리프로 전달될 수도 있다. 예를 들어, 아래 예제에서 상수 `eFloat`에 명시적으로 타입 어노테이션(`: Float`)을 추가하면 숫자 리터럴 `2.71828`이 `Double` 대신 `Float` 타입으로 추론된다.
 
 ```swift
-let e = 2.71828 // The type of e is inferred to be Double.
-let eFloat: Float = 2.71828 // The type of eFloat is Float.
+let e = 2.71828 // e의 타입은 Double로 추론된다.
+let eFloat: Float = 2.71828 // eFloat의 타입은 Float이다.
 ```
 
 <!--
@@ -1386,10 +866,7 @@ let eFloat: Float = 2.71828 // The type of eFloat is Float.
   ```
 -->
 
-Type inference in Swift operates at the level of a single expression or statement.
-This means that all of the information needed to infer an omitted type or part of a type
-in an expression must be accessible from type-checking
-the expression or one of its subexpressions.
+Swift의 타입 추론은 단일 표현식 또는 문장 수준에서 동작한다. 이는 표현식에서 생략된 타입 또는 타입의 일부를 추론하는 데 필요한 모든 정보가 해당 표현식 또는 하위 표현식의 타입 체크를 통해 접근 가능해야 함을 의미한다.
 
 <!--
   TODO: Email Doug for a list of rules or situations describing when type-inference
@@ -1405,3 +882,5 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
+
+

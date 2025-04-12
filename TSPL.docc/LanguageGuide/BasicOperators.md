@@ -1,63 +1,43 @@
-# Basic Operators
+# 기본 연산자
 
-Perform operations like assignment, arithmetic, and comparison.
+값을 할당하거나, 산술 연산을 수행하거나, 비교하는 작업을 진행한다.
 
-An *operator* is a special symbol or phrase that you use to
-check, change, or combine values.
-For example, the addition operator (`+`) adds two numbers,
-as in `let i = 1 + 2`,
-and the logical AND operator (`&&`) combines two Boolean values,
-as in `if enteredDoorCode && passedRetinaScan`.
+*연산자*는 값들을 확인하거나 변경하거나 결합할 때 사용하는 특수한 기호나 구문이다. 예를 들어, 덧셈 연산자(`+`)는 두 숫자를 더한다. `let i = 1 + 2`와 같이 사용한다. 그리고 논리 AND 연산자(`&&`)는 두 불리언 값을 결합한다. `if enteredDoorCode && passedRetinaScan`과 같이 활용한다.
 
-Swift supports the operators you may already know from languages like C,
-and improves several capabilities to eliminate common coding errors.
-The assignment operator (`=`) doesn't return a value,
-to prevent it from being mistakenly used when
-the equal to operator (`==`) is intended.
-Arithmetic operators (`+`, `-`, `*`, `/`, `%` and so forth)
-detect and disallow value overflow,
-to avoid unexpected results when working with numbers that become larger or smaller
-than the allowed value range of the type that stores them.
-You can opt in to value overflow behavior
-by using Swift's overflow operators,
-as described in <doc:AdvancedOperators#Overflow-Operators>.
+Swift는 C 언어와 같은 프로그래밍 언어에서 이미 익숙할 수 있는 연산자를 지원하며, 일반적인 코딩 실수를 방지하기 위해 몇 가지 기능을 개선했다. 할당 연산자(`=`)는 값을 반환하지 않는다. 이는 등호 연산자(`==`)를 사용해야 할 때 실수로 할당 연산자를 사용하는 것을 방지하기 위함이다. 산술 연산자(`+`, `-`, `*`, `/`, `%` 등)는 값의 오버플로를 감지하고 이를 허용하지 않는다. 이는 저장 타입의 허용 범위를 벗어나는 크거나 작은 숫자를 다룰 때 예상치 못한 결과를 피하기 위함이다. Swift의 오버플로 연산자를 사용하면 값 오버플로 동작을 선택할 수 있다. 이는 <doc:AdvancedOperators#Overflow-Operators>에서 자세히 설명한다.
 
-Swift also provides range operators that aren't found in C,
-such as `a..<b` and `a...b`,
-as a shortcut for expressing a range of values.
+Swift는 또한 C 언어에는 없는 범위 연산자를 제공한다. `a..<b`와 `a...b` 같은 연산자는 값의 범위를 간단히 표현하는 단축어 역할을 한다.
 
-This chapter describes the common operators in Swift.
-<doc:AdvancedOperators> covers Swift's advanced operators,
-and describes how to define your own custom operators
-and implement the standard operators for your own custom types.
+이 장에서는 Swift의 일반적인 연산자들을 설명한다. <doc:AdvancedOperators>에서는 Swift의 고급 연산자를 다루고, 커스텀 연산자를 정의하는 방법과 자신만의 커스텀 타입에 표준 연산자를 구현하는 방법을 설명한다.
 
-## Terminology
 
-Operators are unary, binary, or ternary:
+## 용어 정리
 
-- *Unary* operators operate on a single target (such as `-a`).
-  Unary *prefix* operators appear immediately before their target (such as `!b`),
-  and unary *postfix* operators appear immediately after their target (such as `c!`).
-- *Binary* operators operate on two targets (such as `2 + 3`)
-  and are *infix* because they appear in between their two targets.
-- *Ternary* operators operate on three targets.
-  Like C, Swift has only one ternary operator,
-  the ternary conditional operator (`a ? b : c`).
+연산자는 단항, 이항, 삼항으로 구분한다:
 
-The values that operators affect are *operands*.
-In the expression `1 + 2`, the `+` symbol is an infix operator
-and its two operands are the values `1` and `2`.
+- **단항 연산자**는 하나의 피연산자를 대상으로 동작한다. 예를 들어 `-a`가 있다.  
+  단항 *접두사* 연산자는 피연산자 바로 앞에 위치한다(예: `!b`).  
+  단항 *접미사* 연산자는 피연산자 바로 뒤에 위치한다(예: `c!`).
 
-## Assignment Operator
+- **이항 연산자**는 두 개의 피연산자를 대상으로 동작한다. 예를 들어 `2 + 3`이 있다.  
+  이항 연산자는 두 피연산자 사이에 위치하므로 *중위* 연산자라고 부른다.
 
-The *assignment operator* (`a = b`)
-initializes or updates the value of `a` with the value of `b`:
+- **삼항 연산자**는 세 개의 피연산자를 대상으로 동작한다.  
+  C 언어와 마찬가지로 Swift에는 삼항 조건 연산자(`a ? b : c`) 하나만 존재한다.
+
+연산자가 영향을 미치는 값을 *피연산자*라고 한다.  
+예를 들어 `1 + 2` 표현식에서 `+` 기호는 중위 연산자이며, 두 피연산자는 `1`과 `2`이다.
+
+
+## 할당 연산자
+
+*할당 연산자* (`a = b`)는 `a`의 값을 `b`의 값으로 초기화하거나 업데이트한다:
 
 ```swift
 let b = 10
 var a = 5
 a = b
-// a is now equal to 10
+// a는 이제 10과 같다
 ```
 
 <!--
@@ -72,12 +52,11 @@ a = b
   ```
 -->
 
-If the right side of the assignment is a tuple with multiple values,
-its elements can be decomposed into multiple constants or variables at once:
+할당 연산자의 오른쪽이 여러 값을 가진 튜플이라면, 그 요소들을 여러 상수나 변수로 한 번에 분해할 수 있다:
 
 ```swift
 let (x, y) = (1, 2)
-// x is equal to 1, and y is equal to 2
+// x는 1과 같고, y는 2와 같다
 ```
 
 <!--
@@ -99,21 +78,17 @@ let (x, y) = (1, 2)
 -->
 
 <!--
-  This still allows assignment to variables,
-  even though var patterns have been removed,
-  because it's parsed as a variable-declaration,
-  using the first alternative where (x, y) is a pattern,
-  but `var` comes from the variable-declaration-head
-  rather than from the pattern.
+  이 코드는 변수에 할당을 허용한다.
+  var 패턴이 제거되었더라도,
+  (x, y)가 패턴으로 해석되고,
+  `var`가 패턴이 아닌 변수 선언 헤드에서 오기 때문이다.
 -->
 
-Unlike the assignment operator in C and Objective-C,
-the assignment operator in Swift doesn't itself return a value.
-The following statement isn't valid:
+C와 Objective-C의 할당 연산자와 달리, Swift의 할당 연산자는 값을 반환하지 않는다. 따라서 다음 문장은 유효하지 않다:
 
 ```swift
 if x = y {
-    // This isn't valid, because x = y doesn't return a value.
+    // 이 코드는 유효하지 않다. x = y가 값을 반환하지 않기 때문이다.
 }
 ```
 
@@ -133,30 +108,28 @@ if x = y {
   ```
 -->
 
-This feature prevents the assignment operator (`=`) from being used by accident
-when the equal to operator (`==`) is actually intended.
-By making `if x = y` invalid,
-Swift helps you to avoid these kinds of errors in your code.
+이 기능은 실수로 할당 연산자(`=`)를 사용하는 것을 방지한다. 실제로는 동등 연산자(`==`)를 사용하려는 경우에 말이다. `if x = y`를 유효하지 않게 함으로써, Swift는 코드에서 이런 종류의 오류를 피할 수 있게 도와준다.
 
 <!--
-  TODO: Should we mention that x = y = z is also not valid?
-  If so, is there a convincing argument as to why this is a good thing?
+  TODO: x = y = z도 유효하지 않다는 것을 언급해야 할까?
+  그렇다면, 왜 이것이 좋은 것인지에 대한 설득력 있는 논거가 있는가?
 -->
 
-## Arithmetic Operators
 
-Swift supports the four standard *arithmetic operators* for all number types:
+## 산술 연산자
 
-- Addition (`+`)
-- Subtraction (`-`)
-- Multiplication (`*`)
-- Division (`/`)
+Swift는 모든 숫자 타입에 대해 네 가지 기본 *산술 연산자*를 지원한다:
+
+- 덧셈 (`+`)
+- 뺄셈 (`-`)
+- 곱셈 (`*`)
+- 나눗셈 (`/`)
 
 ```swift
-1 + 2       // equals 3
-5 - 3       // equals 2
-2 * 3       // equals 6
-10.0 / 2.5  // equals 4.0
+1 + 2       // 결과는 3
+5 - 3       // 결과는 2
+2 * 3       // 결과는 6
+10.0 / 2.5  // 결과는 4.0
 ```
 
 <!--
@@ -164,29 +137,26 @@ Swift supports the four standard *arithmetic operators* for all number types:
 
   ```swifttest
   >> let r0 =
-  -> 1 + 2       // equals 3
+  -> 1 + 2       // 결과는 3
   >> assert(r0 == 3)
   >> let r1 =
-  -> 5 - 3       // equals 2
+  -> 5 - 3       // 결과는 2
   >> assert(r1 == 2)
   >> let r2 =
-  -> 2 * 3       // equals 6
+  -> 2 * 3       // 결과는 6
   >> assert(r2 == 6)
   >> let r3 =
-  -> 10.0 / 2.5  // equals 4.0
+  -> 10.0 / 2.5  // 결과는 4.0
   >> assert(r3 == 4.0)
   ```
 -->
 
-Unlike the arithmetic operators in C and Objective-C,
-the Swift arithmetic operators don't allow values to overflow by default.
-You can opt in to value overflow behavior by using Swift's overflow operators
-(such as `a &+ b`). See <doc:AdvancedOperators#Overflow-Operators>.
+C와 Objective-C의 산술 연산자와 달리, Swift의 산술 연산자는 기본적으로 값이 오버플로우되는 것을 허용하지 않는다. Swift의 오버플로우 연산자(예: `a &+ b`)를 사용하면 오버플로우 동작을 선택할 수 있다. 자세한 내용은 <doc:AdvancedOperators#Overflow-Operators>를 참고한다.
 
-The addition operator is also supported for `String` concatenation:
+덧셈 연산자는 `String` 연결에도 사용할 수 있다:
 
 ```swift
-"hello, " + "world"  // equals "hello, world"
+"hello, " + "world"  // 결과는 "hello, world"
 ```
 
 <!--
@@ -194,22 +164,17 @@ The addition operator is also supported for `String` concatenation:
 
   ```swifttest
   >> let r4 =
-  -> "hello, " + "world"  // equals "hello, world"
+  -> "hello, " + "world"  // 결과는 "hello, world"
   >> assert(r4 == "hello, world")
   ```
 -->
 
-### Remainder Operator
 
-The *remainder operator* (`a % b`)
-works out how many multiples of `b` will fit inside `a`
-and returns the value that's left over
-(known as the *remainder*).
+### 나머지 연산자
 
-> Note: The remainder operator (`%`) is also known as
-> a *modulo operator* in other languages.
-> However, its behavior in Swift for negative numbers means that,
-> strictly speaking, it's a remainder rather than a modulo operation.
+*나머지 연산자*(`a % b`)는 `b`의 배수가 `a` 안에 몇 번 들어갈 수 있는지 계산하고, 남은 값을 반환한다. 이 남은 값을 *나머지*라고 부른다.
+
+> 참고: 나머지 연산자(`%`)는 다른 언어에서 *모듈로 연산자*로 알려져 있다. 하지만 Swift에서는 음수에 대해 다르게 동작하기 때문에, 엄밀히 말하면 모듈로 연산이 아니라 나머지 연산이다.
 
 <!--
   - test: `percentOperatorIsRemainderNotModulo`
@@ -227,17 +192,16 @@ and returns the value that's left over
   ```
 -->
 
-Here's how the remainder operator works.
-To calculate `9 % 4`, you first work out how many `4`s will fit inside `9`:
+나머지 연산자가 어떻게 동작하는지 살펴보자. `9 % 4`를 계산하려면, 먼저 `4`가 `9` 안에 몇 번 들어갈 수 있는지 알아본다:
 
 ![](remainderInteger)
 
-You can fit two `4`s inside `9`, and the remainder is `1` (shown in orange).
+`4`는 `9` 안에 두 번 들어갈 수 있고, 나머지는 `1`이다 (주황색으로 표시).
 
-In Swift, this would be written as:
+Swift에서는 다음과 같이 작성한다:
 
 ```swift
-9 % 4    // equals 1
+9 % 4    // 결과는 1
 ```
 
 <!--
@@ -250,23 +214,20 @@ In Swift, this would be written as:
   ```
 -->
 
-To determine the answer for `a % b`,
-the `%` operator calculates the following equation
-and returns `remainder` as its output:
+`a % b`의 답을 구하기 위해, `%` 연산자는 다음 방정식을 계산하고 `remainder`를 결과로 반환한다:
 
 `a` = (`b` x `some multiplier`) + `remainder`
 
-where `some multiplier` is the largest number of multiples of `b`
-that will fit inside `a`.
+여기서 `some multiplier`는 `b`의 배수 중 `a` 안에 들어갈 수 있는 가장 큰 수이다.
 
-Inserting `9` and `4` into this equation yields:
+`9`와 `4`를 이 방정식에 대입하면 다음과 같다:
 
 `9` = (`4` x `2`) + `1`
 
-The same method is applied when calculating the remainder for a negative value of `a`:
+`a`가 음수일 때도 같은 방법을 적용한다:
 
 ```swift
--9 % 4   // equals -1
+-9 % 4   // 결과는 -1
 ```
 
 <!--
@@ -279,24 +240,23 @@ The same method is applied when calculating the remainder for a negative value o
   ```
 -->
 
-Inserting `-9` and `4` into the equation yields:
+`-9`와 `4`를 방정식에 대입하면:
 
 `-9` = (`4` x `-2`) + `-1`
 
-giving a remainder value of `-1`.
+나머지 값으로 `-1`이 나온다.
 
-The sign of `b` is ignored for negative values of `b`.
-This means that `a % b` and `a % -b` always give the same answer.
+`b`가 음수인 경우, `b`의 부호는 무시된다. 즉, `a % b`와 `a % -b`는 항상 같은 결과를 반환한다.
 
-### Unary Minus Operator
 
-The sign of a numeric value can be toggled using a prefixed `-`,
-known as the *unary minus operator*:
+### 단항 마이너스 연산자
+
+숫자 값의 부호를 전환하려면 `-`를 접두사로 사용한다. 이를 *단항 마이너스 연산자*라고 부른다.
 
 ```swift
 let three = 3
-let minusThree = -three       // minusThree equals -3
-let plusThree = -minusThree   // plusThree equals 3, or "minus minus three"
+let minusThree = -three       // minusThree는 -3과 같다
+let plusThree = -minusThree   // plusThree는 3과 같다. 즉, "마이너스 마이너스 3"이다
 ```
 
 <!--
@@ -309,17 +269,16 @@ let plusThree = -minusThree   // plusThree equals 3, or "minus minus three"
   ```
 -->
 
-The unary minus operator (`-`) is prepended directly before the value it operates on,
-without any white space.
+단항 마이너스 연산자(`-`)는 연산 대상 값 바로 앞에 공백 없이 붙여 사용한다.
 
-### Unary Plus Operator
 
-The *unary plus operator* (`+`) simply returns
-the value it operates on, without any change:
+### 단항 플러스 연산자
+
+단항 플러스 연산자(`+`)는 단순히 피연산자의 값을 그대로 반환한다. 값에 아무런 변화를 주지 않는다:
 
 ```swift
 let minusSix = -6
-let alsoMinusSix = +minusSix  // alsoMinusSix equals -6
+let alsoMinusSix = +minusSix  // alsoMinusSix는 -6과 같다
 ```
 
 <!--
@@ -332,19 +291,17 @@ let alsoMinusSix = +minusSix  // alsoMinusSix equals -6
   ```
 -->
 
-Although the unary plus operator doesn't actually do anything,
-you can use it to provide symmetry in your code for positive numbers
-when also using the unary minus operator for negative numbers.
+단항 플러스 연산자는 실제로 아무런 동작을 하지 않지만, 음수에 단항 마이너스 연산자를 사용할 때 양수에 대칭성을 제공하기 위해 활용할 수 있다.
 
-## Compound Assignment Operators
 
-Like C, Swift provides *compound assignment operators* that combine assignment (`=`) with another operation.
-One example is the *addition assignment operator* (`+=`):
+## 복합 할당 연산자
+
+C 언어와 마찬가지로, Swift는 할당(`=`)을 다른 연산과 결합한 *복합 할당 연산자*를 제공한다. 예를 들어 *덧셈 할당 연산자*(`+=`)는 다음과 같이 사용한다:
 
 ```swift
 var a = 1
 a += 2
-// a is now equal to 3
+// a는 이제 3과 같다
 ```
 
 <!--
@@ -358,40 +315,35 @@ a += 2
   ```
 -->
 
-The expression `a += 2` is shorthand for `a = a + 2`.
-Effectively, the addition and the assignment are combined into one operator
-that performs both tasks at the same time.
+`a += 2`라는 표현은 `a = a + 2`의 축약형이다. 이 연산자는 덧셈과 할당을 동시에 수행한다.
 
-> Note: The compound assignment operators don't return a value.
-> For example, you can't write `let b = a += 2`.
+> 주의: 복합 할당 연산자는 값을 반환하지 않는다. 예를 들어, `let b = a += 2`와 같이 작성할 수 없다.
 
-For information about the operators provided by the Swift standard library,
-see [Operator Declarations](https://developer.apple.com/documentation/swift/operator_declarations).
+Swift 표준 라이브러리에서 제공하는 연산자에 대한 자세한 정보는 [Operator Declarations](https://developer.apple.com/documentation/swift/operator_declarations)를 참고한다.
 
-## Comparison Operators
 
-Swift supports the following comparison operators:
+## 비교 연산자
 
-- Equal to (`a == b`)
-- Not equal to (`a != b`)
-- Greater than (`a > b`)
-- Less than (`a < b`)
-- Greater than or equal to (`a >= b`)
-- Less than or equal to (`a <= b`)
+Swift는 다음과 같은 비교 연산자를 지원한다:
 
-> Note: Swift also provides two *identity operators* (`===` and `!==`),
-> which you use to test whether two object references both refer to the same object instance.
-> For more information, see <doc:ClassesAndStructures#Identity-Operators>.
+- 같음 (`a == b`)
+- 같지 않음 (`a != b`)
+- 큼 (`a > b`)
+- 작음 (`a < b`)
+- 크거나 같음 (`a >= b`)
+- 작거나 같음 (`a <= b`)
 
-Each of the comparison operators returns a `Bool` value to indicate whether or not the statement is true:
+> 참고: Swift는 또한 두 객체 참조가 동일한 객체 인스턴스를 가리키는지 테스트하는 두 개의 *식별 연산자* (`===`와 `!==`)를 제공한다. 자세한 내용은 <doc:ClassesAndStructures#Identity-Operators>를 참조한다.
+
+각 비교 연산자는 해당 문장이 참인지 여부를 나타내는 `Bool` 값을 반환한다:
 
 ```swift
-1 == 1   // true because 1 is equal to 1
-2 != 1   // true because 2 isn't equal to 1
-2 > 1    // true because 2 is greater than 1
-1 < 2    // true because 1 is less than 2
-1 >= 1   // true because 1 is greater than or equal to 1
-2 <= 1   // false because 2 isn't less than or equal to 1
+1 == 1   // 1이 1과 같으므로 true
+2 != 1   // 2가 1과 같지 않으므로 true
+2 > 1    // 2가 1보다 크므로 true
+1 < 2    // 1이 2보다 작으므로 true
+1 >= 1   // 1이 1보다 크거나 같으므로 true
+2 <= 1   // 2가 1보다 작거나 같지 않으므로 false
 ```
 
 <!--
@@ -419,8 +371,7 @@ Each of the comparison operators returns a `Bool` value to indicate whether or n
   ```
 -->
 
-Comparison operators are often used in conditional statements,
-such as the `if` statement:
+비교 연산자는 주로 `if` 문과 같은 조건문에서 사용된다:
 
 ```swift
 let name = "world"
@@ -429,7 +380,7 @@ if name == "world" {
 } else {
     print("I'm sorry \(name), but I don't recognize you")
 }
-// Prints "hello, world", because name is indeed equal to "world".
+// name이 "world"와 같으므로 "hello, world"를 출력한다.
 ```
 
 <!--
@@ -447,25 +398,14 @@ if name == "world" {
   ```
 -->
 
-For more about the `if` statement, see <doc:ControlFlow>.
+`if` 문에 대한 자세한 내용은 <doc:ControlFlow>를 참조한다.
 
-You can compare
-two tuples if they have the same type and the same number of values.
-Tuples are compared from left to right,
-one value at a time,
-until the comparison finds two values
-that aren't equal.
-Those two values are compared,
-and the result of that comparison
-determines the overall result of the tuple comparison.
-If all the elements are equal,
-then the tuples themselves are equal.
-For example:
+같은 타입과 같은 수의 값을 가진 두 튜플을 비교할 수 있다. 튜플은 왼쪽에서 오른쪽으로 한 번에 하나의 값을 비교하며, 서로 다른 두 값을 찾을 때까지 비교를 진행한다. 이 두 값을 비교한 결과가 튜플 비교의 전체 결과를 결정한다. 모든 요소가 같으면 튜플 자체가 같다고 판단한다. 예를 들어:
 
 ```swift
-(1, "zebra") < (2, "apple")   // true because 1 is less than 2; "zebra" and "apple" aren't compared
-(3, "apple") < (3, "bird")    // true because 3 is equal to 3, and "apple" is less than "bird"
-(4, "dog") == (4, "dog")      // true because 4 is equal to 4, and "dog" is equal to "dog"
+(1, "zebra") < (2, "apple")   // 1이 2보다 작으므로 true; "zebra"와 "apple"은 비교하지 않음
+(3, "apple") < (3, "bird")    // 3이 3과 같고, "apple"이 "bird"보다 작으므로 true
+(4, "dog") == (4, "dog")      // 4가 4와 같고, "dog"가 "dog"와 같으므로 true
 ```
 
 <!--
@@ -483,31 +423,13 @@ For example:
   ```
 -->
 
-In the example above,
-you can see the left-to-right comparison behavior on the first line.
-Because `1` is less than `2`,
-`(1, "zebra")` is considered less than `(2, "apple")`,
-regardless of any other values in the tuples.
-It doesn't matter that `"zebra"` isn't less than `"apple"`,
-because the comparison is already determined by the tuples' first elements.
-However,
-when the tuples' first elements are the same,
-their second elements *are* compared ---
-this is what happens on the second and third line.
+위 예제에서 첫 번째 줄의 왼쪽에서 오른쪽으로의 비교 동작을 확인할 수 있다. `1`이 `2`보다 작기 때문에, 튜플의 다른 값과 관계없이 `(1, "zebra")`는 `(2, "apple")`보다 작다고 판단한다. `"zebra"`가 `"apple"`보다 작지 않다는 사실은 중요하지 않다. 왜냐하면 비교는 이미 튜플의 첫 번째 요소에 의해 결정되었기 때문이다. 그러나 튜플의 첫 번째 요소가 같을 때는 두 번째 요소를 비교한다. 이는 두 번째와 세 번째 줄에서 볼 수 있다.
 
-Tuples can be compared with a given operator only if the operator
-can be applied to each value in the respective tuples. For example,
-as demonstrated in the code below, you can compare
-two tuples of type `(String, Int)` because
-both `String` and `Int` values can be compared
-using the `<` operator.  In contrast,
-two tuples of type `(String, Bool)` can't be compared
-with the `<` operator because the `<` operator can't be applied to
-`Bool` values.
+튜플은 해당 연산자가 각 튜플의 모든 값에 적용될 수 있는 경우에만 비교할 수 있다. 예를 들어, 아래 코드에서 보여주듯이 `<` 연산자를 사용해 `(String, Int)` 타입의 두 튜플을 비교할 수 있다. 이는 `String`과 `Int` 값 모두 `<` 연산자로 비교할 수 있기 때문이다. 반대로, `<` 연산자는 `Bool` 값에 적용할 수 없으므로 `(String, Bool)` 타입의 두 튜플은 `<` 연산자로 비교할 수 없다.
 
 ```swift
-("blue", -1) < ("purple", 1)        // OK, evaluates to true
-("blue", false) < ("purple", true)  // Error because < can't compare Boolean values
+("blue", -1) < ("purple", 1)        // OK, true로 평가됨
+("blue", false) < ("purple", true)  // < 연산자가 Boolean 값을 비교할 수 없으므로 에러
 ```
 
 <!--
@@ -540,10 +462,7 @@ with the `<` operator because the `<` operator can't be applied to
   ```
 -->
 
-> Note: The Swift standard library includes tuple comparison operators
-> for tuples with fewer than seven elements.
-> To compare tuples with seven or more elements,
-> you must implement the comparison operators yourself.
+> 참고: Swift 표준 라이브러리는 7개 미만의 요소를 가진 튜플에 대한 비교 연산자를 포함한다. 7개 이상의 요소를 가진 튜플을 비교하려면 직접 비교 연산자를 구현해야 한다.
 
 <!--
   TODO: which types do these operate on by default?
@@ -551,16 +470,12 @@ with the `<` operator because the `<` operator can't be applied to
   How about with your own types?
 -->
 
-## Ternary Conditional Operator
 
-The *ternary conditional operator* is a special operator with three parts,
-which takes the form `question ? answer1 : answer2`.
-It's a shortcut for evaluating one of two expressions
-based on whether `question` is true or false.
-If `question` is true, it evaluates `answer1` and returns its value;
-otherwise, it evaluates `answer2` and returns its value.
+## 삼항 조건 연산자
 
-The ternary conditional operator is shorthand for the code below:
+*삼항 조건 연산자*는 세 부분으로 이루어진 특별한 연산자로, `question ? answer1 : answer2` 형태를 가진다. 이 연산자는 `question`이 참인지 거짓인지에 따라 두 표현식 중 하나를 평가하는 간단한 방법을 제공한다. `question`이 참이면 `answer1`을 평가하고 그 값을 반환하며, 거짓이면 `answer2`를 평가하고 그 값을 반환한다.
+
+삼항 조건 연산자는 아래 코드를 간략하게 표현한 것이다:
 
 ```swift
 if question {
@@ -596,9 +511,7 @@ if question {
   Swift doesn't have 'if' expressions.
 -->
 
-Here's an example, which calculates the height for a table row.
-The row height should be 50 points taller than the content height
-if the row has a header, and 20 points taller if the row doesn't have a header:
+다음은 테이블 행의 높이를 계산하는 예제이다. 행에 헤더가 있다면 콘텐츠 높이보다 50 포인트 더 높게 설정하고, 헤더가 없다면 20 포인트 더 높게 설정한다:
 
 ```swift
 let contentHeight = 40
@@ -619,7 +532,7 @@ let rowHeight = contentHeight + (hasHeader ? 50 : 20)
   ```
 -->
 
-The example above is shorthand for the code below:
+위 예제는 아래 코드를 간략하게 표현한 것이다:
 
 ```swift
 let contentHeight = 40
@@ -650,25 +563,16 @@ if hasHeader {
   ```
 -->
 
-The first example's use of the ternary conditional operator means that
-`rowHeight` can be set to the correct value on a single line of code,
-which is more concise than the code used in the second example.
+첫 번째 예제에서 삼항 조건 연산자를 사용하면 `rowHeight`를 한 줄의 코드로 올바른 값으로 설정할 수 있다. 이는 두 번째 예제에서 사용된 코드보다 더 간결하다.
 
-The ternary conditional operator provides
-an efficient shorthand for deciding which of two expressions to consider.
-Use the ternary conditional operator with care, however.
-Its conciseness can lead to hard-to-read code if overused.
-Avoid combining multiple instances of the ternary conditional operator into one compound statement.
+삼항 조건 연산자는 두 표현식 중 어느 것을 고를지 결정하는 효율적인 방법을 제공한다. 하지만 삼항 조건 연산자를 사용할 때는 주의가 필요하다. 과도하게 사용하면 코드를 이해하기 어려워질 수 있다. 여러 삼항 조건 연산자를 하나의 복합문으로 결합하는 것은 피하는 것이 좋다.
 
-## Nil-Coalescing Operator
 
-The *nil-coalescing operator* (`a ?? b`)
-unwraps an optional `a` if it contains a value,
-or returns a default value `b` if `a` is `nil`.
-The expression `a` is always of an optional type.
-The expression `b` must match the type that's stored inside `a`.
+## Nil-Coalescing 연산자
 
-The nil-coalescing operator is shorthand for the code below:
+*nil-coalescing 연산자* (`a ?? b`)는 옵셔널 `a`에 값이 있으면 그 값을 언래핑하고, `a`가 `nil`이면 기본값 `b`를 반환한다. 표현식 `a`는 항상 옵셔널 타입이어야 하며, 표현식 `b`는 `a`에 저장된 타입과 일치해야 한다.
+
+nil-coalescing 연산자는 아래 코드를 간결하게 표현한 것이다:
 
 ```swift
 a != nil ? a! : b
@@ -687,25 +591,18 @@ a != nil ? a! : b
   ```
 -->
 
-The code above uses the ternary conditional operator and forced unwrapping (`a!`)
-to access the value wrapped inside `a` when `a` isn't `nil`,
-and to return `b` otherwise.
-The nil-coalescing operator provides a more elegant way to encapsulate
-this conditional checking and unwrapping in a concise and readable form.
+위 코드는 삼항 조건 연산자와 강제 언래핑(`a!`)을 사용해 `a`가 `nil`이 아닐 때 내부에 감싸진 값을 접근하고, 그렇지 않으면 `b`를 반환한다. nil-coalescing 연산자는 이러한 조건 검사와 언래핑을 간결하고 가독성 좋은 형태로 캡슐화한다.
 
-> Note: If the value of `a` is non-`nil`,
-> the value of `b` isn't evaluated.
-> This is known as *short-circuit evaluation*.
+> 참고: `a`의 값이 `nil`이 아닌 경우, `b`는 평가되지 않는다. 이를 *단락 평가(short-circuit evaluation)*라고 한다.
 
-The example below uses the nil-coalescing operator to choose between
-a default color name and an optional user-defined color name:
+아래 예제는 nil-coalescing 연산자를 사용해 기본 색상 이름과 옵셔널 사용자 정의 색상 이름 중 하나를 선택한다:
 
 ```swift
 let defaultColorName = "red"
-var userDefinedColorName: String?   // defaults to nil
+var userDefinedColorName: String?   // 기본값은 nil
 
 var colorNameToUse = userDefinedColorName ?? defaultColorName
-// userDefinedColorName is nil, so colorNameToUse is set to the default of "red"
+// userDefinedColorName이 nil이므로 colorNameToUse는 기본값 "red"로 설정된다
 ```
 
 <!--
@@ -721,24 +618,14 @@ var colorNameToUse = userDefinedColorName ?? defaultColorName
   ```
 -->
 
-The `userDefinedColorName` variable is defined as an optional `String`,
-with a default value of `nil`.
-Because `userDefinedColorName` is of an optional type,
-you can use the nil-coalescing operator to consider its value.
-In the example above, the operator is used to determine
-an initial value for a `String` variable called `colorNameToUse`.
-Because `userDefinedColorName` is `nil`,
-the expression `userDefinedColorName ?? defaultColorName` returns
-the value of `defaultColorName`, or `"red"`.
+`userDefinedColorName` 변수는 옵셔널 `String`으로 정의되며, 기본값은 `nil`이다. `userDefinedColorName`이 옵셔널 타입이므로 nil-coalescing 연산자를 사용해 그 값을 확인할 수 있다. 위 예제에서 이 연산자는 `colorNameToUse`라는 `String` 변수의 초기값을 결정하는 데 사용된다. `userDefinedColorName`이 `nil`이므로 `userDefinedColorName ?? defaultColorName` 표현식은 `defaultColorName`의 값인 `"red"`를 반환한다.
 
-If you assign a non-`nil` value to `userDefinedColorName`
-and perform the nil-coalescing operator check again,
-the value wrapped inside `userDefinedColorName` is used instead of the default:
+`userDefinedColorName`에 `nil`이 아닌 값을 할당하고 nil-coalescing 연산자 검사를 다시 수행하면, 기본값 대신 `userDefinedColorName`에 감싸진 값이 사용된다:
 
 ```swift
 userDefinedColorName = "green"
 colorNameToUse = userDefinedColorName ?? defaultColorName
-// userDefinedColorName isn't nil, so colorNameToUse is set to "green"
+// userDefinedColorName이 nil이 아니므로 colorNameToUse는 "green"으로 설정된다
 ```
 
 <!--
@@ -752,17 +639,15 @@ colorNameToUse = userDefinedColorName ?? defaultColorName
   ```
 -->
 
-## Range Operators
 
-Swift includes several *range operators*,
-which are shortcuts for expressing a range of values.
+## 범위 연산자
 
-### Closed Range Operator
+Swift는 여러 가지 *범위 연산자*를 제공한다. 이 연산자들은 값의 범위를 간결하게 표현할 수 있는 편의 기능이다.
 
-The *closed range operator* (`a...b`)
-defines a range that runs from `a` to `b`,
-and includes the values `a` and `b`.
-The value of `a` must not be greater than `b`.
+
+### 닫힌 범위 연산자
+
+*닫힌 범위 연산자*(`a...b`)는 `a`부터 `b`까지의 범위를 정의하며, `a`와 `b` 값을 모두 포함한다. `a` 값은 `b`보다 크지 않아야 한다.
 
 <!--
   - test: `closedRangeStartCanBeLessThanEnd`
@@ -791,9 +676,7 @@ The value of `a` must not be greater than `b`.
   ```
 -->
 
-The closed range operator is useful when iterating over a range
-in which you want all of the values to be used,
-such as with a `for`-`in` loop:
+닫힌 범위 연산자는 `for`-`in` 루프와 같이 모든 값을 사용하고자 할 때 유용하다.
 
 ```swift
 for index in 1...5 {
@@ -821,19 +704,12 @@ for index in 1...5 {
   ```
 -->
 
-For more about `for`-`in` loops, see <doc:ControlFlow>.
+`for`-`in` 루프에 대한 자세한 내용은 <doc:ControlFlow>를 참고한다.
 
-### Half-Open Range Operator
 
-The *half-open range operator* (`a..<b`)
-defines a range that runs from `a` to `b`,
-but doesn't include `b`.
-It's said to be *half-open*
-because it contains its first value, but not its final value.
-As with the closed range operator,
-the value of `a` must not be greater than `b`.
-If the value of `a` is equal to `b`,
-then the resulting range will be empty.
+### 반개방 범위 연산자
+
+*반개방 범위 연산자*(`a..<b`)는 `a`부터 `b`까지의 범위를 정의하지만, `b`는 포함하지 않는다. 이 연산자는 첫 번째 값은 포함하지만 마지막 값은 포함하지 않기 때문에 *반개방*이라고 부른다. 닫힌 범위 연산자와 마찬가지로, `a`의 값은 `b`보다 크지 않아야 한다. 만약 `a`와 `b`의 값이 같다면, 결과 범위는 비어 있게 된다.
 
 <!--
   - test: `halfOpenRangeStartCanBeLessThanEnd`
@@ -862,9 +738,7 @@ then the resulting range will be empty.
   ```
 -->
 
-Half-open ranges are particularly useful when you work with
-zero-based lists such as arrays,
-where it's useful to count up to (but not including) the length of the list:
+반개방 범위는 배열과 같이 0부터 시작하는 리스트를 다룰 때 특히 유용하다. 리스트의 길이까지 (하지만 포함하지 않고) 세는 데 적합하다:
 
 ```swift
 let names = ["Anna", "Alex", "Brian", "Jack"]
@@ -895,25 +769,12 @@ for i in 0..<count {
   ```
 -->
 
-Note that the array contains four items,
-but `0..<count` only counts as far as `3`
-(the index of the last item in the array),
-because it's a half-open range.
-For more about arrays, see <doc:CollectionTypes#Arrays>.
+배열에는 네 개의 항목이 있지만, `0..<count`는 마지막 항목의 인덱스인 `3`까지만 세는 것을 주목하자. 이는 반개방 범위이기 때문이다. 배열에 대한 더 자세한 내용은 <doc:CollectionTypes#Arrays>를 참고하자.
 
-### One-Sided Ranges
 
-The closed range operator
-has an alternative form for ranges that continue
-as far as possible in one direction ---
-for example,
-a range that includes all the elements of an array
-from index 2 to the end of the array.
-In these cases, you can omit the value
-from one side of the range operator.
-This kind of range is called a *one-sided range*
-because the operator has a value on only one side.
-For example:
+### 단방향 범위
+
+닫힌 범위 연산자는 한쪽 방향으로 끝까지 계속되는 범위를 표현하는 대체 형태를 제공한다. 예를 들어, 배열의 인덱스 2부터 배열의 끝까지 모든 요소를 포함하는 범위를 들 수 있다. 이런 경우 범위 연산자의 한쪽 값을 생략할 수 있다. 이렇게 한쪽에만 값이 있는 범위를 *단방향 범위*라고 부른다. 예를 들어:
 
 ```swift
 for name in names[2...] {
@@ -949,12 +810,7 @@ for name in names[...2] {
   ```
 -->
 
-The half-open range operator also has
-a one-sided form that's written
-with only its final value.
-Just like when you include a value on both sides,
-the final value isn't part of the range.
-For example:
+반열린 범위 연산자도 마지막 값만 지정하는 단방향 형태가 있다. 양쪽에 값을 포함할 때와 마찬가지로, 마지막 값은 범위에 포함되지 않는다. 예를 들어:
 
 ```swift
 for name in names[..<2] {
@@ -976,16 +832,7 @@ for name in names[..<2] {
   ```
 -->
 
-One-sided ranges can be used in other contexts,
-not just in subscripts.
-You can't iterate over a one-sided range
-that omits a first value,
-because it isn't clear where iteration should begin.
-You *can* iterate over a one-sided range that omits its final value;
-however, because the range continues indefinitely,
-make sure you add an explicit end condition for the loop.
-You can also check whether a one-sided range contains a particular value,
-as shown in the code below.
+단방향 범위는 서브스크립트 외의 다른 상황에서도 사용할 수 있다. 시작 값을 생략한 단방향 범위는 반복을 시작할 위치가 명확하지 않기 때문에 반복할 수 없다. 하지만 마지막 값을 생략한 단방향 범위는 반복할 수 있다. 다만, 범위가 무한히 계속되므로 반드시 루프에 명시적인 종료 조건을 추가해야 한다. 또한 특정 값이 단방향 범위에 포함되는지 확인할 수도 있다. 아래 코드에서 이를 확인할 수 있다.
 
 ```swift
 let range = ...5
@@ -1012,25 +859,21 @@ range.contains(-1)  // true
   ```
 -->
 
-## Logical Operators
 
-*Logical operators* modify or combine
-the Boolean logic values `true` and `false`.
-Swift supports the three standard logical operators found in C-based languages:
+## 논리 연산자
 
-- Logical NOT (`!a`)
-- Logical AND (`a && b`)
-- Logical OR (`a || b`)
+*논리 연산자*는 불리언(Boolean) 논리 값인 `true`와 `false`를 수정하거나 결합한다. Swift는 C 기반 언어에서 사용하는 세 가지 표준 논리 연산자를 지원한다:
 
-### Logical NOT Operator
+- 논리 NOT (`!a`)
+- 논리 AND (`a && b`)
+- 논리 OR (`a || b`)
 
-The *logical NOT operator* (`!a`) inverts a Boolean value so that `true` becomes `false`,
-and `false` becomes `true`.
 
-The logical NOT operator is a prefix operator,
-and appears immediately before the value it operates on,
-without any white space.
-It can be read as “not `a`”, as seen in the following example:
+### 논리적 NOT 연산자
+
+*논리적 NOT 연산자*(`!a`)는 불리언 값을 반전시킨다. `true`는 `false`가 되고, `false`는 `true`가 된다.
+
+논리적 NOT 연산자는 접두사 연산자로, 연산 대상 값 바로 앞에 공백 없이 위치한다. 이 연산자는 "`a`가 아니다"로 읽을 수 있으며, 다음 예제에서 확인할 수 있다:
 
 ```swift
 let allowedEntry = false
@@ -1052,29 +895,18 @@ if !allowedEntry {
   ```
 -->
 
-The phrase `if !allowedEntry` can be read as “if not allowed entry.”
-The subsequent line is only executed if “not allowed entry” is true;
-that is, if `allowedEntry` is `false`.
+`if !allowedEntry`라는 구문은 "만약 입장이 허용되지 않았다면"으로 해석할 수 있다. 이어지는 코드는 "입장이 허용되지 않았다"가 참일 때, 즉 `allowedEntry`가 `false`일 때만 실행된다.
 
-As in this example,
-careful choice of Boolean constant and variable names
-can help to keep code readable and concise,
-while avoiding double negatives or confusing logic statements.
+이 예제에서 볼 수 있듯이, 불리언 상수와 변수의 이름을 신중하게 선택하면 코드의 가독성과 간결성을 높일 수 있다. 또한 이중 부정이나 혼란스러운 논리문을 피하는 데도 도움이 된다.
 
-### Logical AND Operator
 
-The *logical AND operator* (`a && b`) creates logical expressions
-where both values must be `true` for the overall expression to also be `true`.
+### 논리 AND 연산자
 
-If either value is `false`,
-the overall expression will also be `false`.
-In fact, if the *first* value is `false`,
-the second value won't even be evaluated,
-because it can't possibly make the overall expression equate to `true`.
-This is known as *short-circuit evaluation*.
+*논리 AND 연산자* (`a && b`)는 두 값이 모두 `true`여야 전체 표현식도 `true`가 되는 논리 표현식을 만든다.
 
-This example considers two `Bool` values
-and only allows access if both values are `true`:
+두 값 중 하나라도 `false`라면, 전체 표현식도 `false`가 된다. 사실, *첫 번째* 값이 `false`라면 두 번째 값은 평가조차 되지 않는다. 왜냐하면 두 번째 값이 무엇이든 전체 표현식을 `true`로 만들 수 없기 때문이다. 이를 *단락 평가(short-circuit evaluation)*라고 한다.
+
+다음 예제는 두 개의 `Bool` 값을 확인하고, 두 값이 모두 `true`일 때만 접근을 허용한다:
 
 ```swift
 let enteredDoorCode = true
@@ -1102,26 +934,14 @@ if enteredDoorCode && passedRetinaScan {
   ```
 -->
 
-### Logical OR Operator
 
-The *logical OR operator*
-(`a || b`) is an infix operator made from two adjacent pipe characters.
-You use it to create logical expressions in which
-only *one* of the two values has to be `true`
-for the overall expression to be `true`.
+### 논리 OR 연산자
 
-Like the Logical AND operator above,
-the Logical OR operator uses short-circuit evaluation to consider its expressions.
-If the left side of a Logical OR expression is `true`,
-the right side isn't evaluated,
-because it can't change the outcome of the overall expression.
+*논리 OR 연산자* (`a || b`)는 두 개의 파이프 문자를 연속해서 사용하는 중위 연산자이다. 이 연산자를 사용하면 두 값 중 *하나*만 `true`여도 전체 표현식이 `true`가 되는 논리 표현식을 만들 수 있다.
 
-In the example below,
-the first `Bool` value (`hasDoorKey`) is `false`,
-but the second value (`knowsOverridePassword`) is `true`.
-Because one value is `true`,
-the overall expression also evaluates to `true`,
-and access is allowed:
+앞서 설명한 논리 AND 연산자와 마찬가지로, 논리 OR 연산자도 단락 평가(short-circuit evaluation)를 사용해 표현식을 평가한다. 논리 OR 표현식의 왼쪽이 `true`라면 오른쪽은 평가하지 않는다. 왜냐하면 오른쪽을 평가해도 전체 표현식의 결과가 바뀌지 않기 때문이다.
+
+아래 예제에서 첫 번째 `Bool` 값 (`hasDoorKey`)은 `false`지만, 두 번째 값 (`knowsOverridePassword`)은 `true`이다. 두 값 중 하나가 `true`이므로 전체 표현식도 `true`로 평가되며, 접근이 허용된다:
 
 ```swift
 let hasDoorKey = false
@@ -1149,9 +969,10 @@ if hasDoorKey || knowsOverridePassword {
   ```
 -->
 
-### Combining Logical Operators
 
-You can combine multiple logical operators to create longer compound expressions:
+### 논리 연산자 결합하기
+
+여러 논리 연산자를 결합해 더 긴 복합 표현식을 만들 수 있다:
 
 ```swift
 if enteredDoorCode && passedRetinaScan || hasDoorKey || knowsOverridePassword {
@@ -1175,32 +996,18 @@ if enteredDoorCode && passedRetinaScan || hasDoorKey || knowsOverridePassword {
   ```
 -->
 
-This example uses multiple `&&` and `||` operators to create a longer compound expression.
-However, the `&&` and `||` operators still operate on only two values,
-so this is actually three smaller expressions chained together.
-The example can be read as:
+이 예제는 여러 `&&`와 `||` 연산자를 사용해 더 긴 복합 표현식을 만든다. 하지만 `&&`와 `||` 연산자는 여전히 두 개의 값에 대해 작동하므로, 이 예제는 사실 세 개의 작은 표현식이 연결된 것이다. 이 예제를 다음과 같이 해석할 수 있다:
 
-If we've entered the correct door code and passed the retina scan,
-or if we have a valid door key,
-or if we know the emergency override password,
-then allow access.
+만약 올바른 도어 코드를 입력하고 망막 스캔을 통과했거나, 유효한 도어 키를 가지고 있거나, 긴급 재정 비밀번호를 알고 있다면 접근을 허용한다.
 
-Based on the values of `enteredDoorCode`, `passedRetinaScan`, and `hasDoorKey`,
-the first two subexpressions are `false`.
-However, the emergency override password is known,
-so the overall compound expression still evaluates to `true`.
+`enteredDoorCode`, `passedRetinaScan`, `hasDoorKey`의 값에 따라 처음 두 하위 표현식은 `false`다. 하지만 긴급 재정 비밀번호를 알고 있으므로 전체 복합 표현식은 여전히 `true`로 평가된다.
 
-> Note: The Swift logical operators `&&` and `||` are left-associative,
-> meaning that compound expressions with multiple logical operators
-> evaluate the leftmost subexpression first.
+> 참고: Swift의 논리 연산자 `&&`와 `||`는 왼쪽 결합성을 가진다. 즉, 여러 논리 연산자가 포함된 복합 표현식은 가장 왼쪽의 하위 표현식부터 먼저 평가한다.
 
-### Explicit Parentheses
 
-It's sometimes useful to include parentheses when they're not strictly needed,
-to make the intention of a complex expression easier to read.
-In the door access example above,
-it's useful to add parentheses around the first part of the compound expression
-to make its intent explicit:
+### 명시적 괄호 사용
+
+복잡한 표현식의 의도를 더 명확히 전달하기 위해 괄호를 사용하는 것이 유용할 때가 있다. 괄호가 반드시 필요하지 않더라도, 코드의 가독성을 높이는 데 도움이 된다. 위의 문 접근 예제에서, 복합 표현식의 첫 부분에 괄호를 추가하면 의도가 더 명확해진다:
 
 ```swift
 if (enteredDoorCode && passedRetinaScan) || hasDoorKey || knowsOverridePassword {
@@ -1224,12 +1031,7 @@ if (enteredDoorCode && passedRetinaScan) || hasDoorKey || knowsOverridePassword 
   ```
 -->
 
-The parentheses make it clear that the first two values
-are considered as part of a separate possible state in the overall logic.
-The output of the compound expression doesn't change,
-but the overall intention is clearer to the reader.
-Readability is always preferred over brevity;
-use parentheses where they help to make your intentions clear.
+괄호를 사용하면 처음 두 값이 전체 논리에서 별도의 가능한 상태로 간주된다는 점을 명확히 할 수 있다. 복합 표현식의 결과는 변하지 않지만, 전체 의도가 독자에게 더 명확해진다. 간결함보다는 가독성을 우선시하라. 의도를 명확히 하는 데 도움이 된다면 괄호를 사용한다.
 
 <!--
 This source file is part of the Swift.org open source project
@@ -1240,3 +1042,5 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
+
+

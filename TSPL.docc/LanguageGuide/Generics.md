@@ -1,28 +1,15 @@
-# Generics
+# 제네릭
 
-Write code that works for multiple types and specify requirements for those types.
+여러 타입에 대해 동작하는 코드를 작성하고, 해당 타입에 대한 요구사항을 명시할 수 있다.
 
-*Generic code* enables you to write flexible, reusable functions and types
-that can work with any type, subject to requirements that you define.
-You can write code that avoids duplication
-and expresses its intent in a clear, abstracted manner.
+**제네릭 코드**를 사용하면 정의한 요구사항을 충족하는 모든 타입에 대해 동작하는 유연하고 재사용 가능한 함수와 타입을 작성할 수 있다. 코드 중복을 피하고 의도를 명확하고 추상적으로 표현할 수 있다.
 
-Generics are one of the most powerful features of Swift,
-and much of the Swift standard library is built with generic code.
-In fact, you've been using generics throughout the *Language Guide*,
-even if you didn't realize it.
-For example, Swift's `Array` and `Dictionary` types
-are both generic collections.
-You can create an array that holds `Int` values,
-or an array that holds `String` values,
-or indeed an array for any other type that can be created in Swift.
-Similarly, you can create a dictionary to store values of any specified type,
-and there are no limitations on what that type can be.
+제네릭은 Swift의 가장 강력한 기능 중 하나이며, Swift 표준 라이브러리의 상당 부분이 제네릭 코드로 구성되어 있다. 사실, 여러분은 *Language Guide*를 통해 제네릭을 이미 사용하고 있었다. 예를 들어, Swift의 `Array`와 `Dictionary` 타입은 모두 제네릭 컬렉션이다. `Int` 값을 담는 배열을 만들거나, `String` 값을 담는 배열을 만들거나, Swift에서 생성할 수 있는 다른 어떤 타입의 배열도 만들 수 있다. 마찬가지로, 지정된 타입의 값을 저장하는 딕셔너리를 만들 수 있으며, 해당 타입에 대한 제한은 없다.
 
-## The Problem That Generics Solve
 
-Here's a standard, nongeneric function called `swapTwoInts(_:_:)`,
-which swaps two `Int` values:
+## 제네릭이 해결하는 문제
+
+다음은 두 `Int` 값을 교환하는 `swapTwoInts(_:_:)`라는 일반적인 비제네릭 함수의 예시이다:
 
 ```swift
 func swapTwoInts(_ a: inout Int, _ b: inout Int) {
@@ -44,12 +31,9 @@ func swapTwoInts(_ a: inout Int, _ b: inout Int) {
   ```
 -->
 
-This function makes use of in-out parameters to swap the values of `a` and `b`,
-as described in <doc:Functions#In-Out-Parameters>.
+이 함수는 <doc:Functions#In-Out-Parameters>에서 설명한 대로 in-out 매개변수를 사용해 `a`와 `b`의 값을 교환한다.
 
-The `swapTwoInts(_:_:)` function swaps the original value of `b` into `a`,
-and the original value of `a` into `b`.
-You can call this function to swap the values in two `Int` variables:
+`swapTwoInts(_:_:)` 함수는 `b`의 원래 값을 `a`에, `a`의 원래 값을 `b`에 할당한다. 이 함수를 호출해 두 `Int` 변수의 값을 교환할 수 있다:
 
 ```swift
 var someInt = 3
@@ -71,11 +55,7 @@ print("someInt is now \(someInt), and anotherInt is now \(anotherInt)")
   ```
 -->
 
-The `swapTwoInts(_:_:)` function is useful, but it can only be used with `Int` values.
-If you want to swap two `String` values,
-or two `Double` values,
-you have to write more functions,
-such as the `swapTwoStrings(_:_:)` and `swapTwoDoubles(_:_:)` functions shown below:
+`swapTwoInts(_:_:)` 함수는 유용하지만 `Int` 값에만 사용할 수 있다. 만약 두 `String` 값을 교환하거나 두 `Double` 값을 교환하려면, 다음과 같이 `swapTwoStrings(_:_:)`와 `swapTwoDoubles(_:_:)` 함수를 추가로 작성해야 한다:
 
 ```swift
 func swapTwoStrings(_ a: inout String, _ b: inout String) {
@@ -109,31 +89,16 @@ func swapTwoDoubles(_ a: inout Double, _ b: inout Double) {
   ```
 -->
 
-You may have noticed that the bodies of
-the `swapTwoInts(_:_:)`, `swapTwoStrings(_:_:)`, and `swapTwoDoubles(_:_:)` functions are identical.
-The only difference is the type of the values that they accept
-(`Int`, `String`, and `Double`).
+`swapTwoInts(_:_:)`, `swapTwoStrings(_:_:)`, `swapTwoDoubles(_:_:)` 함수의 본문이 동일하다는 것을 눈치챘을 것이다. 유일한 차이는 이 함수들이 받아들이는 값의 타입(`Int`, `String`, `Double`)이다.
 
-It's more useful, and considerably more flexible,
-to write a single function that swaps two values of *any* type.
-Generic code enables you to write such a function.
-(A generic version of these functions is defined below.)
+*어떤* 타입의 두 값이라도 교환할 수 있는 단일 함수를 작성하는 것이 훨씬 유용하고 유연하다. 제네릭 코드는 이러한 함수를 작성할 수 있게 해준다. (이 함수들의 제네릭 버전은 아래에서 정의한다.)
 
-> Note: In all three functions,
-> the types of `a` and `b` must be the same.
-> If `a` and `b` aren't of the same type,
-> it isn't possible to swap their values.
-> Swift is a type-safe language,
-> and doesn't allow (for example) a variable of type `String`
-> and a variable of type `Double`
-> to swap values with each other.
-> Attempting to do so results in a compile-time error.
+> 주의: 이 세 함수에서 `a`와 `b`의 타입은 반드시 같아야 한다. `a`와 `b`의 타입이 다르면 값을 교환할 수 없다. Swift는 타입 안전한 언어이므로, 예를 들어 `String` 타입 변수와 `Double` 타입 변수가 서로 값을 교환하는 것을 허용하지 않는다. 이를 시도하면 컴파일 타임 오류가 발생한다.
 
-## Generic Functions
 
-*Generic functions* can work with any type.
-Here's a generic version of the `swapTwoInts(_:_:)` function from above,
-called `swapTwoValues(_:_:)`:
+## 제네릭 함수
+
+**제네릭 함수**는 어떤 타입과도 동작할 수 있다. 앞서 살펴본 `swapTwoInts(_:_:)` 함수의 제네릭 버전인 `swapTwoValues(_:_:)` 함수를 보자:
 
 ```swift
 func swapTwoValues<T>(_ a: inout T, _ b: inout T) {
@@ -143,203 +108,97 @@ func swapTwoValues<T>(_ a: inout T, _ b: inout T) {
 }
 ```
 
-<!--
-  - test: `genericFunctions`
-
-  ```swifttest
-  -> func swapTwoValues<T>(_ a: inout T, _ b: inout T) {
-        let temporaryA = a
-        a = b
-        b = temporaryA
-     }
-  ```
--->
-
-<!--
-  This could be done in one line using a tuple pattern: (a, b) = (b, a)
-  That's probably not as approachable here, and the novel syntax to avoid an
-  explicit placeholder variable might distract from the discussion of
-  generics.
--->
-
-The body of the `swapTwoValues(_:_:)` function
-is identical to the body of the `swapTwoInts(_:_:)` function.
-However, the first line of `swapTwoValues(_:_:)`
-is slightly different from `swapTwoInts(_:_:)`.
-Here's how the first lines compare:
+`swapTwoValues(_:_:)` 함수의 본문은 `swapTwoInts(_:_:)` 함수와 동일하다. 그러나 `swapTwoValues(_:_:)` 함수의 첫 번째 줄은 `swapTwoInts(_:_:)`와 약간 다르다. 두 함수의 첫 번째 줄을 비교해 보자:
 
 ```swift
 func swapTwoInts(_ a: inout Int, _ b: inout Int)
 func swapTwoValues<T>(_ a: inout T, _ b: inout T)
 ```
 
-<!--
-  - test: `genericFunctionsComparison`
+제네릭 버전의 함수는 **실제 타입 이름**(예: `Int`, `String`, `Double`) 대신 **플레이스홀더** 타입 이름(여기서는 `T`)을 사용한다. 플레이스홀더 타입 이름은 `T`가 무엇이어야 하는지에 대해 명시하지 않지만, `a`와 `b`가 모두 동일한 타입 `T`여야 한다는 점은 분명히 한다. `T` 대신 사용할 실제 타입은 `swapTwoValues(_:_:)` 함수가 호출될 때마다 결정된다.
 
-  ```swifttest
-  -> func swapTwoInts(_ a: inout Int, _ b: inout Int)
-  >> {
-  >>    let temporaryA = a
-  >>    a = b
-  >>    b = temporaryA
-  >> }
-  -> func swapTwoValues<T>(_ a: inout T, _ b: inout T)
-  >> {
-  >>    let temporaryA = a
-  >>    a = b
-  >>    b = temporaryA
-  >> }
-  ```
--->
+제네릭 함수와 비제네릭 함수의 또 다른 차이점은 제네릭 함수의 이름(`swapTwoValues(_:_:)`) 뒤에 꺾쇠 괄호(`<T>`) 안에 플레이스홀더 타입 이름(`T`)이 온다는 점이다. 이 괄호는 Swift에게 `T`가 `swapTwoValues(_:_:)` 함수 정의 내에서 플레이스홀더 타입 이름임을 알려준다. `T`가 플레이스홀더이기 때문에 Swift는 `T`라는 실제 타입을 찾지 않는다.
 
-The generic version of the function
-uses a *placeholder* type name (called `T`, in this case)
-instead of an *actual* type name (such as `Int`, `String`, or `Double`).
-The placeholder type name doesn't say anything about what `T` must be,
-but it *does* say that both `a` and `b` must be of the same type `T`,
-whatever `T` represents.
-The actual type to use in place of `T`
-is determined each time the `swapTwoValues(_:_:)` function is called.
+`swapTwoValues(_:_:)` 함수는 `swapTwoInts`와 동일한 방식으로 호출할 수 있지만, **어떤 타입**의 두 값도 전달할 수 있다. 단, 두 값은 서로 같은 타입이어야 한다. `swapTwoValues(_:_:)` 함수가 호출될 때마다, `T`로 사용할 타입은 함수에 전달된 값의 타입에서 추론된다.
 
-The other difference between a generic function and a nongeneric function
-is that the generic function's name (`swapTwoValues(_:_:)`)
-is followed by the placeholder type name (`T`) inside angle brackets (`<T>`).
-The brackets tell Swift that `T` is a placeholder type name
-within the `swapTwoValues(_:_:)` function definition.
-Because `T` is a placeholder, Swift doesn't look for an actual type called `T`.
-
-The `swapTwoValues(_:_:)` function can now be called in the same way as `swapTwoInts`,
-except that it can be passed two values of *any* type,
-as long as both of those values are of the same type as each other.
-Each time `swapTwoValues(_:_:)` is called,
-the type to use for `T` is inferred from the types of values passed to the function.
-
-In the two examples below, `T` is inferred to be `Int` and `String` respectively:
+아래 두 예제에서 `T`는 각각 `Int`와 `String`으로 추론된다:
 
 ```swift
 var someInt = 3
 var anotherInt = 107
 swapTwoValues(&someInt, &anotherInt)
-// someInt is now 107, and anotherInt is now 3
+// someInt는 이제 107, anotherInt는 이제 3
 
 var someString = "hello"
 var anotherString = "world"
 swapTwoValues(&someString, &anotherString)
-// someString is now "world", and anotherString is now "hello"
+// someString는 이제 "world", anotherString는 이제 "hello"
 ```
 
+> 참고: 위에서 정의한 `swapTwoValues(_:_:)` 함수는 Swift 표준 라이브러리의 `swap`이라는 제네릭 함수에서 영감을 받았다. 이 함수는 앱에서 자동으로 사용할 수 있다. 만약 `swapTwoValues(_:_:)` 함수의 동작이 필요하다면, 직접 구현하지 않고 Swift의 기존 `swap(_:_:)` 함수를 사용할 수 있다.
+
+
+## 타입 매개변수
+
+앞서 살펴본 `swapTwoValues(_:_:)` 예제에서, 
+플레이스홀더 타입 `T`는 *타입 매개변수*의 한 예시다. 
+타입 매개변수는 플레이스홀더 타입을 지정하고 이름을 붙이며, 
+함수 이름 바로 뒤에 꺾쇠 괄호(예: `<T>`)로 감싸서 작성한다.
+
+타입 매개변수를 지정한 후에는 이를 활용해 
+함수의 매개변수 타입(예: `swapTwoValues(_:_:)` 함수의 `a`와 `b` 매개변수), 
+함수의 반환 타입, 
+또는 함수 본문 내부의 타입 어노테이션을 정의할 수 있다. 
+각 경우에 타입 매개변수는 함수가 호출될 때마다 *실제* 타입으로 대체된다. 
+(앞서 언급한 `swapTwoValues(_:_:)` 예제에서, 
+`T`는 함수가 처음 호출될 때 `Int`로, 
+두 번째 호출될 때 `String`으로 대체되었다.)
+
+꺾쇠 괄호 안에 여러 타입 매개변수 이름을 쉼표로 구분하여 작성하면, 
+하나 이상의 타입 매개변수를 제공할 수 있다.
+
+
+## 타입 매개변수 이름 지정
+
+대부분의 경우, 타입 매개변수는 `Dictionary<Key, Value>`의 `Key`와 `Value`, 
+또는 `Array<Element>`의 `Element`와 같이 설명적인 이름을 가진다. 
+이러한 이름은 타입 매개변수와 해당 제네릭 타입 또는 함수 간의 관계를 명확히 보여준다. 
+하지만, 둘 사이에 특별한 의미가 없는 경우에는 전통적으로 `T`, `U`, `V`와 같은 단일 문자를 사용해 이름을 짓는다. 
+예를 들어, 앞서 살펴본 `swapTwoValues(_:_:)` 함수의 `T`가 그렇다.
+
+타입 매개변수는 *타입*을 위한 자리 표시자이므로, `T`나 `MyTypeParameter`와 같이 대문자 카멜 케이스를 사용해 이름을 짓는다.
+
+> 참고:  
+> 타입 매개변수에 이름을 붙일 필요가 없고 제네릭 타입 제약이 간단한 경우,  
+> <doc:OpaqueTypes#Opaque-Parameter-Types>에서 설명한 것처럼  
+> 더 간단한 문법을 대신 사용할 수 있다.  
 <!--
-  - test: `genericFunctions`
-
-  ```swifttest
-  -> var someInt = 3
-  -> var anotherInt = 107
-  -> swapTwoValues(&someInt, &anotherInt)
-  /> someInt is now \(someInt), and anotherInt is now \(anotherInt)
-  </ someInt is now 107, and anotherInt is now 3
-
-  -> var someString = "hello"
-  -> var anotherString = "world"
-  -> swapTwoValues(&someString, &anotherString)
-  /> someString is now \"\(someString)\", and anotherString is now \"\(anotherString)\"
-  </ someString is now "world", and anotherString is now "hello"
-  ```
+이 문법과 간단한 문법 간의 비교는  
+Opaque Types 장에서 다룬다. 여기서는 다루지 않는다.  
+아직 제약 조건에 대해 배우지 않았으므로,  
+어떤 기능이 지원되는지 나열하는 것은 적절하지 않다.  
 -->
 
-> Note: The `swapTwoValues(_:_:)` function defined above is inspired by
-> a generic function called `swap`, which is part of the Swift standard library,
-> and is automatically made available for you to use in your apps.
-> If you need the behavior of the `swapTwoValues(_:_:)` function in your own code,
-> you can use Swift's existing `swap(_:_:)` function rather than providing your own implementation.
 
-## Type Parameters
+## 제네릭 타입
 
-In the `swapTwoValues(_:_:)` example above,
-the placeholder type `T` is an example of a *type parameter*.
-Type parameters specify and name a placeholder type,
-and are written immediately after the function's name,
-between a pair of matching angle brackets (such as `<T>`).
+제네릭 함수 외에도 Swift에서는 여러분이 직접 *제네릭 타입*을 정의할 수 있다. 이는 `Array`나 `Dictionary`와 유사하게 *어떤* 타입과도 함께 동작할 수 있는 커스텀 클래스, 구조체, 열거형을 의미한다.
 
-Once you specify a type parameter,
-you can use it to define the type of a function's parameters
-(such as the `a` and `b` parameters of the `swapTwoValues(_:_:)` function),
-or as the function's return type,
-or as a type annotation within the body of the function.
-In each case, the type parameter
-is replaced with an *actual* type whenever the function is called.
-(In the `swapTwoValues(_:_:)` example above,
-`T` was replaced with `Int` the first time the function was called,
-and was replaced with `String` the second time it was called.)
+이번 섹션에서는 `Stack`이라는 제네릭 컬렉션 타입을 작성하는 방법을 알아본다. 스택은 배열과 유사하게 순서가 있는 값들의 집합이지만, Swift의 `Array` 타입보다 더 제한된 연산 집합을 제공한다. 배열은 어느 위치에서나 새로운 항목을 삽입하거나 제거할 수 있지만, 스택은 컬렉션의 끝에만 새로운 항목을 추가할 수 있다(이를 *푸시(push)*라고 한다). 마찬가지로, 스택은 컬렉션의 끝에서만 항목을 제거할 수 있다(이를 *팝(pop)*이라고 한다).
 
-You can provide more than one type parameter
-by writing multiple type parameter names within the angle brackets,
-separated by commas.
+> 참고: 스택 개념은 `UINavigationController` 클래스에서 네비게이션 계층 구조의 뷰 컨트롤러를 관리할 때 사용된다. `UINavigationController` 클래스의 `pushViewController(_:animated:)` 메서드를 호출해 뷰 컨트롤러를 네비게이션 스택에 추가하고, `popViewControllerAnimated(_:)` 메서드를 호출해 뷰 컨트롤러를 네비게이션 스택에서 제거한다. 스택은 컬렉션을 관리할 때 엄격한 "후입선출(LIFO)" 방식이 필요할 때 유용한 모델이다.
 
-## Naming Type Parameters
-
-In most cases, type parameters have descriptive names,
-such as `Key` and `Value` in `Dictionary<Key, Value>`
-and `Element` in `Array<Element>`,
-which tells the reader about the relationship between the type parameter
-and the generic type or function it's used in.
-However, when there isn't a meaningful relationship between them,
-it's traditional to name them using single letters such as `T`, `U`, and `V`,
-such as `T` in the `swapTwoValues(_:_:)` function above.
-
-Use upper camel case names for type parameters,
-like `T` and `MyTypeParameter`,
-to indicate that they're a placeholder for a *type*, not a value.
-
-> Note:
-> If you don't need to name a type parameter
-> and its generic type constraints are simple,
-> there's an alternate, lightweight syntax you can use instead,
-> as described in <doc:OpaqueTypes#Opaque-Parameter-Types>.
-<!--
-Comparison between this syntax and the lightweight syntax
-is in the Opaque Types chapter, not here ---
-the reader hasn't learned about constraints yet,
-so it wouldn't make sense to list what is/isn't supported.
--->
-
-## Generic Types
-
-In addition to generic functions,
-Swift enables you to define your own *generic types*.
-These are custom classes, structures, and enumerations
-that can work with *any* type, in a similar way to `Array` and `Dictionary`.
-
-This section shows you how to write a generic collection type called `Stack`.
-A stack is an ordered set of values, similar to an array,
-but with a more restricted set of operations than Swift's `Array` type.
-An array allows new items to be inserted and removed at any location in the array.
-A stack, however, allows new items to be appended only to the end of the collection
-(known as *pushing* a new value on to the stack).
-Similarly, a stack allows items to be removed only from the end of the collection
-(known as *popping* a value off the stack).
-
-> Note: The concept of a stack is used by the `UINavigationController` class
-> to model the view controllers in its navigation hierarchy.
-> You call the `UINavigationController` class
-> `pushViewController(_:animated:)` method to add (or push)
-> a view controller on to the navigation stack,
-> and its `popViewControllerAnimated(_:)` method to remove (or pop)
-> a view controller from the navigation stack.
-> A stack is a useful collection model whenever you need a strict
-> “last in, first out” approach to managing a collection.
-
-The illustration below shows the push and pop behavior for a stack:
+아래 그림은 스택의 푸시와 팝 동작을 보여준다:
 
 ![](stackPushPop)
 
-1. There are currently three values on the stack.
-2. A fourth value is pushed onto the top of the stack.
-3. The stack now holds four values, with the most recent one at the top.
-4. The top item in the stack is popped.
-5. After popping a value, the stack once again holds three values.
+1. 현재 스택에는 세 개의 값이 있다.
+2. 네 번째 값이 스택의 맨 위에 푸시된다.
+3. 스택은 이제 네 개의 값을 가지며, 가장 최근에 추가된 값이 맨 위에 있다.
+4. 스택의 맨 위 항목이 팝된다.
+5. 값을 팝한 후, 스택은 다시 세 개의 값을 가진다.
 
-Here's how to write a nongeneric version of a stack,
-in this case for a stack of `Int` values:
+다음은 `Int` 값에 대한 스택의 비제네릭 버전을 작성한 예시다:
 
 ```swift
 struct IntStack {
@@ -353,40 +212,11 @@ struct IntStack {
 }
 ```
 
-<!--
-  - test: `genericStack`
+이 구조체는 스택의 값을 저장하기 위해 `items`라는 `Array` 프로퍼티를 사용한다. 스택은 `push`와 `pop` 두 메서드를 제공해 값을 스택에 추가하거나 제거한다. 이 메서드들은 구조체의 `items` 배열을 수정해야 하므로 `mutating`으로 표시된다.
 
-  ```swifttest
-  -> struct IntStack {
-        var items: [Int] = []
-        mutating func push(_ item: Int) {
-           items.append(item)
-        }
-        mutating func pop() -> Int {
-           return items.removeLast()
-        }
-     }
-  >> var intStack = IntStack()
-  >> intStack.push(1)
-  >> intStack.push(2)
-  >> intStack.push(3)
-  >> intStack.push(4)
-  >> print("the stack now contains \(intStack.items.count) integers")
-  << the stack now contains 4 integers
-  ```
--->
+그러나 위의 `IntStack` 타입은 `Int` 값만 사용할 수 있다. *어떤* 타입의 값도 관리할 수 있는 *제네릭* `Stack` 구조체를 정의하는 것이 훨씬 더 유용할 것이다.
 
-This structure uses an `Array` property called `items` to store the values in the stack.
-`Stack` provides two methods, `push` and `pop`,
-to push and pop values on and off the stack.
-These methods are marked as `mutating`,
-because they need to modify (or *mutate*) the structure's `items` array.
-
-The `IntStack` type shown above can only be used with `Int` values, however.
-It would be much more useful to define a *generic* `Stack` structure,
-that can manage a stack of *any* type of value.
-
-Here's a generic version of the same code:
+다음은 동일한 코드의 제네릭 버전이다:
 
 ```swift
 struct Stack<Element> {
@@ -400,50 +230,17 @@ struct Stack<Element> {
 }
 ```
 
-<!--
-  - test: `genericStack`
+제네릭 버전의 `Stack`은 기본적으로 비제네릭 버전과 동일하지만, `Int` 대신 `Element`라는 타입 매개변수를 사용한다. 이 타입 매개변수는 구조체 이름 바로 뒤에 꺾쇠 괄호(`<Element>`) 안에 작성된다.
 
-  ```swifttest
-  -> struct Stack<Element> {
-        var items: [Element] = []
-        mutating func push(_ item: Element) {
-           items.append(item)
-        }
-        mutating func pop() -> Element {
-           return items.removeLast()
-        }
-     }
-  ```
--->
+`Element`는 나중에 제공될 타입에 대한 플레이스홀더 이름을 정의한다. 이 미래의 타입은 구조체 정의 내 어디에서나 `Element`로 참조될 수 있다. 이 경우, `Element`는 세 곳에서 플레이스홀더로 사용된다:
 
-Note how the generic version of `Stack`
-is essentially the same as the nongeneric version,
-but with a type parameter called `Element`
-instead of an actual type of `Int`.
-This type parameter is written within a pair of angle brackets (`<Element>`)
-immediately after the structure's name.
+- `Element` 타입의 값으로 초기화된 빈 배열인 `items` 프로퍼티를 생성할 때
+- `push(_:)` 메서드가 `Element` 타입의 `item`이라는 단일 매개변수를 가져야 함을 지정할 때
+- `pop()` 메서드가 반환하는 값이 `Element` 타입이어야 함을 지정할 때
 
-`Element` defines a placeholder name for
-a type to be provided later.
-This future type can be referred to as `Element`
-anywhere within the structure's definition.
-In this case, `Element` is used as a placeholder in three places:
+제네릭 타입이기 때문에 `Stack`은 Swift에서 *어떤* 유효한 타입과도 함께 사용될 수 있으며, `Array`와 `Dictionary`와 유사한 방식으로 동작한다.
 
-- To create a property called `items`,
-  which is initialized with an empty array of values of type `Element`
-- To specify that the `push(_:)` method has a single parameter called `item`,
-  which must be of type `Element`
-- To specify that the value returned by the `pop()` method
-  will be a value of type `Element`
-
-Because it's a generic type,
-`Stack` can be used to create a stack of *any* valid type in Swift,
-in a similar manner to `Array` and `Dictionary`.
-
-You create a new `Stack` instance by writing
-the type to be stored in the stack within angle brackets.
-For example, to create a new stack of strings,
-you write `Stack<String>()`:
+스택에 저장할 타입을 꺾쇠 괄호 안에 작성해 새로운 `Stack` 인스턴스를 생성한다. 예를 들어, 문자열 스택을 생성하려면 `Stack<String>()`을 작성한다:
 
 ```swift
 var stackOfStrings = Stack<String>()
@@ -451,60 +248,30 @@ stackOfStrings.push("uno")
 stackOfStrings.push("dos")
 stackOfStrings.push("tres")
 stackOfStrings.push("cuatro")
-// the stack now contains 4 strings
+// 스택은 이제 4개의 문자열을 포함한다
 ```
 
-<!--
-  - test: `genericStack`
-
-  ```swifttest
-  -> var stackOfStrings = Stack<String>()
-  -> stackOfStrings.push("uno")
-  -> stackOfStrings.push("dos")
-  -> stackOfStrings.push("tres")
-  -> stackOfStrings.push("cuatro")
-  /> the stack now contains \(stackOfStrings.items.count) strings
-  </ the stack now contains 4 strings
-  ```
--->
-
-Here's how `stackOfStrings` looks after pushing these four values on to the stack:
+다음은 네 개의 값을 스택에 푸시한 후의 `stackOfStrings` 모습이다:
 
 ![](stackPushedFourStrings)
 
-Popping a value from the stack removes and returns the top value, `"cuatro"`:
+스택에서 값을 팝하면 맨 위의 값인 `"cuatro"`가 제거되고 반환된다:
 
 ```swift
 let fromTheTop = stackOfStrings.pop()
-// fromTheTop is equal to "cuatro", and the stack now contains 3 strings
+// fromTheTop은 "cuatro"이며, 스택은 이제 3개의 문자열을 포함한다
 ```
 
-<!--
-  - test: `genericStack`
-
-  ```swifttest
-  -> let fromTheTop = stackOfStrings.pop()
-  /> fromTheTop is equal to \"\(fromTheTop)\", and the stack now contains \(stackOfStrings.items.count) strings
-  </ fromTheTop is equal to "cuatro", and the stack now contains 3 strings
-  ```
--->
-
-Here's how the stack looks after popping its top value:
+다음은 맨 위의 값을 팝한 후의 스택 모습이다:
 
 ![](stackPoppedOneString)
 
-## Extending a Generic Type
 
-When you extend a generic type,
-you don't provide a type parameter list as part of the extension's definition.
-Instead, the type parameter list from the *original* type definition
-is available within the body of the extension,
-and the original type parameter names are used to refer to
-the type parameters from the original definition.
+## 제네릭 타입 확장하기
 
-The following example extends the generic `Stack` type to add
-a read-only computed property called `topItem`,
-which returns the top item on the stack without popping it from the stack:
+제네릭 타입을 확장할 때는 확장 정의 부분에 타입 매개변수 목록을 제공하지 않는다. 대신, *원본* 타입 정의의 타입 매개변수 목록이 확장 본문 내에서 사용 가능하며, 원본 타입 매개변수 이름을 통해 원본 정의의 타입 매개변수를 참조한다.
+
+다음 예제는 제네릭 `Stack` 타입을 확장하여 `topItem`이라는 읽기 전용 계산 프로퍼티를 추가한다. 이 프로퍼티는 스택에서 가장 위에 있는 항목을 반환하지만, 스택에서 제거하지는 않는다.
 
 ```swift
 extension Stack {
@@ -526,17 +293,11 @@ extension Stack {
   ```
 -->
 
-The `topItem` property returns an optional value of type `Element`.
-If the stack is empty, `topItem` returns `nil`;
-if the stack isn't empty, `topItem` returns the final item in the `items` array.
+`topItem` 프로퍼티는 `Element` 타입의 옵셔널 값을 반환한다. 스택이 비어 있으면 `topItem`은 `nil`을 반환하고, 스택이 비어 있지 않으면 `items` 배열의 마지막 항목을 반환한다.
 
-Note that this extension doesn't define a type parameter list.
-Instead, the `Stack` type's existing type parameter name, `Element`,
-is used within the extension to indicate the optional type of
-the `topItem` computed property.
+이 확장은 타입 매개변수 목록을 정의하지 않는다. 대신, `Stack` 타입의 기존 타입 매개변수 이름인 `Element`를 확장 내에서 사용하여 `topItem` 계산 프로퍼티의 옵셔널 타입을 나타낸다.
 
-The `topItem` computed property can now be used with any `Stack` instance
-to access and query its top item without removing it.
+이제 `topItem` 계산 프로퍼티는 모든 `Stack` 인스턴스에서 사용할 수 있으며, 스택의 가장 위에 있는 항목을 제거하지 않고 접근하고 조회할 수 있다.
 
 ```swift
 if let topItem = stackOfStrings.topItem {
@@ -556,55 +317,23 @@ if let topItem = stackOfStrings.topItem {
   ```
 -->
 
-Extensions of a generic type can also include requirements
-that instances of the extended type must satisfy
-in order to gain the new functionality,
-as discussed in <doc:Generics#Extensions-with-a-Generic-Where-Clause> below.
+제네릭 타입의 확장은 새로운 기능을 얻기 위해 확장된 타입의 인스턴스가 충족해야 하는 요구사항을 포함할 수도 있다. 이에 대한 자세한 내용은 아래 <doc:Generics#Extensions-with-a-Generic-Where-Clause>에서 다룬다.
 
-## Type Constraints
 
-The `swapTwoValues(_:_:)` function and the `Stack` type can work with any type.
-However, it's sometimes useful to enforce
-certain *type constraints* on the types that can be used with
-generic functions and generic types.
-Type constraints specify that a type parameter must
-inherit from a specific class,
-or conform to a particular protocol or protocol composition.
+## 타입 제약
 
-For example,
-Swift's `Dictionary` type places a limitation on
-the types that can be used as keys for a dictionary.
-As described in <doc:CollectionTypes#Dictionaries>,
-the type of a dictionary's keys must be *hashable*.
-That is, it must provide a way to make itself uniquely representable.
-`Dictionary` needs its keys to be hashable so that it can
-check whether it already contains a value for a particular key.
-Without this requirement, `Dictionary` couldn't tell
-whether it should insert or replace a value for a particular key,
-nor would it be able to find a value for a given key that's already in the dictionary.
+`swapTwoValues(_:_:)` 함수와 `Stack` 타입은 모든 타입과 함께 작동할 수 있다. 하지만 제네릭 함수와 제네릭 타입에 사용할 수 있는 타입에 특정 *타입 제약*을 적용하는 것이 유용할 때가 있다. 타입 제약은 타입 매개변수가 특정 클래스를 상속하거나, 특정 프로토콜 또는 프로토콜 조합을 준수해야 한다는 것을 지정한다.
 
-This requirement is enforced by a type constraint on the key type for `Dictionary`,
-which specifies that the key type must conform to the `Hashable` protocol,
-a special protocol defined in the Swift standard library.
-All of Swift's basic types (such as `String`, `Int`, `Double`, and `Bool`)
-are hashable by default.
-For information about
-making your own custom types conform to the `Hashable` protocol,
-see [Conforming to the Hashable Protocol](https://developer.apple.com/documentation/swift/hashable#2849490).
+예를 들어, Swift의 `Dictionary` 타입은 딕셔너리의 키로 사용할 수 있는 타입에 제한을 둔다. <doc:CollectionTypes#Dictionaries>에서 설명한 것처럼, 딕셔너리의 키 타입은 *해시 가능*해야 한다. 즉, 키가 자신을 고유하게 표현할 수 있는 방법을 제공해야 한다. `Dictionary`는 특정 키에 대한 값이 이미 존재하는지 확인하기 위해 키가 해시 가능해야 한다. 이 요구 사항이 없다면, `Dictionary`는 특정 키에 대한 값을 삽입해야 할지, 아니면 교체해야 할지 결정할 수 없으며, 이미 딕셔너리에 있는 키에 대한 값을 찾을 수도 없다.
 
-You can define your own type constraints when creating custom generic types,
-and these constraints provide much of the power of generic programming.
-Abstract concepts like `Hashable`
-characterize types in terms of their conceptual characteristics,
-rather than their concrete type.
+이 요구 사항은 `Dictionary`의 키 타입에 대한 타입 제약으로 강제된다. 이 제약은 키 타입이 Swift 표준 라이브러리에 정의된 특별한 프로토콜인 `Hashable` 프로토콜을 준수해야 한다는 것을 지정한다. Swift의 기본 타입(예: `String`, `Int`, `Double`, `Bool`)은 모두 기본적으로 해시 가능하다. 커스텀 타입이 `Hashable` 프로토콜을 준수하도록 만드는 방법에 대한 자세한 내용은 [Conforming to the Hashable Protocol](https://developer.apple.com/documentation/swift/hashable#2849490)을 참고한다.
 
-### Type Constraint Syntax
+커스텀 제네릭 타입을 생성할 때 자신만의 타입 제약을 정의할 수 있으며, 이러한 제약은 제네릭 프로그래밍의 강력한 기능을 제공한다. `Hashable`과 같은 추상적인 개념은 구체적인 타입이 아니라 개념적 특성에 따라 타입을 특성화한다.
 
-You write type constraints by placing a single class or protocol constraint
-after a type parameter's name, separated by a colon,
-as part of the type parameter list.
-The basic syntax for type constraints on a generic function is shown below
-(although the syntax is the same for generic types):
+
+### 타입 제약 문법
+
+타입 제약을 작성할 때는 타입 매개변수 이름 뒤에 콜론을 붙이고, 단일 클래스나 프로토콜 제약을 추가한다. 이는 타입 매개변수 목록의 일부로 작성된다. 제네릭 함수에 대한 타입 제약의 기본 문법은 다음과 같다(제네릭 타입에서도 동일한 문법을 사용한다):
 
 ```swift
 func someFunction<T: SomeClass, U: SomeProtocol>(someT: T, someU: U) {
@@ -624,20 +353,12 @@ func someFunction<T: SomeClass, U: SomeProtocol>(someT: T, someU: U) {
   ```
 -->
 
-The hypothetical function above has two type parameters.
-The first type parameter, `T`, has a type constraint
-that requires `T` to be a subclass of `SomeClass`.
-The second type parameter, `U`, has a type constraint
-that requires `U` to conform to the protocol `SomeProtocol`.
+위의 가상 함수는 두 개의 타입 매개변수를 가지고 있다. 첫 번째 타입 매개변수 `T`는 `SomeClass`의 하위 클래스여야 한다는 타입 제약을 가지고 있다. 두 번째 타입 매개변수 `U`는 `SomeProtocol`을 준수해야 한다는 타입 제약을 가지고 있다.
 
-### Type Constraints in Action
 
-Here's a nongeneric function called `findIndex(ofString:in:)`,
-which is given a `String` value to find
-and an array of `String` values within which to find it.
-The `findIndex(ofString:in:)` function returns an optional `Int` value,
-which will be the index of the first matching string in the array if it's found,
-or `nil` if the string can't be found:
+### 타입 제약 조건의 활용
+
+`findIndex(ofString:in:)`이라는 비제네릭 함수가 있다. 이 함수는 찾을 `String` 값과 그 값을 찾을 `String` 배열을 인자로 받는다. `findIndex(ofString:in:)` 함수는 옵셔널 `Int` 값을 반환한다. 배열에서 첫 번째로 일치하는 문자열의 인덱스를 반환하거나, 문자열을 찾지 못하면 `nil`을 반환한다.
 
 ```swift
 func findIndex(ofString valueToFind: String, in array: [String]) -> Int? {
@@ -665,7 +386,7 @@ func findIndex(ofString valueToFind: String, in array: [String]) -> Int? {
   ```
 -->
 
-The `findIndex(ofString:in:)` function can be used to find a string value in an array of strings:
+`findIndex(ofString:in:)` 함수는 문자열 배열에서 특정 문자열 값을 찾는 데 사용할 수 있다:
 
 ```swift
 let strings = ["cat", "dog", "llama", "parakeet", "terrapin"]
@@ -687,17 +408,9 @@ if let foundIndex = findIndex(ofString: "llama", in: strings) {
   ```
 -->
 
-The principle of finding the index of a value in an array isn't useful only for strings, however.
-You can write the same functionality as a generic function
-by replacing any mention of strings with values of some type `T` instead.
+배열에서 특정 값의 인덱스를 찾는 원리는 문자열에만 국한되지 않는다. 문자열을 특정 타입 `T`의 값으로 대체하면 동일한 기능을 제네릭 함수로 작성할 수 있다.
 
-Here's how you might expect a generic version of `findIndex(ofString:in:)`,
-called `findIndex(of:in:)`, to be written.
-Note that the return type of this function is still `Int?`,
-because the function returns an optional index number,
-not an optional value from the array.
-Be warned, though --- this function doesn't compile,
-for reasons explained after the example:
+`findIndex(ofString:in:)`의 제네릭 버전인 `findIndex(of:in:)`을 작성해보자. 이 함수의 반환 타입은 여전히 `Int?`다. 함수는 배열의 값을 반환하는 것이 아니라 옵셔널 인덱스 번호를 반환하기 때문이다. 하지만 이 함수는 컴파일되지 않는다. 그 이유는 예제 뒤에 설명한다.
 
 ```swift
 func findIndex<T>(of valueToFind: T, in array:[T]) -> Int? {
@@ -728,35 +441,11 @@ func findIndex<T>(of valueToFind: T, in array:[T]) -> Int? {
   ```
 -->
 
-This function doesn't compile as written above.
-The problem lies with the equality check, “`if value == valueToFind`”.
-Not every type in Swift can be compared with the equal to operator (`==`).
-If you create your own class or structure to represent a complex data model, for example,
-then the meaning of “equal to” for that class or structure
-isn't something that Swift can guess for you.
-Because of this, it isn't possible to guarantee that this code will work
-for *every* possible type `T`,
-and an appropriate error is reported when you try to compile the code.
+이 함수는 위와 같이 작성하면 컴파일되지 않는다. 문제는 동등성 비교인 "`if value == valueToFind`"에 있다. Swift의 모든 타입이 동등 연산자(`==`)로 비교할 수 있는 것은 아니다. 예를 들어 복잡한 데이터 모델을 나타내는 클래스나 구조체를 만들면, 해당 클래스나 구조체에 대한 "동등"의 의미를 Swift가 추측할 수 없다. 따라서 이 코드가 *모든* 가능한 타입 `T`에 대해 동작한다고 보장할 수 없으며, 코드를 컴파일하려고 하면 적절한 오류가 발생한다.
 
-All is not lost, however.
-The Swift standard library defines a protocol called `Equatable`,
-which requires any conforming type to implement
-the equal to operator (`==`) and the not equal to operator (`!=`)
-to compare any two values of that type.
-All of Swift's standard types automatically support the `Equatable` protocol.
+하지만 모든 것이 손실된 것은 아니다. Swift 표준 라이브러리는 `Equatable`이라는 프로토콜을 정의한다. 이 프로토콜은 준수하는 모든 타입이 동등 연산자(`==`)와 부등 연산자(`!=`)를 구현하도록 요구한다. Swift의 모든 표준 타입은 자동으로 `Equatable` 프로토콜을 지원한다.
 
-<!--
-  TODO: write about how to make your own types conform to Equatable
-  once we have some documentation that actually describes it.
-  The text to use is something like:
-  and you can make your own types conform to ``Equatable`` too,
-  as described in <link>.
--->
-
-Any type that's `Equatable` can be used safely with the `findIndex(of:in:)` function,
-because it's guaranteed to support the equal to operator.
-To express this fact, you write a type constraint of `Equatable`
-as part of the type parameter's definition when you define the function:
+`Equatable`을 준수하는 모든 타입은 `findIndex(of:in:)` 함수와 함께 안전하게 사용할 수 있다. 동등 연산자를 지원한다는 것이 보장되기 때문이다. 이 사실을 표현하기 위해 함수를 정의할 때 타입 매개변수의 정의에 `Equatable` 타입 제약 조건을 추가한다:
 
 ```swift
 func findIndex<T: Equatable>(of valueToFind: T, in array:[T]) -> Int? {
@@ -784,17 +473,15 @@ func findIndex<T: Equatable>(of valueToFind: T, in array:[T]) -> Int? {
   ```
 -->
 
-The single type parameter for `findIndex(of:in:)` is written as `T: Equatable`,
-which means “any type `T` that conforms to the `Equatable` protocol.”
+`findIndex(of:in:)`의 단일 타입 매개변수는 `T: Equatable`로 작성된다. 이는 "`Equatable` 프로토콜을 준수하는 모든 타입 `T`"를 의미한다.
 
-The `findIndex(of:in:)` function now compiles successfully
-and can be used with any type that's `Equatable`, such as `Double` or `String`:
+이제 `findIndex(of:in:)` 함수는 성공적으로 컴파일되며, `Double`이나 `String`과 같이 `Equatable`을 준수하는 모든 타입과 함께 사용할 수 있다:
 
 ```swift
 let doubleIndex = findIndex(of: 9.3, in: [3.14159, 0.1, 0.25])
-// doubleIndex is an optional Int with no value, because 9.3 isn't in the array
+// doubleIndex는 옵셔널 Int이며 값이 없다. 배열에 9.3이 없기 때문이다.
 let stringIndex = findIndex(of: "Andrea", in: ["Mike", "Malcolm", "Andrea"])
-// stringIndex is an optional Int containing a value of 2
+// stringIndex는 값이 2인 옵셔널 Int다.
 ```
 
 <!--
@@ -802,37 +489,23 @@ let stringIndex = findIndex(of: "Andrea", in: ["Mike", "Malcolm", "Andrea"])
 
   ```swifttest
   -> let doubleIndex = findIndex(of: 9.3, in: [3.14159, 0.1, 0.25])
-  /> doubleIndex is an optional Int with no value, because 9.3 isn't in the array
-  </ doubleIndex is an optional Int with no value, because 9.3 isn't in the array
+  /> doubleIndex는 옵셔널 Int이며 값이 없다. 배열에 9.3이 없기 때문이다.
+  </ doubleIndex는 옵셔널 Int이며 값이 없다. 배열에 9.3이 없기 때문이다.
   -> let stringIndex = findIndex(of: "Andrea", in: ["Mike", "Malcolm", "Andrea"])
-  /> stringIndex is an optional Int containing a value of \(stringIndex!)
-  </ stringIndex is an optional Int containing a value of 2
+  /> stringIndex는 값이 \(stringIndex!)인 옵셔널 Int다.
+  </ stringIndex는 값이 2인 옵셔널 Int다.
   ```
 -->
 
-<!--
-  TODO: providing different type parameters on individual methods within a generic type
--->
 
-<!--
-  TODO: likewise providing type parameters for initializers
--->
+## 연관 타입
 
-## Associated Types
+프로토콜을 정의할 때, 프로토콜의 일부로 하나 이상의 연관 타입을 선언하는 것이 유용할 때가 있다. *연관 타입*은 프로토콜 내에서 사용될 타입에 대한 플레이스홀더 이름을 제공한다. 이 연관 타입에 사용될 실제 타입은 프로토콜이 채택될 때까지 지정되지 않는다. 연관 타입은 `associatedtype` 키워드를 사용해 지정한다.
 
-When defining a protocol,
-it's sometimes useful to declare one or more associated types
-as part of the protocol's definition.
-An *associated type* gives a placeholder name
-to a type that's used as part of the protocol.
-The actual type to use for that associated type
-isn't specified until the protocol is adopted.
-Associated types are specified with the `associatedtype` keyword.
 
-### Associated Types in Action
+### 연관 타입(Associated Types)의 활용
 
-Here's an example of a protocol called `Container`,
-which declares an associated type called `Item`:
+다음은 `Container`라는 프로토콜 예제로, `Item`이라는 연관 타입을 선언한다:
 
 ```swift
 protocol Container {
@@ -856,55 +529,25 @@ protocol Container {
   ```
 -->
 
-The `Container` protocol defines three required capabilities
-that any container must provide:
+`Container` 프로토콜은 모든 컨테이너가 제공해야 하는 세 가지 필수 기능을 정의한다:
 
-- It must be possible to add a new item to the container with an `append(_:)` method.
-- It must be possible to access a count of the items in the container
-  through a `count` property that returns an `Int` value.
-- It must be possible to retrieve each item in the container with a subscript
-  that takes an `Int` index value.
+- `append(_:)` 메서드를 통해 새로운 아이템을 컨테이너에 추가할 수 있어야 한다.
+- `count` 프로퍼티를 통해 컨테이너 내 아이템의 개수를 `Int` 값으로 반환할 수 있어야 한다.
+- `Int` 인덱스 값을 사용해 컨테이너 내 각 아이템을 조회할 수 있는 서브스크립트를 제공해야 한다.
 
-This protocol doesn't specify how the items in the container should be stored
-or what type they're allowed to be.
-The protocol only specifies the three bits of functionality
-that any type must provide in order to be considered a `Container`.
-A conforming type can provide additional functionality,
-as long as it satisfies these three requirements.
+이 프로토콜은 컨테이너 내 아이템이 어떻게 저장되어야 하는지, 또는 어떤 타입이 허용되는지 명시하지 않는다. 프로토콜은 단순히 `Container`로 간주되기 위해 제공해야 하는 세 가지 기능만을 정의한다. 이 세 가지 요구사항을 충족하는 한, 해당 타입은 추가적인 기능을 제공할 수 있다.
 
-Any type that conforms to the `Container` protocol must be able to specify
-the type of values it stores.
-Specifically, it must ensure that only items of the right type
-are added to the container,
-and it must be clear about the type of the items returned by its subscript.
+`Container` 프로토콜을 준수하는 모든 타입은 저장하는 값의 타입을 명시할 수 있어야 한다. 구체적으로, 올바른 타입의 아이템만 컨테이너에 추가되도록 보장해야 하며, 서브스크립트가 반환하는 아이템의 타입이 명확해야 한다.
 
-To define these requirements,
-the `Container` protocol needs a way to refer to
-the type of the elements that a container will hold,
-without knowing what that type is for a specific container.
-The `Container` protocol needs to specify that
-any value passed to the `append(_:)` method
-must have the same type as the container's element type,
-and that the value returned by the container's subscript
-will be of the same type as the container's element type.
+이러한 요구사항을 정의하기 위해, `Container` 프로토콜은 특정 컨테이너의 타입을 알지 못한 상태에서도 컨테이너가 보유할 요소의 타입을 참조할 수 있는 방법이 필요하다. `Container` 프로토콜은 `append(_:)` 메서드에 전달된 값이 컨테이너의 요소 타입과 동일한 타입이어야 하며, 컨테이너의 서브스크립트가 반환하는 값도 동일한 타입이어야 함을 명시해야 한다.
 
-To achieve this,
-the `Container` protocol declares an associated type called `Item`,
-written as  `associatedtype Item`.
-The protocol doesn't define what `Item` is ---
-that information is left for any conforming type to provide.
-Nonetheless, the `Item` alias provides a way to refer to
-the type of the items in a `Container`,
-and to define a type for use with the `append(_:)` method and subscript,
-to ensure that the expected behavior of any `Container` is enforced.
+이를 위해 `Container` 프로토콜은 `associatedtype Item`으로 작성된 `Item`이라는 연관 타입을 선언한다. 프로토콜은 `Item`이 무엇인지 정의하지 않는다. 이 정보는 준수하는 타입이 제공하도록 남겨둔다. 그럼에도 불구하고, `Item` 별칭은 `Container` 내 아이템의 타입을 참조할 수 있는 방법을 제공하며, `append(_:)` 메서드와 서브스크립트에 사용할 타입을 정의해 모든 `Container`의 예상 동작이 강제되도록 한다.
 
-Here's a version of the nongeneric `IntStack` type
-from <doc:Generics#Generic-Types> above,
-adapted to conform to the `Container` protocol:
+다음은 앞서 <doc:Generics#Generic-Types>에서 다룬 비제네릭 `IntStack` 타입을 `Container` 프로토콜에 맞게 수정한 버전이다:
 
 ```swift
 struct IntStack: Container {
-    // original IntStack implementation
+    // 원래 IntStack 구현
     var items: [Int] = []
     mutating func push(_ item: Int) {
         items.append(item)
@@ -912,7 +555,7 @@ struct IntStack: Container {
     mutating func pop() -> Int {
         return items.removeLast()
     }
-    // conformance to the Container protocol
+    // Container 프로토콜 준수
     typealias Item = Int
     mutating func append(_ item: Int) {
         self.push(item)
@@ -931,7 +574,7 @@ struct IntStack: Container {
 
   ```swifttest
   -> struct IntStack: Container {
-        // original IntStack implementation
+        // 원래 IntStack 구현
         var items: [Int] = []
         mutating func push(_ item: Int) {
            items.append(item)
@@ -939,7 +582,7 @@ struct IntStack: Container {
         mutating func pop() -> Int {
            return items.removeLast()
         }
-        // conformance to the Container protocol
+        // Container 프로토콜 준수
         typealias Item = Int
         mutating func append(_ item: Int) {
            self.push(item)
@@ -954,30 +597,17 @@ struct IntStack: Container {
   ```
 -->
 
-The `IntStack` type implements all three of the `Container` protocol's requirements,
-and in each case wraps part of the `IntStack` type's existing functionality
-to satisfy these requirements.
+`IntStack` 타입은 `Container` 프로토콜의 세 가지 요구사항을 모두 구현하며, 각각의 경우에 `IntStack` 타입의 기존 기능을 활용해 이를 충족시킨다.
 
-Moreover, `IntStack` specifies that for this implementation of `Container`,
-the appropriate `Item` to use is a type of `Int`.
-The definition of `typealias Item = Int` turns the abstract type of `Item`
-into a concrete type of `Int` for this implementation of the `Container` protocol.
+또한, `IntStack`은 `Container`의 이 구현에서 사용할 적절한 `Item`이 `Int` 타입임을 명시한다. `typealias Item = Int` 정의는 `Item`이라는 추상 타입을 `Container` 프로토콜의 이 구현에서 `Int`라는 구체적인 타입으로 변환한다.
 
-Thanks to Swift's type inference,
-you don't actually need to declare a concrete `Item` of `Int`
-as part of the definition of `IntStack`.
-Because `IntStack` conforms to all of the requirements of the `Container` protocol,
-Swift can infer the appropriate `Item` to use,
-simply by looking at the type of the `append(_:)` method's `item` parameter
-and the return type of the subscript.
-Indeed, if you delete the `typealias Item = Int` line from the code above,
-everything still works, because it's clear what type should be used for `Item`.
+Swift의 타입 추론 덕분에, 실제로 `IntStack`의 정의에서 `Int` 타입의 구체적인 `Item`을 선언할 필요는 없다. `IntStack`이 `Container` 프로토콜의 모든 요구사항을 준수하기 때문에, Swift는 `append(_:)` 메서드의 `item` 매개변수 타입과 서브스크립트의 반환 타입을 살펴보면 적절한 `Item`을 추론할 수 있다. 실제로 위 코드에서 `typealias Item = Int` 줄을 삭제해도 모든 것이 정상적으로 작동한다. 왜냐하면 `Item`에 사용할 타입이 명확하기 때문이다.
 
-You can also make the generic `Stack` type conform to the `Container` protocol:
+제네릭 `Stack` 타입도 `Container` 프로토콜을 준수하도록 만들 수 있다:
 
 ```swift
 struct Stack<Element>: Container {
-    // original Stack<Element> implementation
+    // 원래 Stack<Element> 구현
     var items: [Element] = []
     mutating func push(_ item: Element) {
         items.append(item)
@@ -985,7 +615,7 @@ struct Stack<Element>: Container {
     mutating func pop() -> Element {
         return items.removeLast()
     }
-    // conformance to the Container protocol
+    // Container 프로토콜 준수
     mutating func append(_ item: Element) {
         self.push(item)
     }
@@ -1003,7 +633,7 @@ struct Stack<Element>: Container {
 
   ```swifttest
   -> struct Stack<Element>: Container {
-        // original Stack<Element> implementation
+        // 원래 Stack<Element> 구현
         var items: [Element] = []
         mutating func push(_ item: Element) {
            items.append(item)
@@ -1011,7 +641,7 @@ struct Stack<Element>: Container {
         mutating func pop() -> Element {
            return items.removeLast()
         }
-        // conformance to the Container protocol
+        // Container 프로토콜 준수
         mutating func append(_ item: Element) {
            self.push(item)
         }
@@ -1025,50 +655,25 @@ struct Stack<Element>: Container {
   ```
 -->
 
-This time, the type parameter `Element` is used as
-the type of the `append(_:)` method's `item` parameter
-and the return type of the subscript.
-Swift can therefore infer that `Element` is the appropriate type to use
-as the `Item` for this particular container.
+이번에는 타입 매개변수 `Element`가 `append(_:)` 메서드의 `item` 매개변수 타입과 서브스크립트의 반환 타입으로 사용된다. 따라서 Swift는 `Element`가 이 특정 컨테이너의 `Item`으로 사용하기에 적절한 타입임을 추론할 수 있다.
 
-### Extending an Existing Type to Specify an Associated Type
 
-You can extend an existing type to add conformance to a protocol,
-as described in <doc:Protocols#Adding-Protocol-Conformance-with-an-Extension>.
-This includes a protocol with an associated type.
+### 기존 타입을 확장하여 연관 타입 지정하기
 
-Swift's `Array` type already provides an `append(_:)` method,
-a `count` property, and a subscript with an `Int` index to retrieve its elements.
-These three capabilities match the requirements of the `Container` protocol.
-This means that you can extend `Array` to conform to the `Container` protocol
-simply by declaring that `Array` adopts the protocol.
-You do this with an empty extension,
-as described in <doc:Protocols#Declaring-Protocol-Adoption-with-an-Extension>:
+기존 타입을 확장해 프로토콜을 준수하도록 추가할 수 있다. 이는 연관 타입(associated type)을 포함한 프로토콜에도 적용된다.
+
+Swift의 `Array` 타입은 이미 `append(_:)` 메서드, `count` 프로퍼티, 그리고 `Int` 인덱스를 사용해 요소를 조회하는 서브스크립트를 제공한다. 이 세 가지 기능은 `Container` 프로토콜의 요구 사항과 일치한다. 따라서 `Array`가 `Container` 프로토콜을 준수하도록 간단히 선언하기만 하면 된다. 이는 빈 확장을 통해 수행할 수 있다.
 
 ```swift
 extension Array: Container {}
 ```
 
-<!--
-  - test: `associatedTypes`
+`Array`의 기존 `append(_:)` 메서드와 서브스크립트는 Swift가 `Item`에 사용할 적절한 타입을 추론할 수 있도록 한다. 이 확장을 정의한 후에는 모든 `Array`를 `Container`로 사용할 수 있다.
 
-  ```swifttest
-  -> extension Array: Container {}
-  ```
--->
 
-Array's existing `append(_:)` method and subscript enable Swift to infer
-the appropriate type to use for `Item`,
-just as for the generic `Stack` type above.
-After defining this extension, you can use any `Array` as a `Container`.
+### 연관 타입에 제약 조건 추가하기
 
-### Adding Constraints to an Associated Type
-
-You can add type constraints to an associated type in a protocol
-to require that conforming types satisfy those constraints.
-For example,
-the following code defines a version of `Container`
-that requires the items in the container to be equatable.
+프로토콜의 연관 타입에 타입 제약을 추가하여, 해당 프로토콜을 준수하는 타입이 특정 조건을 만족하도록 요구할 수 있다. 예를 들어, 다음 코드는 컨테이너 내의 항목이 `Equatable`을 준수해야 하는 `Container` 프로토콜의 버전을 정의한다.
 
 ```swift
 protocol Container {
@@ -1092,18 +697,12 @@ protocol Container {
   ```
 -->
 
-To conform to this version of `Container`,
-the container's `Item` type has to conform to the `Equatable` protocol.
+이 버전의 `Container` 프로토콜을 준수하려면, 컨테이너의 `Item` 타입이 `Equatable` 프로토콜을 준수해야 한다.
 
-### Using a Protocol in Its Associated Type's Constraints
 
-A protocol can appear as part of its own requirements.
-For example,
-here's a protocol that refines the `Container` protocol,
-adding the requirement of a `suffix(_:)` method.
-The `suffix(_:)` method
-returns a given number of elements from the end of the container,
-storing them in an instance of the `Suffix` type.
+### 프로토콜을 연관 타입의 제약 조건으로 사용하기
+
+프로토콜은 자신의 요구 사항의 일부로 나타날 수 있다. 예를 들어, 다음은 `Container` 프로토콜을 확장하여 `suffix(_:)` 메서드를 추가한 프로토콜이다. `suffix(_:)` 메서드는 컨테이너의 끝에서 지정된 수의 요소를 반환하며, 이를 `Suffix` 타입의 인스턴스에 저장한다.
 
 ```swift
 protocol SuffixableContainer: Container {
@@ -1123,20 +722,9 @@ protocol SuffixableContainer: Container {
   ```
 -->
 
-In this protocol,
-`Suffix` is an associated type,
-like the `Item` type in the `Container` example above.
-`Suffix` has two constraints:
-It must conform to the `SuffixableContainer` protocol
-(the protocol currently being defined),
-and its `Item` type must be the same
-as the container's `Item` type.
-The constraint on `Item` is a generic `where` clause,
-which is discussed in <doc:Generics#Associated-Types-with-a-Generic-Where-Clause> below.
+이 프로토콜에서 `Suffix`는 앞서 `Container` 예제의 `Item` 타입과 같은 연관 타입이다. `Suffix`에는 두 가지 제약 조건이 있다: 첫째, `SuffixableContainer` 프로토콜을 준수해야 하며(현재 정의 중인 프로토콜), 둘째, `Item` 타입이 컨테이너의 `Item` 타입과 동일해야 한다. `Item`에 대한 제약 조건은 제네릭 `where` 절로, 이에 대해서는 <doc:Generics#Associated-Types-with-a-Generic-Where-Clause>에서 자세히 다룬다.
 
-Here's an extension of the `Stack` type
-from <doc:Generics#Generic-Types> above
-that adds conformance to the `SuffixableContainer` protocol:
+다음은 앞서 <doc:Generics#Generic-Types>에서 소개한 `Stack` 타입을 `SuffixableContainer` 프로토콜에 맞게 확장한 예제이다:
 
 ```swift
 extension Stack: SuffixableContainer {
@@ -1182,17 +770,7 @@ let suffix = stackOfInts.suffix(2)
   ```
 -->
 
-In the example above,
-the `Suffix` associated type for `Stack` is also `Stack`,
-so the suffix operation on `Stack` returns another `Stack`.
-Alternatively,
-a type that conforms to `SuffixableContainer`
-can have a `Suffix` type that's different from itself ---
-meaning the suffix operation can return a different type.
-For example,
-here's an extension to the nongeneric `IntStack` type
-that adds `SuffixableContainer` conformance,
-using `Stack<Int>` as its suffix type instead of `IntStack`:
+위 예제에서 `Stack`의 `Suffix` 연관 타입은 `Stack` 자체이다. 따라서 `Stack`에 대한 `suffix` 연산은 또 다른 `Stack`을 반환한다. 반면, `SuffixableContainer`를 준수하는 타입은 `Suffix` 타입이 자신과 다를 수 있다. 즉, `suffix` 연산이 다른 타입을 반환할 수 있다는 의미이다. 예를 들어, 다음은 제네릭이 아닌 `IntStack` 타입을 `SuffixableContainer`에 맞게 확장한 예제로, `IntStack` 대신 `Stack<Int>`를 `Suffix` 타입으로 사용한다:
 
 ```swift
 extension IntStack: SuffixableContainer {
@@ -1230,133 +808,68 @@ extension IntStack: SuffixableContainer {
   ```
 -->
 
-## Generic Where Clauses
 
-Type constraints, as described in <doc:Generics#Type-Constraints>,
-enable you to define requirements on the type parameters associated with
-a generic function, subscript, or type.
+## 일반화된 Where 절
 
-It can also be useful to define requirements for associated types.
-You do this by defining a *generic where clause*.
-A generic `where` clause enables you to require that
-an associated type must conform to a certain protocol,
-or that certain type parameters and associated types must be the same.
-A generic `where` clause starts with the `where` keyword,
-followed by constraints for associated types
-or equality relationships between types and associated types.
-You write a generic `where` clause right before the opening curly brace
-of a type or function's body.
+<doc:Generics#Type-Constraints>에서 설명한 타입 제약은 제네릭 함수, 서브스크립트, 타입과 관련된 타입 파라미터에 요구사항을 정의할 수 있게 한다.
 
-The example below defines a generic function called `allItemsMatch`,
-which checks to see if two `Container` instances contain
-the same items in the same order.
-The function returns a Boolean value of `true` if all items match
-and a value of `false` if they don't.
+이와 유사하게, 연관 타입에 대한 요구사항을 정의하는 것도 유용하다. 이를 위해 *일반화된 where 절*을 사용한다. 일반화된 `where` 절은 연관 타입이 특정 프로토콜을 준수해야 하거나, 특정 타입 파라미터와 연관 타입이 동일해야 한다는 요구사항을 정의할 수 있다. 일반화된 `where` 절은 `where` 키워드로 시작하며, 연관 타입에 대한 제약 조건이나 타입과 연관 타입 간의 동등 관계를 정의한다. 일반화된 `where` 절은 타입 또는 함수의 본문을 여는 중괄호 바로 앞에 작성한다.
 
-The two containers to be checked don't have to be
-the same type of container (although they can be),
-but they do have to hold the same type of items.
-This requirement is expressed through a combination of type constraints
-and a generic `where` clause:
+아래 예제는 `allItemsMatch`라는 제네릭 함수를 정의하며, 이 함수는 두 `Container` 인스턴스가 동일한 순서로 동일한 아이템을 포함하는지 확인한다. 모든 아이템이 일치하면 `true`를 반환하고, 그렇지 않으면 `false`를 반환한다.
+
+검사할 두 컨테이너는 반드시 동일한 타입일 필요는 없지만(그럴 수도 있음), 동일한 타입의 아이템을 포함해야 한다. 이 요구사항은 타입 제약과 일반화된 `where` 절을 조합하여 표현된다:
 
 ```swift
 func allItemsMatch<C1: Container, C2: Container>
         (_ someContainer: C1, _ anotherContainer: C2) -> Bool
         where C1.Item == C2.Item, C1.Item: Equatable {
 
-    // Check that both containers contain the same number of items.
+    // 두 컨테이너가 동일한 수의 아이템을 포함하는지 확인한다.
     if someContainer.count != anotherContainer.count {
         return false
     }
 
-    // Check each pair of items to see if they're equivalent.
+    // 각 아이템 쌍이 동일한지 확인한다.
     for i in 0..<someContainer.count {
         if someContainer[i] != anotherContainer[i] {
             return false
         }
     }
 
-    // All items match, so return true.
+    // 모든 아이템이 일치하므로 true를 반환한다.
     return true
 }
 ```
 
-<!--
-  - test: `associatedTypes`
+이 함수는 `someContainer`와 `anotherContainer`라는 두 인수를 받는다. `someContainer` 인수는 `C1` 타입이고, `anotherContainer` 인수는 `C2` 타입이다. `C1`과 `C2`는 함수가 호출될 때 결정될 두 컨테이너 타입에 대한 타입 파라미터다.
 
-  ```swifttest
-  -> func allItemsMatch<C1: Container, C2: Container>
-           (_ someContainer: C1, _ anotherContainer: C2) -> Bool
-           where C1.Item == C2.Item, C1.Item: Equatable {
+이 함수의 두 타입 파라미터에 대해 다음과 같은 요구사항이 적용된다:
 
-        // Check that both containers contain the same number of items.
-        if someContainer.count != anotherContainer.count {
-           return false
-        }
+- `C1`은 `Container` 프로토콜을 준수해야 한다(`C1: Container`로 표기).
+- `C2`도 `Container` 프로토콜을 준수해야 한다(`C2: Container`로 표기).
+- `C1`의 `Item`은 `C2`의 `Item`과 동일해야 한다(`C1.Item == C2.Item`로 표기).
+- `C1`의 `Item`은 `Equatable` 프로토콜을 준수해야 한다(`C1.Item: Equatable`로 표기).
 
-        // Check each pair of items to see if they're equivalent.
-        for i in 0..<someContainer.count {
-           if someContainer[i] != anotherContainer[i] {
-              return false
-           }
-        }
+첫 번째와 두 번째 요구사항은 함수의 타입 파라미터 목록에 정의되고, 세 번째와 네 번째 요구사항은 함수의 일반화된 `where` 절에 정의된다.
 
-        // All items match, so return true.
-        return true
-     }
-  ```
--->
+이러한 요구사항은 다음을 의미한다:
 
-This function takes two arguments called
-`someContainer` and `anotherContainer`.
-The `someContainer` argument is of type `C1`,
-and the `anotherContainer` argument is of type `C2`.
-Both `C1` and `C2` are type parameters
-for two container types to be determined when the function is called.
+- `someContainer`는 `C1` 타입의 컨테이너다.
+- `anotherContainer`는 `C2` 타입의 컨테이너다.
+- `someContainer`와 `anotherContainer`는 동일한 타입의 아이템을 포함한다.
+- `someContainer`의 아이템은 `!=` 연산자를 사용해 서로 다른지 확인할 수 있다.
 
-The following requirements are placed on the function's two type parameters:
+세 번째와 네 번째 요구사항은 `anotherContainer`의 아이템도 `!=` 연산자로 확인할 수 있음을 의미한다. 이는 `someContainer`의 아이템과 정확히 동일한 타입이기 때문이다.
 
-- `C1` must conform to the `Container` protocol (written as `C1: Container`).
-- `C2` must also conform to the `Container` protocol (written as `C2: Container`).
-- The `Item` for `C1` must be the same as the `Item` for `C2`
-  (written as `C1.Item == C2.Item`).
-- The `Item` for `C1` must conform to the `Equatable` protocol
-  (written as `C1.Item: Equatable`).
+이러한 요구사항 덕분에 `allItemsMatch(_:_:)` 함수는 두 컨테이너가 서로 다른 타입이더라도 비교할 수 있다.
 
-The first and second requirements are defined in the function's type parameter list,
-and the third and fourth requirements are defined in the function's generic `where` clause.
+`allItemsMatch(_:_:)` 함수는 먼저 두 컨테이너가 동일한 수의 아이템을 포함하는지 확인한다. 아이템 수가 다르면 일치할 수 없으므로 함수는 `false`를 반환한다.
 
-These requirements mean:
+이 확인이 끝나면 함수는 `for`-`in` 루프와 반열린 범위 연산자(`..<`)를 사용해 `someContainer`의 모든 아이템을 순회한다. 각 아이템에 대해 `someContainer`의 아이템이 `anotherContainer`의 해당 아이템과 다른지 확인한다. 두 아이템이 다르면 두 컨테이너는 일치하지 않으므로 함수는 `false`를 반환한다.
 
-- `someContainer` is a container of type `C1`.
-- `anotherContainer` is a container of type `C2`.
-- `someContainer` and `anotherContainer` contain the same type of items.
-- The items in `someContainer` can be checked with the not equal operator (`!=`)
-  to see if they're different from each other.
+루프가 끝날 때까지 불일치가 발견되지 않으면 두 컨테이너는 일치하며, 함수는 `true`를 반환한다.
 
-The third and fourth requirements combine to mean that
-the items in `anotherContainer` can *also* be checked with the `!=` operator,
-because they're exactly the same type as the items in `someContainer`.
-
-These requirements enable the `allItemsMatch(_:_:)` function to compare the two containers,
-even if they're of a different container type.
-
-The `allItemsMatch(_:_:)` function starts by checking that
-both containers contain the same number of items.
-If they contain a different number of items, there's no way that they can match,
-and the function returns `false`.
-
-After making this check, the function iterates over all of the items in `someContainer`
-with a `for`-`in` loop and the half-open range operator (`..<`).
-For each item, the function checks whether the item from `someContainer` isn't equal to
-the corresponding item in `anotherContainer`.
-If the two items aren't equal, then the two containers don't match,
-and the function returns `false`.
-
-If the loop finishes without finding a mismatch,
-the two containers match, and the function returns `true`.
-
-Here's how the `allItemsMatch(_:_:)` function looks in action:
+다음은 `allItemsMatch(_:_:)` 함수가 동작하는 모습이다:
 
 ```swift
 var stackOfStrings = Stack<String>()
@@ -1371,47 +884,15 @@ if allItemsMatch(stackOfStrings, arrayOfStrings) {
 } else {
     print("Not all items match.")
 }
-// Prints "All items match."
+// "All items match."를 출력한다.
 ```
 
-<!--
-  - test: `associatedTypes`
+위 예제는 `String` 값을 저장하는 `Stack` 인스턴스를 생성하고, 세 개의 문자열을 스택에 푸시한다. 또한, 스택과 동일한 세 개의 문자열을 포함하는 배열 리터럴로 초기화된 `Array` 인스턴스를 생성한다. 스택과 배열은 서로 다른 타입이지만, 둘 다 `Container` 프로토콜을 준수하며 동일한 타입의 값을 포함한다. 따라서 이 두 컨테이너를 인수로 `allItemsMatch(_:_:)` 함수를 호출할 수 있다. 위 예제에서 `allItemsMatch(_:_:)` 함수는 두 컨테이너의 모든 아이템이 일치한다고 올바르게 보고한다.
 
-  ```swifttest
-  -> var stackOfStrings = Stack<String>()
-  -> stackOfStrings.push("uno")
-  -> stackOfStrings.push("dos")
-  -> stackOfStrings.push("tres")
 
-  -> var arrayOfStrings = ["uno", "dos", "tres"]
+## 제네릭 Where 절을 사용한 확장
 
-  -> if allItemsMatch(stackOfStrings, arrayOfStrings) {
-        print("All items match.")
-     } else {
-        print("Not all items match.")
-     }
-  <- All items match.
-  ```
--->
-
-The example above creates a `Stack` instance to store `String` values,
-and pushes three strings onto the stack.
-The example also creates an `Array` instance initialized with
-an array literal containing the same three strings as the stack.
-Even though the stack and the array are of a different type,
-they both conform to the `Container` protocol,
-and both contain the same type of values.
-You can therefore call the `allItemsMatch(_:_:)` function
-with these two containers as its arguments.
-In the example above, the `allItemsMatch(_:_:)` function correctly reports that
-all of the items in the two containers match.
-
-## Extensions with a Generic Where Clause
-
-You can also use a generic `where` clause as part of an extension.
-The example below
-extends the generic `Stack` structure from the previous examples
-to add an `isTop(_:)` method.
+확장에 제네릭 `where` 절을 사용할 수도 있다. 아래 예제는 이전 예제에서 사용한 제네릭 `Stack` 구조체를 확장하여 `isTop(_:)` 메서드를 추가한다.
 
 ```swift
 extension Stack where Element: Equatable {
@@ -1439,22 +920,9 @@ extension Stack where Element: Equatable {
   ```
 -->
 
-This new `isTop(_:)` method
-first checks that the stack isn't empty,
-and then compares the given item
-against the stack's topmost item.
-If you tried to do this without a generic `where` clause,
-you would have a problem:
-The implementation of `isTop(_:)` uses the `==` operator,
-but the definition of `Stack` doesn't require
-its items to be equatable,
-so using the `==` operator results in a compile-time error.
-Using a generic `where` clause
-lets you add a new requirement to the extension,
-so that the extension adds the `isTop(_:)` method
-only when the items in the stack are equatable.
+이 새로운 `isTop(_:)` 메서드는 스택이 비어 있는지 먼저 확인한 후, 주어진 아이템과 스택의 가장 위에 있는 아이템을 비교한다. 만약 제네릭 `where` 절 없이 이 작업을 시도한다면 문제가 발생한다. `isTop(_:)`의 구현은 `==` 연산자를 사용하지만, `Stack`의 정의는 아이템이 `Equatable`을 준수하도록 요구하지 않기 때문에 `==` 연산자를 사용하면 컴파일 타임 오류가 발생한다. 제네릭 `where` 절을 사용하면 확장에 새로운 요구 사항을 추가할 수 있어, 스택의 아이템이 `Equatable`을 준수할 때만 `isTop(_:)` 메서드를 추가할 수 있다.
 
-Here's how the `isTop(_:)` method looks in action:
+`isTop(_:)` 메서드를 실제로 사용하는 모습은 다음과 같다:
 
 ```swift
 if stackOfStrings.isTop("tres") {
@@ -1478,9 +946,7 @@ if stackOfStrings.isTop("tres") {
   ```
 -->
 
-If you try to call the `isTop(_:)` method
-on a stack whose elements aren't equatable,
-you'll get a compile-time error.
+만약 `Equatable`을 준수하지 않는 아이템을 가진 스택에서 `isTop(_:)` 메서드를 호출하려고 하면 컴파일 타임 오류가 발생한다.
 
 ```swift
 struct NotEquatable { }
@@ -1505,9 +971,7 @@ notEquatableStack.isTop(notEquatableValue)  // Error
   ```
 -->
 
-You can use a generic `where` clause with extensions to a protocol.
-The example below extends the `Container` protocol from the previous examples
-to add a `startsWith(_:)` method.
+프로토콜에 대한 확장에도 제네릭 `where` 절을 사용할 수 있다. 아래 예제는 이전 예제에서 사용한 `Container` 프로토콜을 확장하여 `startsWith(_:)` 메서드를 추가한다.
 
 ```swift
 extension Container where Item: Equatable {
@@ -1529,20 +993,7 @@ extension Container where Item: Equatable {
   ```
 -->
 
-<!--
-  Using Container rather than Sequence/Collection
-  to continue running with the same example through the chapter.
-  This does, however, mean I can't use a for-in loop.
--->
-
-The `startsWith(_:)` method
-first makes sure that the container has at least one item,
-and then it checks
-whether the first item in the container matches the given item.
-This new `startsWith(_:)` method
-can be used with any type that conforms to the `Container` protocol,
-including the stacks and arrays used above,
-as long as the container's items are equatable.
+`startsWith(_:)` 메서드는 컨테이너에 적어도 하나의 아이템이 있는지 먼저 확인한 후, 컨테이너의 첫 번째 아이템이 주어진 아이템과 일치하는지 확인한다. 이 새로운 `startsWith(_:)` 메서드는 `Container` 프로토콜을 준수하는 모든 타입에 사용할 수 있으며, 위에서 사용한 스택과 배열도 포함된다. 단, 컨테이너의 아이템이 `Equatable`을 준수해야 한다.
 
 ```swift
 if [9, 9, 9].startsWith(42) {
@@ -1566,11 +1017,7 @@ if [9, 9, 9].startsWith(42) {
   ```
 -->
 
-The generic `where` clause in the example above
-requires `Item` to conform to a protocol,
-but you can also write a generic `where` clauses that require `Item`
-to be a specific type.
-For example:
+위 예제의 제네릭 `where` 절은 `Item`이 프로토콜을 준수하도록 요구하지만, `Item`이 특정 타입이어야 한다는 제네릭 `where` 절을 작성할 수도 있다. 예를 들어:
 
 ```swift
 extension Container where Item == Double {
@@ -1604,17 +1051,9 @@ print([1260.0, 1200.0, 98.6, 37.0].average())
   ```
 -->
 
-This example adds an `average()` method
-to containers whose `Item` type is `Double`.
-It iterates over the items in the container to add them up,
-and divides by the container's count to compute the average.
-It explicitly converts the count from `Int` to `Double`
-to be able to do floating-point division.
+이 예제는 `Item` 타입이 `Double`인 컨테이너에 `average()` 메서드를 추가한다. 컨테이너의 아이템을 순회하며 합을 구하고, 컨테이너의 아이템 수로 나누어 평균을 계산한다. 부동소수점 나눗셈을 수행하기 위해 `count`를 `Int`에서 `Double`로 명시적으로 변환한다.
 
-You can include multiple requirements in a generic `where` clause
-that's part of an extension,
-just like you can for a generic `where` clause that you write elsewhere.
-Separate each requirement in the list with a comma.
+확장의 일부로 사용하는 제네릭 `where` 절에 여러 요구 사항을 포함할 수 있다. 각 요구 사항은 쉼표로 구분한다.
 
 <!--
   No example of a compound where clause
@@ -1622,19 +1061,10 @@ Separate each requirement in the list with a comma.
   there isn't anything to write a second constraint for.
 -->
 
-## Contextual Where Clauses
 
-You can write a generic `where` clause
-as part of a declaration that doesn't have its own generic type constraints,
-when you're already working in the context of generic types.
-For example,
-you can write a generic `where` clause
-on a subscript of a generic type
-or on a method in an extension to a generic type.
-The `Container` structure is generic,
-and the `where` clauses in the example below
-specify what type constraints have to be satisfied
-to make these new  methods available on a container.
+## 컨텍스트 기반 Where 절
+
+제네릭 타입이 이미 정의된 컨텍스트에서, 별도의 제네릭 타입 제약이 없는 선언에 제네릭 `where` 절을 작성할 수 있다. 예를 들어, 제네릭 타입의 서브스크립트나 제네릭 타입의 익스텐션에 있는 메서드에 제네릭 `where` 절을 추가할 수 있다. `Container` 구조체는 제네릭 타입이며, 아래 예제의 `where` 절은 이러한 새로운 메서드가 컨테이너에서 사용 가능하도록 하기 위해 충족해야 하는 타입 제약을 명시한다.
 
 ```swift
 extension Container {
@@ -1680,17 +1110,9 @@ print(numbers.endsWith(37))
   ```
 -->
 
-This example
-adds an `average()` method to `Container` when the items are integers,
-and it adds an `endsWith(_:)` method when the items are equatable.
-Both functions include a generic `where` clause
-that adds type constraints to the generic `Item` type parameter
-from the original declaration of `Container`.
+이 예제는 `Container`에 `Item`이 정수 타입일 때 사용할 수 있는 `average()` 메서드를 추가하고, `Item`이 동등 비교 가능한 타입일 때 사용할 수 있는 `endsWith(_:)` 메서드를 추가한다. 두 함수 모두 `Container`의 원래 선언에서 가져온 제네릭 `Item` 타입 파라미터에 타입 제약을 추가하는 제네릭 `where` 절을 포함한다.
 
-If you want to write this code without using contextual `where` clauses,
-you write two extensions,
-one for each generic `where` clause.
-The example above and the example below have the same behavior.
+컨텍스트 기반 `where` 절을 사용하지 않고 이 코드를 작성하려면, 각각의 제네릭 `where` 절에 대해 두 개의 익스텐션을 작성해야 한다. 위의 예제와 아래 예제는 동일한 동작을 한다.
 
 ```swift
 extension Container where Item == Int {
@@ -1730,23 +1152,12 @@ extension Container where Item: Equatable {
   ```
 -->
 
-In the version of this example that uses contextual `where` clauses,
-the implementation of `average()` and `endsWith(_:)`
-are both in the same extension
-because each method's generic `where` clause
-states the requirements that need to be satisfied
-to make that method available.
-Moving those requirements to the extensions' generic `where` clauses
-makes the methods available in the same situations,
-but requires one extension per requirement.
+컨텍스트 기반 `where` 절을 사용한 이 예제의 버전에서, `average()`와 `endsWith(_:)`의 구현은 모두 동일한 익스텐션 안에 있다. 각 메서드의 제네릭 `where` 절은 해당 메서드를 사용 가능하게 하기 위해 충족해야 하는 요구사항을 명시하기 때문이다. 이러한 요구사항을 익스텐션의 제네릭 `where` 절로 옮기면 메서드가 동일한 상황에서 사용 가능하지만, 각 요구사항마다 하나의 익스텐션이 필요하다.
 
-## Associated Types with a Generic Where Clause
 
-You can include a generic `where` clause on an associated type.
-For example, suppose you want to make a version of `Container`
-that includes an iterator,
-like what the `Sequence` protocol uses in the Swift standard library.
-Here's how you write that:
+## 제네릭 `where` 절을 사용한 연관 타입
+
+연관 타입에 제네릭 `where` 절을 추가할 수 있다. 예를 들어, Swift 표준 라이브러리의 `Sequence` 프로토콜에서 사용하는 것과 같은 이터레이터를 포함한 `Container` 버전을 만들고 싶다고 가정해 보자. 이를 구현하는 방법은 다음과 같다:
 
 ```swift
 protocol Container {
@@ -1777,23 +1188,19 @@ protocol Container {
 -->
 
 <!--
-  Adding makeIterator() to Container lets it conform to Sequence,
-  although we don't call that out here.
+  makeIterator()를 Container에 추가하면 Sequence 프로토콜을 준수할 수 있지만,
+  여기서는 그 부분을 명시적으로 언급하지 않는다.
 -->
 
-The generic `where` clause on `Iterator` requires that
-the iterator must traverse over elements
-of the same item type as the container's items,
-regardless of the iterator's type.
-The `makeIterator()` function provides access to a container's iterator.
+`Iterator`에 대한 제네릭 `where` 절은 이터레이터가 컨테이너의 아이템과 동일한 타입의 요소를 순회해야 한다는 것을 보장한다. 이터레이터의 타입과 상관없이 이 조건이 적용된다. `makeIterator()` 함수는 컨테이너의 이터레이터에 접근할 수 있는 방법을 제공한다.
 
 <!--
-  This example requires SE-0157 Recursive protocol constraints
-  which is tracked by rdar://20531108
+  이 예제는 SE-0157 Recursive protocol constraints를 필요로 한다.
+  이는 rdar://20531108에서 추적 중이다.
 
-   that accepts a ranged of indexes it its subscript
-   and returns a subcontainer ---
-   similar to how ``Collection`` works in the Swift standard library.
+   서브스크립트에서 인덱스 범위를 받아
+   서브 컨테이너를 반환하는 기능을 추가할 수도 있다.
+   이는 Swift 표준 라이브러리의 ``Collection``과 유사하게 동작한다.
 
    .. testcode:: associatedTypes-subcontainer
 
@@ -1807,22 +1214,17 @@ The `makeIterator()` function provides access to a container's iterator.
             subscript(range: Range<Int>) -> SubContainer { get }
          }
 
-   The generic ``where`` clause on ``SubContainer`` requires that
-   the subcontainer must have the same item type as the container has,
-   regardless of what type the subcontainer is.
-   The original container and the subcontainer
-   could be represented by the same type
-   or by different types.
-   The new subscript that accepts a range
-   uses this new associated type as its return value.
+   ``SubContainer``에 대한 제네릭 ``where`` 절은
+   서브 컨테이너가 컨테이너와 동일한 아이템 타입을 가져야 한다는 것을 보장한다.
+   서브 컨테이너의 타입과는 무관하다.
+   원본 컨테이너와 서브 컨테이너는
+   동일한 타입으로 표현될 수도 있고,
+   다른 타입으로 표현될 수도 있다.
+   범위를 받는 새로운 서브스크립트는
+   이 새로운 연관 타입을 반환 값으로 사용한다.
 -->
 
-For a protocol that inherits from another protocol,
-you add a constraint to an inherited associated type
-by including the generic `where` clause in the protocol declaration.
-For example, the following code
-declares a `ComparableContainer` protocol
-that requires `Item` to conform to `Comparable`:
+다른 프로토콜을 상속하는 프로토콜의 경우, 프로토콜 선언에 제네릭 `where` 절을 포함해 상속된 연관 타입에 제약을 추가할 수 있다. 예를 들어, 다음 코드는 `Item`이 `Comparable`을 준수하도록 요구하는 `ComparableContainer` 프로토콜을 선언한다:
 
 ```swift
 protocol ComparableContainer: Container where Item: Comparable { }
@@ -1837,9 +1239,9 @@ protocol ComparableContainer: Container where Item: Comparable { }
 -->
 
 <!--
-  This version throws a warning as of Swift commit de66b0c25c70:
-  "redeclaration of associated type %0 from protocol %1 is better
-  expressed as a 'where' clause on the protocol"
+  Swift commit de66b0c25c70 이후로 이 버전은 경고를 발생시킨다:
+  "프로토콜 %1의 연관 타입 %0의 재선언은
+  프로토콜에 'where' 절을 추가하는 것이 더 나은 표현이다."
 
    -> protocol ComparableContainer: Container {
           associatedtype Item: Comparable
@@ -1847,36 +1249,31 @@ protocol ComparableContainer: Container where Item: Comparable { }
 -->
 
 <!--
-  Exercise the new container -- this might not actually be needed,
-  and it adds a level of complexity.
+  새로운 컨테이너를 테스트하는 코드를 추가할 수도 있지만,
+  이는 실제로 필요하지 않을 수 있으며 복잡성을 증가시킬 수 있다.
 
   function < (lhs: ComparableContainer, rhs: ComparableContainer) -> Bool {
-      // Sort empty containers before nonempty containers.
+      // 빈 컨테이너를 비어있지 않은 컨테이너보다 앞에 정렬한다.
       if lhs.count == 0 {
           return true
       } else if rhs.count  == 0 {
           return false
       }
 
-      // Sort nonempty containers by their first element.
-      // (In real code, you would want to compare the second element
-      // if the first elements are equal, and so on.)
+      // 비어있지 않은 컨테이너는 첫 번째 요소로 정렬한다.
+      // (실제 코드에서는 첫 번째 요소가 같을 경우
+      // 두 번째 요소를 비교하는 식으로 진행해야 할 것이다.)
       return lhs[0] < rhs[0]
   }
 -->
 
-## Generic Subscripts
 
-Subscripts can be generic,
-and they can include generic `where` clauses.
-You write the placeholder type name inside angle brackets after `subscript`,
-and you write a generic `where` clause right before the opening curly brace
-of the subscript's body.
-For example:
+## 제네릭 서브스크립트
+
+서브스크립트는 제네릭으로 정의할 수 있으며, 제네릭 `where` 절을 포함할 수도 있다. `subscript` 키워드 뒤에 꺾쇠 괄호 안에 플레이스홀더 타입 이름을 작성하고, 서브스크립트 본문의 여는 중괄호 바로 앞에 제네릭 `where` 절을 추가한다. 예를 들어:
 
 <!--
-  The paragraph above borrows the wording used to introduce
-  generics and 'where' clauses earlier in this chapter.
+  위 단락은 이 장 앞부분에서 제네릭과 'where' 절을 소개할 때 사용한 표현을 차용했다.
 -->
 
 ```swift
@@ -1947,41 +1344,31 @@ extension Container {
   ```
 -->
 
-This extension to the `Container` protocol
-adds a subscript that takes a sequence of indices
-and returns an array containing the items at each given index.
-This generic subscript is constrained as follows:
+이 `Container` 프로토콜 확장은 인덱스 시퀀스를 받아 각 인덱스에 해당하는 아이템을 배열로 반환하는 서브스크립트를 추가한다. 이 제네릭 서브스크립트는 다음과 같은 제약을 가진다:
 
-- The generic parameter `Indices` in angle brackets
-  has to be a type that conforms to the `Sequence` protocol
-  from the Swift standard library.
-- The subscript takes a single parameter, `indices`,
-  which is an instance of that `Indices` type.
-- The generic `where` clause requires
-  that the iterator for the sequence
-  must traverse over elements of type `Int`.
-  This ensures that the indices in the sequence
-  are the same type as the indices used for a container.
+- 꺾쇠 괄호 안의 제네릭 파라미터 `Indices`는 Swift 표준 라이브러리의 `Sequence` 프로토콜을 준수하는 타입이어야 한다.
+- 서브스크립트는 `Indices` 타입의 인스턴스인 `indices`라는 단일 파라미터를 받는다.
+- 제네릭 `where` 절은 시퀀스의 이터레이터가 `Int` 타입의 요소를 순회해야 한다는 조건을 명시한다. 이를 통해 시퀀스의 인덱스가 컨테이너에 사용되는 인덱스와 동일한 타입임을 보장한다.
 
-Taken together, these constraints mean that
-the value passed for the `indices` parameter
-is a sequence of integers.
+이러한 제약 조건을 종합해보면, `indices` 파라미터로 전달되는 값은 정수 시퀀스여야 함을 의미한다.
 
 <!--
-  TODO: Generic Enumerations
+  TODO: 제네릭 열거형
   --------------------------
 -->
 
 <!--
-  TODO: Describe how Optional<Wrapped> works
+  TODO: Optional<Wrapped>의 동작 방식 설명
 -->
 
 <!--
-This source file is part of the Swift.org open source project
+이 소스 파일은 Swift.org 오픈 소스 프로젝트의 일부입니다.
 
-Copyright (c) 2014 - 2022 Apple Inc. and the Swift project authors
-Licensed under Apache License v2.0 with Runtime Library Exception
+Copyright (c) 2014 - 2022 Apple Inc. 및 Swift 프로젝트 저자들
+Apache License v2.0 및 Runtime Library Exception에 따라 라이선스가 부여됩니다.
 
-See https://swift.org/LICENSE.txt for license information
-See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
+라이선스 정보는 https://swift.org/LICENSE.txt에서 확인할 수 있습니다.
+Swift 프로젝트 저자 목록은 https://swift.org/CONTRIBUTORS.txt에서 확인할 수 있습니다.
 -->
+
+

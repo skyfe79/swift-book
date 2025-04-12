@@ -1,147 +1,85 @@
-# Attributes
+# 속성
 
-Add information to declarations and types.
+선언과 타입에 추가 정보를 제공한다.
 
-There are two kinds of attributes in Swift ---
-those that apply to declarations and those that apply to types.
-An attribute provides additional information about the declaration or type.
-For example,
-the `discardableResult` attribute on a function declaration indicates that,
-although the function returns a value,
-the compiler shouldn't generate a warning if the return value is unused.
+Swift에는 두 가지 종류의 속성이 있다.  
+하나는 선언에 적용되는 속성이고, 다른 하나는 타입에 적용되는 속성이다.  
+속성은 선언이나 타입에 대한 추가 정보를 제공한다.  
+예를 들어, 함수 선언에 사용하는 `discardableResult` 속성은 함수가 값을 반환하더라도, 반환값이 사용되지 않을 때 컴파일러가 경고를 생성하지 않도록 한다.
 
-You specify an attribute by writing the `@` symbol followed by the attribute's name
-and any arguments that the attribute accepts:
+속성을 지정할 때는 `@` 기호 뒤에 속성 이름과 해당 속성이 허용하는 인자를 작성한다:
 
 ```swift
-@<#attribute name#>
-@<#attribute name#>(<#attribute arguments#>)
+@<#속성 이름#>
+@<#속성 이름#>(<#속성 인자#>)
 ```
 
-Some declaration attributes accept arguments
-that specify more information about the attribute
-and how it applies to a particular declaration.
-These *attribute arguments* are enclosed in parentheses,
-and their format is defined by the attribute they belong to.
+일부 선언 속성은 속성에 대한 추가 정보와 특정 선언에 어떻게 적용되는지 지정하는 인자를 허용한다.  
+이러한 *속성 인자*는 괄호로 묶이며, 그 형식은 속성에 따라 정의된다.
 
-Attached macros and property wrappers also use attribute syntax.
-For information about how macros expand,
-see <doc:Expressions#Macro-Expansion-Expression>.
-For information about property wrappers,
-see <doc:Attributes#propertyWrapper>.
+부착형 매크로와 프로퍼티 래퍼도 속성 구문을 사용한다.  
+매크로가 어떻게 확장되는지에 대한 자세한 내용은 <doc:Expressions#Macro-Expansion-Expression>을 참고한다.  
+프로퍼티 래퍼에 대한 자세한 내용은 <doc:Attributes#propertyWrapper>를 확인한다.
 
-## Declaration Attributes
 
-You can apply a declaration attribute to declarations only.
+## 선언 속성
 
-### attached
+선언 속성은 오직 선언에만 적용할 수 있다.
 
-Apply the `attached` attribute to a macro declaration.
-The arguments to this attribute indicate the macro's role.
-For a macro that has multiple roles,
-apply the `attached` macro multiple times, once for each role.
+
+### 부착형 매크로
+
+매크로 선언에 `attached` 속성을 적용한다. 이 속성의 인자는 매크로의 역할을 나타낸다. 매크로가 여러 역할을 수행하는 경우, 각 역할에 대해 `attached` 매크로를 한 번씩 적용한다.
 
 <!-- TODO:
-If there's a stable URL we can use, make the macro protocols below links.
+안정적인 URL이 있다면, 아래 매크로 프로토콜에 링크를 추가한다.
 -->
 
-The first argument to this attribute
-indicates the macro's role:
+이 속성의 첫 번째 인자는 매크로의 역할을 나타낸다:
 
-- term Peer macros:
-  Write `peer` as the first argument to this attribute.
-  The type that implements the macro conforms to the `PeerMacro` protocol.
-  These macros produce new declarations
-  in the same scope as the declaration
-  that the macro is attached to.
-  For example,
-  applying a peer macro to a method of a structure
-  can define additional methods and properties on that structure.
+- **Peer 매크로**:  
+  이 속성의 첫 번째 인자로 `peer`를 작성한다. 매크로를 구현하는 타입은 `PeerMacro` 프로토콜을 준수한다. 이러한 매크로는 매크로가 부착된 선언과 동일한 스코프에서 새로운 선언을 생성한다. 예를 들어, 구조체의 메서드에 Peer 매크로를 적용하면 해당 구조체에 추가적인 메서드와 프로퍼티를 정의할 수 있다.
 
-- term Member macros:
-  Write `member` as the first argument to this attribute.
-  The type that implements the macro conforms to the `MemberMacro` protocol.
-  These macros produce new declarations
-  that are members of the type or extension
-  that the macro is attached to.
-  For example,
-  applying a member macro to a structure declaration
-  can define additional methods and properties on that structure.
+- **Member 매크로**:  
+  이 속성의 첫 번째 인자로 `member`를 작성한다. 매크로를 구현하는 타입은 `MemberMacro` 프로토콜을 준수한다. 이러한 매크로는 매크로가 부착된 타입 또는 익스텐션의 멤버로 새로운 선언을 생성한다. 예를 들어, 구조체 선언에 Member 매크로를 적용하면 해당 구조체에 추가적인 메서드와 프로퍼티를 정의할 수 있다.
 
-- term Member attribute:
-  Write `memberAttribute` as the first argument to this attribute.
-  The type that implements the macro conforms to the `MemberAttributeMacro` protocol.
-  These macros add attributes to members of the type or extension
-  that the macro is attached to.
+- **Member 속성**:  
+  이 속성의 첫 번째 인자로 `memberAttribute`를 작성한다. 매크로를 구현하는 타입은 `MemberAttributeMacro` 프로토콜을 준수한다. 이러한 매크로는 매크로가 부착된 타입 또는 익스텐션의 멤버에 속성을 추가한다.
 
-- term Accessor macros:
-  Write `accessor` as the first argument to this attribute.
-  The type that implements the macro conforms to the `AccessorMacro` protocol.
-  These macros add accessors to the stored property they're attached to,
-  turning it into a computed property.
+- **Accessor 매크로**:  
+  이 속성의 첫 번째 인자로 `accessor`를 작성한다. 매크로를 구현하는 타입은 `AccessorMacro` 프로토콜을 준수한다. 이러한 매크로는 저장 프로퍼티에 접근자를 추가하여 계산 프로퍼티로 변환한다.
 
-- term Extension macros:
-  Write `extension` as the first argument to this attribute.
-  The type that implements the macro conforms to the `ExtensionMacro` protocol.
-  These macros can add protocol conformance,
-  a `where` clause,
-  and new declarations that are members of the type the macro is attached to.
-  If the macro adds protocol conformances,
-  include the `conformances:` argument and specify those protocols.
-  The conformance list contains protocol names,
-  type aliases that refer to conformance list items,
-  or protocol compositions of conformance list items.
-  An extension macro on a nested type
-  expands to an extension at the top level of that file.
-  You can't write an extension macro
-  on an extension, a type alias, or a type that's nested inside a function,
-  or use an extension macro to add an extension that has a peer macro.
+- **Extension 매크로**:  
+  이 속성의 첫 번째 인자로 `extension`를 작성한다. 매크로를 구현하는 타입은 `ExtensionMacro` 프로토콜을 준수한다. 이러한 매크로는 프로토콜 준수, `where` 절, 그리고 매크로가 부착된 타입의 멤버로 새로운 선언을 추가할 수 있다. 매크로가 프로토콜 준수를 추가하는 경우, `conformances:` 인자를 포함하고 해당 프로토콜을 지정한다. 준수 목록에는 프로토콜 이름, 준수 목록 항목을 참조하는 타입 별칭, 또는 준수 목록 항목의 프로토콜 합성이 포함된다. 중첩 타입에 대한 Extension 매크로는 해당 파일의 최상위 레벨로 익스텐션을 확장한다. 익스텐션, 타입 별칭, 또는 함수 내부에 중첩된 타입에 Extension 매크로를 작성할 수 없다. 또한 Extension 매크로를 사용해 Peer 매크로가 있는 익스텐션을 추가할 수 없다.
 
-The peer, member, and accessor macro roles require a `names:` argument,
-listing the names of the symbols that the macro generates.
-The extension macro role also requires a `names:` argument
-if the macro adds declarations inside the extension.
-When a macro declaration includes the `names:` argument,
-the macro implementation must generate
-only symbol with names that match that list.
-That said,
-a macro need not generate a symbol for every listed name.
-The value for that argument is a list of one or more of the following:
+Peer, Member, Accessor 매크로 역할은 `names:` 인자를 필요로 하며, 매크로가 생성하는 심볼의 이름을 나열한다. Extension 매크로 역할도 매크로가 익스텐션 내부에 선언을 추가하는 경우 `names:` 인자를 필요로 한다. 매크로 선언에 `names:` 인자가 포함된 경우, 매크로 구현은 해당 목록과 일치하는 이름의 심볼만 생성해야 한다. 단, 매크로가 나열된 모든 이름에 대해 심볼을 생성할 필요는 없다. 이 인자의 값은 다음 중 하나 이상의 목록이다:
 
-- `named(<#name#>)`
-  where *name* is that fixed symbol name,
-  for a name that's known in advance.
+- `named(<#name#>)`  
+  여기서 *name*은 미리 알려진 고정된 심볼 이름이다.
 
-- `overloaded`
-  for a name that's the same as an existing symbol.
+- `overloaded`  
+  기존 심볼과 동일한 이름이다.
 
-- `prefixed(<#prefix#>)`
-  where *prefix* is prepended to the symbol name,
-  for a name that starts with a fixed string.
+- `prefixed(<#prefix#>)`  
+  여기서 *prefix*는 심볼 이름 앞에 추가되며, 고정된 문자열로 시작하는 이름이다.
 
-- `suffixed(<#suffix#>)`
-  where *suffix* is appended to the symbol name,
-  for a name that ends with a fixed string.
+- `suffixed(<#suffix#>)`  
+  여기서 *suffix*는 심볼 이름 뒤에 추가되며, 고정된 문자열로 끝나는 이름이다.
 
-- `arbitrary`
-  for a name that can't be determined until macro expansion.
+- `arbitrary`  
+  매크로 확장이 될 때까지 결정할 수 없는 이름이다.
 
-As a special case,
-you can write `prefixed($)`
-for a macro that behaves similar to a property wrapper.
+특별한 경우로, 프로퍼티 래퍼와 유사하게 동작하는 매크로에 대해 `prefixed($)`를 작성할 수 있다.
 <!--
-TODO TR: Is there any more detail about this case?
+TODO TR: 이 경우에 대한 더 자세한 내용이 있는가?
 -->
+
 
 ### available
 
-Apply this attribute to indicate a declaration's life cycle
-relative to certain Swift language versions
-or certain platforms and operating system versions.
+이 속성은 특정 Swift 언어 버전이나 플랫폼 및 운영체제 버전과 관련하여 선언의 생명주기를 나타내기 위해 사용한다.
 
-The `available` attribute always appears
-with a list of two or more comma-separated attribute arguments.
-These arguments begin with one of the following platform or language names:
+`available` 속성은 항상 두 개 이상의 쉼표로 구분된 속성 인자와 함께 나타난다. 이 인자들은 다음 플랫폼 또는 언어 이름 중 하나로 시작한다:
 
 - `iOS`
 - `iOSApplicationExtension`
@@ -158,70 +96,43 @@ These arguments begin with one of the following platform or language names:
 - `swift`
 
 <!--
-  If you need to add a new platform to this list,
-  you probably need to update platform-name in the grammar too.
+  이 목록에 새로운 플랫폼을 추가해야 한다면,
+  문법에서도 platform-name을 업데이트해야 할 가능성이 높다.
 -->
 
 <!--
-  For the list in source, see include/swift/AST/PlatformKinds.def
+  소스 코드의 목록은 include/swift/AST/PlatformKinds.def를 참조하라.
 -->
 
-You can also use an asterisk (`*`) to indicate the
-availability of the declaration on all of the platform names listed above.
-An `available` attribute
-that specifies availability using a Swift version number
-can't use the asterisk.
+또한 별표(`*`)를 사용하여 위에 나열된 모든 플랫폼에서 선언의 사용 가능성을 나타낼 수 있다. Swift 버전 번호를 사용하여 사용 가능성을 지정하는 `available` 속성은 별표를 사용할 수 없다.
 
-The remaining arguments can appear in any order
-and specify additional information about the declaration's life cycle,
-including important milestones.
+나머지 인자들은 어떤 순서로든 나타날 수 있으며, 선언의 생명주기에 대한 추가 정보를 지정한다. 이는 중요한 마일스톤을 포함한다.
 
-- The `unavailable` argument indicates that the declaration
-  isn't available on the specified platform.
-  This argument can't be used when specifying Swift version availability.
-- The `introduced` argument indicates the first version
-  of the specified platform or language in which the declaration was introduced.
-  It has the following form:
+- `unavailable` 인자는 지정된 플랫폼에서 선언이 사용 불가능함을 나타낸다. 이 인자는 Swift 버전 사용 가능성을 지정할 때 사용할 수 없다.
+- `introduced` 인자는 지정된 플랫폼이나 언어에서 선언이 처음 도입된 버전을 나타낸다. 형식은 다음과 같다:
 
   ```swift
   introduced: <#version number#>
   ```
-  The *version number* consists of one to three positive integers,
-  separated by periods.
-- The `deprecated` argument indicates the first version
-  of the specified platform or language in which the declaration was deprecated.
-  It has the following form:
+  *버전 번호*는 마침표로 구분된 하나에서 세 개의 양의 정수로 구성된다.
+- `deprecated` 인자는 지정된 플랫폼이나 언어에서 선언이 처음으로 사용되지 않게 된 버전을 나타낸다. 형식은 다음과 같다:
 
   ```swift
   deprecated: <#version number#>
   ```
-  The optional *version number* consists of one to three positive integers,
-  separated by periods.
-  Omitting the version number indicates that the declaration is currently deprecated,
-  without giving any information about when the deprecation occurred.
-  If you omit the version number, omit the colon (`:`) as well.
-- The `obsoleted` argument indicates the first version
-  of the specified platform or language in which the declaration was obsoleted.
-  When a declaration is obsoleted,
-  it's removed from the specified platform or language and can no longer be used.
-  It has the following form:
+  선택적 *버전 번호*는 마침표로 구분된 하나에서 세 개의 양의 정수로 구성된다. 버전 번호를 생략하면 선언이 현재 사용되지 않음을 나타내며, 언제 사용이 중단되었는지에 대한 정보는 제공하지 않는다. 버전 번호를 생략하면 콜론(`:`)도 생략해야 한다.
+- `obsoleted` 인자는 지정된 플랫폼이나 언어에서 선언이 처음으로 제거된 버전을 나타낸다. 선언이 제거되면 지정된 플랫폼이나 언어에서 더 이상 사용할 수 없다. 형식은 다음과 같다:
 
   ```swift
   obsoleted: <#version number#>
   ```
-  The *version number* consists of one to three positive integers, separated by periods.
+  *버전 번호*는 마침표로 구분된 하나에서 세 개의 양의 정수로 구성된다.
 
-- The `noasync` argument indicates that
-  the declared symbol can't be used directly
-  in an asynchronous context.
+- `noasync` 인자는 선언된 심볼이 비동기 컨텍스트에서 직접 사용될 수 없음을 나타낸다.
 
-  Because Swift concurrency can resume on a different thread
-  after a potential suspension point,
-  using elements like thread-local storage, locks, mutexes, or semaphores
-  across suspension points can lead to incorrect results.
+  Swift의 동시성은 잠재적인 중단 지점 이후에 다른 스레드에서 재개될 수 있기 때문에, 스레드 로컬 스토리지, 락, 뮤텍스, 세마포어와 같은 요소를 중단 지점을 넘어 사용하면 잘못된 결과를 초래할 수 있다.
 
-  To avoid this problem,
-  add an `@available(*, noasync)` attribute to the symbol's declaration:
+  이 문제를 피하기 위해 심볼 선언에 `@available(*, noasync)` 속성을 추가한다:
 
   ```swift
   extension pthread_mutex_t {
@@ -238,10 +149,7 @@ including important milestones.
   }
   ```
 
-  This attribute raises a compile-time error
-  when someone uses the symbol in an asynchronous context.
-  You can also use the `message` argument to provide additional information
-  about the symbol.
+  이 속성은 비동기 컨텍스트에서 심볼을 사용할 때 컴파일 타임 오류를 발생시킨다. 또한 `message` 인자를 사용하여 심볼에 대한 추가 정보를 제공할 수 있다.
 
   ```swift
   @available(*, noasync, message: "Migrate locks to Swift concurrency.")
@@ -250,14 +158,11 @@ including important milestones.
   }
   ```
 
-  If you can guarantee that your code
-  uses a potentially unsafe symbol in a safe manner,
-  you can wrap it in a synchronous function and call that function
-  from an asynchronous context.
+  코드가 잠재적으로 안전하지 않은 심볼을 안전하게 사용한다는 것을 보장할 수 있다면, 동기 함수로 감싸고 비동기 컨텍스트에서 그 함수를 호출할 수 있다.
 
   ```swift
 
-  // Provide a synchronous wrapper around methods with a noasync declaration.
+  // noasync 선언이 있는 메서드 주위에 동기 래퍼를 제공한다.
   extension pthread_mutex_t {
     mutating func withLock(_ operation: () -> ()) {
       self.lock()
@@ -269,185 +174,81 @@ including important milestones.
   func downloadAndStore(key: Int,
                       dataStore: MyKeyedStorage,
                       dataLock: inout pthread_mutex_t) async {
-    // Safely call the wrapper in an asynchronous context.
+    // 비동기 컨텍스트에서 래퍼를 안전하게 호출한다.
     dataLock.withLock {
       dataStore[key] = downloadContent()
     }
   }
   ```
 
-  You can use the `noasync` argument on most declarations;
-  however, you can't use it when declaring deinitializers.
-  Swift must be able to call a class's deinitializers from any context,
-  both synchronous and asynchronous.
+  `noasync` 인자는 대부분의 선언에 사용할 수 있지만, 소멸자를 선언할 때는 사용할 수 없다. Swift는 클래스의 소멸자를 동기 및 비동기 컨텍스트 모두에서 호출할 수 있어야 한다.
 
-- The `message` argument provides a textual message that the compiler displays
-  when emitting a warning or error about the use
-  of a declaration marked `deprecated`, `obsoleted`, or `noasync`.
-  It has the following form:
+- `message` 인자는 `deprecated`, `obsoleted`, 또는 `noasync`로 표시된 선언의 사용에 대해 컴파일러가 경고나 오류를 발생시킬 때 표시할 텍스트 메시지를 제공한다. 형식은 다음과 같다:
 
   ```swift
   message: <#message#>
   ```
-  The *message* consists of a string literal.
-- The `renamed` argument provides a textual message
-  that indicates the new name for a declaration that's been renamed.
-  The compiler displays the new name
-  when emitting an error about the use of a renamed declaration.
-  It has the following form:
+  *메시지*는 문자열 리터럴로 구성된다.
+- `renamed` 인자는 이름이 변경된 선언의 새로운 이름을 나타내는 텍스트 메시지를 제공한다. 컴파일러는 이름이 변경된 선언의 사용에 대해 오류를 발생시킬 때 새로운 이름을 표시한다. 형식은 다음과 같다:
 
   ```swift
   renamed: <#new name#>
   ```
-  The *new name* consists of a string literal.
+  *새로운 이름*은 문자열 리터럴로 구성된다.
 
-  You can apply the `available` attribute
-  with the `renamed` and `unavailable` arguments
-  to a type alias declaration, as shown below,
-  to indicate that the name of a declaration changed
-  between releases of a framework or library.
-  This combination results in a compile-time error
-  that the declaration has been renamed.
+  `available` 속성을 `renamed` 및 `unavailable` 인자와 함께 타입 별칭 선언에 적용하여, 프레임워크나 라이브러리의 릴리스 간에 선언의 이름이 변경되었음을 나타낼 수 있다. 이 조합은 선언의 이름이 변경되었음을 나타내는 컴파일 타임 오류를 발생시킨다.
 
   ```swift
-  // First release
+  // 첫 번째 릴리스
   protocol MyProtocol {
-      // protocol definition
+      // 프로토콜 정의
   }
   ```
 
-  <!--
-    - test: `renamed1`
-
-    ```swifttest
-    -> // First release
-    -> protocol MyProtocol {
-           // protocol definition
-       }
-    ```
-  -->
-
   ```swift
-  // Subsequent release renames MyProtocol
+  // 이후 릴리스에서 MyProtocol의 이름을 변경
   protocol MyRenamedProtocol {
-      // protocol definition
+      // 프로토콜 정의
   }
 
   @available(*, unavailable, renamed: "MyRenamedProtocol")
   typealias MyProtocol = MyRenamedProtocol
   ```
 
-  <!--
-    - test: `renamed2`
+단일 선언에 여러 `available` 속성을 적용하여 다른 플랫폼과 Swift 버전에서의 선언 사용 가능성을 지정할 수 있다. `available` 속성이 적용되는 선언은 현재 대상과 일치하지 않는 플랫폼이나 언어 버전을 지정하는 경우 무시된다. 여러 `available` 속성을 사용할 경우, 효과적인 사용 가능성은 플랫폼과 Swift 사용 가능성의 조합이다.
 
-    ```swifttest
-    -> // Subsequent release renames MyProtocol
-    -> protocol MyRenamedProtocol {
-           // protocol definition
-       }
-
-    -> @available(*, unavailable, renamed: "MyRenamedProtocol")
-       typealias MyProtocol = MyRenamedProtocol
-    ```
-  -->
-
-You can apply multiple `available` attributes on a single declaration
-to specify the declaration's availability on different platforms
-and different versions of Swift.
-The declaration that the `available` attribute applies to
-is ignored if the attribute specifies
-a platform or language version that doesn't match the current target.
-If you use multiple `available` attributes,
-the effective availability is the combination of
-the platform and Swift availabilities.
-
-<!--
-  - test: `multipleAvailableAttributes`
-
-  ```swifttest
-  -> @available(iOS 9, *)
-  -> @available(macOS 10.9, *)
-  -> func foo() { }
-  -> foo()
-  ```
--->
-
-If an `available` attribute only specifies an `introduced` argument
-in addition to a platform or language name argument,
-you can use the following shorthand syntax instead:
+`available` 속성이 `introduced` 인자와 플랫폼 또는 언어 이름 인자만 지정하는 경우, 다음의 축약형 문법을 사용할 수 있다:
 
 ```swift
 @available(<#platform name#> <#version number#>, *)
 @available(swift <#version number#>)
 ```
 
-The shorthand syntax for `available` attributes
-concisely expresses availability for multiple platforms.
-Although the two forms are functionally equivalent,
-the shorthand form is preferred whenever possible.
+`available` 속성의 축약형 문법은 여러 플랫폼에 대한 사용 가능성을 간결하게 표현한다. 두 형식은 기능적으로 동일하지만, 가능한 경우 축약형을 선호한다.
 
 ```swift
 @available(iOS 10.0, macOS 10.12, *)
 class MyClass {
-    // class definition
+    // 클래스 정의
 }
 ```
 
-<!--
-  - test: `availableShorthand`
-
-  ```swifttest
-  -> @available(iOS 10.0, macOS 10.12, *)
-  -> class MyClass {
-         // class definition
-     }
-  ```
--->
-
-An `available` attribute
-that specifies availability using a Swift version number
-can't additionally specify a declaration's platform availability.
-Instead, use separate `available` attributes to specify a Swift
-version availability and one or more platform availabilities.
+Swift 버전 번호를 사용하여 사용 가능성을 지정하는 `available` 속성은 추가로 선언의 플랫폼 사용 가능성을 지정할 수 없다. 대신, 별도의 `available` 속성을 사용하여 Swift 버전 사용 가능성과 하나 이상의 플랫폼 사용 가능성을 지정한다.
 
 ```swift
 @available(swift 3.0.2)
 @available(macOS 10.12, *)
 struct MyStruct {
-    // struct definition
+    // 구조체 정의
 }
 ```
 
-<!--
-  - test: `availableMultipleAvailabilities`
-
-  ```swifttest
-  -> @available(swift 3.0.2)
-  -> @available(macOS 10.12, *)
-  -> struct MyStruct {
-         // struct definition
-     }
-  ```
--->
 
 ### backDeployed
 
-Apply this attribute to a function, method, subscript, or computed property
-to include a copy of the symbol's implementation
-in programs that call or access the symbol.
-You use this attribute to annotate symbols that ship as part of a platform,
-like the APIs that are included with an operating system.
-This attribute marks symbols that can be made available retroactively
-by including a copy of their implementation in programs that access them.
-Copying the implementation is also known as *emitting into the client*.
+이 속성은 함수, 메서드, 서브스크립트, 계산된 프로퍼티에 적용한다. 이 속성을 사용하면 해당 심볼을 호출하거나 접근하는 프로그램에 심볼의 구현 복사본을 포함시킨다. 주로 운영체제와 함께 제공되는 API와 같은 플랫폼의 일부로 배포되는 심볼에 이 속성을 사용한다. 이 속성은 접근하는 프로그램에 구현 복사본을 포함함으로써 나중에 사용 가능하게 만들 수 있는 심볼을 표시한다. 구현 복사본을 포함하는 것을 *클라이언트로 내보내기*라고도 한다.
 
-This attribute takes a `before:` argument,
-specifying the first version of platforms that provide this symbol.
-These platform versions have the same meaning
-as the platform version you specify for the `available` attribute.
-Unlike the `available` attribute,
-the list can't contain an asterisk (`*`) to refer to all versions.
-For example, consider the following code:
+이 속성은 `before:` 인자를 받으며, 해당 심볼을 제공하는 플랫폼의 첫 번째 버전을 지정한다. 이 플랫폼 버전은 `available` 속성에 지정하는 플랫폼 버전과 동일한 의미를 가진다. 단, `available` 속성과 달리 모든 버전을 가리키는 별표(`*`)를 포함할 수 없다. 예를 들어, 다음 코드를 살펴보자:
 
 ```swift
 @available(iOS 16, *)
@@ -455,69 +256,38 @@ For example, consider the following code:
 func someFunction() { /* ... */ }
 ```
 
-In the example above,
-the iOS SDK provides `someFunction()` starting in iOS 17.
-In addition,
-the SDK makes `someFunction()` available on iOS 16 using back deployment.
+위 예제에서 iOS SDK는 `someFunction()`을 iOS 17부터 제공한다. 또한, SDK는 백 데플로이먼트를 통해 `someFunction()`을 iOS 16에서도 사용 가능하게 만든다.
 
-When compiling code that calls this function,
-Swift inserts a layer of indirection that finds the function's implementation.
-If the code is run using a version of the SDK that includes this function,
-the SDK's implementation is used.
-Otherwise, the copy included in the caller is used.
-In the example above,
-calling `someFunction()` uses the implementation from the SDK
-when running on iOS 17 or later,
-and when running on iOS 16
-it uses the copy of `someFunction()` that's included in the caller.
+이 함수를 호출하는 코드를 컴파일할 때, Swift는 함수의 구현을 찾는 간접적인 레이어를 삽입한다. 이 함수를 포함하는 SDK 버전에서 코드를 실행하면 SDK의 구현이 사용된다. 그렇지 않으면 호출자에 포함된 복사본이 사용된다. 위 예제에서 `someFunction()`을 호출하면 iOS 17 이상에서 실행할 때 SDK의 구현이 사용되고, iOS 16에서 실행할 때는 호출자에 포함된 `someFunction()`의 복사본이 사용된다.
 
-> Note:
-> When the caller's minimum deployment target
-> is the same as or greater than
-> the first version of the SDK that includes the symbol,
-> the compiler can optimize away the runtime check
-> and call the SDK's implementation directly.
-> In this case,
-> if you access the back-deployed symbol directly,
-> the compiler can also omit
-> the copy of the symbol's implementation from the client.
+> 참고:  
+> 호출자의 최소 배포 대상이 해당 심볼을 포함하는 SDK의 첫 번째 버전과 같거나 더 높은 경우, 컴파일러는 런타임 검사를 최적화하여 SDK의 구현을 직접 호출할 수 있다. 이 경우, 백 데플로이먼트된 심볼에 직접 접근하면 컴파일러는 클라이언트에서 심볼의 구현 복사본을 생략할 수도 있다.
 
 <!--
-Stripping out the copy emitted into the client
-depends on a chain of optimizations that must all take place --
-inlining the thunk,
-constant-folding the availability check,
-and stripping the emitted copy as dead code --
-and the details could change over time,
-so we don't guarantee in docs that it always happens.
+클라이언트로 내보낸 복사본을 제거하는 것은 일련의 최적화가 모두 이루어져야 가능하다. 
+이 최적화에는 썽크 인라이닝, 가용성 검사의 상수 폴딩, 
+사용되지 않는 코드로 간주된 내보낸 복사본 제거 등이 포함된다. 
+이러한 세부 사항은 시간이 지남에 따라 변경될 수 있으므로, 
+문서에서 항상 이렇게 동작한다고 보장하지는 않는다.
 -->
 
-Functions, methods, subscripts, and computed properties
-that meet the following criteria can be back deployed:
+다음 조건을 만족하는 함수, 메서드, 서브스크립트, 계산된 프로퍼티는 백 데플로이먼트될 수 있다:
 
-- The declaration is `public` or `@usableFromInline`.
-- For class instance methods and class type methods,
-  the method is marked `final` and isn't marked `@objc`.
-- The implementation satisfies the requirements for an inlinable function,
-  described in <doc:Attributes#inlinable>.
+- 선언이 `public` 또는 `@usableFromInline`이다.
+- 클래스 인스턴스 메서드와 클래스 타입 메서드의 경우, 메서드가 `final`로 표시되고 `@objc`로 표시되지 않는다.
+- 구현이 <doc:Attributes#inlinable>에 설명된 인라이너블 함수의 요구 사항을 충족한다.
+
 
 ### discardableResult
 
-Apply this attribute to a function or method declaration
-to suppress the compiler warning
-when the function or method that returns a value
-is called without using its result.
+이 속성을 함수나 메서드 선언에 적용하면, 반환값이 있는 함수나 메서드를 호출할 때 그 결과를 사용하지 않아도 컴파일러 경고를 무시할 수 있다.
+
 
 ### dynamicCallable
 
-Apply this attribute to a class, structure, enumeration, or protocol
-to treat instances of the type as callable functions.
-The type must implement either a `dynamicallyCall(withArguments:)` method,
-a `dynamicallyCall(withKeywordArguments:)` method,
-or both.
+이 속성을 클래스, 구조체, 열거형 또는 프로토콜에 적용하면 해당 타입의 인스턴스를 호출 가능한 함수처럼 사용할 수 있다. 타입은 `dynamicallyCall(withArguments:)` 메서드나 `dynamicallyCall(withKeywordArguments:)` 메서드 중 하나 또는 둘 다를 구현해야 한다.
 
-You can call an instance of a dynamically callable type
-as if it's a function that takes any number of arguments.
+동적으로 호출 가능한 타입의 인스턴스를 함수처럼 호출할 수 있으며, 이때 임의의 개수의 인자를 전달할 수 있다.
 
 ```swift
 @dynamicCallable
@@ -533,14 +303,14 @@ struct TelephoneExchange {
 
 let dial = TelephoneExchange()
 
-// Use a dynamic method call.
+// 동적 메서드 호출 사용
 dial(4, 1, 1)
-// Prints "Get Swift help on forums.swift.org"
+// "Get Swift help on forums.swift.org" 출력
 
 dial(8, 6, 7, 5, 3, 0, 9)
-// Prints "Unrecognized number"
+// "Unrecognized number" 출력
 
-// Call the underlying method directly.
+// 기본 메서드 직접 호출
 dial.dynamicallyCall(withArguments: [4, 1, 1])
 ```
 
@@ -574,14 +344,9 @@ dial.dynamicallyCall(withArguments: [4, 1, 1])
   ```
 -->
 
-The declaration of the `dynamicallyCall(withArguments:)` method
-must have a single parameter that conforms to the
-[`ExpressibleByArrayLiteral`](https://developer.apple.com/documentation/swift/expressiblebyarrayliteral)
-protocol --- like `[Int]` in the example above.
-The return type can be any type.
+`dynamicallyCall(withArguments:)` 메서드의 선언은 [`ExpressibleByArrayLiteral`](https://developer.apple.com/documentation/swift/expressiblebyarrayliteral) 프로토콜을 준수하는 단일 매개변수를 가져야 한다. 위 예제에서처럼 `[Int]` 타입을 사용할 수 있다. 반환 타입은 어떤 타입이든 가능하다.
 
-You can include labels in a dynamic method call
-if you implement the `dynamicallyCall(withKeywordArguments:)` method.
+동적 메서드 호출에 라벨을 포함하려면 `dynamicallyCall(withKeywordArguments:)` 메서드를 구현해야 한다.
 
 ```swift
 @dynamicCallable
@@ -629,33 +394,14 @@ print(repeatLabels(a: 1, b: 2, c: 3, b: 2, a: 1))
   ```
 -->
 
-The declaration of the `dynamicallyCall(withKeywordArguments:)` method
-must have a single parameter that conforms to the
-[`ExpressibleByDictionaryLiteral`](https://developer.apple.com/documentation/swift/expressiblebydictionaryliteral)
-protocol,
-and the return type can be any type.
-The parameter's [`Key`](https://developer.apple.com/documentation/swift/expressiblebydictionaryliteral/2294108-key)
-must be
-[`ExpressibleByStringLiteral`](https://developer.apple.com/documentation/swift/expressiblebystringliteral).
-The previous example uses [`KeyValuePairs`](https://developer.apple.com/documentation/swift/keyvaluepairs)
-as the parameter type
-so that callers can include duplicate parameter labels ---
-`a` and `b` appear multiple times in the call to `repeat`.
+`dynamicallyCall(withKeywordArguments:)` 메서드의 선언은 [`ExpressibleByDictionaryLiteral`](https://developer.apple.com/documentation/swift/expressiblebydictionaryliteral) 프로토콜을 준수하는 단일 매개변수를 가져야 하며, 반환 타입은 어떤 타입이든 가능하다. 매개변수의 [`Key`](https://developer.apple.com/documentation/swift/expressiblebydictionaryliteral/2294108-key)는 [`ExpressibleByStringLiteral`](https://developer.apple.com/documentation/swift/expressiblebystringliteral)을 준수해야 한다. 위 예제에서는 호출자가 중복된 라벨을 포함할 수 있도록 매개변수 타입으로 [`KeyValuePairs`](https://developer.apple.com/documentation/swift/keyvaluepairs)를 사용했다. `repeat` 호출에서 `a`와 `b`가 여러 번 나타난다.
 
-If you implement both `dynamicallyCall` methods,
-`dynamicallyCall(withKeywordArguments:)` is called
-when the method call includes keyword arguments.
-In all other cases, `dynamicallyCall(withArguments:)` is called.
+두 `dynamicallyCall` 메서드를 모두 구현한 경우, 메서드 호출에 키워드 인자가 포함되면 `dynamicallyCall(withKeywordArguments:)`가 호출된다. 그 외의 경우에는 `dynamicallyCall(withArguments:)`가 호출된다.
 
-You can only call a dynamically callable instance
-with arguments and a return value that match the types you specify
-in one of your `dynamicallyCall` method implementations.
-The call in the following example doesn't compile because
-there isn't an implementation of `dynamicallyCall(withArguments:)`
-that takes `KeyValuePairs<String, String>`.
+동적으로 호출 가능한 인스턴스는 `dynamicallyCall` 메서드 구현에서 지정한 타입과 일치하는 인자와 반환 값으로만 호출할 수 있다. 다음 예제의 호출은 `KeyValuePairs<String, String>`을 받는 `dynamicallyCall(withArguments:)` 구현이 없기 때문에 컴파일되지 않는다.
 
 ```swift
-repeatLabels(a: "four") // Error
+repeatLabels(a: "four") // 오류
 ```
 
 <!--
@@ -673,43 +419,23 @@ repeatLabels(a: "four") // Error
   >>     }
   >> }
   >> let repeatLabels = Repeater()
-  -> repeatLabels(a: "four") // Error
+  -> repeatLabels(a: "four") // 오류
   !$ error: cannot convert value of type 'String' to expected argument type 'Int'
-  !! repeatLabels(a: "four") // Error
+  !! repeatLabels(a: "four") // 오류
   !! ^
   ```
 -->
 
+
 ### dynamicMemberLookup
 
-Apply this attribute to a class, structure, enumeration, or protocol
-to enable members to be looked up by name at runtime.
-The type must implement a `subscript(dynamicMember:)` subscript.
+이 속성을 클래스, 구조체, 열거형 또는 프로토콜에 적용하면 런타임에 이름을 통해 멤버를 조회할 수 있다. 이 타입은 `subscript(dynamicMember:)` 서브스크립트를 구현해야 한다.
 
-In an explicit member expression,
-if there isn't a corresponding declaration for the named member,
-the expression is understood as a call to
-the type's `subscript(dynamicMember:)` subscript,
-passing information about the member as the argument.
-The subscript can accept a parameter that's either a key path or a member name;
-if you implement both subscripts,
-the subscript that takes key path argument is used.
+명시적 멤버 표현식에서 해당 이름의 멤버 선언이 없을 경우, 해당 표현식은 타입의 `subscript(dynamicMember:)` 서브스크립트를 호출하는 것으로 이해된다. 이때 멤버에 대한 정보가 인자로 전달된다. 서브스크립트는 키 경로(key path) 또는 멤버 이름을 파라미터로 받을 수 있다. 두 가지 서브스크립트를 모두 구현한 경우, 키 경로를 인자로 받는 서브스크립트가 사용된다.
 
-An implementation of `subscript(dynamicMember:)`
-can accept key paths using an argument of type
-[`KeyPath`](https://developer.apple.com/documentation/swift/keypath),
-[`WritableKeyPath`](https://developer.apple.com/documentation/swift/writablekeypath),
-or [`ReferenceWritableKeyPath`](https://developer.apple.com/documentation/swift/referencewritablekeypath).
-It can accept member names using an argument of a type that conforms to the
-[`ExpressibleByStringLiteral`](https://developer.apple.com/documentation/swift/expressiblebystringliteral) protocol ---
-in most cases, `String`.
-The subscript's return type can be any type.
+`subscript(dynamicMember:)` 구현은 [`KeyPath`](https://developer.apple.com/documentation/swift/keypath), [`WritableKeyPath`](https://developer.apple.com/documentation/swift/writablekeypath), 또는 [`ReferenceWritableKeyPath`](https://developer.apple.com/documentation/swift/referencewritablekeypath) 타입의 인자를 통해 키 경로를 받을 수 있다. 또한 [`ExpressibleByStringLiteral`](https://developer.apple.com/documentation/swift/expressiblebystringliteral) 프로토콜을 준수하는 타입(대부분 `String`)의 인자를 통해 멤버 이름을 받을 수 있다. 서브스크립트의 반환 타입은 어떤 타입이든 가능하다.
 
-Dynamic member lookup by member name
-can be used to create a wrapper type around data
-that can't be type checked at compile time,
-such as when bridging data from other languages into Swift.
-For example:
+멤버 이름을 통한 동적 멤버 조회는 컴파일 타임에 타입 검사를 할 수 없는 데이터를 감싸는 래퍼 타입을 생성할 때 사용할 수 있다. 예를 들어, 다른 언어에서 Swift로 데이터를 연결할 때 유용하다.
 
 ```swift
 @dynamicMemberLookup
@@ -722,15 +448,15 @@ struct DynamicStruct {
 }
 let s = DynamicStruct()
 
-// Use dynamic member lookup.
+// 동적 멤버 조회 사용
 let dynamic = s.someDynamicMember
 print(dynamic)
-// Prints "325"
+// "325" 출력
 
-// Call the underlying subscript directly.
+// 직접 서브스크립트 호출
 let equivalent = s[dynamicMember: "someDynamicMember"]
 print(dynamic == equivalent)
-// Prints "true"
+// "true" 출력
 ```
 
 <!--
@@ -759,10 +485,7 @@ print(dynamic == equivalent)
   ```
 -->
 
-Dynamic member lookup by key path
-can be used to implement a wrapper type
-in a way that supports compile-time type checking.
-For example:
+키 경로를 통한 동적 멤버 조회는 컴파일 타임 타입 검사를 지원하는 방식으로 래퍼 타입을 구현할 때 사용할 수 있다.
 
 ```swift
 struct Point { var x, y: Int }
@@ -801,232 +524,69 @@ print(wrapper.x)
   ```
 -->
 
-### freestanding
 
-Apply the `freestanding` attribute
-to the declaration of a freestanding macro.
+### 독립형 매크로
+
+독립형 매크로를 선언할 때 `freestanding` 속성을 적용한다.
 
 <!--
 
-For the future, when other roles are supported:
+추후 다른 역할이 지원될 때를 위해:
 
-The arguments to this attribute indicate the macro's roles:
+이 속성의 인자는 매크로의 역할을 나타낸다:
 
 - `expression`
-  A macro that produces an expression
+  표현식을 생성하는 매크로
 
 - `declaration`
-  A macro that produces a declaration
+  선언을 생성하는 매크로
 
-Or are those supported today?
-I see #error and #warning as @freestanding(declaration)
-in the stdlib already:
+혹시 이 기능들이 현재 지원되고 있는가?
+stdlib에서 #error와 #warning이 @freestanding(declaration)으로
+이미 사용되고 있는 것을 확인할 수 있다:
 
 https://github.com/swiftlang/swift/blob/main/stdlib/public/core/Macros.swift#L102
 -->
 
+
 ### frozen
 
-Apply this attribute to a structure or enumeration declaration
-to restrict the kinds of changes you can make to the type.
-This attribute is allowed only when compiling in library evolution mode.
-Future versions of the library can't change the declaration
-by adding, removing, or reordering
-an enumeration's cases
-or a structure's stored instance properties.
-These changes are allowed on nonfrozen types,
-but they break ABI compatibility for frozen types.
+이 속성을 구조체나 열거형 선언에 적용하면 타입을 변경할 수 있는 범위를 제한한다. 이 속성은 라이브러리 진화 모드에서만 사용할 수 있다. 라이브러리의 향후 버전에서 열거형의 케이스를 추가, 삭제, 재정렬하거나 구조체의 저장된 인스턴스 프로퍼티를 변경할 수 없다. 이러한 변경은 nonfrozen 타입에서는 허용되지만, frozen 타입에서는 ABI 호환성을 깨뜨린다.
 
-> Note: When the compiler isn't in library evolution mode,
-> all structures and enumerations are implicitly frozen,
-> and this attribute is ignored.
+> 참고: 컴파일러가 라이브러리 진화 모드가 아닐 때는 모든 구조체와 열거형이 암묵적으로 frozen 상태가 되며, 이 속성은 무시된다.
 
-<!--
-  - test: `can-use-frozen-without-evolution`
+라이브러리 진화 모드에서 nonfrozen 구조체와 열거형의 멤버와 상호작용하는 코드는 재컴파일 없이도 계속 동작하도록 컴파일된다. 라이브러리의 향후 버전에서 해당 타입의 멤버를 추가, 삭제, 재정렬하더라도 말이다. 컴파일러는 런타임에 정보를 조회하거나 간접적인 레이어를 추가하는 등의 기법을 사용해 이를 가능하게 한다. 구조체나 열거형을 frozen으로 표시하면 이 유연성을 포기하는 대신 성능을 얻을 수 있다. 라이브러리의 향후 버전에서는 타입에 제한된 변경만 가능하지만, 컴파일러는 해당 타입의 멤버와 상호작용하는 코드에서 추가적인 최적화를 수행할 수 있다.
 
-  ```swifttest
-  >> @frozen public enum E { case x, y }
-  >> @frozen public struct S { var a: Int = 10 }
-  ```
--->
+frozen 타입, frozen 구조체의 저장된 프로퍼티 타입, 그리고 frozen 열거형 케이스의 연관 값은 반드시 public이거나 `usableFromInline` 속성으로 표시되어야 한다. frozen 구조체의 프로퍼티는 프로퍼티 관찰자를 가질 수 없으며, 저장된 인스턴스 프로퍼티의 초기값을 제공하는 표현식은 <doc:Attributes#inlinable>에서 설명한 것처럼 인라인 가능한 함수와 동일한 제한을 따라야 한다.
 
-<!--
-  <rdar://problem/54041692> Using @frozen without Library Evolution has inconsistent error messages [SE-0260]
--->
+라이브러리 진화 모드를 커맨드라인에서 활성화하려면 Swift 컴파일러에 `-enable-library-evolution` 옵션을 전달한다. Xcode에서 활성화하려면 "Build Libraries for Distribution" 빌드 설정(`BUILD_LIBRARY_FOR_DISTRIBUTION`)을 Yes로 설정한다. 자세한 내용은 [Xcode Help](https://help.apple.com/xcode/mac/current/#/dev04b3a04ba)를 참고한다.
 
-<!--
-  - test: `frozen-is-fine-with-evolution`
+frozen 열거형에 대한 switch 문은 `default` 케이스를 요구하지 않는다. <doc:Statements#Switching-Over-Future-Enumeration-Cases>에서 설명한 것처럼, frozen 열거형에 대해 `default`나 `@unknown default` 케이스를 포함하면 해당 코드가 실행되지 않기 때문에 경고가 발생한다.
 
-  ```swifttest
-  >> @frozen public enum E { case x, y }
-  >> @frozen public struct S { var a: Int = 10 }
-  ```
--->
-
-In library evolution mode,
-code that interacts with members of nonfrozen structures and enumerations
-is compiled in a way that allows it to continue working without recompiling
-even if a future version of the library
-adds, removes, or reorders some of that type's members.
-The compiler makes this possible using techniques like
-looking up information at runtime
-and adding a layer of indirection.
-Marking a structure or enumeration as frozen
-gives up this flexibility to gain performance:
-Future versions of the library can make only limited changes to the type,
-but the compiler can make additional optimizations
-in code that interacts with the type's members.
-
-Frozen types,
-the types of the stored properties of frozen structures,
-and the associated values of frozen enumeration cases
-must be public or marked with the `usableFromInline` attribute.
-The properties of a frozen structure can't have property observers,
-and expressions that provide the initial value for stored instance properties
-must follow the same restrictions as inlinable functions,
-as discussed in <doc:Attributes#inlinable>.
-
-<!--
-  - test: `frozen-struct-prop-init-cant-refer-to-private-type`
-
-  ```swifttest
-  >> public protocol P { }
-  >> private struct PrivateStruct: P { }
-  >>         public struct S1 { var fine: P = PrivateStruct() }
-  >> @frozen public struct S2 { var nope: P = PrivateStruct() }
-  !$ error: struct 'PrivateStruct' is private and cannot be referenced from a property initializer in a '@frozen' type
-  !! @frozen public struct S2 { var nope: P = PrivateStruct() }
-  !!                                          ^
-  !$ note: struct 'PrivateStruct' is not '@usableFromInline' or public
-  !! private struct PrivateStruct: P { }
-  !!                ^
-  !$ error: initializer 'init()' is private and cannot be referenced from a property initializer in a '@frozen' type
-  !! @frozen public struct S2 { var nope: P = PrivateStruct() }
-  !! ^
-  !$ note: initializer 'init()' is not '@usableFromInline' or public
-  !! private struct PrivateStruct: P { }
-  !! ^
-  ```
--->
-
-To enable library evolution mode on the command line,
-pass the `-enable-library-evolution` option to the Swift compiler.
-To enable it in Xcode,
-set the "Build Libraries for Distribution" build setting
-(`BUILD_LIBRARY_FOR_DISTRIBUTION`) to Yes,
-as described in [Xcode Help](https://help.apple.com/xcode/mac/current/#/dev04b3a04ba).
-
-<!--
-  This is the first time we're talking about a specific compiler flag/option.
-  In the long term, the discussion of library evolution mode
-  will need to move to a new chapter in the guide
-  that also talks about things like @available and ABI.
-  See <rdar://problem/51929017> TSPL: Give guidance to library authors about @available @frozen and friends
--->
-
-A switch statement over a frozen enumeration doesn't require a `default` case,
-as discussed in <doc:Statements#Switching-Over-Future-Enumeration-Cases>.
-Including a `default` or `@unknown default` case
-when switching over a frozen enumeration
-produces a warning because that code is never executed.
-
-<!--
-  - test: `NoUnknownDefaultOverFrozenEnum`
-
-  ```swifttest
-  >> public enum E { case x, y }
-  >> @frozen public enum F { case x, y }
-  ```
--->
-
-<!--
-  - test: `NoUnknownDefaultOverFrozenEnum_Test1`
-
-  ```swifttest
-  >> import NoUnknownDefaultOverFrozenEnum
-  >> func main() {
-  >>     let e = NoUnknownDefaultOverFrozenEnum.E.x
-  >>     switch e {
-  >>         case .x: print(9)
-  >>         case .y: print(8)
-  >>         @unknown default: print(0)
-  >>     }
-  >> }
-  // Note that there's no warning -- this is fine because E isn't frozen.
-  ```
--->
-
-<!--
-  - test: `NoUnknownDefaultOverFrozenEnum_Test2`
-
-  ```swifttest
-  >> import NoUnknownDefaultOverFrozenEnum
-  >> func main() {
-  >>     let f = NoUnknownDefaultOverFrozenEnum.F.x
-  >>     switch f {
-  >>         case .x: print(9)
-  >>         case .y: print(8)
-  >>         @unknown default: print(0)
-  >>     }
-  >> }
-  // --- Main warning ---
-  !! /tmp/sourcefile_0.swift:7:18: warning: case is already handled by previous patterns; consider removing it
-  !! @unknown default: print(0)
-  !! ~~~~~~~~~^~~~~~~~~~~~~~~~~
-  !! /tmp/sourcefile_0.swift:7:9: warning: default will never be executed
-  !! @unknown default: print(0)
-  !! ^
-  // --- Junk/ancillary warnings ---
-  !! /tmp/sourcefile_0.swift:4:12: warning: switch condition evaluates to a constant
-  !! switch f {
-  !! ^
-  !! /tmp/sourcefile_0.swift:6:24: note: will never be executed
-  !! case .y: print(8)
-  !! ^
-  ```
--->
 
 ### GKInspectable
 
-Apply this attribute to expose a custom GameplayKit component property
-to the SpriteKit editor UI.
-Applying this attribute also implies the `objc` attribute.
+이 속성은 커스텀 GameplayKit 컴포넌트 프로퍼티를 SpriteKit 에디터 UI에 노출시키기 위해 사용한다. 이 속성을 적용하면 `objc` 속성도 함께 적용된다.
 
 <!--
-  See also <rdar://problem/27287369> Document @GKInspectable attribute
-  which we will want to link to, once it's written.
+  <rdar://problem/27287369> @GKInspectable 속성 문서화 관련 링크 추가 예정
 -->
 
-### inlinable
 
-Apply this attribute to a
-function, method, computed property, subscript,
-convenience initializer, or deinitializer declaration
-to expose that declaration's implementation
-as part of the module's public interface.
-The compiler is allowed to replace calls to an inlinable symbol
-with a copy of the symbol's implementation at the call site.
+### 인라인 가능(inlinable)
 
-Inlinable code
-can interact with `open` and `public` symbols declared in any module,
-and it can interact with `internal` symbols
-declared in the same module
-that are marked with the `usableFromInline` attribute.
-Inlinable code can't interact with `private` or `fileprivate` symbols.
+이 속성을 함수, 메서드, 계산된 프로퍼티, 서브스크립트, 편의 이니셜라이저, 디이니셜라이저 선언에 적용하면 해당 선언의 구현을 모듈의 공개 인터페이스의 일부로 노출할 수 있다. 컴파일러는 인라인 가능한 심볼에 대한 호출을 호출 위치에서 심볼의 구현 복사본으로 대체할 수 있다.
 
-This attribute can't be applied
-to declarations that are nested inside functions
-or to `fileprivate` or `private` declarations.
-Functions and closures that are defined inside an inlinable function
-are implicitly inlinable,
-even though they can't be marked with this attribute.
+인라인 가능한 코드는 모든 모듈에서 선언된 `open` 및 `public` 심볼과 상호작용할 수 있으며, 동일한 모듈에서 선언되고 `usableFromInline` 속성이 표시된 `internal` 심볼과도 상호작용할 수 있다. 인라인 가능한 코드는 `private` 또는 `fileprivate` 심볼과 상호작용할 수 없다.
+
+이 속성은 함수 내부에 중첩된 선언이나 `fileprivate` 또는 `private` 선언에는 적용할 수 없다. 인라인 가능한 함수 내부에 정의된 함수와 클로저는 이 속성으로 표시할 수 없더라도 암묵적으로 인라인 가능하다.
 
 <!--
   - test: `cant-inline-private`
 
   ```swifttest
   >> @inlinable private func f() { }
-  !$ error: '@inlinable' attribute can only be applied to public declarations, but 'f' is private
+  !$ error: '@inlinable' 속성은 공개 선언에만 적용할 수 있지만, 'f'는 private입니다
   !! @inlinable private func f() { }
   !! ^~~~~~~~~~~
   ```
@@ -1039,7 +599,7 @@ even though they can't be marked with this attribute.
   >> public func outer() {
   >>    @inlinable func f() { }
   >> }
-  !$ error: '@inlinable' attribute can only be applied to public declarations, but 'f' is private
+  !$ error: '@inlinable' 속성은 공개 선언에만 적용할 수 있지만, 'f'는 private입니다
   !! @inlinable func f() { }
   !! ^~~~~~~~~~~
   !!-
@@ -1066,19 +626,16 @@ even though they can't be marked with this attribute.
   yielding inconsistent results.
 -->
 
+
 ### main
 
-Apply this attribute to a structure, class, or enumeration declaration
-to indicate that it contains the top-level entry point for program flow.
-The type must provide a `main` type function
-that doesn't take any arguments and returns `Void`.
-For example:
+이 속성을 구조체, 클래스, 열거형 선언에 적용해 프로그램 흐름의 최상위 진입점을 나타낸다. 해당 타입은 인자를 받지 않고 `Void`를 반환하는 `main` 타입 함수를 제공해야 한다. 예를 들어:
 
 ```swift
 @main
 struct MyTopLevel {
     static func main() {
-        // Top-level code goes here
+        // 최상위 코드를 여기에 작성한다
     }
 }
 ```
@@ -1090,7 +647,7 @@ struct MyTopLevel {
   -> @main
   -> struct MyTopLevel {
   ->     static func main() {
-  ->         // Top-level code goes here
+  ->         // 최상위 코드를 여기에 작성한다
   >>         print("Hello")
   ->     }
   -> }
@@ -1098,10 +655,7 @@ struct MyTopLevel {
   ```
 -->
 
-Another way to describe the requirements of the `main` attribute
-is that the type you write this attribute on
-must satisfy the same requirements
-as types that conform to the following hypothetical protocol:
+`main` 속성의 요구사항을 설명하는 또 다른 방법은, 이 속성을 작성한 타입이 다음과 같은 가상 프로토콜을 준수하는 타입과 동일한 요구사항을 충족해야 한다는 것이다:
 
 ```swift
 protocol ProvidesMain {
@@ -1119,25 +673,23 @@ protocol ProvidesMain {
   ```
 -->
 
-The Swift code you compile to make an executable
-can contain at most one top-level entry point,
-as discussed in <doc:Declarations#Top-Level-Code>.
+실행 파일을 만들기 위해 컴파일하는 Swift 코드는 최대 하나의 최상위 진입점만 포함할 수 있다. 이는 <doc:Declarations#Top-Level-Code>에서 논의한 바와 같다.
 
 <!--
   - test: `no-at-main-in-top-level-code`
 
   ```swifttest
-  // This is the same example as atMain, but without :compile: true.
+  // 이 예제는 atMain과 동일하지만 :compile: true 없이 작성되었다.
   >> @main
   >> struct MyTopLevel {
   >>     static func main() {
   >>         print("Hello")
   >>     }
   >> }
-  !$ error: 'main' attribute cannot be used in a module that contains top-level code
+  !$ error: 'main' 속성은 최상위 코드를 포함하는 모듈에서 사용할 수 없다
   !! @main
   !! ^
-  !$ note: top-level code defined in this source file
+  !$ note: 이 소스 파일에 정의된 최상위 코드
   !! @main
   !! ^
   ```
@@ -1147,7 +699,7 @@ as discussed in <doc:Declarations#Top-Level-Code>.
   - test: `atMain_library`
 
   ```swifttest
-  -> // In file "library.swift"
+  -> // 파일 "library.swift"에서
   -> open class C {
          public static func main() { print("Hello") }
      }
@@ -1163,49 +715,29 @@ as discussed in <doc:Declarations#Top-Level-Code>.
   ```
 -->
 
-### nonobjc
 
-Apply this attribute to a
-method, property, subscript, or initializer declaration
-to suppress an implicit `objc` attribute.
-The `nonobjc` attribute tells the compiler
-to make the declaration unavailable in Objective-C code,
-even though it's possible to represent it in Objective-C.
+`nonobjc` 속성을 메서드, 프로퍼티, 서브스크립트, 또는 초기화 선언에 적용하면 암시적인 `objc` 속성을 억제할 수 있다. `nonobjc` 속성은 해당 선언이 Objective-C 코드에서 사용 불가능하도록 컴파일러에 지시한다. 비록 Objective-C로 표현할 수 있는 경우에도 이 속성이 적용되면 사용할 수 없다.
 
-Applying this attribute to an extension
-has the same effect as
-applying it to every member of that extension
-that isn't explicitly marked with the `objc` attribute.
+이 속성을 익스텐션에 적용하면, `objc` 속성이 명시적으로 표시되지 않은 모든 멤버에 동일한 효과가 적용된다.
 
-You use the `nonobjc` attribute to resolve circularity
-for bridging methods in a class marked with the `objc` attribute,
-and to allow overloading of methods and initializers
-in a class marked with the `objc` attribute.
+`nonobjc` 속성은 `objc` 속성이 적용된 클래스에서 브리징 메서드의 순환 참조 문제를 해결하거나, `objc` 속성이 적용된 클래스에서 메서드와 초기화 메서드의 오버로딩을 허용하기 위해 사용한다.
 
-A method marked with the `nonobjc` attribute
-can't override a method marked with the `objc` attribute.
-However, a method marked with the `objc` attribute
-can override a method marked with the `nonobjc` attribute.
-Similarly, a method marked with the `nonobjc` attribute
-can't satisfy a protocol requirement
-for a method marked with the `objc` attribute.
+`nonobjc` 속성이 적용된 메서드는 `objc` 속성이 적용된 메서드를 오버라이드할 수 없다. 반대로 `objc` 속성이 적용된 메서드는 `nonobjc` 속성이 적용된 메서드를 오버라이드할 수 있다. 마찬가지로, `nonobjc` 속성이 적용된 메서드는 `objc` 속성이 적용된 메서드의 프로토콜 요구 사항을 충족할 수 없다.
+
 
 ### NSApplicationMain
 
 > Deprecated:
-> This attribute is deprecated;
-> use the <doc:Attributes#main> attribute instead.
-> In Swift 6,
-> using this attribute will be an error.
+> 이 속성은 더 이상 사용되지 않는다.
+> 대신 <doc:Attributes#main> 속성을 사용한다.
+> Swift 6에서는 이 속성을 사용하면 오류가 발생한다.
 
-Apply this attribute to a class
-to indicate that it's the app delegate.
-Using this attribute is equivalent to calling the
-`NSApplicationMain(_:_:)` function.
+이 속성을 클래스에 적용하면 해당 클래스가 앱 델리게이트임을 나타낸다.
+이 속성을 사용하는 것은 `NSApplicationMain(_:_:)` 함수를 호출하는 것과 동일하다.
 
-If you don't use this attribute,
-supply a `main.swift` file with code at the top level
-that calls the `NSApplicationMain(_:_:)` function as follows:
+이 속성을 사용하지 않는다면,
+최상위 수준에서 `NSApplicationMain(_:_:)` 함수를 호출하는 코드를 포함한 `main.swift` 파일을 제공해야 한다.
+예를 들면 다음과 같다:
 
 ```swift
 import AppKit
@@ -1213,105 +745,54 @@ NSApplicationMain(CommandLine.argc, CommandLine.unsafeArgv)
 ```
 
 <!--
-  Above code isn't tested because it hangs the REPL indefinitely,
-  which is correct behavior if you call a non-returning function like this.
+  위 코드는 REPL에서 무한정 멈추기 때문에 테스트하지 않았다.
+  이와 같은 반환하지 않는 함수를 호출할 때의 올바른 동작이다.
 -->
 
-The Swift code you compile to make an executable
-can contain at most one top-level entry point,
-as discussed in <doc:Declarations#Top-Level-Code>.
+실행 파일을 만들기 위해 컴파일하는 Swift 코드는
+최대 하나의 최상위 진입점만 포함할 수 있다.
+이는 <doc:Declarations#Top-Level-Code>에서 설명한 바와 같다.
+
 
 ### NSCopying
 
-Apply this attribute to a stored variable property of a class.
-This attribute causes the property's setter to be synthesized with a *copy*
-of the property's value --- returned by the `copyWithZone(_:)` method --- instead of the
-value of the property itself.
-The type of the property must conform to the `NSCopying` protocol.
+이 속성을 클래스의 저장 프로퍼티에 적용한다. 이 속성은 프로퍼티의 setter가 프로퍼티 자체의 값 대신 `copyWithZone(_:)` 메서드에서 반환된 값의 *복사본*을 사용하도록 만든다. 프로퍼티의 타입은 `NSCopying` 프로토콜을 준수해야 한다.
 
-The `NSCopying` attribute behaves in a way similar to the Objective-C `copy`
-property attribute.
+`NSCopying` 속성은 Objective-C의 `copy` 프로퍼티 속성과 유사하게 동작한다.
 
 <!--
-  TODO: If and when Dave includes a section about this in the Guide,
-  provide a link to the relevant section.
+  TODO: Dave가 가이드에서 이 부분을 다루는 섹션을 추가한다면, 해당 섹션으로 연결할 링크를 제공한다.
 -->
+
 
 ### NSManaged
 
-Apply this attribute to an instance method or stored variable property
-of a class that inherits from `NSManagedObject`
-to indicate that Core Data dynamically provides its implementation at runtime,
-based on the associated entity description.
-For a property marked with the `NSManaged` attribute,
-Core Data also provides the storage at runtime.
-Applying this attribute also implies the `objc` attribute.
+이 속성은 `NSManagedObject`를 상속받는 클래스의 인스턴스 메서드나 저장 프로퍼티에 적용한다. Core Data가 런타임에 해당 엔티티 설명에 기반해 구현을 동적으로 제공한다는 것을 나타낸다. `NSManaged` 속성이 표시된 프로퍼티의 경우, Core Data는 런타임에 스토리지도 함께 제공한다. 이 속성을 적용하면 암묵적으로 `objc` 속성도 함께 적용된다.
 
-### objc
 
-Apply this attribute to any declaration that can be represented in Objective-C ---
-for example, nonnested classes, protocols,
-nongeneric enumerations (constrained to integer raw-value types),
-properties and methods (including getters and setters) of classes,
-protocols and optional members of a protocol,
-initializers, and subscripts.
-The `objc` attribute tells the compiler
-that a declaration is available to use in Objective-C code.
+### Objective-C 호환성
 
-Applying this attribute to an extension
-has the same effect as
-applying it to every member of that extension
-that isn't explicitly marked with the `nonobjc` attribute.
+`objc` 속성은 Objective-C 코드에서 사용할 수 있는 선언에 적용한다. 예를 들어, 중첩되지 않은 클래스, 프로토콜, 정수형 원시 값을 사용하는 제네릭이 아닌 열거형, 클래스의 프로퍼티와 메서드(게터와 세터 포함), 프로토콜 및 프로토콜의 옵셔널 멤버, 초기화 메서드, 서브스크립트 등이 이에 해당한다. `objc` 속성은 컴파일러에게 해당 선언이 Objective-C 코드에서 사용 가능함을 알린다.
 
-The compiler implicitly adds the `objc` attribute
-to subclasses of any class defined in Objective-C.
-However, the subclass must not be generic,
-and must not inherit from any generic classes.
-You can explicitly add the `objc` attribute
-to a subclass that meets these criteria,
-to specify its Objective-C name as discussed below.
-Protocols that are marked with the `objc` attribute can't inherit
-from protocols that aren't marked with this attribute.
+이 속성을 익스텐션에 적용하면, `nonobjc` 속성으로 명시적으로 표시되지 않은 모든 멤버에 동일한 효과가 적용된다.
 
-The `objc` attribute is also implicitly added in the following cases:
+컴파일러는 Objective-C로 정의된 클래스의 서브클래스에 `objc` 속성을 암시적으로 추가한다. 단, 서브클래스는 제네릭이 아니어야 하며, 제네릭 클래스를 상속받지 않아야 한다. 이러한 조건을 충족하는 서브클래스에 `objc` 속성을 명시적으로 추가해 Objective-C 이름을 지정할 수 있다. `objc` 속성이 적용된 프로토콜은 이 속성이 없는 프로토콜을 상속받을 수 없다.
 
-- The declaration is an override in a subclass,
-  and the superclass's declaration has the `objc` attribute.
-- The declaration satisfies a requirement
-  from a protocol that has the `objc` attribute.
-- The declaration has the `IBAction`, `IBSegueAction`, `IBOutlet`,
-  `IBDesignable`, `IBInspectable`,
-  `NSManaged`, or `GKInspectable` attribute.
+`objc` 속성은 다음과 같은 경우에도 암시적으로 추가된다:
 
-If you apply the `objc` attribute to an enumeration,
-each enumeration case is exposed to Objective-C code
-as the concatenation of the enumeration name and the case name.
-The first letter of the case name is capitalized.
-For example, a case named `venus` in a Swift `Planet` enumeration
-is exposed to Objective-C code as a case named `PlanetVenus`.
+- 선언이 서브클래스에서 오버라이드되고, 부모 클래스의 선언에 `objc` 속성이 있는 경우
+- 선언이 `objc` 속성이 있는 프로토콜의 요구 사항을 충족하는 경우
+- 선언에 `IBAction`, `IBSegueAction`, `IBOutlet`, `IBDesignable`, `IBInspectable`, `NSManaged`, `GKInspectable` 속성이 있는 경우
 
-The `objc` attribute optionally accepts a single attribute argument,
-which consists of an identifier.
-The identifier specifies the name to be exposed to Objective-C
-for the entity that the `objc` attribute applies to.
-You can use this argument to name
-classes, enumerations, enumeration cases, protocols,
-methods, getters, setters, and initializers.
-If you specify the Objective-C name
-for a class, protocol, or enumeration,
-include a three-letter prefix on the name,
-as described in [Conventions](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/Conventions/Conventions.html#//apple_ref/doc/uid/TP40011210-CH10-SW1)
-in [Programming with Objective-C](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/Introduction/Introduction.html#//apple_ref/doc/uid/TP40011210).
-The example below exposes
-the getter for the `enabled` property of the `ExampleClass`
-to Objective-C code as `isEnabled`
-rather than just as the name of the property itself.
+열거형에 `objc` 속성을 적용하면, 각 열거형 케이스는 열거형 이름과 케이스 이름을 연결한 형태로 Objective-C 코드에 노출된다. 케이스 이름의 첫 글자는 대문자로 표시된다. 예를 들어, Swift의 `Planet` 열거형에 `venus`라는 케이스가 있으면, Objective-C 코드에서는 `PlanetVenus`라는 케이스로 노출된다.
+
+`objc` 속성은 선택적으로 단일 인자를 받을 수 있으며, 이 인자는 식별자로 구성된다. 이 식별자는 `objc` 속성이 적용된 엔티티가 Objective-C에 노출될 때 사용할 이름을 지정한다. 이 인자를 사용해 클래스, 열거형, 열거형 케이스, 프로토콜, 메서드, 게터, 세터, 초기화 메서드의 이름을 지정할 수 있다. 클래스, 프로토콜, 또는 열거형의 Objective-C 이름을 지정할 때는 [Objective-C 프로그래밍](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/Introduction/Introduction.html#//apple_ref/doc/uid/TP40011210)의 [규칙](https://developer.apple.com/library/content/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/Conventions/Conventions.html#//apple_ref/doc/uid/TP40011210-CH10-SW1)에 따라 세 글자 접두사를 포함해야 한다. 아래 예제는 `ExampleClass`의 `enabled` 프로퍼티의 게터를 Objective-C 코드에서 `isEnabled`로 노출한다.
 
 ```swift
 class ExampleClass: NSObject {
     @objc var enabled: Bool {
         @objc(isEnabled) get {
-            // Return the appropriate value
+            // 적절한 값을 반환
         }
     }
 }
@@ -1325,7 +806,7 @@ class ExampleClass: NSObject {
   -> class ExampleClass: NSObject {
   ->    @objc var enabled: Bool {
   ->       @objc(isEnabled) get {
-  ->          // Return the appropriate value
+  ->          // 적절한 값을 반환
   >>          return true
   ->       }
   ->    }
@@ -1333,112 +814,54 @@ class ExampleClass: NSObject {
   ```
 -->
 
-For more information, see
-[Importing Swift into Objective-C](https://developer.apple.com/documentation/swift/imported_c_and_objective-c_apis/importing_swift_into_objective-c).
+더 많은 정보는 [Swift를 Objective-C로 임포트하기](https://developer.apple.com/documentation/swift/imported_c_and_objective-c_apis/importing_swift_into_objective-c)를 참고한다.
 
-> Note: The argument to the `objc` attribute
-> can also change the runtime name for that declaration.
-> You use the runtime name when calling functions
-> that interact with the Objective-C runtime,
-> like [`NSClassFromString(_:)`](https://developer.apple.com/documentation/foundation/1395135-nsclassfromstring),
-> and when specifying class names in an app's Info.plist file.
-> If you specify a name by passing an argument,
-> that name is used as the name in Objective-C code
-> and as the runtime name.
-> If you omit the argument,
-> the name used in Objective-C code matches the name in Swift code,
-> and the runtime name follows the normal Swift compiler convention
-> of name mangling.
+> 참고: `objc` 속성의 인자는 해당 선언의 런타임 이름도 변경할 수 있다. 런타임 이름은 Objective-C 런타임과 상호작용하는 함수를 호출할 때(예: [`NSClassFromString(_:)`](https://developer.apple.com/documentation/foundation/1395135-nsclassfromstring))나 앱의 Info.plist 파일에서 클래스 이름을 지정할 때 사용한다. 인자를 전달해 이름을 지정하면, 그 이름이 Objective-C 코드와 런타임 이름으로 사용된다. 인자를 생략하면, Objective-C 코드에서 사용하는 이름은 Swift 코드의 이름과 일치하며, 런타임 이름은 Swift 컴파일러의 일반적인 이름 맹글링 규칙을 따른다.
+
 
 ### objcMembers
 
-Apply this attribute to a class declaration,
-to implicitly apply the `objc` attribute
-to all Objective-C compatible members of the class,
-its extensions, its subclasses, and all of the extensions of its subclasses.
+이 속성을 클래스 선언에 적용하면, 해당 클래스와 그 확장(extensions), 하위 클래스(subclasses), 그리고 하위 클래스의 모든 확장에서 Objective-C와 호환되는 모든 멤버에 `objc` 속성이 자동으로 적용된다.
 
-Most code should use the `objc` attribute instead,
-to expose only the declarations that are needed.
-If you need to expose many declarations,
-you can group them in an extension that has the `objc` attribute.
-The `objcMembers` attribute is a convenience for
-libraries that make heavy use of
-the introspection facilities of the Objective-C runtime.
-Applying the `objc` attribute when it isn't needed
-can increase your binary size and adversely affect performance.
+대부분의 코드는 필요한 선언만 노출하기 위해 `objc` 속성을 사용해야 한다. 많은 선언을 노출해야 할 경우, `objc` 속성이 적용된 확장(extension)으로 그룹화할 수 있다. `objcMembers` 속성은 Objective-C 런타임의 내부 검사(introspection) 기능을 많이 사용하는 라이브러리를 위해 편의를 제공한다. 필요하지 않은 곳에 `objc` 속성을 적용하면 바이너리 크기가 증가하고 성능에 부정적인 영향을 미칠 수 있다.
 
 <!--
-  The binary size comes from the additional thunks
-  to translate between calling conventions.
-  The performance of linking and launch are slower
-  because of the larger symbol table slowing dyld down.
+  바이너리 크기가 증가하는 이유는 호출 규약(calling conventions) 간 변환을 위한 추가적인 썽크(thunk) 때문이다.
+  더 큰 심볼 테이블로 인해 dyld가 느려져 링크와 런치 성능이 저하된다.
 -->
+
 
 ### preconcurrency
 
-Apply this attribute to a declaration,
-to suppress strict concurrency checking.
-You can apply this attribute
-to the following kinds of declarations:
+이 속성을 선언에 적용하면 엄격한 동시성 검사를 억제할 수 있다. 다음과 같은 종류의 선언에 이 속성을 적용할 수 있다:
 
-- Imports
-- Structures, classes, and actors
-- Enumerations and enumeration cases
-- Protocols
-- Variables and constants
-- Subscripts
-- Initializers
-- Functions
+- 임포트
+- 구조체, 클래스, 액터
+- 열거형 및 열거형 케이스
+- 프로토콜
+- 변수와 상수
+- 서브스크립트
+- 이니셜라이저
+- 함수
 
-On an import declaration,
-this attribute reduces the strictness of concurrency checking
-for code that uses types from the imported module.
-Specifically,
-types from the imported module
-that aren't explicitly marked as nonsendable
-can be used in a context that requires sendable types.
+임포트 선언에 이 속성을 적용하면, 임포트된 모듈에서 가져온 타입을 사용하는 코드에 대해 동시성 검사의 엄격성을 줄인다. 구체적으로, 임포트된 모듈에서 명시적으로 `nonsendable`로 표시되지 않은 타입은 `Sendable` 타입이 필요한 컨텍스트에서 사용할 수 있다.
 
-On other declarations,
-this attribute reduces the strictness of concurrency checking
-for code that uses the symbol being declared.
-When you use this symbol in a scope that has minimal concurrency checking,
-concurrency-related constraints specified by that symbol,
-such as `Sendable` requirements or global actors,
-aren't checked.
+다른 선언에 이 속성을 적용하면, 해당 선언을 사용하는 코드에 대해 동시성 검사의 엄격성을 줄인다. 최소한의 동시성 검사가 적용된 범위에서 이 심볼을 사용할 때, `Sendable` 요구사항이나 글로벌 액터와 같은 동시성 관련 제약 조건은 검사되지 않는다.
 
-You can use this attribute as follows,
-to aid in migrating code to strict concurrency checking:
+이 속성은 엄격한 동시성 검사로 코드를 마이그레이션하는 데 도움을 주기 위해 다음과 같이 사용할 수 있다:
 
-1. Enable strict checking.
-1. Annotate imports with the `preconcurrency` attribute
-   for modules that haven't enabled strict checking.
-1. After migrating a module to strict checking,
-   remove the `preconcurrency` attribute.
-   The compiler warns you about
-   any places where the `preconcurrency` attribute on an import
-   no longer has an effect and should be removed.
+1. 엄격한 검사를 활성화한다.
+1. 엄격한 검사를 활성화하지 않은 모듈에 대해 `preconcurrency` 속성을 임포트에 추가한다.
+1. 모듈을 엄격한 검사로 마이그레이션한 후, `preconcurrency` 속성을 제거한다. 컴파일러는 더 이상 효과가 없어 제거해야 하는 `preconcurrency` 속성이 있는 위치에 대해 경고를 표시한다.
 
-For other declarations,
-add the `preconcurrency` attribute
-when you add concurrency-related constraints to the declaration,
-if you still have clients
-that haven't migrated to strict checking.
-Remove the `preconcurrency` attribute after all your clients have migrated.
+다른 선언의 경우, 동시성 관련 제약 조건을 선언에 추가할 때 `preconcurrency` 속성을 추가할 수 있다. 아직 엄격한 검사로 마이그레이션하지 않은 클라이언트가 있는 경우에 해당한다. 모든 클라이언트가 마이그레이션한 후에는 `preconcurrency` 속성을 제거한다.
 
-Declarations from Objective-C are always imported
-as if they were marked with the `preconcurrency` attribute.
+Objective-C에서 가져온 선언은 항상 `preconcurrency` 속성이 적용된 것처럼 처리된다.
+
 
 ### propertyWrapper
 
-Apply this attribute to a class, structure, or enumeration declaration
-to use that type as a property wrapper.
-When you apply this attribute to a type,
-you create a custom attribute with the same name as the type.
-Apply that new attribute to a property of a class, structure, or enumeration
-to wrap access to the property through an instance of the wrapper type;
-apply the attribute to a local stored variable declaration
-to wrap access to the variable the same way.
-Computed variables, global variables, and constants can't use property wrappers.
+이 속성을 클래스, 구조체, 혹은 열거형 선언에 적용하면 해당 타입을 프로퍼티 래퍼로 사용할 수 있다. 이 속성을 타입에 적용하면, 타입과 동일한 이름을 가진 커스텀 속성을 생성한다. 이 새로운 속성을 클래스, 구조체, 혹은 열거형의 프로퍼티에 적용하면, 해당 프로퍼티에 대한 접근을 래퍼 타입의 인스턴스를 통해 래핑할 수 있다. 또한, 이 속성을 로컬 저장 변수 선언에 적용하면, 변수에 대한 접근도 동일한 방식으로 래핑할 수 있다. 계산된 변수, 전역 변수, 그리고 상수는 프로퍼티 래퍼를 사용할 수 없다.
 
 <!--
   - test: `property-wrappers-can-go-on-stored-variable`
@@ -1485,33 +908,11 @@ Computed variables, global variables, and constants can't use property wrappers.
   ```
 -->
 
-The wrapper must define a `wrappedValue` instance property.
-The *wrapped value* of the property
-is the value that the getter and setter for this property expose.
-In most cases, `wrappedValue` is a computed value,
-but it can be a stored value instead.
-The wrapper defines and manages
-any underlying storage needed by its wrapped value.
-The compiler synthesizes storage for the instance of the wrapper type
-by prefixing the name of the wrapped property with an underscore (`_`) ---
-for example, the wrapper for `someProperty` is stored as `_someProperty`.
-The synthesized storage for the wrapper has an access control level of `private`.
+래퍼는 반드시 `wrappedValue` 인스턴스 프로퍼티를 정의해야 한다. 프로퍼티의 *래핑된 값*은 이 프로퍼티의 getter와 setter가 노출하는 값이다. 대부분의 경우, `wrappedValue`는 계산된 값이지만, 저장된 값일 수도 있다. 래퍼는 래핑된 값에 필요한 모든 기본 저장소를 정의하고 관리한다. 컴파일러는 래퍼 타입의 인스턴스에 대한 저장소를 생성하며, 래핑된 프로퍼티 이름 앞에 밑줄(`_`)을 붙인다. 예를 들어, `someProperty`의 래퍼는 `_someProperty`로 저장된다. 래퍼에 대한 생성된 저장소는 `private` 접근 제어 수준을 가진다.
 
-A property that has a property wrapper
-can include `willSet` and `didSet` blocks,
-but it can't override the compiler-synthesized `get` or `set` blocks.
+프로퍼티 래퍼를 가진 프로퍼티는 `willSet`과 `didSet` 블록을 포함할 수 있지만, 컴파일러가 생성한 `get` 또는 `set` 블록을 재정의할 수는 없다.
 
-Swift provides two forms of syntactic sugar
-for initialization of a property wrapper.
-You can use assignment syntax in the definition of a wrapped value
-to pass the expression on the right-hand side of the assignment
-as the argument to the `wrappedValue` parameter
-of the property wrapper's initializer.
-You can also provide arguments to the attribute
-when you apply it to a property,
-and those arguments are passed to the property wrapper's initializer.
-For example, in the code below,
-`SomeStruct` calls each of the initializers that `SomeWrapper` defines.
+Swift는 프로퍼티 래퍼 초기화를 위해 두 가지 형태의 문법적 편의를 제공한다. 래핑된 값의 정의에서 할당 문법을 사용할 수 있으며, 이때 할당의 오른쪽에 있는 표현식은 프로퍼티 래퍼의 초기화 함수의 `wrappedValue` 매개변수로 전달된다. 또한, 프로퍼티에 속성을 적용할 때 인자를 제공할 수 있으며, 이 인자들은 프로퍼티 래퍼의 초기화 함수로 전달된다. 예를 들어, 아래 코드에서 `SomeStruct`는 `SomeWrapper`가 정의한 각 초기화 함수를 호출한다.
 
 ```swift
 @propertyWrapper
@@ -1599,18 +1000,7 @@ struct SomeStruct {
   -> e = 30  // Uses the property setter
 -->
 
-The *projected value* for a wrapped property is a second value
-that a property wrapper can use to expose additional functionality.
-The author of a property wrapper type
-is responsible for determining the meaning of its projected value
-and defining the interface that the projected value exposes.
-To project a value from a property wrapper,
-define a `projectedValue` instance property on the wrapper type.
-The compiler synthesizes an identifier for the projected value
-by prefixing the name of the wrapped property with a dollar sign (`$`) ---
-for example, the projected value for `someProperty` is `$someProperty`.
-The projected value has the same access control level
-as the original wrapped property.
+래핑된 프로퍼티의 *투영된 값*은 프로퍼티 래퍼가 추가 기능을 노출하기 위해 사용할 수 있는 두 번째 값이다. 프로퍼티 래퍼 타입의 작성자는 투영된 값의 의미를 결정하고, 투영된 값이 노출하는 인터페이스를 정의할 책임이 있다. 프로퍼티 래퍼에서 값을 투영하려면, 래퍼 타입에 `projectedValue` 인스턴스 프로퍼티를 정의해야 한다. 컴파일러는 투영된 값에 대한 식별자를 생성하며, 이때 래핑된 프로퍼티 이름 앞에 달러 기호(`$`)를 붙인다. 예를 들어, `someProperty`의 투영된 값은 `$someProperty`이다. 투영된 값은 원래 래핑된 프로퍼티와 동일한 접근 제어 수준을 가진다.
 
 ```swift
 @propertyWrapper
@@ -1661,118 +1051,55 @@ s.$x.wrapper  // WrapperWithProjection value
   ```
 -->
 
+
 ### resultBuilder
 
-Apply this attribute to a class, structure, or enumeration
-to use that type as a result builder.
-A *result builder* is a type
-that builds a nested data structure step by step.
-You use result builders to implement a domain-specific language (DSL)
-for creating nested data structures in a natural, declarative way.
-For an example of how to use the `resultBuilder` attribute,
-see <doc:AdvancedOperators#Result-Builders>.
+이 속성을 클래스, 구조체, 혹은 열거형에 적용하면 해당 타입을 결과 빌더로 사용할 수 있다. **결과 빌더**는 단계별로 중첩된 데이터 구조를 만드는 타입이다. 결과 빌더를 사용하면 자연스럽고 선언적인 방식으로 중첩된 데이터 구조를 생성하는 도메인 특화 언어(DSL)를 구현할 수 있다. `resultBuilder` 속성을 어떻게 사용하는지 예제를 보려면 <doc:AdvancedOperators#Result-Builders>를 참고한다.
 
-#### Result-Building Methods
 
-A result builder implements static methods described below.
-Because all of the result builder's functionality
-is exposed through static methods,
-you don't ever initialize an instance of that type.
-A result builder must implement either the `buildBlock(_:)` method
-or both the `buildPartialBlock(first:)`
-and `buildPartialBlock(accumulated:next:)` methods.
-The other methods ---
-which enable additional functionality in the DSL ---
-are optional.
-The declaration of a result builder type
-doesn't actually have to include any protocol conformance.
+#### 결과 빌더 메서드
 
-The description of the static methods uses three types as placeholders.
-The type `Expression` is a placeholder
-for the type of the result builder's input,
-`Component` is a placeholder for the type of a partial result,
-and `FinalResult` is a placeholder
-for the type of the result that the result builder produces.
-You replace these types with the actual types that your result builder uses.
-If your result-building methods
-don't specify a type for `Expression` or `FinalResult`,
-they default to being the same as `Component`.
+결과 빌더는 아래 설명된 정적 메서드를 구현한다. 결과 빌더의 모든 기능이 정적 메서드를 통해 제공되기 때문에, 해당 타입의 인스턴스를 초기화할 필요가 없다. 결과 빌더는 `buildBlock(_:)` 메서드 또는 `buildPartialBlock(first:)`와 `buildPartialBlock(accumulated:next:)` 메서드를 모두 구현해야 한다. DSL에서 추가 기능을 가능하게 하는 다른 메서드들은 선택 사항이다. 결과 빌더 타입의 선언은 실제로 프로토콜 준수를 포함할 필요가 없다.
 
-The block-building methods are as follows:
+정적 메서드 설명에는 세 가지 타입이 자리 표시자로 사용된다. `Expression` 타입은 결과 빌더의 입력 타입을 나타내는 자리 표시자이고, `Component`는 부분 결과의 타입을 나타내는 자리 표시자이며, `FinalResult`는 결과 빌더가 생성하는 최종 결과의 타입을 나타내는 자리 표시자이다. 이 타입들은 결과 빌더가 실제로 사용하는 타입으로 대체한다. 결과 빌더 메서드가 `Expression` 또는 `FinalResult`에 대한 타입을 지정하지 않으면, 기본적으로 `Component`와 동일한 타입으로 간주한다.
+
+블록 빌딩 메서드는 다음과 같다:
 
 - term `static func buildBlock(_ components: Component...) -> Component`:
-  Combines an array of partial results into a single partial result.
+  여러 부분 결과를 하나의 부분 결과로 결합한다.
 
 - term `static func buildPartialBlock(first: Component) -> Component`:
-  Builds a partial result component from the first component.
-  Implement both this method and `buildPartialBlock(accumulated:next:)`
-  to support building blocks one component at a time.
-  Compared to `buildBlock(_:)`,
-  this approach reduces the need for generic overloads
-  that handle different numbers of arguments.
+  첫 번째 컴포넌트로부터 부분 결과를 생성한다. 이 메서드와 `buildPartialBlock(accumulated:next:)`를 모두 구현하여 한 번에 하나의 컴포넌트씩 블록을 빌드할 수 있다. `buildBlock(_:)`에 비해 이 방법은 다양한 수의 인자를 처리하기 위한 제네릭 오버로드의 필요성을 줄인다.
 
 - term `static func buildPartialBlock(accumulated: Component, next: Component) -> Component`:
-  Builds a partial result component
-  by combining an accumulated component with a new component.
-  Implement both this method and `buildPartialBlock(first:)`
-  to support building blocks one component at a time.
-  Compared to `buildBlock(_:)`,
-  this approach reduces the need for generic overloads
-  that handle different numbers of arguments.
+  누적된 컴포넌트와 새로운 컴포넌트를 결합하여 부분 결과를 생성한다. 이 메서드와 `buildPartialBlock(first:)`를 모두 구현하여 한 번에 하나의 컴포넌트씩 블록을 빌드할 수 있다. `buildBlock(_:)`에 비해 이 방법은 다양한 수의 인자를 처리하기 위한 제네릭 오버로드의 필요성을 줄인다.
 
-A result builder can implement all three of the block-building methods listed above;
-in that case, availability determines which method is called.
-By default, Swift calls the `buildPartialBlock(first:)` and `buildPartialBlock(accumulated:next:)`
-methods. To make Swift call `buildBlock(_:)` instead,
-mark the enclosing declaration as being available
-before the availability you write on `buildPartialBlock(first:)` and
-`buildPartialBlock(accumulated:next:)`.
+결과 빌더는 위에 나열된 세 가지 블록 빌딩 메서드를 모두 구현할 수 있다. 이 경우, 사용 가능성에 따라 어떤 메서드가 호출될지 결정된다. 기본적으로 Swift는 `buildPartialBlock(first:)`와 `buildPartialBlock(accumulated:next:)` 메서드를 호출한다. Swift가 `buildBlock(_:)`을 호출하도록 하려면, `buildPartialBlock(first:)`와 `buildPartialBlock(accumulated:next:)`에 작성한 사용 가능성 이전에 해당 선언을 사용 가능으로 표시해야 한다.
 
-The additional result-building methods are as follows:
+추가 결과 빌딩 메서드는 다음과 같다:
 
 - term `static func buildOptional(_ component: Component?) -> Component`:
-  Builds a partial result from a partial result that can be `nil`.
-  Implement this method to support `if` statements
-  that don’t include an `else` clause.
+  `nil`일 수 있는 부분 결과로부터 부분 결과를 생성한다. `else` 절이 없는 `if` 문을 지원하려면 이 메서드를 구현한다.
 
 - term `static func buildEither(first: Component) -> Component`:
-  Builds a partial result whose value varies depending on some condition.
-  Implement both this method and `buildEither(second:)`
-  to support `switch` statements
-  and `if` statements that include an `else` clause.
+  특정 조건에 따라 값이 달라지는 부분 결과를 생성한다. `switch` 문과 `else` 절이 포함된 `if` 문을 지원하려면 이 메서드와 `buildEither(second:)`를 모두 구현한다.
 
 - term `static func buildEither(second: Component) -> Component`:
-  Builds a partial result whose value varies depending on some condition.
-  Implement both this method and `buildEither(first:)`
-  to support `switch` statements
-  and `if` statements that include an `else` clause.
+  특정 조건에 따라 값이 달라지는 부분 결과를 생성한다. `switch` 문과 `else` 절이 포함된 `if` 문을 지원하려면 이 메서드와 `buildEither(first:)`를 모두 구현한다.
 
 - term `static func buildArray(_ components: [Component]) -> Component`:
-  Builds a partial result from an array of partial results.
-  Implement this method to support `for` loops.
+  부분 결과 배열로부터 부분 결과를 생성한다. `for` 루프를 지원하려면 이 메서드를 구현한다.
 
 - term `static func buildExpression(_ expression: Expression) -> Component`:
-  Builds a partial result from an expression.
-  You can implement this method to perform preprocessing ---
-  for example, converting expressions to an internal type ---
-  or to provide additional information for type inference at use sites.
+  표현식으로부터 부분 결과를 생성한다. 이 메서드를 구현하여 전처리를 수행하거나(예: 표현식을 내부 타입으로 변환) 사용 지점에서 타입 추론을 위한 추가 정보를 제공할 수 있다.
 
 - term `static func buildFinalResult(_ component: Component) -> FinalResult`:
-  Builds a final result from a partial result.
-  You can implement this method as part of a result builder
-  that uses a different type for partial and final results,
-  or to perform other postprocessing on a result before returning it.
+  부분 결과로부터 최종 결과를 생성한다. 부분 결과와 최종 결과에 대해 다른 타입을 사용하는 결과 빌더의 일부로 이 메서드를 구현하거나, 결과를 반환하기 전에 다른 후처리를 수행할 수 있다.
 
 - term `static func buildLimitedAvailability(_ component: Component) -> Component`:
-  Builds a partial result that erases type information.
-  You can implement this method to prevent type information
-  from propagating outside a compiler-control statement
-  that performs an availability check.
+  타입 정보를 지우는 부분 결과를 생성한다. 이 메서드를 구현하여 컴파일러 제어문 외부로 타입 정보가 전파되는 것을 방지할 수 있다.
 
-For example, the code below defines a simple result builder
-that builds an array of integers.
-This code defines `Component` and `Expression` as type aliases,
-to make it easier to match the examples below to the list of methods above.
+예를 들어, 아래 코드는 정수 배열을 생성하는 간단한 결과 빌더를 정의한다. 이 코드는 `Component`와 `Expression`을 타입 별칭으로 정의하여 위의 메서드 목록과 예제를 쉽게 매칭할 수 있게 한다.
 
 ```swift
 @resultBuilder
@@ -1835,16 +1162,12 @@ struct ArrayBuilder {
   ```
 -->
 
-#### Result Transformations
 
-The following syntactic transformations are applied recursively
-to turn code that uses result-builder syntax
-into code that calls the static methods of the result builder type:
+#### 결과 변환
 
-- If the result builder has a `buildExpression(_:)` method,
-  each expression becomes a call to that method.
-  This transformation is always first.
-  For example, the following declarations are equivalent:
+다음 구문 변환은 결과 빌더 구문을 사용하는 코드를 결과 빌더 타입의 정적 메서드를 호출하는 코드로 재귀적으로 변환한다:
+
+- 결과 빌더에 `buildExpression(_:)` 메서드가 있다면, 각 표현식은 해당 메서드 호출로 변환된다. 이 변환은 항상 첫 번째로 적용된다. 예를 들어, 다음 두 선언은 동일하다:
 
   ```swift
   @ArrayBuilder var builderNumber: [Int] { 10 }
@@ -1860,24 +1183,12 @@ into code that calls the static methods of the result builder type:
     >> assert(builderNumber == manualNumber)
     ```
   -->
-- An assignment statement is transformed like an expression,
-  but is understood to evaluate to `()`.
-  You can define an overload of `buildExpression(_:)`
-  that takes an argument of type `()` to handle assignments specifically.
-- A branch statement that checks an availability condition
-  becomes a call to the `buildLimitedAvailability(_:)` method,
-  if that method is implemented.
-  If you don't implement `buildLimitedAvailability(_:)`,
-  then branch statements that check availability
-  use the same transformations as other branch statements.
-  This transformation happens before the transformation into a call to
-  `buildEither(first:)`, `buildEither(second:)`, or `buildOptional(_:)`.
 
-  You use the `buildLimitedAvailability(_:)` method to erase type information
-  that changes depending on which branch is taken.
-  For example,
-  the `buildEither(first:)` and  `buildEither(second:)` methods below
-  use a generic type that captures type information about both branches.
+- 할당문은 표현식처럼 변환되지만, `()`를 반환한다고 간주한다. `buildExpression(_:)` 메서드를 오버로드하여 `()` 타입의 인자를 받는 버전을 정의하면 할당문을 특별히 처리할 수 있다.
+
+- 가용성 조건을 확인하는 분기문은 `buildLimitedAvailability(_:)` 메서드가 구현된 경우 해당 메서드 호출로 변환된다. `buildLimitedAvailability(_:)`를 구현하지 않으면, 가용성을 확인하는 분기문은 다른 분기문과 동일한 변환을 거친다. 이 변환은 `buildEither(first:)`, `buildEither(second:)`, 또는 `buildOptional(_:)` 호출로 변환되기 전에 수행된다.
+
+  `buildLimitedAvailability(_:)` 메서드는 선택된 분기에 따라 달라지는 타입 정보를 지우는 데 사용된다. 예를 들어, 아래의 `buildEither(first:)`와 `buildEither(second:)` 메서드는 두 분기에 대한 타입 정보를 캡처하는 제네릭 타입을 사용한다.
 
   ```swift
   protocol Drawable {
@@ -1915,9 +1226,7 @@ into code that calls the static methods of the result builder type:
   }
   ```
 
-  <!-- Comment block with swifttest for the code listing above is after the end of this bulleted list, due to tooling limitations. -->
-
-  However, this approach causes a problem in code that has availability checks:
+  그러나 이 접근 방식은 가용성 검사가 있는 코드에서 문제를 일으킬 수 있다:
 
   ```swift
   @available(macOS 99, *)
@@ -1928,28 +1237,17 @@ into code that calls the static methods of the result builder type:
   }
   @DrawingBuilder var brokenDrawing: Drawable {
       if #available(macOS 99, *) {
-          FutureText("Inside.future")  // Problem
+          FutureText("Inside.future")  // 문제 발생
       } else {
           Text("Inside.present")
       }
   }
-  // The type of brokenDrawing is Line<DrawEither<Line<FutureText>, Line<Text>>>
+  // brokenDrawing의 타입은 Line<DrawEither<Line<FutureText>, Line<Text>>>
   ```
 
-  <!-- Comment block with swifttest for the code listing above is after the end of this bulleted list, due to tooling limitations. -->
+  위 코드에서 `FutureText`는 `DrawEither` 제네릭 타입의 일부로 `brokenDrawing`의 타입에 나타난다. 이는 런타임에 `FutureText`가 사용되지 않는 경우에도 프로그램이 충돌할 수 있다.
 
-  In the code above,
-  `FutureText` appears as part of the type of `brokenDrawing`
-  because it's one of the types in the `DrawEither` generic type.
-  This could cause your program to crash if `FutureText`
-  isn't available at runtime,
-  even in the case where that type is explicitly not being used.
-
-  To solve this problem,
-  implement a `buildLimitedAvailability(_:)` method
-  to erase type information by returning a type that's always available.
-  For example, the code below builds an `AnyDrawable` value
-  from its availability check.
+  이 문제를 해결하기 위해 `buildLimitedAvailability(_:)` 메서드를 구현하여 항상 사용 가능한 타입을 반환함으로써 타입 정보를 지울 수 있다. 예를 들어, 아래 코드는 가용성 검사에서 `AnyDrawable` 값을 생성한다.
 
   ```swift
   struct AnyDrawable: Drawable {
@@ -1969,27 +1267,12 @@ into code that calls the static methods of the result builder type:
           Text("Inside.present")
       }
   }
-  // The type of typeErasedDrawing is Line<DrawEither<AnyDrawable, Line<Text>>>
+  // typeErasedDrawing의 타입은 Line<DrawEither<AnyDrawable, Line<Text>>>
   ```
 
-  <!-- Comment block with swifttest for the code listing above is after the end of this bulleted list, due to tooling limitations. -->
+- 분기문은 `buildEither(first:)`와 `buildEither(second:)` 메서드에 대한 일련의 중첩 호출로 변환된다. 문장의 조건과 케이스는 이진 트리의 리프 노드에 매핑되며, 문장은 루트 노드에서 해당 리프 노드로의 경로를 따라 `buildEither` 메서드의 중첩 호출이 된다.
 
-- A branch statement becomes a series of nested calls to the
-  `buildEither(first:)` and `buildEither(second:)` methods.
-  The statements' conditions and cases are mapped onto
-  the leaf nodes of a binary tree,
-  and the statement becomes
-  a nested call to the `buildEither` methods
-  following the path to that leaf node from the root node.
-
-  For example, if you write a switch statement that has three cases,
-  the compiler uses a binary tree with three leaf nodes.
-  Likewise,
-  because the path from the root node to the second case is
-  "second child" and then "first child",
-  that case becomes a nested call like
-  `buildEither(first: buildEither(second: ... ))`.
-  The following declarations are equivalent:
+  예를 들어, 세 가지 케이스가 있는 `switch` 문을 작성하면 컴파일러는 세 개의 리프 노드가 있는 이진 트리를 사용한다. 마찬가지로, 루트 노드에서 두 번째 케이스로의 경로가 "두 번째 자식" 다음에 "첫 번째 자식"이라면, 해당 케이스는 `buildEither(first: buildEither(second: ... ))`와 같은 중첩 호출이 된다. 다음 두 선언은 동일하다:
 
   ```swift
   let someNumber = 19
@@ -2018,48 +1301,7 @@ into code that calls the static methods of the result builder type:
   }
   ```
 
-  <!--
-    - test: `array-result-builder`
-
-    ```swifttest
-    -> let someNumber = 19
-    -> @ArrayBuilder var builderConditional: [Int] {
-           if someNumber < 12 {
-               31
-           } else if someNumber == 19 {
-               32
-           } else {
-               33
-           }
-       }
-    << Building second... [32]
-    << Building first... [32]
-
-    -> var manualConditional: [Int]
-    -> if someNumber < 12 {
-           let partialResult = ArrayBuilder.buildExpression(31)
-           let outerPartialResult = ArrayBuilder.buildEither(first: partialResult)
-           manualConditional = ArrayBuilder.buildEither(first: outerPartialResult)
-       } else if someNumber == 19 {
-           let partialResult = ArrayBuilder.buildExpression(32)
-           let outerPartialResult = ArrayBuilder.buildEither(second: partialResult)
-           manualConditional = ArrayBuilder.buildEither(first: outerPartialResult)
-       } else {
-           let partialResult = ArrayBuilder.buildExpression(33)
-           manualConditional = ArrayBuilder.buildEither(second: partialResult)
-       }
-    >> assert(builderConditional == manualConditional)
-    << Building second... [32]
-    << Building first... [32]
-    ```
-  -->
-- A branch statement that might not produce a value,
-  like an `if` statement without an `else` clause,
-  becomes a call to `buildOptional(_:)`.
-  If the `if` statement's condition is satisfied,
-  its code block is transformed and passed as the argument;
-  otherwise, `buildOptional(_:)` is called with `nil` as its argument.
-  For example, the following declarations are equivalent:
+- 값을 생성하지 않을 수 있는 분기문(예: `else` 절이 없는 `if` 문)은 `buildOptional(_:)` 호출로 변환된다. `if` 문의 조건이 충족되면 해당 코드 블록이 변환되어 인자로 전달되고, 그렇지 않으면 `buildOptional(_:)`이 `nil`을 인자로 호출된다. 예를 들어, 다음 두 선언은 동일하다:
 
   ```swift
   @ArrayBuilder var builderOptional: [Int] {
@@ -2073,34 +1315,7 @@ into code that calls the static methods of the result builder type:
   var manualOptional = ArrayBuilder.buildOptional(partialResult)
   ```
 
-  <!--
-    - test: `array-result-builder`
-
-    ```swifttest
-    -> @ArrayBuilder var builderOptional: [Int] {
-           if (someNumber % 2) == 1 { 20 }
-       }
-    << Building optional... Optional([20])
-
-    -> var partialResult: [Int]? = nil
-    -> if (someNumber % 2) == 1 {
-           partialResult = ArrayBuilder.buildExpression(20)
-       }
-    -> var manualOptional = ArrayBuilder.buildOptional(partialResult)
-    << Building optional... Optional([20])
-    >> assert(builderOptional == manualOptional)
-    ```
-  -->
-- If the result builder implements
-  the `buildPartialBlock(first:)`
-  and `buildPartialBlock(accumulated:next:)` methods,
-  a code block or `do` statement becomes a call to those methods.
-  The first statement inside of the block
-  is transformed to become an argument
-  to the `buildPartialBlock(first:)` method,
-  and the remaining statements become nested calls
-  to the `buildPartialBlock(accumulated:next:)` method.
-  For example, the following declarations are equivalent:
+- 결과 빌더가 `buildPartialBlock(first:)`와 `buildPartialBlock(accumulated:next:)` 메서드를 구현한다면, 코드 블록 또는 `do` 문은 해당 메서드 호출로 변환된다. 블록 내의 첫 번째 문장은 `buildPartialBlock(first:)` 메서드의 인자로 변환되고, 나머지 문장은 `buildPartialBlock(accumulated:next:)` 메서드의 중첩 호출이 된다. 예를 들어, 다음 두 선언은 동일하다:
 
   ```swift
   struct DrawBoth<First: Drawable, Second: Drawable>: Drawable {
@@ -2138,45 +1353,7 @@ into code that calls the static methods of the result builder type:
   )
   ```
 
-  <!--
-    - test: `drawing-partial-block-builder`
-
-    ```swifttest
-    -> @resultBuilder
-    -> struct DrawingPartialBlockBuilder {
-           static func buildPartialBlock<D: Drawable>(first: D) -> D {
-               return first
-           }
-           static func buildPartialBlock<Accumulated: Drawable, Next: Drawable>(
-               accumulated: Accumulated, next: Next
-           ) -> DrawBoth<Accumulated, Next> {
-               return DrawBoth(first: accumulated, second: next)
-           }
-       }
-    -> @DrawingPartialBlockBuilder var builderBlock: some Drawable {
-          Text("First")
-          Line(elements: [Text("Second"), Text("Third")])
-          Text("Last")
-       }
-
-    -> let partialResult1 = DrawingPartialBlockBuilder.buildPartialBlock(first: Text("first"))
-    -> let partialResult2 = DrawingPartialBlockBuilder.buildPartialBlock(
-          accumulated: partialResult1,
-          next: Line(elements: [Text("Second"), Text("Third")])
-       )
-       let manualResult = DrawingPartialBlockBuilder.buildPartialBlock(
-           accumulated: partialResult2,
-           next: Text("Last")
-       )
-    >> assert(type(of: builderBlock) == type(of: manualResult))
-    ```
-  -->
-- Otherwise, a code block or `do` statement
-  becomes a call to the `buildBlock(_:)` method.
-  Each of the statements inside of the block is transformed,
-  one at a time,
-  and they become the arguments to the `buildBlock(_:)` method.
-  For example, the following declarations are equivalent:
+- 그렇지 않으면, 코드 블록 또는 `do` 문은 `buildBlock(_:)` 메서드 호출로 변환된다. 블록 내의 각 문장은 하나씩 변환되어 `buildBlock(_:)` 메서드의 인자가 된다. 예를 들어, 다음 두 선언은 동일하다:
 
   ```swift
   @ArrayBuilder var builderBlock: [Int] {
@@ -2192,30 +1369,7 @@ into code that calls the static methods of the result builder type:
   )
   ```
 
-  <!--
-    - test: `array-result-builder`
-
-    ```swifttest
-    -> @ArrayBuilder var builderBlock: [Int] {
-           100
-           200
-           300
-       }
-
-    -> var manualBlock = ArrayBuilder.buildBlock(
-           ArrayBuilder.buildExpression(100),
-           ArrayBuilder.buildExpression(200),
-           ArrayBuilder.buildExpression(300)
-       )
-    >> assert(builderBlock == manualBlock)
-    ```
-  -->
-- A `for` loop becomes a temporary variable, a `for` loop,
-  and call to the `buildArray(_:)` method.
-  The new `for` loop iterates over the sequence
-  and appends each partial result to that array.
-  The temporary array is passed as the argument in the `buildArray(_:)` call.
-  For example, the following declarations are equivalent:
+- `for` 루프는 임시 변수, `for` 루프, 그리고 `buildArray(_:)` 메서드 호출로 변환된다. 새로운 `for` 루프는 시퀀스를 순회하며 각 부분 결과를 배열에 추가한다. 임시 배열은 `buildArray(_:)` 호출의 인자로 전달된다. 예를 들어, 다음 두 선언은 동일하다:
 
   ```swift
   @ArrayBuilder var builderArray: [Int] {
@@ -2232,208 +1386,31 @@ into code that calls the static methods of the result builder type:
   let manualArray = ArrayBuilder.buildArray(temporary)
   ```
 
-  <!--
-    - test: `array-result-builder`
+- 결과 빌더에 `buildFinalResult(_:)` 메서드가 있다면, 최종 결과는 해당 메서드 호출로 변환된다. 이 변환은 항상 마지막에 적용된다.
 
-    ```swifttest
-    -> @ArrayBuilder var builderArray: [Int] {
-           for i in 5...7 {
-               100 + i
-           }
-       }
+변환 동작은 임시 변수를 기준으로 설명되지만, 결과 빌더를 사용해도 실제로는 코드의 나머지 부분에서 볼 수 있는 새로운 선언이 생성되지 않는다.
 
-    -> var temporary: [[Int]] = []
-    -> for i in 5...7 {
-           let partialResult = ArrayBuilder.buildExpression(100 + i)
-           temporary.append(partialResult)
-       }
-    -> let manualArray = ArrayBuilder.buildArray(temporary)
-    >> assert(builderArray == manualArray)
-    ```
-  -->
-- If the result builder has a `buildFinalResult(_:)` method,
-  the final result becomes a call to that method.
-  This transformation is always last.
+결과 빌더가 변환하는 코드에서는 `break`, `continue`, `defer`, `guard`, `return` 문, `while` 문, 또는 `do`-`catch` 문을 사용할 수 없다.
 
-<!--
-  - test: `result-builder-limited-availability-broken, result-builder-limited-availability-ok`, `drawing-partial-result-builder`
+변환 프로세스는 코드 내의 선언을 변경하지 않으므로, 표현식을 조금씩 구축하기 위해 임시 상수와 변수를 사용할 수 있다. 또한 `throw` 문, 컴파일 타임 진단 문, 또는 `return` 문이 포함된 클로저도 변경되지 않는다.
 
-  ```swifttest
-  -> protocol Drawable {
-         func draw() -> String
-     }
-  -> struct Text: Drawable {
-         var content: String
-         init(_ content: String) { self.content = content }
-         func draw() -> String { return content }
-     }
-  -> struct Line<D: Drawable>: Drawable {
-         var elements: [D]
-         func draw() -> String {
-             return elements.map { $0.draw() }.joined(separator: "")
-         }
-     }
-  -> struct DrawEither<First: Drawable, Second: Drawable>: Drawable {
-         var content: Drawable
-         func draw() -> String { return content.draw() }
-     }
+가능한 경우, 변환은 통합된다. 예를 들어, 표현식 `4 + 5 * 6`은 해당 함수에 대한 여러 호출 대신 `buildExpression(4 + 5 * 6)`이 된다. 마찬가지로, 중첩된 분기문은 `buildEither` 메서드 호출의 단일 이진 트리가 된다.
 
-  -> @resultBuilder
-     struct DrawingBuilder {
-         static func buildBlock<D: Drawable>(_ components: D...) -> Line<D> {
-             return Line(elements: components)
-         }
-         static func buildEither<First, Second>(first: First)
-                 -> DrawEither<First, Second> {
-             return DrawEither(content: first)
-         }
-         static func buildEither<First, Second>(second: Second)
-                 -> DrawEither<First, Second> {
-             return DrawEither(content: second)
-         }
-     }
-  ```
--->
 
-<!--
-  - test: `result-builder-limited-availability-broken`
+#### 커스텀 결과 빌더 어트리뷰트
 
-  ```swifttest
-  -> @available(macOS 99, *)
-  -> struct FutureText: Drawable {
-         var content: String
-         init(_ content: String) { self.content = content }
-         func draw() -> String { return content }
-     }
-  -> @DrawingBuilder var brokenDrawing: Drawable {
-         if #available(macOS 99, *) {
-             FutureText("Inside.future")  // Problem
-         } else {
-             Text("Inside.present")
-         }
-     }
-  /> The type of brokenDrawing is \(type(of: brokenDrawing))
-  </ The type of brokenDrawing is Line<DrawEither<Line<FutureText>, Line<Text>>>
-  !$ warning: result builder 'DrawingBuilder' does not implement 'buildLimitedAvailability'; this code may crash on earlier versions of the OS
-  !! if #available(macOS 99, *) {
-  !! ^
-  !$ note: add 'buildLimitedAvailability(_:)' to the result builder 'DrawingBuilder' to erase type information for less-available types
-  !! struct DrawingBuilder {
-  !! ^
-  ```
--->
+결과 빌더 타입을 생성하면 동일한 이름의 커스텀 어트리뷰트가 만들어진다. 이 어트리뷰트는 다음과 같은 위치에 적용할 수 있다:
 
-<!--
-  - test: `result-builder-limited-availability-ok`
+- 함수 선언에 적용하면, 결과 빌더가 함수의 본문을 구성한다.
+- getter를 포함하는 변수나 서브스크립트 선언에 적용하면, 결과 빌더가 getter의 본문을 구성한다.
+- 함수 선언의 매개변수에 적용하면, 결과 빌더가 해당 인자로 전달되는 클로저의 본문을 구성한다.
 
-  ```swifttest
-  >> @available(macOS 99, *)
-  >> struct FutureText: Drawable {
-  >>     var content: String
-  >>     init(_ content: String) { self.content = content }
-  >>     func draw() -> String { return content }
-  >> }
-  >> @DrawingBuilder var x: Drawable {
-  >>     if #available(macOS 99, *) {
-  >>         FutureText("Inside.future")
-  >>     } else {
-  >>         Text("Inside.present")
-  >>     }
-  >> }
-  -> struct AnyDrawable: Drawable {
-         var content: Drawable
-         func draw() -> String { return content.draw() }
-     }
-  -> extension DrawingBuilder {
-         static func buildLimitedAvailability(_ content: some Drawable) -> AnyDrawable {
-             return AnyDrawable(content: content)
-         }
-     }
+결과 빌더 어트리뷰트를 적용해도 ABI 호환성에는 영향을 미치지 않는다. 하지만 매개변수에 결과 빌더 어트리뷰트를 적용하면, 이 어트리뷰트가 함수의 인터페이스의 일부가 되어 소스 호환성에 영향을 줄 수 있다.
 
-  -> @DrawingBuilder var typeErasedDrawing: Drawable {
-         if #available(macOS 99, *) {
-             FutureText("Inside.future")
-         } else {
-             Text("Inside.present")
-         }
-     }
-  /> The type of typeErasedDrawing is \(type(of: typeErasedDrawing))
-  </ The type of typeErasedDrawing is Line<DrawEither<AnyDrawable, Line<Text>>>
-  ```
--->
-
-Although the transformation behavior is described in terms of temporary variables,
-using a result builder doesn't actually create any new declarations
-that are visible from the rest of your code.
-
-You can't use
-`break`, `continue`, `defer`, `guard`, or `return` statements,
-`while` statements,
-or `do`-`catch` statements
-in the code that a result builder transforms.
-
-The transformation process doesn't change declarations in the code,
-which lets you use temporary constants and variables
-to build up expressions piece by piece.
-It also doesn't change
-`throw` statements,
-compile-time diagnostic statements,
-or closures that contain a `return` statement.
-
-Whenever possible, transformations are coalesced.
-For example, the expression `4 + 5 * 6` becomes
-`buildExpression(4 + 5 * 6)` rather multiple calls to that function.
-Likewise, nested branch statements become
-a single binary tree of calls to the `buildEither` methods.
-
-<!--
-  - test: `result-builder-transform-complex-expression`
-
-  ```swifttest
-  >> @resultBuilder
-  >> struct ArrayBuilder {
-  >>     static func buildExpression(_ element: Int) -> [Int] {
-  >>         print("Building", element)
-  >>         return [element]
-  >>     }
-  >>     static func buildBlock(_ components: [Int]...) -> [Int] {
-  >>         return Array(components.joined())
-  >>     }
-  >> }
-  >> @ArrayBuilder var x: [Int] {
-  >>     10+12*3
-  >> }
-  << Building 46
-  >> print(x)
-  << [46]
-  ```
--->
-
-#### Custom Result-Builder Attributes
-
-Creating a result builder type creates a custom attribute with the same name.
-You can apply that attribute in the following places:
-
-- On a function declaration,
-  the result builder builds the body of the function.
-- On a variable or subscript declaration that includes a getter,
-  the result builder builds the body of the getter.
-- On a parameter in a function declaration,
-  the result builder builds the body of a closure
-  that's passed as the corresponding argument.
-
-Applying a result builder attribute doesn't impact ABI compatibility.
-Applying a result builder attribute to a parameter
-makes that attribute part of the function's interface,
-which can affect source compatibility.
 
 ### requires_stored_property_inits
 
-Apply this attribute to a class declaration
-to require all stored properties within the class
-to provide default values as part of their definitions.
-This attribute is inferred for any class
-that inherits from `NSManagedObject`.
+이 속성은 클래스 선언에 적용하여 클래스 내 모든 저장 프로퍼티가 정의 시 기본값을 제공하도록 요구한다. 이 속성은 `NSManagedObject`를 상속받는 모든 클래스에서 암시적으로 적용된다.
 
 <!--
   - test: `requires_stored_property_inits-requires-default-values`
@@ -2456,83 +1433,60 @@ that inherits from `NSManagedObject`.
   ```
 -->
 
+
 ### testable
 
-Apply this attribute to an `import` declaration
-to import that module with changes to its access control
-that simplify testing the module's code.
-Entities in the imported module
-that are marked with the `internal` access-level modifier
-are imported as if they were declared with the `public` access-level modifier.
-Classes and class members
-that are marked with the `internal` or `public` access-level modifier
-are imported as if they were declared with the `open` access-level modifier.
-The imported module must be compiled with testing enabled.
+이 속성을 `import` 선언에 적용하면
+모듈의 접근 제어를 변경하여 테스트를 간소화할 수 있다.
+임포트된 모듈 내부에서
+`internal` 접근 레벨으로 표시된 엔티티들은
+`public` 접근 레벨으로 선언된 것처럼 임포트된다.
+`internal` 또는 `public` 접근 레벨으로 표시된
+클래스와 클래스 멤버들은
+`open` 접근 레벨으로 선언된 것처럼 임포트된다.
+임포트된 모듈은 테스트가 활성화된 상태로 컴파일되어야 한다.
+
 
 ### UIApplicationMain
 
-> Deprecated:
-> This attribute is deprecated;
-> use the <doc:Attributes#main> attribute instead.
-> In Swift 6,
-> using this attribute will be an error.
+> **사용 중단:**
+> 이 속성은 더 이상 사용되지 않는다.
+> 대신 <doc:Attributes#main> 속성을 사용한다.
+> Swift 6부터는 이 속성을 사용하면 오류가 발생한다.
 
-Apply this attribute to a class
-to indicate that it's the app delegate.
-Using this attribute is equivalent to calling the
-`UIApplicationMain` function and
-passing this class's name as the name of the delegate class.
+이 속성을 클래스에 적용하여
+앱 델리게이트임을 나타낸다.
+이 속성을 사용하는 것은
+`UIApplicationMain` 함수를 호출하고
+델리게이트 클래스의 이름으로 이 클래스의 이름을 전달하는 것과 같다.
 
-If you don't use this attribute,
-supply a `main.swift` file with code at the top level
-that calls the [`UIApplicationMain(_:_:_:_:)`](https://developer.apple.com/documentation/uikit/1622933-uiapplicationmain) function.
-For example,
-if your app uses a custom subclass of `UIApplication`
-as its principal class,
-call the `UIApplicationMain(_:_:_:_:)` function
-instead of using this attribute.
+이 속성을 사용하지 않는다면,
+`main.swift` 파일을 제공하고
+최상위 수준에서 [`UIApplicationMain(_:_:_:_:)`](https://developer.apple.com/documentation/uikit/1622933-uiapplicationmain) 함수를 호출하는 코드를 작성한다.
+예를 들어,
+앱이 주 클래스로 `UIApplication`의 커스텀 서브클래스를 사용한다면,
+이 속성을 사용하는 대신
+`UIApplicationMain(_:_:_:_:)` 함수를 호출한다.
 
-The Swift code you compile to make an executable
-can contain at most one top-level entry point,
-as discussed in <doc:Declarations#Top-Level-Code>.
+실행 파일을 만들기 위해 컴파일하는 Swift 코드는
+최대 하나의 최상위 진입점만 포함할 수 있다.
+이는 <doc:Declarations#Top-Level-Code>에서 설명한 바와 같다.
+
 
 ### unchecked
 
-Apply this attribute to a protocol type
-as part of a type declaration's list of adopted protocols
-to turn off enforcement of that protocol's requirements.
+이 속성을 프로토콜 타입에 적용해 선언된 타입의 채택 프로토콜 목록에 포함시키면, 해당 프로토콜의 요구사항을 강제하지 않는다.
 
-The only supported protocol is [`Sendable`](https://developer.apple.com/documentation/swift/sendable).
+현재 지원되는 유일한 프로토콜은 [`Sendable`](https://developer.apple.com/documentation/swift/sendable)이다.
+
 
 ### usableFromInline
 
-Apply this attribute to a
-function, method, computed property, subscript,
-initializer, or deinitializer declaration
-to allow that symbol to be used in inlinable code
-that's defined in the same module as the declaration.
-The declaration must have the `internal` access-level modifier.
-A structure or class marked `usableFromInline`
-can use only types that are public or `usableFromInline` for its properties.
-An enumeration marked `usableFromInline`
-can use only types that are public or `usableFromInline`
-for the raw values and associated values of its cases.
+이 속성을 함수, 메서드, 계산된 프로퍼티, 서브스크립트, 이니셜라이저, 혹은 디이니셜라이저 선언에 적용하면, 동일 모듈 내에서 정의된 인라인 가능한 코드에서 해당 심볼을 사용할 수 있다. 이때, 선언은 반드시 `internal` 접근 레벨을 가져야 한다. `usableFromInline`으로 표시된 구조체나 클래스는 프로퍼티에 대해 `public`이거나 `usableFromInline`인 타입만 사용할 수 있다. `usableFromInline`으로 표시된 열거형은 케이스의 원시 값과 연관 값에 대해 `public`이거나 `usableFromInline`인 타입만 사용할 수 있다.
 
-Like the `public` access-level modifier,
-this attribute
-exposes the declaration as part of the module's public interface.
-Unlike `public`,
-the compiler doesn't allow declarations marked with `usableFromInline`
-to be referenced by name in code outside the module,
-even though the declaration's symbol is exported.
-However, code outside the module might still be able
-to interact with the declaration's symbol by using runtime behavior.
+`public` 접근 레벨과 마찬가지로, 이 속성은 선언을 모듈의 공개 인터페이스의 일부로 노출한다. 그러나 `public`과 달리, 컴파일러는 `usableFromInline`으로 표시된 선언을 모듈 외부의 코드에서 이름으로 참조하는 것을 허용하지 않는다. 심볼이 내보내지더라도 말이다. 하지만 모듈 외부의 코드는 여전히 런타임 동작을 통해 해당 심볼과 상호작용할 수 있다.
 
-Declarations marked with the `inlinable` attribute
-are implicitly usable from inlinable code.
-Although either `inlinable` or `usableFromInline`
-can be applied to `internal` declarations,
-applying both attributes is an error.
+`inlinable` 속성으로 표시된 선언은 암묵적으로 인라인 가능한 코드에서 사용할 수 있다. `inlinable`이나 `usableFromInline` 중 하나는 `internal` 선언에 적용할 수 있지만, 두 속성을 동시에 적용하면 오류가 발생한다.
 
 <!--
   - test: `usableFromInline-and-inlinable-is-redundant`
@@ -2545,138 +1499,77 @@ applying both attributes is an error.
   ```
 -->
 
+
 ### warn_unqualified_access
 
-Apply this attribute to a
-top-level function, instance method, or class or static method
-to trigger warnings when that function or method is used
-without a preceding qualifier,
-such as a module name, type name, or instance variable or constant.
-Use this attribute to help discourage ambiguity between functions
-with the same name that are accessible from the same scope.
+이 속성은 최상위 함수, 인스턴스 메서드, 클래스 또는 정적 메서드에 적용한다. 해당 함수나 메서드가 모듈 이름, 타입 이름, 인스턴스 변수 또는 상수와 같은 한정자 없이 사용될 때 경고를 트리거한다. 이 속성을 사용하면 동일한 스코프에서 접근 가능한 동일한 이름의 함수 간 모호성을 줄이는 데 도움이 된다.
 
-For example,
-the Swift standard library includes both a top-level
-[`min(_:_:)`](https://developer.apple.com/documentation/swift/1538339-min/)
-function and a
-[`min()`](https://developer.apple.com/documentation/swift/sequence/1641174-min)
-method for sequences with comparable elements.
-The sequence method is declared with the `warn_unqualified_access` attribute
-to help reduce confusion
-when attempting to use one or the other from within a `Sequence` extension.
+예를 들어, Swift 표준 라이브러리에는 최상위 [`min(_:_:)`](https://developer.apple.com/documentation/swift/1538339-min/) 함수와 비교 가능한 요소를 가진 시퀀스를 위한 [`min()`](https://developer.apple.com/documentation/swift/sequence/1641174-min) 메서드가 모두 포함되어 있다. 시퀀스 메서드는 `warn_unqualified_access` 속성과 함께 선언되어, `Sequence` 확장 내에서 둘 중 하나를 사용하려고 할 때 혼동을 줄이는 데 도움을 준다.
 
-### Declaration Attributes Used by Interface Builder
 
-Interface Builder attributes are declaration attributes
-used by Interface Builder to synchronize with Xcode.
-Swift provides the following Interface Builder attributes:
-`IBAction`, `IBSegueAction`, `IBOutlet`,
-`IBDesignable`, and `IBInspectable`.
-These attributes are conceptually the same as their
-Objective-C counterparts.
+### 인터페이스 빌더에서 사용하는 선언 속성
+
+인터페이스 빌더 속성은 Xcode와 동기화하기 위해 인터페이스 빌더에서 사용하는 선언 속성이다. Swift는 다음과 같은 인터페이스 빌더 속성을 제공한다: `IBAction`, `IBSegueAction`, `IBOutlet`, `IBDesignable`, `IBInspectable`. 이 속성들은 개념적으로 Objective-C의 동일한 속성들과 같다.
 
 <!--
   TODO: Need to link to the relevant discussion of these attributes in Objc.
 -->
 
-You apply the `IBOutlet` and `IBInspectable` attributes
-to property declarations of a class.
-You apply the `IBAction` and `IBSegueAction` attribute
-to method declarations of a class
-and the `IBDesignable` attribute to class declarations.
+`IBOutlet`과 `IBInspectable` 속성은 클래스의 프로퍼티 선언에 적용한다. `IBAction`과 `IBSegueAction` 속성은 클래스의 메서드 선언에, `IBDesignable` 속성은 클래스 선언에 적용한다.
 
-Applying the `IBAction`, `IBSegueAction`, `IBOutlet`,
-`IBDesignable`, or `IBInspectable` attribute
-also implies the `objc` attribute.
+`IBAction`, `IBSegueAction`, `IBOutlet`, `IBDesignable`, `IBInspectable` 속성을 적용하면 `objc` 속성도 암시적으로 적용된다.
 
-## Type Attributes
 
-You can apply type attributes to types only.
+## 타입 속성
+
+타입 속성은 타입에만 적용할 수 있다.
+
 
 ### autoclosure
 
-Apply this attribute to delay the evaluation of an expression
-by automatically wrapping that expression in a closure with no arguments.
-You apply it to a parameter's type in a function or method declaration,
-for a parameter whose type is a function type that takes no arguments
-and that returns a value of the type of the expression.
-For an example of how to use the `autoclosure` attribute,
-see <doc:Closures#Autoclosures> and <doc:Types#Function-Type>.
+이 속성은 표현식의 평가를 지연하기 위해 사용한다. 인자가 없는 클로저로 표현식을 자동으로 감싸는 방식으로 동작한다. 함수나 메서드 선언에서 파라미터의 타입에 적용할 수 있으며, 이때 파라미터의 타입은 인자가 없고 표현식의 타입을 반환하는 함수 타입이어야 한다. `autoclosure` 속성을 사용하는 방법은 <doc:Closures#Autoclosures>와 <doc:Types#Function-Type>에서 확인할 수 있다.
 
-### convention
 
-Apply this attribute to the type of a function
-to indicate its calling conventions.
+### 호출 규약
 
-The `convention` attribute always appears with
-one of the following arguments:
+함수 타입에 이 속성을 적용하면 해당 함수의 호출 규약을 지정할 수 있다.
 
-- The `swift` argument indicates a Swift function reference.
-  This is the standard calling convention for function values in Swift.
-- The `block` argument indicates an Objective-C compatible block reference.
-  The function value is represented as a reference to the block object,
-  which is an `id`-compatible Objective-C object that embeds its invocation
-  function within the object.
-  The invocation function uses the C calling convention.
-- The `c` argument indicates a C function reference.
-  The function value carries no context and uses the C calling convention.
+`convention` 속성은 항상 다음 인자 중 하나와 함께 사용된다:
+
+- `swift` 인자는 Swift 함수 참조를 나타낸다. 이는 Swift에서 함수 값의 표준 호출 규약이다.
+- `block` 인자는 Objective-C와 호환되는 블록 참조를 나타낸다. 함수 값은 블록 객체에 대한 참조로 표현되며, 이 객체는 `id`와 호환되는 Objective-C 객체로, 객체 내부에 호출 함수를 포함한다. 호출 함수는 C 호출 규약을 사용한다.
+- `c` 인자는 C 함수 참조를 나타낸다. 함수 값은 컨텍스트를 가지지 않으며 C 호출 규약을 사용한다.
 
 <!--
-  Note: @convention(thin) is private, even though it doesn't have an underscore
+  참고: @convention(thin)은 비공개이며, 밑줄이 없더라도 비공개로 간주된다.
   https://forums.swift.org/t/12087/6
 -->
 
-With a few exceptions,
-a function of any calling convention can be used
-when a function any other calling convention is needed.
-A nongeneric global function,
-a local function that doesn't capture any local variables,
-or a closure that doesn't capture any local variables
-can be converted to the C calling convention.
-Other Swift functions can't be converted to the C calling convention.
-A function with the Objective-C block calling convention
-can't be converted to the C calling convention.
+몇 가지 예외를 제외하면, 어떤 호출 규약을 가진 함수도 다른 호출 규약이 필요한 경우에 사용할 수 있다. 제네릭이 아닌 전역 함수, 지역 변수를 캡처하지 않는 지역 함수, 또는 지역 변수를 캡처하지 않는 클로저는 C 호출 규약으로 변환할 수 있다. 다른 Swift 함수는 C 호출 규약으로 변환할 수 없다. Objective-C 블록 호출 규약을 가진 함수는 C 호출 규약으로 변환할 수 없다.
+
 
 ### escaping
 
-Apply this attribute to a parameter's type in a function or method declaration
-to indicate that the parameter's value can be stored for later execution.
-This means that the value is allowed to outlive the lifetime of the call.
-Function type parameters with the `escaping` type attribute
-require explicit use of `self.` for properties or methods.
-For an example of how to use the `escaping` attribute,
-see <doc:Closures#Escaping-Closures>.
+이 속성은 함수나 메서드 선언에서 매개변수의 타입에 적용한다. 이를 통해 매개변수의 값을 나중에 실행할 수 있도록 저장할 수 있음을 나타낸다. 즉, 이 값은 호출의 생명주기를 넘어서도 존재할 수 있다. `escaping` 타입 속성이 적용된 함수 타입 매개변수는 프로퍼티나 메서드를 사용할 때 명시적으로 `self.`를 사용해야 한다. `escaping` 속성을 어떻게 사용하는지에 대한 예제는 <doc:Closures#Escaping-Closures>를 참고한다.
+
 
 ### Sendable
 
-Apply this attribute to the type of a function
-to indicate that the function or closure is sendable.
-Applying this attribute to a function type
-has the same meaning as conforming a non–function type
-to the [`Sendable`](https://developer.apple.com/documentation/swift/sendable) protocol.
+이 속성은 함수 타입에 적용하여, 해당 함수나 클로저가 `Sendable`임을 나타낸다. 이 속성을 함수 타입에 적용하는 것은 비함수 타입이 [`Sendable`](https://developer.apple.com/documentation/swift/sendable) 프로토콜을 준수하는 것과 동일한 의미를 가진다.
 
-This attribute is inferred on functions and closures
-if the function or closure is used in a context
-that expects a sendable value,
-and the function or closure satisfies the requirements to be sendable.
+이 속성은 함수나 클로저가 `Sendable` 값이 필요한 문맥에서 사용되고, 해당 함수나 클로저가 `Sendable` 요구 사항을 충족할 경우 자동으로 추론된다.
 
-A sendable function type
-is a subtype of the corresponding nonsendable function type.
+`Sendable` 함수 타입은 해당하는 비 `Sendable` 함수 타입의 하위 타입이다.
 
-## Switch Case Attributes
 
-You can apply switch case attributes to switch cases only.
+## Switch Case 속성의 적용 범위
 
-### unknown
+Switch case 속성은 오직 switch case에만 적용할 수 있다.
 
-Apply this attribute to a switch case
-to indicate that it isn't expected to be matched
-by any case of the enumeration that's known
-at the time the code is compiled.
-For an example of how to use the `unknown` attribute,
-see <doc:Statements#Switching-Over-Future-Enumeration-Cases>.
 
-> Grammar of an attribute:
+`unknown` 속성은 스위치 케이스에 적용하여, 코드가 컴파일될 때 알려진 열거형의 어떤 케이스와도 일치하지 않을 것으로 예상되는 경우를 나타낸다. 이 속성을 사용하는 방법에 대한 예제는 <doc:Statements#Switching-Over-Future-Enumeration-Cases>를 참고한다.
+
+> 속성의 문법:
 >
 > *attribute* → **`@`** *attribute-name* *attribute-argument-clause*_?_ \
 > *attribute-name* → *identifier* \
@@ -2691,11 +1584,13 @@ see <doc:Statements#Switching-Over-Future-Enumeration-Cases>.
 > *balanced-token* → Any punctuation except  **`(`**,  **`)`**,  **`[`**,  **`]`**,  **`{`**, or  **`}`**
 
 <!--
-This source file is part of the Swift.org open source project
+이 소스 파일은 Swift.org 오픈 소스 프로젝트의 일부다.
 
-Copyright (c) 2014 - 2022 Apple Inc. and the Swift project authors
-Licensed under Apache License v2.0 with Runtime Library Exception
+Copyright (c) 2014 - 2022 Apple Inc. and the Swift 프로젝트 저자들
+Apache License v2.0 및 Runtime Library Exception에 따라 라이선스가 부여됨
 
-See https://swift.org/LICENSE.txt for license information
-See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
+라이선스 정보는 https://swift.org/LICENSE.txt에서 확인할 수 있다.
+Swift 프로젝트 저자 목록은 https://swift.org/CONTRIBUTORS.txt에서 확인할 수 있다.
 -->
+
+

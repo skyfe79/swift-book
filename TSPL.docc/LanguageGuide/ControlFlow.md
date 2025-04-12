@@ -1,32 +1,25 @@
-# Control Flow
+# 제어 흐름
 
-Structure code with branches, loops, and early exits.
+Swift는 다양한 제어 흐름 문법을 제공한다. 이를 통해 코드를 분기, 반복, 조기 종료 등의 방식으로 구조화할 수 있다.
 
-Swift provides a variety of control flow statements.
-These include `while` loops to perform a task multiple times;
-`if`, `guard`, and `switch` statements
-to execute different branches of code based on certain conditions;
-and statements such as `break` and `continue`
-to transfer the flow of execution to another point in your code.
-Swift provides a `for`-`in` loop that makes it easy to iterate over
-arrays, dictionaries, ranges, strings, and other sequences.
-Swift also provides `defer` statements,
-which wrap code to be executed when leaving the current scope.
+Swift에서 제공하는 주요 제어 흐름 문법은 다음과 같다:
 
-Swift's `switch` statement is considerably more powerful
-than its counterpart in many C-like languages.
-Cases can match many different patterns,
-including interval matches, tuples, and casts to a specific type.
-Matched values in a `switch` case can be bound to temporary constants or variables
-for use within the case's body,
-and complex matching conditions can be expressed with a `where` clause for each case.
+- `while` 반복문: 특정 작업을 여러 번 수행한다.
+- `if`, `guard`, `switch` 문: 특정 조건에 따라 다른 코드 분기를 실행한다.
+- `break`와 `continue`: 코드 실행 흐름을 다른 지점으로 이동시킨다.
+- `for`-`in` 반복문: 배열, 딕셔너리, 범위, 문자열 등의 시퀀스를 쉽게 순회할 수 있다.
+- `defer` 문: 현재 스코프를 벗어날 때 실행될 코드를 정의한다.
 
-## For-In Loops
+Swift의 `switch` 문은 C 계열 언어의 `switch` 문보다 훨씬 강력하다. 각 `case`는 다양한 패턴과 매칭될 수 있으며, 구간 매칭, 튜플, 특정 타입으로의 캐스팅 등을 지원한다. `switch` 문의 `case`에서 매칭된 값은 임시 상수나 변수로 바인딩되어 해당 `case` 내에서 사용할 수 있다. 또한, 각 `case`에 `where` 절을 추가해 복잡한 매칭 조건을 표현할 수 있다.
 
-You use the `for`-`in` loop to iterate over a sequence,
-such as items in an array, ranges of numbers, or characters in a string.
+이러한 제어 흐름 문법을 활용하면 코드를 더 명확하고 효율적으로 작성할 수 있다. Swift는 특히 `switch` 문을 통해 다양한 상황에 유연하게 대응할 수 있는 강력한 도구를 제공한다.
 
-This example uses a `for`-`in` loop to iterate over the items in an array:
+
+## For-In 루프
+
+`for`-`in` 루프는 배열의 항목, 숫자 범위, 문자열의 문자와 같은 시퀀스를 순회할 때 사용한다.
+
+다음은 배열의 항목을 순회하는 `for`-`in` 루프 예제이다:
 
 ```swift
 let names = ["Anna", "Alex", "Brian", "Jack"]
@@ -54,13 +47,7 @@ for name in names {
   ```
 -->
 
-You can also iterate over a dictionary to access its key-value pairs.
-Each item in the dictionary is returned as a `(key, value)` tuple
-when the dictionary is iterated,
-and you can decompose the `(key, value)` tuple's members as explicitly named constants
-for use within the body of the `for`-`in` loop.
-In the code example below, the dictionary's keys are decomposed into a constant called `animalName`,
-and the dictionary's values are decomposed into a constant called `legCount`.
+딕셔너리를 순회하며 키-값 쌍에 접근할 수도 있다. 딕셔너리를 순회할 때 각 항목은 `(key, value)` 튜플로 반환되며, 이 튜플의 멤버를 명시적으로 이름을 붙인 상수로 분해하여 `for`-`in` 루프 내부에서 사용할 수 있다. 아래 코드 예제에서 딕셔너리의 키는 `animalName` 상수로, 값은 `legCount` 상수로 분해된다.
 
 ```swift
 let numberOfLegs = ["spider": 8, "ant": 6, "cat": 4]
@@ -86,21 +73,9 @@ for (animalName, legCount) in numberOfLegs {
   ```
 -->
 
-The contents of a `Dictionary` are inherently unordered,
-and iterating over them doesn't guarantee the order
-in which they will be retrieved.
-In particular,
-the order you insert items into a `Dictionary`
-doesn't define the order they're iterated.
-For more about arrays and dictionaries, see <doc:CollectionTypes>.
+딕셔너리의 내용은 본질적으로 순서가 없으며, 순회할 때 항목이 어떤 순서로 반환될지 보장되지 않는다. 특히, 딕셔너리에 항목을 추가한 순서가 순회 순서를 정의하지 않는다. 배열과 딕셔너리에 대한 자세한 내용은 <doc:CollectionTypes>를 참고한다.
 
-<!--
-  TODO: provide some advice on how to iterate over a Dictionary in order
-  (perhaps sorted by key), using a predicate or array sort or some kind.
--->
-
-You can also use `for`-`in` loops with numeric ranges.
-This example prints the first few entries in a five-times table:
+숫자 범위와 함께 `for`-`in` 루프를 사용할 수도 있다. 다음은 5의 배수표의 처음 몇 항목을 출력하는 예제이다:
 
 ```swift
 for index in 1...5 {
@@ -128,26 +103,11 @@ for index in 1...5 {
   ```
 -->
 
-The sequence being iterated over is
-a range of numbers from `1` to `5`, inclusive,
-as indicated by the use of the closed range operator (`...`).
-The value of `index` is set to the first number in the range (`1`),
-and the statements inside the loop are executed.
-In this case, the loop contains only one statement,
-which prints an entry from the five-times table for the current value of `index`.
-After the statement is executed,
-the value of `index` is updated to contain the second value in the range (`2`),
-and the `print(_:separator:terminator:)` function is called again.
-This process continues until the end of the range is reached.
+순회되는 시퀀스는 닫힌 범위 연산자(`...`)를 사용해 `1`부터 `5`까지의 숫자 범위이다. `index`의 값은 범위의 첫 번째 숫자(`1`)로 설정되고, 루프 내부의 문장이 실행된다. 이 경우 루프는 단 하나의 문장만 포함하며, 현재 `index` 값에 대한 5의 배수표 항목을 출력한다. 문장이 실행된 후, `index`의 값은 범위의 두 번째 값(`2`)으로 업데이트되고, `print(_:separator:terminator:)` 함수가 다시 호출된다. 이 과정은 범위의 끝에 도달할 때까지 계속된다.
 
-In the example above, `index` is a constant whose value is automatically set
-at the start of each iteration of the loop.
-As such, `index` doesn't have to be declared before it's used.
-It's implicitly declared simply by its inclusion in the loop declaration,
-without the need for a `let` declaration keyword.
+위 예제에서 `index`는 루프의 각 반복이 시작될 때 자동으로 설정되는 상수이다. 따라서 `index`는 사용 전에 선언할 필요가 없다. 루프 선언에 포함되는 것만으로 암시적으로 선언되며, `let` 선언 키워드가 필요하지 않다.
 
-If you don't need each value from a sequence,
-you can ignore the values by using an underscore in place of a variable name.
+시퀀스의 각 값이 필요하지 않다면, 변수 이름 대신 언더스코어(`_`)를 사용해 값을 무시할 수 있다.
 
 ```swift
 let base = 3
@@ -175,31 +135,14 @@ print("\(base) to the power of \(power) is \(answer)")
   ```
 -->
 
-The example above calculates the value of one number to the power of another
-(in this case, `3` to the power of `10`).
-It multiplies a starting value of `1`
-(that is, `3` to the power of `0`)
-by `3`, ten times,
-using a closed range that starts with `1` and ends with `10`.
-For this calculation, the individual counter values each time through the loop are unnecessary ---
-the code simply executes the loop the correct number of times.
-The underscore character (`_`)
-used in place of a loop variable
-causes the individual values to be ignored
-and doesn't provide access to the current value during each iteration of the loop.
+위 예제는 한 숫자를 다른 숫자의 거듭제곱으로 계산한다(이 경우 `3`의 `10`제곱). 시작 값 `1`(즉, `3`의 `0`제곱)에 `3`을 10번 곱하며, `1`부터 `10`까지의 닫힌 범위를 사용한다. 이 계산에서는 루프를 돌 때마다 개별 카운터 값이 필요하지 않다. 코드는 단순히 루프를 정확한 횟수만큼 실행한다. 루프 변수 대신 사용된 언더스코어(`_`)는 개별 값을 무시하며, 루프의 각 반복에서 현재 값에 접근하지 않는다.
 
-In some situations, you might not want to use closed ranges,
-which include both endpoints.
-Consider drawing the tick marks for every minute on a watch face.
-You want to draw `60` tick marks, starting with the `0` minute.
-Use the half-open range operator (`..<`) to include the
-lower bound but not the upper bound.
-For more about ranges, see <doc:BasicOperators#Range-Operators>.
+경우에 따라 양쪽 끝점을 모두 포함하는 닫힌 범위를 사용하고 싶지 않을 수 있다. 시계의 분침 눈금을 그리는 경우를 생각해보자. `0`분부터 시작해 `60`개의 눈금을 그려야 한다. 하한은 포함하지만 상한은 포함하지 않는 반열린 범위 연산자(`..<`)를 사용한다. 범위에 대한 자세한 내용은 <doc:BasicOperators#Range-Operators>를 참고한다.
 
 ```swift
 let minutes = 60
 for tickMark in 0..<minutes {
-    // render the tick mark each minute (60 times)
+    // 분마다 눈금을 그린다 (60번)
 }
 ```
 
@@ -210,7 +153,7 @@ for tickMark in 0..<minutes {
   -> let minutes = 60
   >> var result: [Int] = []
   -> for tickMark in 0..<minutes {
-        // render the tick mark each minute (60 times)
+        // 분마다 눈금을 그린다 (60번)
   >>    result.append(tickMark)
      }
   >> print(result.first!, result.last!, result.count)
@@ -218,14 +161,12 @@ for tickMark in 0..<minutes {
   ```
 -->
 
-Some users might want fewer tick marks in their UI.
-They could prefer one mark every `5` minutes instead.
-Use the `stride(from:to:by:)` function to skip the unwanted marks.
+일부 사용자는 UI에 더 적은 눈금을 원할 수 있다. 예를 들어, 매 `5`분마다 하나의 눈금을 그리는 것을 선호할 수 있다. 원하지 않는 눈금을 건너뛰기 위해 `stride(from:to:by:)` 함수를 사용한다.
 
 ```swift
 let minuteInterval = 5
 for tickMark in stride(from: 0, to: minutes, by: minuteInterval) {
-    // render the tick mark every 5 minutes (0, 5, 10, 15 ... 45, 50, 55)
+    // 5분마다 눈금을 그린다 (0, 5, 10, 15 ... 45, 50, 55)
 }
 ```
 
@@ -236,7 +177,7 @@ for tickMark in stride(from: 0, to: minutes, by: minuteInterval) {
   -> let minuteInterval = 5
   >> result = []
   -> for tickMark in stride(from: 0, to: minutes, by: minuteInterval) {
-        // render the tick mark every 5 minutes (0, 5, 10, 15 ... 45, 50, 55)
+        // 5분마다 눈금을 그린다 (0, 5, 10, 15 ... 45, 50, 55)
   >>      result.append(tickMark)
      }
   >> print(result.first!, result.last!, result.count)
@@ -244,13 +185,13 @@ for tickMark in stride(from: 0, to: minutes, by: minuteInterval) {
   ```
 -->
 
-Closed ranges are also available, by using `stride(from:through:by:)` instead:
+닫힌 범위도 사용할 수 있으며, `stride(from:through:by:)`를 대신 사용한다:
 
 ```swift
 let hours = 12
 let hourInterval = 3
 for tickMark in stride(from: 3, through: hours, by: hourInterval) {
-    // render the tick mark every 3 hours (3, 6, 9, 12)
+    // 3시간마다 눈금을 그린다 (3, 6, 9, 12)
 }
 ```
 
@@ -261,7 +202,7 @@ for tickMark in stride(from: 3, through: hours, by: hourInterval) {
   -> let hours = 12
   -> let hourInterval = 3
   -> for tickMark in stride(from: 3, through: hours, by: hourInterval) {
-        // render the tick mark every 3 hours (3, 6, 9, 12)
+        // 3시간마다 눈금을 그린다 (3, 6, 9, 12)
   >>    print(tickMark)
      }
   << 3
@@ -271,64 +212,46 @@ for tickMark in stride(from: 3, through: hours, by: hourInterval) {
   ```
 -->
 
-The examples above use a `for`-`in` loop to iterate
-ranges, arrays, dictionaries, and strings.
-However, you can use this syntax to iterate *any* collection,
-including your own classes and collection types,
-as long as those types conform to the [`Sequence`](https://developer.apple.com/documentation/swift/sequence) protocol.
+위 예제들은 `for`-`in` 루프를 사용해 범위, 배열, 딕셔너리, 문자열을 순회하는 방법을 보여준다. 그러나 이 문법은 [`Sequence`](https://developer.apple.com/documentation/swift/sequence) 프로토콜을 준수하는 모든 컬렉션을 순회할 수 있으며, 사용자 정의 클래스와 컬렉션 타입도 포함된다.
 
-<!--
-  TODO: for (index, object) in enumerate(collection)
-  and also for i in indices(collection) { collection[i] }
--->
 
-## While Loops
+## While 루프
 
-A `while` loop performs a set of statements until a condition becomes `false`.
-These kinds of loops are best used when
-the number of iterations isn't known before the first iteration begins.
-Swift provides two kinds of `while` loops:
+`while` 루프는 특정 조건이 `false`가 될 때까지 일련의 명령문을 반복한다. 
+이러한 루프는 반복 횟수를 처음 시작하기 전에 알 수 없는 경우에 가장 적합하다. 
+Swift는 두 가지 종류의 `while` 루프를 제공한다:
 
-- `while` evaluates its condition at the start of each pass through the loop.
-- `repeat`-`while` evaluates its condition at the end of each pass through the loop.
+- `while`은 각 루프를 시작할 때 조건을 평가한다.
+- `repeat`-`while`은 각 루프를 끝낼 때 조건을 평가한다.
 
-### While
 
-A `while` loop starts by evaluating a single condition.
-If the condition is `true`,
-a set of statements is repeated until the condition becomes `false`.
+### While 반복문
 
-Here's the general form of a `while` loop:
+`while` 반복문은 단일 조건을 평가하는 것으로 시작한다. 조건이 `true`일 경우, 조건이 `false`가 될 때까지 일련의 문장을 반복 실행한다.
+
+`while` 반복문의 일반적인 형태는 다음과 같다:
 
 ```swift
-while <#condition#> {
-   <#statements#>
+while <#조건#> {
+   <#문장#>
 }
 ```
 
-This example plays a simple game of *Snakes and Ladders*
-(also known as *Chutes and Ladders*):
+다음 예제는 *뱀과 사다리* 게임(또는 *미끄럼틀과 사다리*로도 알려진)을 간단히 구현한 것이다:
 
-<!-- Apple Books screenshot begins here. -->
+<!-- Apple Books 스크린샷 시작 -->
 
 ![](snakesAndLadders)
 
-The rules of the game are as follows:
+게임의 규칙은 다음과 같다:
 
-- The board has 25 squares, and the aim is to land on or beyond square 25.
-- The player's starting square is “square zero”,
-  which is just off the bottom-left corner of the board.
-- Each turn, you roll a six-sided dice and move by that number of squares,
-  following the horizontal path indicated by the dotted arrow above.
-- If your turn ends at the bottom of a ladder, you move up that ladder.
-- If your turn ends at the head of a snake, you move down that snake.
+- 게임판은 25개의 칸으로 이루어져 있으며, 목표는 25번 칸에 도달하거나 이를 넘어서는 것이다.
+- 플레이어의 시작 칸은 "0번 칸"으로, 게임판의 왼쪽 아래 모서리 바로 바깥에 위치한다.
+- 각 턴마다 6면체 주사위를 굴려 나온 숫자만큼 칸을 이동한다. 이동 경로는 위의 점선 화살표로 표시된 수평 경로를 따른다.
+- 턴이 끝난 위치가 사다리의 하단이면, 해당 사다리를 타고 올라간다.
+- 턴이 끝난 위치가 뱀의 머리면, 해당 뱀을 타고 내려간다.
 
-The game board is represented by an array of `Int` values.
-Its size is based on a constant called `finalSquare`,
-which is used to initialize the array
-and also to check for a win condition later in the example.
-Because the players start off the board, on "square zero",
-the board is initialized with 26 zero `Int` values, not 25.
+게임판은 `Int` 값의 배열로 표현된다. 배열의 크기는 `finalSquare`라는 상수를 기반으로 하며, 이 상수는 배열을 초기화하고 나중에 승리 조건을 확인하는 데 사용된다. 플레이어가 게임판 바깥의 "0번 칸"에서 시작하기 때문에, 배열은 25가 아닌 26개의 `0`으로 초기화된다.
 
 ```swift
 let finalSquare = 25
@@ -345,9 +268,7 @@ var board = [Int](repeating: 0, count: finalSquare + 1)
   ```
 -->
 
-Some squares are then set to have more specific values for the snakes and ladders.
-Squares with a ladder base have a positive number to move you up the board,
-whereas squares with a snake head have a negative number to move you back down the board.
+일부 칸은 뱀과 사다리에 대해 더 구체적인 값을 갖도록 설정된다. 사다리의 하단에 해당하는 칸은 양수 값을 가지며, 이를 통해 게임판 위로 이동한다. 반면, 뱀의 머리에 해당하는 칸은 음수 값을 가지며, 이를 통해 게임판 아래로 이동한다.
 
 ```swift
 board[03] = +08; board[06] = +11; board[09] = +09; board[10] = +02
@@ -363,30 +284,21 @@ board[14] = -10; board[19] = -11; board[22] = -02; board[24] = -08
   ```
 -->
 
-<!-- Apple Books screenshot ends here. -->
+<!-- Apple Books 스크린샷 끝 -->
 
-Square 3 contains the bottom of a ladder that moves you up to square 11.
-To represent this, `board[03]` is equal to `+08`,
-which is equivalent to an integer value of `8`
-(the difference between `3` and `11`).
-To align the values and statements,
-the unary plus operator (`+i`) is explicitly used with
-the unary minus operator (`-i`)
-and numbers lower than `10` are padded with zeros.
-(Neither stylistic technique is strictly necessary,
-but they lead to neater code.)
+3번 칸은 사다리의 하단으로, 이를 통해 11번 칸으로 이동한다. 이를 표현하기 위해 `board[03]`은 `+08`로 설정되며, 이는 `8`의 정수 값(`3`과 `11`의 차이)과 동일하다. 값과 문장을 정렬하기 위해, 단항 플러스 연산자(`+i`)가 명시적으로 단항 마이너스 연산자(`-i`)와 함께 사용되며, `10`보다 작은 숫자는 0으로 패딩된다. (이러한 스타일 기법은 엄격히 필요하지 않지만, 코드를 더 깔끔하게 만든다.)
 
 ```swift
 var square = 0
 var diceRoll = 0
 while square < finalSquare {
-    // roll the dice
+    // 주사위를 굴린다
     diceRoll += 1
     if diceRoll == 7 { diceRoll = 1 }
-    // move by the rolled amount
+    // 주사위 값만큼 이동한다
     square += diceRoll
     if square < board.count {
-        // if we're still on the board, move up or down for a snake or a ladder
+        // 아직 게임판 위에 있다면, 뱀이나 사다리를 통해 이동한다
         square += board[square]
     }
 }
@@ -447,51 +359,28 @@ print("Game over!")
   ```
 -->
 
-The example above uses a very simple approach to dice rolling.
-Instead of generating a random number,
-it starts with a `diceRoll` value of `0`.
-Each time through the `while` loop,
-`diceRoll` is incremented by one
-and is then checked to see whether it has become too large.
-Whenever this return value equals `7`,
-the dice roll has become too large and is reset to a value of `1`.
-The result is a sequence of `diceRoll` values that's always
-`1`, `2`, `3`, `4`, `5`, `6`, `1`, `2` and so on.
+위 예제는 주사위 굴리기를 매우 간단한 방식으로 처리한다. 랜덤 숫자를 생성하는 대신, `diceRoll` 값을 `0`으로 시작한다. `while` 반복문이 실행될 때마다 `diceRoll`은 1씩 증가하며, 너무 큰 값이 되었는지 확인한다. 이 반환 값이 `7`이 될 때마다, 주사위 값이 너무 커졌으므로 `1`로 재설정된다. 결과적으로 `diceRoll` 값은 항상 `1`, `2`, `3`, `4`, `5`, `6`, `1`, `2`와 같은 순서로 반복된다.
 
-After rolling the dice, the player moves forward by `diceRoll` squares.
-It's possible that the dice roll may have moved the player beyond square 25,
-in which case the game is over.
-To cope with this scenario,
-the code checks that `square` is less than the `board` array's `count` property.
-If `square` is valid, the value stored in `board[square]` is added
-to the current `square` value
-to move the player up or down any ladders or snakes.
+주사위를 굴린 후, 플레이어는 `diceRoll` 값만큼 앞으로 이동한다. 주사위 값이 플레이어를 25번 칸을 넘어서 이동시킬 수도 있으며, 이 경우 게임이 종료된다. 이 시나리오를 처리하기 위해, 코드는 `square`가 `board` 배열의 `count` 속성보다 작은지 확인한다. `square`가 유효하다면, `board[square]`에 저장된 값이 현재 `square` 값에 더해져 플레이어가 사다리나 뱀을 통해 이동한다.
 
-> Note: If this check isn't performed,
-> `board[square]` might try to access a value outside the bounds of the `board` array,
-> which would trigger a runtime error.
+> 참고: 이 확인을 수행하지 않으면, `board[square]`가 `board` 배열의 범위를 벗어난 값을 접근하려 할 수 있으며, 이는 런타임 오류를 발생시킬 수 있다.
 
-The current `while` loop execution then ends,
-and the loop's condition is checked to see if the loop should be executed again.
-If the player has moved on or beyond square number `25`,
-the loop's condition evaluates to `false` and the game ends.
+현재 `while` 반복문의 실행이 끝나면, 반복문의 조건이 다시 확인되어 반복문을 계속 실행할지 결정한다. 플레이어가 25번 칸에 도달하거나 이를 넘어서면, 반복문의 조건이 `false`로 평가되어 게임이 종료된다.
 
-A `while` loop is appropriate in this case,
-because the length of the game isn't clear at the start of the `while` loop.
-Instead, the loop is executed until a particular condition is satisfied.
+이 경우 `while` 반복문이 적합하다. 왜냐하면 게임의 길이가 `while` 반복문 시작 시점에 명확하지 않기 때문이다. 대신, 특정 조건이 충족될 때까지 반복문이 실행된다.
+
 
 ### Repeat-While
 
-The other variation of the `while` loop,
-known as the `repeat`-`while` loop,
-performs a single pass through the loop block first,
-*before* considering the loop's condition.
-It then continues to repeat the loop until the condition is `false`.
+`while` 루프의 다른 형태인 `repeat`-`while` 루프는  
+루프 블록을 먼저 한 번 실행한 후에  
+조건을 평가한다.  
+그런 다음 조건이 `false`가 될 때까지 루프를 반복한다.
 
-> Note: The `repeat`-`while` loop in Swift is analogous to
-> a `do`-`while` loop in other languages.
+> 참고: Swift의 `repeat`-`while` 루프는  
+> 다른 언어의 `do`-`while` 루프와 유사하다.
 
-Here's the general form of a `repeat`-`while` loop:
+`repeat`-`while` 루프의 일반적인 형태는 다음과 같다:
 
 ```swift
 repeat {
@@ -499,10 +388,10 @@ repeat {
 } while <#condition#>
 ```
 
-Here's the *Snakes and Ladders* example again,
-written as a `repeat`-`while` loop rather than a `while` loop.
-The values of `finalSquare`, `board`, `square`, and `diceRoll`
-are initialized in exactly the same way as with a `while` loop.
+다음은 *Snakes and Ladders* 예제를 `while` 루프 대신  
+`repeat`-`while` 루프로 작성한 것이다.  
+`finalSquare`, `board`, `square`, `diceRoll`의 값은  
+`while` 루프와 동일한 방식으로 초기화된다.
 
 ```swift
 let finalSquare = 25
@@ -527,23 +416,23 @@ var diceRoll = 0
   ```
 -->
 
-In this version of the game,
-the *first* action in the loop is to check for a ladder or a snake.
-No ladder on the board takes the player straight to square 25,
-and so it isn't possible to win the game by moving up a ladder.
-Therefore, it's safe to check for a snake or a ladder as the first action in the loop.
+이 버전의 게임에서는 루프의 첫 번째 동작으로  
+사다리나 뱀을 확인한다.  
+보드에서 사다리를 타고 바로 25칸으로 이동할 수 없기 때문에  
+사다리를 타고 게임에서 이길 수 없다.  
+따라서 루프의 첫 번째 동작으로 뱀이나 사다리를 확인해도 안전하다.
 
-At the start of the game, the player is on “square zero”.
-`board[0]` always equals `0` and has no effect.
+게임 시작 시 플레이어는 "0번 칸"에 위치한다.  
+`board[0]`은 항상 `0`이며 아무런 영향을 미치지 않는다.
 
 ```swift
 repeat {
-    // move up or down for a snake or ladder
+    // 뱀이나 사다리를 확인해 이동
     square += board[square]
-    // roll the dice
+    // 주사위를 굴림
     diceRoll += 1
     if diceRoll == 7 { diceRoll = 1 }
-    // move by the rolled amount
+    // 주사위 결과만큼 이동
     square += diceRoll
 } while square < finalSquare
 print("Game over!")
@@ -600,41 +489,30 @@ print("Game over!")
   ```
 -->
 
-After the code checks for snakes and ladders,
-the dice is rolled and the player is moved forward by `diceRoll` squares.
-The current loop execution then ends.
+뱀과 사다리를 확인한 후,  
+주사위를 굴리고 플레이어를 `diceRoll`만큼 이동시킨다.  
+그런 다음 현재 루프 실행이 종료된다.
 
-The loop's condition (`while square < finalSquare`) is the same as before,
-but this time it's not evaluated until the *end* of the first run through the loop.
-The structure of the `repeat`-`while` loop is better suited to this game
-than the `while` loop in the previous example.
-In the `repeat`-`while` loop above,
-`square += board[square]` is always executed *immediately after*
-the loop's `while` condition confirms that `square` is still on the board.
-This behavior removes the need for the array bounds check
-seen in the `while` loop version of the game described earlier.
+루프의 조건(`while square < finalSquare`)은 이전과 동일하지만,  
+이번에는 첫 번째 루프 실행이 끝난 후에 평가된다.  
+`repeat`-`while` 루프의 구조는 이 게임에 더 적합하다.  
+위의 `repeat`-`while` 루프에서  
+`square += board[square]`는 루프의 `while` 조건이  
+`square`가 여전히 보드 위에 있음을 확인한 후에 항상 즉시 실행된다.  
+이 동작은 이전에 설명한 `while` 루프 버전에서 필요한  
+배열 경계 확인을 제거한다.
 
-## Conditional Statements
 
-It's often useful to execute different pieces of code based on certain conditions.
-You might want to run an extra piece of code when an error occurs,
-or to display a message when a value becomes too high or too low.
-To do this, you make parts of your code *conditional*.
+## 조건문
 
-Swift provides two ways to add conditional branches to your code:
-the `if` statement and the `switch` statement.
-Typically, you use the `if` statement
-to evaluate simple conditions with only a few possible outcomes.
-The `switch` statement is better suited to
-more complex conditions with multiple possible permutations
-and is useful in situations where pattern matching can help select
-an appropriate code branch to execute.
+특정 조건에 따라 서로 다른 코드를 실행하는 기능은 매우 유용하다. 오류 발생 시 추가 코드를 실행하거나, 값이 너무 높거나 낮을 때 메시지를 표시하는 등의 작업이 필요할 수 있다. 이를 위해 코드의 일부를 *조건부*로 작성한다.
+
+Swift는 조건 분기를 추가하기 위해 두 가지 방법을 제공한다: `if` 문과 `switch` 문이다. 일반적으로 `if` 문은 가능한 결과가 몇 가지뿐인 간단한 조건을 평가할 때 사용한다. `switch` 문은 여러 가능성과 복잡한 조건에 더 적합하며, 패턴 매칭을 통해 실행할 적절한 코드 분기를 선택할 때 유용하다.
+
 
 ### If
 
-In its simplest form,
-the `if` statement has a single `if` condition.
-It executes a set of statements only if that condition is `true`.
+가장 간단한 형태의 `if` 문은 단일 조건을 가진다. 이 조건이 `true`일 때만 특정 문장을 실행한다.
 
 ```swift
 var temperatureInFahrenheit = 30
@@ -656,17 +534,9 @@ if temperatureInFahrenheit <= 32 {
   ```
 -->
 
-The example above checks whether the temperature
-is less than or equal to 32 degrees Fahrenheit
-(the freezing point of water).
-If it is, a message is printed.
-Otherwise, no message is printed,
-and code execution continues after the `if` statement's closing brace.
+위 예제는 온도가 32도 화씨(물의 어는점) 이하인지 확인한다. 만약 그렇다면 메시지를 출력한다. 그렇지 않으면 메시지를 출력하지 않고 `if` 문의 닫는 중괄호 이후로 코드 실행이 계속된다.
 
-The `if` statement can provide an alternative set of statements,
-known as an *else clause*,
-for situations when the `if` condition is `false`.
-These statements are indicated by the `else` keyword.
+`if` 문은 `if` 조건이 `false`일 때 실행할 대체 문장을 제공할 수 있다. 이를 *else 절*이라고 하며, `else` 키워드로 표시한다.
 
 ```swift
 temperatureInFahrenheit = 40
@@ -692,13 +562,9 @@ if temperatureInFahrenheit <= 32 {
   ```
 -->
 
-One of these two branches is always executed.
-Because the temperature has increased to `40` degrees Fahrenheit,
-it's no longer cold enough to advise wearing a scarf
-and so the `else` branch is triggered instead.
+이 두 가지 중 하나는 항상 실행된다. 온도가 40도 화씨로 올라가면 스카프를 권장할 만큼 춥지 않으므로 `else` 절이 실행된다.
 
-You can chain multiple `if` statements together
-to consider additional clauses.
+여러 `if` 문을 연결하여 추가 조건을 고려할 수 있다.
 
 ```swift
 temperatureInFahrenheit = 90
@@ -728,12 +594,9 @@ if temperatureInFahrenheit <= 32 {
   ```
 -->
 
-Here, an additional `if` statement was added to respond to particularly warm temperatures.
-The final `else` clause remains,
-and it prints a response for any temperatures that aren't too warm or too cold.
+여기서는 특히 따뜻한 온도에 대응하기 위해 추가 `if` 문을 넣었다. 마지막 `else` 절은 남아 있으며, 너무 춥거나 덥지 않은 온도에 대한 응답을 출력한다.
 
-The final `else` clause is optional, however,
-and can be excluded if the set of conditions doesn't need to be complete.
+그러나 마지막 `else` 절은 선택 사항이며, 조건 집합이 완전할 필요가 없는 경우 생략할 수 있다.
 
 ```swift
 temperatureInFahrenheit = 72
@@ -757,14 +620,9 @@ if temperatureInFahrenheit <= 32 {
   ```
 -->
 
-Because the temperature isn't cold enough to trigger the `if` condition
-or warm enough to trigger the `else if` condition,
-no message is printed.
+온도가 `if` 조건을 트리거할 만큼 춥지도 않고 `else if` 조건을 트리거할 만큼 따뜻하지도 않으므로 메시지가 출력되지 않는다.
 
-Swift provides a shorthand spelling of `if`
-that you can use when setting values.
-For example,
-consider the following code:
+Swift는 값을 설정할 때 사용할 수 있는 `if`의 간단한 표현을 제공한다. 예를 들어, 다음 코드를 살펴보자:
 
 ```swift
 let temperatureInCelsius = 25
@@ -782,12 +640,9 @@ print(weatherAdvice)
 // Prints "It's not that cold. Wear a T-shirt."
 ```
 
-Here, each of the branches sets a value for the `weatherAdvice` constant,
-which is printed after the `if` statement.
+여기서 각 분기는 `weatherAdvice` 상수에 값을 설정하며, `if` 문 이후에 이를 출력한다.
 
-Using the alternate syntax,
-known as an `if` expression,
-you can write this code more concisely:
+`if` 표현식이라고 하는 대체 구문을 사용하면 이 코드를 더 간결하게 작성할 수 있다:
 
 ```swift
 let weatherAdvice = if temperatureInCelsius <= 0 {
@@ -802,30 +657,11 @@ print(weatherAdvice)
 // Prints "It's not that cold. Wear a T-shirt."
 ```
 
-In this `if` expression version,
-each branch contains a single value.
-If a branch's condition is true,
-then that branch's value is used as the value for the whole `if` expression
-in the assignment of `weatherAdvice`.
-Every `if` branch has a corresponding `else if` branch or `else` branch,
-ensuring that one of the branches always matches
-and that the `if` expression always produces a value,
-regardless of which conditions are true.
+이 `if` 표현식 버전에서 각 분기는 단일 값을 포함한다. 분기의 조건이 `true`이면 해당 분기의 값이 `weatherAdvice` 할당을 위한 전체 `if` 표현식의 값으로 사용된다. 모든 `if` 분기에는 해당하는 `else if` 분기나 `else` 분기가 있어, 항상 하나의 분기가 일치하도록 보장하며, `if` 표현식이 항상 값을 생성하도록 한다.
 
-Because the syntax for the assignment starts outside the `if` expression,
-there's no need to repeat `weatherAdvice =` inside each branch.
-Instead,
-each branch of the `if` expression
-produces one of the three possible values for `weatherAdvice`,
-and the assignment uses that value.
+할당 구문이 `if` 표현식 외부에서 시작하기 때문에 각 분기 내부에서 `weatherAdvice =`를 반복할 필요가 없다. 대신, `if` 표현식의 각 분기가 `weatherAdvice`의 세 가지 가능한 값 중 하나를 생성하며, 할당은 그 값을 사용한다.
 
-All of the branches of an `if` expression
-need to contain values of the same type.
-Because Swift checks the type of each branch separately,
-values like `nil` that can be used with more than one type
-prevent Swift from determining the `if` expression's type automatically.
-Instead, you need to specify the type explicitly ---
-for example:
+`if` 표현식의 모든 분기는 동일한 타입의 값을 포함해야 한다. Swift는 각 분기의 타입을 개별적으로 확인하므로, `nil`과 같이 여러 타입과 함께 사용할 수 있는 값은 Swift가 `if` 표현식의 타입을 자동으로 결정하는 것을 방해한다. 대신, 타입을 명시적으로 지정해야 한다. 예를 들면:
 
 ```swift
 let freezeWarning: String? = if temperatureInCelsius <= 0 {
@@ -835,16 +671,9 @@ let freezeWarning: String? = if temperatureInCelsius <= 0 {
 }
 ```
 
-In the code above,
-one branch of the `if` expression has a string value
-and the other branch has a `nil` value.
-The `nil` value could be used as a value for any optional type,
-so you have to explicitly write that `freezeWarning` is an optional string,
-as described in <doc:TheBasics#Type-Annotations>.
+위 코드에서 `if` 표현식의 한 분기는 문자열 값을 가지고 다른 분기는 `nil` 값을 가진다. `nil` 값은 모든 옵셔널 타입의 값으로 사용할 수 있으므로, `freezeWarning`이 옵셔널 문자열임을 명시적으로 작성해야 한다. 이는 <doc:TheBasics#Type-Annotations>에서 설명한 바와 같다.
 
-An alternate way to provide this type information
-is to provide an explicit type for `nil`,
-instead of providing an explicit type for `freezeWarning`:
+이 타입 정보를 제공하는 또 다른 방법은 `freezeWarning`에 명시적 타입을 제공하는 대신, `nil`에 명시적 타입을 제공하는 것이다:
 
 ```swift
 let freezeWarning = if temperatureInCelsius <= 0 {
@@ -854,9 +683,7 @@ let freezeWarning = if temperatureInCelsius <= 0 {
 }
 ```
 
-An `if` expression can respond to unexpected failures by throwing an error
-or calling a function like `fatalError(_:file:line:)` that never returns.
-For example:
+`if` 표현식은 예기치 않은 실패에 대해 에러를 던지거나 `fatalError(_:file:line:)`과 같이 절대 반환하지 않는 함수를 호출함으로써 대응할 수 있다. 예를 들어:
 
 ```swift
 let weatherAdvice = if temperatureInCelsius > 100 {
@@ -866,77 +693,48 @@ let weatherAdvice = if temperatureInCelsius > 100 {
 }
 ```
 
-In this example,
-the `if` expression checks whether the forecast temperature
-is hotter than 100° C --- the boiling point of water.
-A temperature this hot causes the `if` expression to throw a `.boiling` error
-instead of returning a textual summary.
-Even though this `if` expression can throw an error,
-you don't write `try` before it.
-For information about working with errors, see <doc:ErrorHandling>.
+이 예제에서 `if` 표현식은 예측된 온도가 100°C(물의 끓는점)보다 높은지 확인한다. 이렇게 뜨거운 온도는 텍스트 요약을 반환하는 대신 `.boiling` 에러를 던지도록 한다. 이 `if` 표현식이 에러를 던질 수 있음에도 불구하고, 앞에 `try`를 작성할 필요는 없다. 에러 처리에 대한 자세한 내용은 <doc:ErrorHandling>을 참조하라.
 
-In addition to using `if` expressions
-on the right-hand side of an assignment,
-as shown in the examples above,
-you can also use them as the value that a function or closure returns.
+위 예제에서 보여준 것처럼 할당의 오른쪽에서 `if` 표현식을 사용하는 것 외에도, 함수나 클로저가 반환하는 값으로도 사용할 수 있다.
+
 
 ### Switch
 
-A `switch` statement considers a value
-and compares it against several possible matching patterns.
-It then executes an appropriate block of code,
-based on the first pattern that matches successfully.
-A `switch` statement provides an alternative to the `if` statement
-for responding to multiple potential states.
+`switch` 문은 특정 값을 고려하여 여러 가능한 패턴과 비교한다. 그리고 첫 번째로 일치하는 패턴에 따라 적절한 코드 블록을 실행한다. `switch` 문은 여러 잠재적 상태에 대응하기 위해 `if` 문의 대안으로 사용할 수 있다.
 
-In its simplest form, a `switch` statement compares a value against
-one or more values of the same type.
+가장 간단한 형태의 `switch` 문은 하나의 값을 동일한 타입의 하나 이상의 값과 비교한다.
 
 ```swift
-switch <#some value to consider#> {
-case <#value 1#>:
-    <#respond to value 1#>
-case <#value 2#>,
-    <#value 3#>:
-    <#respond to value 2 or 3#>
+switch <#고려할 값#> {
+case <#값 1#>:
+    <#값 1에 대응하는 코드#>
+case <#값 2#>,
+    <#값 3#>:
+    <#값 2 또는 3에 대응하는 코드#>
 default:
-    <#otherwise, do something else#>
+    <#그 외의 경우 실행할 코드#>
 }
 ```
 
-Every `switch` statement consists of multiple possible *cases*,
-each of which begins with the `case` keyword.
-In addition to comparing against specific values,
-Swift provides several ways for each case to specify
-more complex matching patterns.
-These options are described later in this chapter.
+모든 `switch` 문은 여러 개의 가능한 *케이스*로 구성되며, 각 케이스는 `case` 키워드로 시작한다. Swift는 특정 값과 비교하는 것 외에도, 각 케이스에서 더 복잡한 매칭 패턴을 지정할 수 있는 여러 방법을 제공한다. 이러한 옵션은 이 장의 후반부에서 설명한다.
 
-Like the body of an `if` statement, each `case` is a separate branch of code execution.
-The `switch` statement determines which branch should be selected.
-This procedure is known as *switching* on the value that's being considered.
+`if` 문의 본문과 마찬가지로, 각 `case`는 별도의 코드 실행 분기이다. `switch` 문은 어떤 분기를 선택할지 결정한다. 이 과정은 고려 중인 값에 대해 *스위칭*한다고 표현한다.
 
-Every `switch` statement must be *exhaustive*.
-That is, every possible value of the type being considered
-must be matched by one of the `switch` cases.
-If it's not appropriate to provide a case for every possible value,
-you can define a default case to cover any values that aren't addressed explicitly.
-This default case is indicated by the `default` keyword,
-and must always appear last.
+모든 `switch` 문은 *완전해야 한다*. 즉, 고려 중인 타입의 모든 가능한 값이 `switch`의 케이스 중 하나와 일치해야 한다. 모든 가능한 값에 대해 케이스를 제공하는 것이 적절하지 않은 경우, 명시적으로 처리되지 않은 모든 값을 다루기 위해 기본 케이스를 정의할 수 있다. 이 기본 케이스는 `default` 키워드로 표시되며, 항상 마지막에 위치해야 한다.
 
-This example uses a `switch` statement to consider
-a single lowercase character called `someCharacter`:
+다음 예제는 `someCharacter`라는 단일 소문자 문자를 고려하기 위해 `switch` 문을 사용한다:
 
 ```swift
 let someCharacter: Character = "z"
 switch someCharacter {
 case "a":
-    print("The first letter of the Latin alphabet")
+    print("라틴 알파벳의 첫 번째 문자")
 case "z":
-    print("The last letter of the Latin alphabet")
+    print("라틴 알파벳의 마지막 문자")
 default:
-    print("Some other character")
+    print("다른 문자")
 }
-// Prints "The last letter of the Latin alphabet"
+// "라틴 알파벳의 마지막 문자"를 출력
 ```
 
 <!--
@@ -946,121 +744,77 @@ default:
   -> let someCharacter: Character = "z"
   -> switch someCharacter {
         case "a":
-           print("The first letter of the Latin alphabet")
+           print("라틴 알파벳의 첫 번째 문자")
         case "z":
-           print("The last letter of the Latin alphabet")
+           print("라틴 알파벳의 마지막 문자")
         default:
-           print("Some other character")
+           print("다른 문자")
      }
-  <- The last letter of the Latin alphabet
+  <- 라틴 알파벳의 마지막 문자
   ```
 -->
 
-The `switch` statement's first case matches
-the first letter of the English alphabet, `a`,
-and its second case matches the last letter, `z`.
-Because the `switch` must have a case for every possible character,
-not just every alphabetic character,
-this `switch` statement uses a `default` case
-to match all characters other than `a` and `z`.
-This provision ensures that the `switch` statement is exhaustive.
+`switch` 문의 첫 번째 케이스는 영어 알파벳의 첫 번째 문자인 `a`와 일치하고, 두 번째 케이스는 마지막 문자인 `z`와 일치한다. `switch`는 모든 알파벳 문자뿐만 아니라 모든 가능한 문자에 대해 케이스가 있어야 하므로, 이 `switch` 문은 `a`와 `z`를 제외한 모든 문자와 일치시키기 위해 `default` 케이스를 사용한다. 이 조치는 `switch` 문이 완전하도록 보장한다.
 
-Like `if` statements,
-`switch` statements also have an expression form:
+`if` 문과 마찬가지로, `switch` 문도 표현식 형태를 가질 수 있다:
 
 ```swift
 let anotherCharacter: Character = "a"
 let message = switch anotherCharacter {
 case "a":
-    "The first letter of the Latin alphabet"
+    "라틴 알파벳의 첫 번째 문자"
 case "z":
-    "The last letter of the Latin alphabet"
+    "라틴 알파벳의 마지막 문자"
 default:
-    "Some other character"
+    "다른 문자"
 }
 
 print(message)
-// Prints "The first letter of the Latin alphabet"
+// "라틴 알파벳의 첫 번째 문자"를 출력
 ```
 
-In this example,
-each case in the `switch` expression
-contains the value for `message`
-to be used when that case matches `anotherCharacter`.
-Because `switch` is always exhaustive,
-there is always a value to assign.
+이 예제에서, `switch` 표현식의 각 케이스는 `anotherCharacter`와 일치할 때 사용할 `message`의 값을 포함한다. `switch`는 항상 완전해야 하므로, 항상 할당할 값이 존재한다.
 
-As with `if` expressions,
-you can throw an error
-or call a function like `fatalError(_:file:line:)` that never returns
-instead of providing a value for a given case.
-You can use `switch` expressions
-on the right-hand side of an assignment,
-as shown in the example above,
-and as the value that a function or closure returns.
+`if` 표현식과 마찬가지로, 특정 케이스에 대한 값을 제공하는 대신 오류를 던지거나 `fatalError(_:file:line:)`와 같이 반환하지 않는 함수를 호출할 수 있다. `switch` 표현식은 위 예제와 같이 할당의 오른쪽에 사용할 수 있으며, 함수나 클로저가 반환하는 값으로도 사용할 수 있다.
 
-#### No Implicit Fallthrough
 
-In contrast with `switch` statements in C and Objective-C,
-`switch` statements in Swift don't
-fall through the bottom of each case and into the next one by default.
-Instead, the entire `switch` statement finishes its execution
-as soon as the first matching `switch` case is completed,
-without requiring an explicit `break` statement.
-This makes the `switch` statement safer and easier to use than the one in C
-and avoids executing more than one `switch` case by mistake.
+#### 암시적 폴스루 없음
 
-> Note: Although `break` isn't required in Swift,
-> you can use a `break` statement to match and ignore a particular case
-> or to break out of a matched case before that case has completed its execution.
-> For details, see <doc:ControlFlow#Break-in-a-Switch-Statement>.
+C와 Objective-C의 `switch` 문과 달리,  
+Swift의 `switch` 문은 기본적으로 한 케이스에서 다음 케이스로 넘어가지 않는다.  
+대신, 첫 번째로 일치하는 `switch` 케이스가 실행된 후 전체 `switch` 문이 종료된다.  
+이때 명시적인 `break` 문이 필요하지 않다.  
+이러한 방식은 C의 `switch` 문보다 더 안전하고 사용하기 쉬우며,  
+실수로 여러 케이스가 실행되는 것을 방지한다.
 
-The body of each case *must* contain at least one executable statement.
-It isn't valid to write the following code, because the first case is empty:
+> 참고: Swift에서는 `break` 문이 필수는 아니지만,  
+> 특정 케이스를 일치시킨 후 무시하거나,  
+> 케이스 실행이 완료되기 전에 빠져나오기 위해 `break` 문을 사용할 수 있다.  
+> 자세한 내용은 <doc:ControlFlow#Break-in-a-Switch-Statement>를 참고하라.
+
+각 케이스의 본문에는 반드시 최소 하나의 실행 가능한 문장이 포함되어야 한다.  
+다음 코드는 첫 번째 케이스가 비어 있기 때문에 유효하지 않다:
 
 ```swift
 let anotherCharacter: Character = "a"
 switch anotherCharacter {
-case "a": // Invalid, the case has an empty body
+case "a": // 유효하지 않음, 케이스 본문이 비어 있음
 case "A":
     print("The letter A")
 default:
     print("Not the letter A")
 }
-// This will report a compile-time error.
+// 이 코드는 컴파일 타임 오류를 발생시킨다.
 ```
 
-<!--
-  - test: `noFallthrough`
+C의 `switch` 문과 달리,  
+이 `switch` 문은 `"a"`와 `"A"`를 동시에 일치시키지 않는다.  
+대신, `case "a":`에 실행 가능한 문장이 없다는 컴파일 타임 오류를 발생시킨다.  
+이러한 접근 방식은 한 케이스에서 다른 케이스로의 의도치 않은 폴스루를 방지하고,  
+코드의 의도를 더 명확하게 만든다.
 
-  ```swifttest
-  -> let anotherCharacter: Character = "a"
-  -> switch anotherCharacter {
-        case "a": // Invalid, the case has an empty body
-        case "A":
-           print("The letter A")
-        default:
-           print("Not the letter A")
-     }
-  !$ error: 'case' label in a 'switch' must have at least one executable statement
-  !!      case "a": // Invalid, the case has an empty body
-  !!      ^~~~~~~~~
-  !!                break
-  // This will report a compile-time error.
-  ```
--->
-
-Unlike a `switch` statement in C,
-this `switch` statement doesn't match both `"a"` and `"A"`.
-Rather, it reports a compile-time error that `case "a":`
-doesn't contain any executable statements.
-This approach avoids accidental fallthrough from one case to another
-and makes for safer code that's clearer in its intent.
-
-To make a `switch` with a single case that
-matches both `"a"` and `"A"`,
-combine the two values into a compound case,
-separating the values with commas.
+`"a"`와 `"A"`를 모두 일치시키는 단일 케이스를 만들려면,  
+두 값을 콤마로 구분하여 복합 케이스로 결합하면 된다.
 
 ```swift
 let anotherCharacter: Character = "a"
@@ -1070,42 +824,24 @@ case "a", "A":
 default:
     print("Not the letter A")
 }
-// Prints "The letter A"
+// "The letter A"를 출력한다.
 ```
 
-<!--
-  - test: `compoundCaseInsteadOfFallthrough`
+가독성을 위해 복합 케이스를 여러 줄에 걸쳐 작성할 수도 있다.  
+복합 케이스에 대한 자세한 내용은 <doc:ControlFlow#Compound-Cases>를 참고하라.
 
-  ```swifttest
-  -> let anotherCharacter: Character = "a"
-  -> switch anotherCharacter {
-        case "a", "A":
-           print("The letter A")
-        default:
-           print("Not the letter A")
-     }
-  <- The letter A
-  ```
--->
+> 참고: 특정 `switch` 케이스의 끝에서 명시적으로 폴스루를 하려면,  
+> `fallthrough` 키워드를 사용하면 된다.  
+> 자세한 내용은 <doc:ControlFlow#Fallthrough>를 참고하라.
 
-For readability,
-a compound case can also be written over multiple lines.
-For more information about compound cases,
-see <doc:ControlFlow#Compound-Cases>.
 
-> Note: To explicitly fall through at the end of a particular `switch` case,
-> use the `fallthrough` keyword,
-> as described in <doc:ControlFlow#Fallthrough>.
+#### 구간 매칭
 
-#### Interval Matching
-
-Values in `switch` cases can be checked for their inclusion in an interval.
-This example uses number intervals
-to provide a natural-language count for numbers of any size:
+`switch` 문의 각 `case`에서 값이 특정 구간에 포함되는지 확인할 수 있다. 다음 예제는 숫자 구간을 사용해 크기에 상관없이 숫자를 자연어로 표현하는 방법을 보여준다:
 
 <!--
   REFERENCE
-  Saturn has 62 moons with confirmed orbits.
+  토성은 확인된 궤도를 가진 62개의 위성을 가지고 있다.
 -->
 
 ```swift
@@ -1156,23 +892,14 @@ print("There are \(naturalCount) \(countedThings).")
   ```
 -->
 
-In the above example, `approximateCount` is evaluated in a `switch` statement.
-Each `case` compares that value to a number or interval.
-Because the value of `approximateCount` falls between 12 and 100,
-`naturalCount` is assigned the value `"dozens of"`,
-and execution is transferred out of the `switch` statement.
+위 예제에서 `approximateCount`는 `switch` 문에서 평가된다. 각 `case`는 이 값을 숫자나 구간과 비교한다. `approximateCount`의 값이 12에서 100 사이에 속하기 때문에 `naturalCount`에는 `"dozens of"`가 할당되고, `switch` 문의 실행이 종료된다.
 
-#### Tuples
 
-You can use tuples to test multiple values in the same `switch` statement.
-Each element of the tuple can be tested against a different value or interval of values.
-Alternatively, use the underscore character (`_`),
-also known as the wildcard pattern,
-to match any possible value.
+#### 튜플
 
-The example below takes an (x, y) point,
-expressed as a simple tuple of type `(Int, Int)`,
-and categorizes it on the graph that follows the example.
+튜플을 사용하면 하나의 `switch` 문에서 여러 값을 테스트할 수 있다. 튜플의 각 요소는 서로 다른 값이나 값의 범위와 비교할 수 있다. 또는 와일드카드 패턴으로 알려진 언더스코어 문자(`_`)를 사용해 모든 가능한 값과 일치시킬 수도 있다.
+
+아래 예제는 `(Int, Int)` 타입의 간단한 튜플로 표현된 (x, y) 좌표를 받아 그래프 상에서 해당 점을 분류한다.
 
 ```swift
 let somePoint = (1, 1)
@@ -1214,42 +941,28 @@ default:
 
 ![](coordinateGraphSimple)
 
-The `switch` statement determines whether the point is
-at the origin (0, 0),
-on the red x-axis,
-on the green y-axis,
-inside the blue 4-by-4 box centered on the origin,
-or outside of the box.
+이 `switch` 문은 해당 점이 원점 (0, 0)에 있는지, 빨간색 x축 위에 있는지, 초록색 y축 위에 있는지, 원점을 중심으로 한 파란색 4x4 박스 안에 있는지, 아니면 박스 밖에 있는지를 판단한다.
 
-Unlike C, Swift allows multiple `switch` cases to consider the same value or values.
-In fact, the point (0, 0) could match all *four* of the cases in this example.
-However, if multiple matches are possible,
-the first matching case is always used.
-The point (0, 0) would match `case (0, 0)` first,
-and so all other matching cases would be ignored.
+C 언어와 달리 Swift는 여러 `switch` 케이스가 동일한 값을 고려하도록 허용한다. 사실 이 예제에서 점 (0, 0)은 네 가지 케이스 모두와 일치할 수 있다. 그러나 여러 케이스가 일치할 가능성이 있으면 항상 첫 번째로 일치하는 케이스가 사용된다. 따라서 점 (0, 0)은 `case (0, 0)`와 먼저 일치하며, 나머지 일치하는 케이스는 무시된다.
 
-#### Value Bindings
 
-A `switch` case can name the value or values it matches to temporary constants or variables,
-for use in the body of the case.
-This behavior is known as *value binding*,
-because the values are bound to temporary constants or variables within the case's body.
+#### 값 바인딩
 
-The example below takes an (x, y) point,
-expressed as a tuple of type `(Int, Int)`,
-and categorizes it on the graph that follows:
+`switch` 케이스는 매칭되는 값을 임시 상수나 변수에 할당할 수 있다. 이렇게 하면 케이스 본문에서 해당 값을 사용할 수 있다. 이 동작을 *값 바인딩*이라고 부르며, 케이스 본문 내에서 임시 상수나 변수에 값이 바인딩된다.
+
+아래 예제는 `(Int, Int)` 타입의 튜플로 표현된 (x, y) 좌표를 받아 그래프 상에서 분류한다:
 
 ```swift
 let anotherPoint = (2, 0)
 switch anotherPoint {
 case (let x, 0):
-    print("on the x-axis with an x value of \(x)")
+    print("x축 위에 있으며 x 값은 \(x)입니다.")
 case (0, let y):
-    print("on the y-axis with a y value of \(y)")
+    print("y축 위에 있으며 y 값은 \(y)입니다.")
 case let (x, y):
-    print("somewhere else at (\(x), \(y))")
+    print("다른 위치에 있으며 좌표는 (\(x), \(y))입니다.")
 }
-// Prints "on the x-axis with an x value of 2"
+// "x축 위에 있으며 x 값은 2입니다." 출력
 ```
 
 <!--
@@ -1271,36 +984,20 @@ case let (x, y):
 
 ![](coordinateGraphMedium)
 
-The `switch` statement determines whether the point is
-on the red x-axis,
-on the green y-axis,
-or elsewhere (on neither axis).
+이 `switch` 문은 점이 빨간색 x축 위에 있는지, 초록색 y축 위에 있는지, 아니면 다른 위치에 있는지 판단한다.
 
-The three `switch` cases declare placeholder constants `x` and `y`,
-which temporarily take on one or both tuple values from `anotherPoint`.
-The first case, `case (let x, 0)`,
-matches any point with a `y` value of `0`
-and assigns the point's `x` value to the temporary constant `x`.
-Similarly, the second case, `case (0, let y)`,
-matches any point with an `x` value of `0`
-and assigns the point's `y` value to the temporary constant `y`.
+세 `switch` 케이스는 플레이스홀더 상수 `x`와 `y`를 선언하며, 이 상수는 `anotherPoint`의 튜플 값을 임시로 받는다. 첫 번째 케이스인 `case (let x, 0)`는 `y` 값이 `0`인 모든 점에 매칭되며, 점의 `x` 값을 임시 상수 `x`에 할당한다. 마찬가지로 두 번째 케이스인 `case (0, let y)`는 `x` 값이 `0`인 모든 점에 매칭되며, 점의 `y` 값을 임시 상수 `y`에 할당한다.
 
-After the temporary constants are declared,
-they can be used within the case's code block.
-Here, they're used to print the categorization of the point.
+임시 상수가 선언되면, 해당 케이스의 코드 블록 내에서 사용할 수 있다. 여기서는 점의 위치를 분류해 출력하는 데 사용된다.
 
-This `switch` statement doesn't have a `default` case.
-The final case, `case let (x, y)`,
-declares a tuple of two placeholder constants that can match any value.
-Because `anotherPoint` is always a tuple of two values,
-this case matches all possible remaining values,
-and a `default` case isn't needed to make the `switch` statement exhaustive.
+이 `switch` 문에는 `default` 케이스가 없다. 마지막 케이스인 `case let (x, y)`는 모든 값에 매칭될 수 있는 두 개의 플레이스홀더 상수를 선언한다. `anotherPoint`는 항상 두 개의 값으로 이루어진 튜플이기 때문에, 이 케이스는 모든 가능한 나머지 값에 매칭된다. 따라서 `switch` 문이 모든 경우를 커버하기 위해 `default` 케이스가 필요하지 않다.
+
 
 #### Where
 
-A `switch` case can use a `where` clause to check for additional conditions.
+`switch` 케이스는 추가 조건을 확인하기 위해 `where` 절을 사용할 수 있다.
 
-The example below categorizes an (x, y) point on the following graph:
+아래 예제는 (x, y) 점을 그래프 상에서 다음과 같이 분류한다:
 
 ```swift
 let yetAnotherPoint = (1, -1)
@@ -1334,29 +1031,16 @@ case let (x, y):
 
 ![](coordinateGraphComplex)
 
-The `switch` statement determines whether the point is
-on the green diagonal line where `x == y`,
-on the purple diagonal line where `x == -y`,
-or neither.
+`switch` 문은 점이 `x == y`인 초록색 대각선 위에 있는지, `x == -y`인 보라색 대각선 위에 있는지, 아니면 둘 다 아닌지를 판단한다.
 
-The three `switch` cases declare placeholder constants `x` and `y`,
-which temporarily take on the two tuple values from `yetAnotherPoint`.
-These constants are used as part of a `where` clause,
-to create a dynamic filter.
-The `switch` case matches the current value of `point`
-only if the `where` clause's condition evaluates to `true` for that value.
+세 개의 `switch` 케이스는 `yetAnotherPoint`의 두 튜플 값을 임시로 받는 `x`와 `y`라는 상수를 선언한다. 이 상수들은 동적 필터를 생성하기 위해 `where` 절의 일부로 사용된다. `switch` 케이스는 `where` 절의 조건이 해당 값에 대해 `true`로 평가될 때만 현재 `point` 값과 일치한다.
 
-As in the previous example, the final case matches all possible remaining values,
-and so a `default` case isn't needed to make the `switch` statement exhaustive.
+이전 예제와 마찬가지로, 마지막 케이스는 가능한 모든 나머지 값과 일치하므로 `switch` 문을 완전히 만들기 위해 `default` 케이스가 필요하지 않다.
 
-#### Compound Cases
 
-Multiple switch cases that share the same body
-can be combined by writing several patterns after `case`,
-with a comma between each of the patterns.
-If any of the patterns match, then the case is considered to match.
-The patterns can be written over multiple lines if the list is long.
-For example:
+#### 복합 케이스
+
+동일한 본문을 공유하는 여러 `switch` 케이스는 `case` 뒤에 여러 패턴을 쉼표로 구분하여 결합할 수 있다. 패턴 중 하나라도 일치하면 해당 케이스가 일치한 것으로 간주한다. 패턴 목록이 길 경우 여러 줄에 걸쳐 작성할 수도 있다. 예를 들어:
 
 ```swift
 let someCharacter: Character = "e"
@@ -1390,21 +1074,9 @@ default:
   ```
 -->
 
-The `switch` statement's first case matches
-all five lowercase vowels in the English language.
-Similarly, its second case matches all lowercase English consonants.
-Finally, the `default` case matches any other character.
+위 `switch` 문의 첫 번째 케이스는 영어의 다섯 개 소문자 모음을 모두 매칭한다. 마찬가지로 두 번째 케이스는 영어 소문자 자음을 모두 매칭한다. 마지막으로 `default` 케이스는 그 외의 문자를 매칭한다.
 
-Compound cases can also include value bindings.
-All of the patterns of a compound case
-have to include the same set of value bindings,
-and each binding has to get a value of the same type
-from all of the patterns in the compound case.
-This ensures that,
-no matter which part of the compound case matched,
-the code in the body of the case
-can always access a value for the bindings
-and that the value always has the same type.
+복합 케이스는 값 바인딩도 포함할 수 있다. 복합 케이스의 모든 패턴은 동일한 값 바인딩 집합을 포함해야 하며, 각 바인딩은 복합 케이스의 모든 패턴에서 동일한 타입의 값을 가져와야 한다. 이를 통해 복합 케이스의 어느 부분이 일치하든 상관없이 케이스 본문의 코드가 항상 바인딩된 값에 접근할 수 있고, 그 값의 타입도 항상 동일하게 유지된다.
 
 ```swift
 let stillAnotherPoint = (9, 0)
@@ -1432,19 +1104,12 @@ default:
   ```
 -->
 
-The `case` above has two patterns:
-`(let distance, 0)` matches points on the x-axis
-and `(0, let distance)` matches points on the y-axis.
-Both patterns include a binding for `distance`
-and `distance` is an integer in both patterns ---
-which means that the code in the body of the `case`
-can always access a value for `distance`.
+위 `case`는 두 가지 패턴을 가진다: `(let distance, 0)`는 x축 상의 점을 매칭하고, `(0, let distance)`는 y축 상의 점을 매칭한다. 두 패턴 모두 `distance`에 대한 바인딩을 포함하며, `distance`는 두 패턴 모두 정수 타입이다. 따라서 `case` 본문의 코드는 항상 `distance`의 값에 접근할 수 있다.
 
-## Control Transfer Statements
 
-*Control transfer statements* change the order in which your code is executed,
-by transferring control from one piece of code to another.
-Swift has five control transfer statements:
+## 제어 흐름 변경문
+
+*제어 흐름 변경문*은 코드의 실행 순서를 변경하며, 특정 코드에서 다른 코드로 제어를 넘기는 역할을 한다. Swift는 다섯 가지 제어 흐름 변경문을 제공한다:
 
 - `continue`
 - `break`
@@ -1452,19 +1117,12 @@ Swift has five control transfer statements:
 - `return`
 - `throw`
 
-The `continue`, `break`, and `fallthrough` statements are described below.
-The `return` statement is described in <doc:Functions>,
-and the `throw` statement is described in <doc:ErrorHandling#Propagating-Errors-Using-Throwing-Functions>.
+이 중 `continue`, `break`, `fallthrough`는 아래에서 설명한다. `return` 문은 <doc:Functions>에서, `throw` 문은 <doc:ErrorHandling#Propagating-Errors-Using-Throwing-Functions>에서 자세히 다룬다.
 
-### Continue
 
-The `continue` statement tells a loop to stop what it's doing
-and start again at the beginning of the next iteration through the loop.
-It says “I am done with the current loop iteration”
-without leaving the loop altogether.
+`continue` 문은 루프가 현재 작업을 멈추고 다음 반복의 시작 부분으로 바로 이동하도록 지시한다. 이는 "현재 루프 반복을 마쳤다"는 의미를 전달하면서도 루프를 완전히 빠져나가지 않는다.
 
-The following example removes all vowels and spaces from a lowercase string
-to create a cryptic puzzle phrase:
+다음 예제는 소문자 문자열에서 모든 모음과 공백을 제거하여 암호화된 퍼즐 문구를 만든다:
 
 ```swift
 let puzzleInput = "great minds think alike"
@@ -1498,55 +1156,37 @@ print(puzzleOutput)
   ```
 -->
 
-The code above calls the `continue` keyword whenever it matches a vowel or a space,
-causing the current iteration of the loop to end immediately
-and to jump straight to the start of the next iteration.
+위 코드는 모음이나 공백이 발견될 때마다 `continue` 키워드를 호출한다. 이를 통해 현재 루프 반복을 즉시 종료하고 다음 반복의 시작 부분으로 바로 이동한다.
 
-### Break
 
-The `break` statement ends execution of an entire control flow statement immediately.
-The `break` statement can be used inside a `switch` or loop statement
-when you want to terminate the execution of the `switch` or loop statement
-earlier than would otherwise be the case.
+### break 문
 
-#### Break in a Loop Statement
+`break` 문은 현재 실행 중인 제어 흐름문의 실행을 즉시 종료한다.  
+`switch` 문이나 반복문 안에서 `break` 문을 사용하면,  
+해당 `switch` 문이나 반복문의 실행을 원래보다 더 일찍 중단할 수 있다.
 
-When used inside a loop statement,
-`break` ends the loop's execution immediately
-and transfers control to the code after the loop's closing brace (`}`).
-No further code from the current iteration of the loop is executed,
-and no further iterations of the loop are started.
+
+#### 반복문에서의 break 사용
+
+반복문 안에서 `break`를 사용하면, 반복문의 실행이 즉시 종료되고, 반복문을 닫는 중괄호(`}`) 이후의 코드로 제어권이 넘어간다. 현재 반복 중인 코드는 더 이상 실행되지 않으며, 반복문의 다음 반복도 시작되지 않는다.
 
 <!--
-  TODO: I need an example here.
+  TODO: 여기에 예제를 추가해야 합니다.
 -->
 
-#### Break in a Switch Statement
 
-When used inside a `switch` statement,
-`break` causes the `switch` statement to end its execution immediately
-and to transfer control to the code after
-the `switch` statement's closing brace (`}`).
+#### Switch 문에서의 Break 사용
 
-This behavior can be used to match and ignore one or more cases in a `switch` statement.
-Because Swift's `switch` statement is exhaustive
-and doesn't allow empty cases,
-it's sometimes necessary to deliberately match and ignore a case
-in order to make your intentions explicit.
-You do this by writing the `break` statement as the entire body of the case you want to ignore.
-When that case is matched by the `switch` statement,
-the `break` statement inside the case ends the `switch` statement's execution immediately.
+`switch` 문 내부에서 `break`를 사용하면, `switch` 문의 실행이 즉시 종료되고, `switch` 문의 닫는 중괄호(`}`) 이후의 코드로 제어가 이동한다.
 
-> Note: A `switch` case that contains only a comment is reported as a compile-time error.
-> Comments aren't statements and don't cause a `switch` case to be ignored.
-> Always use a `break` statement to ignore a `switch` case.
+이 동작은 `switch` 문에서 하나 이상의 케이스를 일치시켜 무시할 때 유용하다. Swift의 `switch` 문은 모든 가능성을 커버해야 하며, 빈 케이스를 허용하지 않기 때문에, 의도를 명확히 하기 위해 특정 케이스를 일치시켜 무시해야 할 때가 있다. 이때 해당 케이스의 본문 전체를 `break` 문으로 작성하면 된다. `switch` 문에서 해당 케이스가 일치하면, 케이스 내부의 `break` 문이 `switch` 문의 실행을 즉시 종료한다.
 
-The following example switches on a `Character` value
-and determines whether it represents a number symbol in one of four languages.
-For brevity, multiple values are covered in a single `switch` case.
+> 참고: 주석만 포함된 `switch` 케이스는 컴파일 시간 오류로 처리된다. 주석은 문장이 아니므로 `switch` 케이스를 무시하게 하지 않는다. `switch` 케이스를 무시하려면 항상 `break` 문을 사용해야 한다.
+
+다음 예제는 `Character` 값에 대해 `switch` 문을 사용하여, 해당 문자가 네 가지 언어 중 하나의 숫자 기호인지 판단한다. 간결성을 위해 여러 값을 하나의 `switch` 케이스에서 처리한다.
 
 ```swift
-let numberSymbol: Character = "三"  // Chinese symbol for the number 3
+let numberSymbol: Character = "三"  // 숫자 3을 나타내는 중국어 기호
 var possibleIntegerValue: Int?
 switch numberSymbol {
 case "1", "١", "一", "๑":
@@ -1595,43 +1235,18 @@ if let integerValue = possibleIntegerValue {
   ```
 -->
 
-This example checks `numberSymbol` to determine whether it's
-a Latin, Arabic, Chinese, or Thai symbol for
-the numbers `1` to `4`.
-If a match is found,
-one of the `switch` statement's cases sets
-an optional `Int?` variable called `possibleIntegerValue`
-to an appropriate integer value.
+이 예제는 `numberSymbol`이 라틴어, 아랍어, 중국어, 태국어 중 하나의 숫자 `1`부터 `4`를 나타내는 기호인지 확인한다. 일치하는 경우, `switch` 문의 케이스 중 하나가 `possibleIntegerValue`라는 옵셔널 `Int?` 변수에 적절한 정수 값을 할당한다.
 
-After the `switch` statement completes its execution,
-the example uses optional binding to determine whether a value was found.
-The `possibleIntegerValue` variable has an implicit initial value of `nil`
-by virtue of being an optional type,
-and so the optional binding will succeed only
-if `possibleIntegerValue` was set to an actual value
-by one of the `switch` statement's first four cases.
+`switch` 문의 실행이 완료된 후, 이 예제는 옵셔널 바인딩을 사용하여 값이 발견되었는지 확인한다. `possibleIntegerValue` 변수는 옵셔널 타입이기 때문에 암시적으로 `nil`로 초기화되며, 따라서 옵셔널 바인딩은 `possibleIntegerValue`가 `switch` 문의 처음 네 케이스 중 하나에 의해 실제 값으로 설정된 경우에만 성공한다.
 
-Because it's not practical to list every possible `Character` value in the example above,
-a `default` case handles any characters that aren't matched.
-This `default` case doesn't need to perform any action,
-and so it's written with a single `break` statement as its body.
-As soon as the `default` case is matched,
-the `break` statement ends the `switch` statement's execution,
-and code execution continues from the `if let` statement.
+위 예제에서 모든 가능한 `Character` 값을 나열하는 것은 실용적이지 않기 때문에, `default` 케이스는 일치하지 않는 모든 문자를 처리한다. 이 `default` 케이스는 어떤 동작도 수행할 필요가 없으므로, 본문을 `break` 문 하나로 작성한다. `default` 케이스가 일치하면, `break` 문이 `switch` 문의 실행을 즉시 종료하고, `if let` 문 이후의 코드 실행이 계속된다.
+
 
 ### Fallthrough
 
-In Swift, `switch` statements don't fall through the bottom of each case and into the next one.
-That is, the entire `switch` statement completes its execution as soon as the first matching case is completed.
-By contrast, C requires you to insert an explicit `break` statement
-at the end of every `switch` case to prevent fallthrough.
-Avoiding default fallthrough means that Swift `switch` statements are
-much more concise and predictable than their counterparts in C,
-and thus they avoid executing multiple `switch` cases by mistake.
+Swift에서 `switch` 문은 각 case의 끝에서 다음 case로 넘어가지 않는다. 즉, 첫 번째로 일치하는 case가 실행되면 전체 `switch` 문의 실행이 완료된다. 반면 C에서는 `switch` case의 끝에 명시적으로 `break` 문을 추가해야 fallthrough를 방지할 수 있다. Swift는 기본적으로 fallthrough를 허용하지 않기 때문에 `switch` 문이 더 간결하고 예측 가능하며, 실수로 여러 case가 실행되는 것을 방지할 수 있다.
 
-If you need C-style fallthrough behavior,
-you can opt in to this behavior on a case-by-case basis with the `fallthrough` keyword.
-The example below uses `fallthrough` to create a textual description of a number.
+C 스타일의 fallthrough 동작이 필요하다면, `fallthrough` 키워드를 사용해 case별로 이 동작을 선택할 수 있다. 아래 예제는 `fallthrough`를 사용해 숫자에 대한 설명을 생성한다.
 
 ```swift
 let integerToDescribe = 5
@@ -1665,58 +1280,22 @@ print(description)
   ```
 -->
 
-This example declares a new `String` variable called `description`
-and assigns it an initial value.
-The function then considers the value of `integerToDescribe` using a `switch` statement.
-If the value of `integerToDescribe` is one of the prime numbers in the list,
-the function appends text to the end of `description`,
-to note that the number is prime.
-It then uses the `fallthrough` keyword to “fall into” the `default` case as well.
-The `default` case adds some extra text to the end of the description,
-and the `switch` statement is complete.
+이 예제는 `description`이라는 새로운 `String` 변수를 선언하고 초기값을 할당한다. 그런 다음 `switch` 문을 사용해 `integerToDescribe`의 값을 확인한다. `integerToDescribe`의 값이 리스트에 있는 소수 중 하나라면, `description`의 끝에 해당 숫자가 소수임을 나타내는 텍스트를 추가한다. 그리고 `fallthrough` 키워드를 사용해 `default` case로 넘어간다. `default` case는 설명의 끝에 추가 텍스트를 붙이고, `switch` 문의 실행을 완료한다.
 
-Unless the value of `integerToDescribe` is in the list of known prime numbers,
-it isn't matched by the first `switch` case at all.
-Because there are no other specific cases,
-`integerToDescribe` is matched by the `default` case.
+`integerToDescribe`의 값이 알려진 소수 리스트에 없다면, 첫 번째 `switch` case와 일치하지 않는다. 다른 특정 case가 없기 때문에 `integerToDescribe`는 `default` case와 일치하게 된다.
 
-After the `switch` statement has finished executing,
-the number's description is printed using the `print(_:separator:terminator:)` function.
-In this example,
-the number `5` is correctly identified as a prime number.
+`switch` 문의 실행이 끝나면, `print(_:separator:terminator:)` 함수를 사용해 숫자에 대한 설명을 출력한다. 이 예제에서는 숫자 `5`가 올바르게 소수로 식별된다.
 
-> Note: The `fallthrough` keyword doesn't check the case conditions
-> for the `switch` case that it causes execution to fall into.
-> The `fallthrough` keyword simply causes code execution to move
-> directly to the statements inside the next case (or `default` case) block,
-> as in C's standard `switch` statement behavior.
+> 참고: `fallthrough` 키워드는 실행이 넘어가는 `switch` case의 조건을 확인하지 않는다. `fallthrough` 키워드는 단순히 코드 실행을 다음 case(또는 `default` case) 블록 내부의 문장으로 이동시킨다. 이 동작은 C의 표준 `switch` 문과 동일하다.
 
-### Labeled Statements
 
-In Swift, you can nest loops and conditional statements
-inside other loops and conditional statements
-to create complex control flow structures.
-However, loops and conditional statements can both use the `break` statement
-to end their execution prematurely.
-Therefore, it's sometimes useful to be explicit about
-which loop or conditional statement you want a `break` statement to terminate.
-Similarly, if you have multiple nested loops,
-it can be useful to be explicit about which loop the `continue` statement
-should affect.
+### 레이블이 붙은 구문
 
-To achieve these aims,
-you can mark a loop statement or conditional statement with a *statement label*.
-With a conditional statement,
-you can use a statement label with the `break` statement
-to end the execution of the labeled statement.
-With a loop statement,
-you can use a statement label with the `break` or `continue` statement
-to end or continue the execution of the labeled statement.
+Swift에서는 루프와 조건문을 다른 루프나 조건문 안에 중첩시켜 복잡한 제어 흐름 구조를 만들 수 있다. 하지만 루프와 조건문 모두 `break` 구문을 사용해 실행을 조기에 종료할 수 있다. 따라서 어떤 루프나 조건문을 `break` 구문으로 종료할지 명시적으로 지정하는 것이 유용할 때가 있다. 마찬가지로 여러 루프가 중첩된 경우, `continue` 구문이 어떤 루프에 영향을 미칠지 명확히 지정하는 것이 도움이 될 수 있다.
 
-A labeled statement is indicated by placing
-a label on the same line as the statement's introducer keyword, followed by a colon.
-Here's an example of this syntax for a `while` loop,
-although the principle is the same for all loops and `switch` statements:
+이러한 목적을 달성하기 위해 루프 구문이나 조건문에 *구문 레이블*을 붙일 수 있다. 조건문의 경우, 레이블과 함께 `break` 구문을 사용해 레이블이 붙은 구문의 실행을 종료할 수 있다. 루프 구문의 경우, 레이블과 함께 `break` 또는 `continue` 구문을 사용해 레이블이 붙은 구문의 실행을 종료하거나 다음 반복으로 넘어갈 수 있다.
+
+레이블이 붙은 구문은 구문의 시작 키워드와 같은 줄에 레이블을 붙이고 콜론을 추가해 표시한다. 다음은 `while` 루프에 이 구문을 적용한 예시다. 이 원칙은 모든 루프와 `switch` 구문에 동일하게 적용된다:
 
 ```swift
 <#label name#>: while <#condition#> {
@@ -1724,22 +1303,17 @@ although the principle is the same for all loops and `switch` statements:
 }
 ```
 
-The following example uses the `break` and `continue` statements
-with a labeled `while` loop for an adapted version of the *Snakes and Ladders* game
-that you saw earlier in this chapter.
-This time around, the game has an extra rule:
+다음 예제는 이 장 앞부분에서 본 *Snakes and Ladders* 게임을 변형한 버전에서 레이블이 붙은 `while` 루프와 함께 `break` 및 `continue` 구문을 사용한다. 이번 버전에서는 새로운 규칙이 추가되었다:
 
-- To win, you must land *exactly* on square 25.
+- 게임에서 이기려면 정확히 25번 칸에 도착해야 한다.
 
-If a particular dice roll would take you beyond square 25,
-you must roll again until you roll the exact number needed to land on square 25.
+주사위를 굴려 25번 칸을 넘어가게 되면, 정확히 25번 칸에 도착할 수 있는 숫자가 나올 때까지 다시 주사위를 굴려야 한다.
 
-The game board is the same as before.
+게임 보드는 이전과 동일하다.
 
 ![](snakesAndLadders)
 
-The values of `finalSquare`, `board`, `square`, and `diceRoll`
-are initialized in the same way as before:
+`finalSquare`, `board`, `square`, `diceRoll`의 값은 이전과 동일한 방식으로 초기화된다:
 
 ```swift
 let finalSquare = 25
@@ -1750,27 +1324,9 @@ var square = 0
 var diceRoll = 0
 ```
 
-<!--
-  - test: `labels`
+이 버전의 게임은 `while` 루프와 `switch` 구문을 사용해 게임 로직을 구현한다. `while` 루프에는 `gameLoop`라는 구문 레이블이 붙어 있으며, 이는 Snakes and Ladders 게임의 메인 루프임을 나타낸다.
 
-  ```swifttest
-  -> let finalSquare = 25
-  -> var board = [Int](repeating: 0, count: finalSquare + 1)
-  >> assert(board == [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-  -> board[03] = +08; board[06] = +11; board[09] = +09; board[10] = +02
-  -> board[14] = -10; board[19] = -11; board[22] = -02; board[24] = -08
-  -> var square = 0
-  -> var diceRoll = 0
-  ```
--->
-
-This version of the game uses a `while` loop and a `switch` statement
-to implement the game's logic.
-The `while` loop has a statement label called `gameLoop`
-to indicate that it's the main game loop for the Snakes and Ladders game.
-
-The `while` loop's condition is `while square != finalSquare`,
-to reflect that you must land exactly on square 25.
+`while` 루프의 조건은 `while square != finalSquare`로, 정확히 25번 칸에 도착해야 함을 반영한다.
 
 ```swift
 gameLoop: while square != finalSquare {
@@ -1778,13 +1334,13 @@ gameLoop: while square != finalSquare {
     if diceRoll == 7 { diceRoll = 1 }
     switch square + diceRoll {
     case finalSquare:
-        // diceRoll will move us to the final square, so the game is over
+        // 주사위를 굴려 정확히 25번 칸에 도착하면 게임 종료
         break gameLoop
     case let newSquare where newSquare > finalSquare:
-        // diceRoll will move us beyond the final square, so roll again
+        // 주사위를 굴려 25번 칸을 넘어가면 다시 굴림
         continue gameLoop
     default:
-        // this is a valid move, so find out its effect
+        // 유효한 이동이므로 이동 결과 확인
         square += diceRoll
         square += board[square]
     }
@@ -1792,120 +1348,20 @@ gameLoop: while square != finalSquare {
 print("Game over!")
 ```
 
-<!--
-  - test: `labels`
+각 루프가 시작될 때 주사위를 굴린다. 플레이어를 즉시 이동시키는 대신, `switch` 구문을 사용해 이동 결과를 고려하고 이동이 허용되는지 결정한다:
 
-  ```swifttest
-  -> gameLoop: while square != finalSquare {
-        diceRoll += 1
-        if diceRoll == 7 { diceRoll = 1 }
-  >>    print("diceRoll is \(diceRoll)")
-        switch square + diceRoll {
-           case finalSquare:
-              // diceRoll will move us to the final square, so the game is over
-  >>          print("finalSquare, game is over")
-              break gameLoop
-           case let newSquare where newSquare > finalSquare:
-              // diceRoll will move us beyond the final square, so roll again
-  >>          print("move too far, roll again")
-              continue gameLoop
-           default:
-              // this is a valid move, so find out its effect
-              square += diceRoll
-  >>          print("after diceRoll, square is \(square)")
-              square += board[square]
-  >>          print("after snakes or ladders, square is \(square)")
-        }
-     }
-  -> print("Game over!")
-  << diceRoll is 1
-  << after diceRoll, square is 1
-  << after snakes or ladders, square is 1
-  << diceRoll is 2
-  << after diceRoll, square is 3
-  << after snakes or ladders, square is 11
-  << diceRoll is 3
-  << after diceRoll, square is 14
-  << after snakes or ladders, square is 4
-  << diceRoll is 4
-  << after diceRoll, square is 8
-  << after snakes or ladders, square is 8
-  << diceRoll is 5
-  << after diceRoll, square is 13
-  << after snakes or ladders, square is 13
-  << diceRoll is 6
-  << after diceRoll, square is 19
-  << after snakes or ladders, square is 8
-  << diceRoll is 1
-  << after diceRoll, square is 9
-  << after snakes or ladders, square is 18
-  << diceRoll is 2
-  << after diceRoll, square is 20
-  << after snakes or ladders, square is 20
-  << diceRoll is 3
-  << after diceRoll, square is 23
-  << after snakes or ladders, square is 23
-  << diceRoll is 4
-  << move too far, roll again
-  << diceRoll is 5
-  << move too far, roll again
-  << diceRoll is 6
-  << move too far, roll again
-  << diceRoll is 1
-  << after diceRoll, square is 24
-  << after snakes or ladders, square is 16
-  << diceRoll is 2
-  << after diceRoll, square is 18
-  << after snakes or ladders, square is 18
-  << diceRoll is 3
-  << after diceRoll, square is 21
-  << after snakes or ladders, square is 21
-  << diceRoll is 4
-  << finalSquare, game is over
-  << Game over!
-  ```
--->
+- 주사위를 굴려 플레이어가 정확히 25번 칸에 도착하면 게임이 종료된다. `break gameLoop` 구문은 `while` 루프 외부의 첫 번째 코드 줄로 제어를 이동시켜 게임을 끝낸다.
+- 주사위를 굴려 플레이어가 25번 칸을 넘어가면 이동이 무효화되고 플레이어는 다시 주사위를 굴려야 한다. `continue gameLoop` 구문은 현재 `while` 루프 반복을 종료하고 다음 반복을 시작한다.
+- 다른 모든 경우에는 주사위 굴림이 유효한 이동이다. 플레이어는 `diceRoll` 만큼 앞으로 이동하고, 게임 로직은 뱀과 사다리를 확인한다. 그런 다음 루프가 종료되고, 제어는 `while` 조건으로 돌아가 다음 턴이 필요한지 결정한다.
 
-The dice is rolled at the start of each loop.
-Rather than moving the player immediately,
-the loop uses a `switch` statement to consider the result of the move
-and to determine whether the move is allowed:
-
-- If the dice roll will move the player onto the final square,
-  the game is over.
-  The `break gameLoop` statement transfers control to
-  the first line of code outside of the `while` loop, which ends the game.
-- If the dice roll will move the player *beyond* the final square,
-  the move is invalid and the player needs to roll again.
-  The `continue gameLoop` statement ends the current `while` loop iteration
-  and begins the next iteration of the loop.
-- In all other cases, the dice roll is a valid move.
-  The player moves forward by `diceRoll` squares,
-  and the game logic checks for any snakes and ladders.
-  The loop then ends, and control returns to the `while` condition
-  to decide whether another turn is required.
-
-> Note: If the `break` statement above didn't use the `gameLoop` label,
-> it would break out of the `switch` statement, not the `while` statement.
-> Using the `gameLoop` label makes it clear which control statement should be terminated.
+> 참고: 위의 `break` 구문에서 `gameLoop` 레이블을 사용하지 않았다면, `switch` 구문을 종료하게 되고 `while` 구문을 종료하지 않는다. `gameLoop` 레이블을 사용하면 어떤 제어 구문을 종료할지 명확히 할 수 있다.
 >
-> It isn't strictly necessary to use the `gameLoop` label
-> when calling `continue gameLoop` to jump to the next iteration of the loop.
-> There's only one loop in the game,
-> and therefore no ambiguity as to which loop the `continue` statement will affect.
-> However, there's no harm in using the `gameLoop` label with the `continue` statement.
-> Doing so is consistent with the label's use alongside the `break` statement
-> and helps make the game's logic clearer to read and understand.
+> `continue gameLoop`를 사용해 루프의 다음 반복으로 넘어갈 때 `gameLoop` 레이블을 사용하는 것은 꼭 필요하지 않다. 게임에는 하나의 루프만 있으므로 `continue` 구문이 어떤 루프에 영향을 미칠지 모호하지 않다. 하지만 `continue` 구문에 `gameLoop` 레이블을 사용해도 문제는 없다. 이렇게 하면 `break` 구문과의 일관성을 유지할 수 있고, 게임 로직을 더 명확히 이해하는 데 도움이 된다.
 
-## Early Exit
 
-A `guard` statement, like an `if` statement,
-executes statements depending on the Boolean value of an expression.
-You use a `guard` statement to require that a condition must be true
-in order for the code after the `guard` statement to be executed.
-Unlike an `if` statement,
-a `guard` statement always has an `else` clause ---
-the code inside the `else` clause is executed if the condition isn't true.
+## 조기 종료
+
+`guard` 문은 `if` 문과 마찬가지로 표현식의 불리언 값에 따라 코드를 실행한다. `guard` 문은 특정 조건이 참일 때만 `guard` 문 이후의 코드가 실행되도록 요구한다. `if` 문과 달리, `guard` 문은 항상 `else` 절을 포함한다. 조건이 참이 아닐 경우 `else` 절 내부의 코드가 실행된다.
 
 ```swift
 func greet(person: [String: String]) {
@@ -1959,39 +1415,16 @@ greet(person: ["name": "Jane", "location": "Cupertino"])
   ```
 -->
 
-If the `guard` statement's condition is met,
-code execution continues after the `guard` statement's closing brace.
-Any variables or constants that were assigned values
-using an optional binding as part of the condition
-are available for the rest of the code block
-that the `guard` statement appears in.
+`guard` 문의 조건이 충족되면, `guard` 문의 닫는 중괄호 이후부터 코드 실행이 계속된다. 조건의 일부로 옵셔널 바인딩을 통해 할당된 변수나 상수는 `guard` 문이 위치한 코드 블록의 나머지 부분에서 사용할 수 있다.
 
-If that condition isn't met,
-the code inside the `else` branch is executed.
-That branch must transfer control to exit the code block
-in which the `guard` statement appears.
-It can do this with a control transfer statement
-such as `return`, `break`, `continue`, or `throw`,
-or it can call a function or method
-that doesn't return, such as `fatalError(_:file:line:)`.
+조건이 충족되지 않으면, `else` 분기 내부의 코드가 실행된다. 이 분기는 `guard` 문이 위치한 코드 블록을 종료하기 위해 제어를 전달해야 한다. 이를 위해 `return`, `break`, `continue`, `throw`와 같은 제어 전달 문을 사용하거나, `fatalError(_:file:line:)`과 같이 반환하지 않는 함수나 메서드를 호출할 수 있다.
 
-Using a `guard` statement for requirements
-improves the readability of your code,
-compared to doing the same check with an `if` statement.
-It lets you write the code that's typically executed
-without wrapping it in an `else` block,
-and it lets you keep the code that handles a violated requirement
-next to the requirement.
+`guard` 문을 사용해 요구사항을 확인하면, `if` 문을 사용하는 것보다 코드의 가독성이 향상된다. 일반적으로 실행되는 코드를 `else` 블록으로 감싸지 않아도 되며, 요구사항이 위반되었을 때 처리하는 코드를 요구사항 바로 옆에 배치할 수 있다.
 
-## Deferred Actions
 
-Unlike control-flow constructs like `if` and `while`,
-which let you control whether part of your code is executed
-or how many times it gets executed,
-`defer` controls *when* a piece of code is executed.
-You use a `defer` block to write code that will be executed later,
-when your program reaches the end of the current scope.
-For example:
+## 지연된 동작
+
+`if`나 `while` 같은 제어 흐름 구문은 코드의 일부가 실행될지 여부나 실행 횟수를 제어한다. 반면 `defer`는 코드가 *언제* 실행될지를 제어한다. `defer` 블록을 사용하면 현재 스코프가 끝나는 시점에 실행될 코드를 작성할 수 있다. 예를 들어:
 
 ```swift
 var score = 1
@@ -2001,7 +1434,7 @@ if score < 10 {
     }
     score += 5
 }
-// Prints "6"
+// "6" 출력
 ```
 
 <!--
@@ -2019,28 +1452,9 @@ if score < 10 {
   ```
 -->
 
-In the example above,
-the code inside of the `defer` block is executed
-before exiting the body of the `if` statement.
-First, the code in the `if` statement runs,
-which increments `score` by five.
-Then, before exiting the `if` statement's scope,
-the deferred code is run, which prints `score`.
+위 예제에서 `defer` 블록 안의 코드는 `if` 문의 본문을 벗어나기 직전에 실행된다. 먼저 `if` 문 안의 코드가 실행되어 `score`에 5를 더한다. 그런 다음 `if` 문의 스코프를 벗어나기 직전에 지연된 코드가 실행되어 `score` 값을 출력한다.
 
-The code inside of the `defer` always runs,
-regardless of how the program exits that scope.
-That includes code like an early exit from a function,
-breaking out of a `for` loop,
-or throwing an error.
-This behavior makes `defer` useful for operations
-where you need to guarantee a pair of actions happen ---
-like manually allocating and freeing memory,
-opening and closing low-level file descriptors,
-and beginning and ending transactions in a database ---
-because you can write both actions next to each other in your code.
-For example,
-the following code gives a temporary bonus to the score,
-by adding and subtracting 100 inside a chunk of code:
+`defer` 블록 안의 코드는 프로그램이 해당 스코프를 어떻게 벗어나든 상관없이 항상 실행된다. 여기에는 함수에서 조기 반환하거나, `for` 루프를 중단하거나, 오류를 던지는 경우도 포함된다. 이러한 동작은 메모리 할당과 해제, 저수준 파일 디스크립터 열기와 닫기, 데이터베이스 트랜잭션 시작과 종료처럼 반드시 짝을 이루어야 하는 작업에 `defer`를 유용하게 만든다. 코드에서 두 작업을 나란히 작성할 수 있기 때문이다. 예를 들어, 다음 코드는 일시적으로 점수에 보너스를 주기 위해 100을 더하고 빼는 작업을 수행한다:
 
 ```swift
 var score = 3
@@ -2049,10 +1463,10 @@ if score < 100 {
     defer {
         score -= 100
     }
-    // Other code that uses the score with its bonus goes here.
+    // 보너스가 적용된 점수를 사용하는 다른 코드가 여기에 위치한다.
     print(score)
 }
-// Prints "103"
+// "103" 출력
 ```
 
 <!--
@@ -2072,8 +1486,7 @@ if score < 100 {
   ```
 -->
 
-If you write more than one `defer` block in the same scope,
-the first one you specify is the last one to run.
+같은 스코프 안에 여러 개의 `defer` 블록을 작성하면, 처음 지정한 블록이 가장 나중에 실행된다.
 
 ```swift
 if score < 10 {
@@ -2085,8 +1498,8 @@ if score < 10 {
     }
     score += 5
 }
-// Prints "The score is:"
-// Prints "6"
+// "The score is:" 출력
+// "6" 출력
 ```
 
 <!--
@@ -2106,75 +1519,38 @@ if score < 10 {
   ```
 -->
 
-If your program stops running ---
-for example, because of a runtime error or a crash ---
-deferred code doesn't execute.
-However, deferred code does execute after an error is thrown;
-for information about using `defer` with error handling,
-see <doc:ErrorHandling#Specifying-Cleanup-Actions>.
+프로그램이 실행을 중단하는 경우 --- 예를 들어 런타임 오류나 충돌로 인해 --- 지연된 코드는 실행되지 않는다. 하지만 오류가 발생한 후에는 지연된 코드가 실행된다. 오류 처리와 함께 `defer`를 사용하는 방법에 대한 자세한 내용은 <doc:ErrorHandling#Specifying-Cleanup-Actions>를 참고한다.
 
-## Checking API Availability
 
-Swift has built-in support for checking API availability,
-which ensures that you don't accidentally use APIs that are unavailable
-on a given deployment target.
+## API 가용성 확인
 
-The compiler uses availability information in the SDK
-to verify that all of the APIs used in your code
-are available on the deployment target specified by your project.
-Swift reports an error at compile time
-if you try to use an API that isn't available.
+Swift는 API 가용성을 확인하는 기능을 기본으로 제공한다. 이를 통해 특정 배포 대상에서 사용할 수 없는 API를 실수로 사용하는 것을 방지할 수 있다.
 
-You use an *availability condition* in an `if` or `guard` statement
-to conditionally execute a block of code,
-depending on whether the APIs you want to use are available at runtime.
-The compiler uses the information from the availability condition
-when it verifies that the APIs in that block of code are available.
+컴파일러는 SDK에 포함된 가용성 정보를 활용해 코드에서 사용하는 모든 API가 프로젝트에서 지정한 배포 대상에서 사용 가능한지 확인한다. 만약 사용할 수 없는 API를 사용하려고 하면 컴파일 시점에 오류를 보고한다.
+
+`if`나 `guard` 문에서 *가용성 조건*을 사용하면, 런타임에 사용하려는 API가 사용 가능한지에 따라 코드 블록을 조건부로 실행할 수 있다. 컴파일러는 이 가용성 조건의 정보를 활용해 해당 코드 블록 내의 API가 사용 가능한지 검증한다.
 
 ```swift
 if #available(iOS 10, macOS 10.12, *) {
-    // Use iOS 10 APIs on iOS, and use macOS 10.12 APIs on macOS
+    // iOS에서는 iOS 10 API를, macOS에서는 macOS 10.12 API를 사용
 } else {
-    // Fall back to earlier iOS and macOS APIs
+    // 이전 버전의 iOS와 macOS API로 대체
 }
 ```
 
-<!--
-  - test: `availability`
+위의 가용성 조건은 iOS에서는 `if` 문의 본문이 iOS 10 이상에서만 실행되고, macOS에서는 macOS 10.12 이상에서만 실행되도록 지정한다. 마지막 인자인 `*`는 필수이며, 다른 플랫폼에서는 프로젝트에서 지정한 최소 배포 대상에서 `if` 문의 본문이 실행된다.
 
-  ```swifttest
-  -> if #available(iOS 10, macOS 10.12, *) {
-         // Use iOS 10 APIs on iOS, and use macOS 10.12 APIs on macOS
-     } else {
-         // Fall back to earlier iOS and macOS APIs
-     }
-  ```
--->
-
-The availability condition above specifies that in iOS,
-the body of the `if` statement executes only in iOS 10 and later;
-in macOS, only in macOS 10.12 and later.
-The last argument, `*`, is required and specifies that on any other platform,
-the body of the `if` executes on the minimum deployment target specified by your target.
-
-In its general form,
-the availability condition takes a list of platform names and versions.
-You use platform names such as `iOS`, `macOS`, `watchOS`, `tvOS`, and `visionOS` ---
-for the full list, see <doc:Attributes#Declaration-Attributes>.
-In addition to specifying major version numbers like iOS 8 or macOS 10.10,
-you can specify minor versions numbers like iOS 11.2.6 and macOS 10.13.3.
+일반적으로 가용성 조건은 플랫폼 이름과 버전 목록을 받는다. `iOS`, `macOS`, `watchOS`, `tvOS`, `visionOS`와 같은 플랫폼 이름을 사용할 수 있다. 전체 목록은 <doc:Attributes#Declaration-Attributes>를 참고한다. iOS 8이나 macOS 10.10과 같은 주 버전뿐만 아니라 iOS 11.2.6이나 macOS 10.13.3과 같은 부 버전도 지정할 수 있다.
 
 ```swift
-if #available(<#platform name#> <#version#>, <#...#>, *) {
-    <#statements to execute if the APIs are available#>
+if #available(<#플랫폼 이름#> <#버전#>, <#...#>, *) {
+    <#API가 사용 가능할 때 실행할 코드#>
 } else {
-    <#fallback statements to execute if the APIs are unavailable#>
+    <#API가 사용 불가능할 때 실행할 대체 코드#>
 }
 ```
 
-When you use an availability condition with a `guard` statement,
-it refines the availability information that’s used
-for the rest of the code in that code block.
+`guard` 문에서 가용성 조건을 사용하면, 해당 코드 블록의 나머지 부분에 사용할 가용성 정보를 구체화할 수 있다.
 
 ```swift
 @available(macOS 10.12, *)
@@ -2191,80 +1567,21 @@ func chooseBestColor() -> String {
 }
 ```
 
-<!--
-  - test: `guard-with-pound-available`
+위 예제에서 `ColorPreference` 구조체는 macOS 10.12 이상이 필요하다. `chooseBestColor()` 함수는 가용성 가드를 시작으로, 플랫폼 버전이 `ColorPreference`를 사용하기에 너무 오래된 경우 항상 사용 가능한 동작으로 대체한다. `guard` 문 이후에는 macOS 10.12 이상이 필요한 API를 사용할 수 있다.
 
-  ```swifttest
-  -> @available(macOS 10.12, *)
-  -> struct ColorPreference {
-         var bestColor = "blue"
-     }
-
-  -> func chooseBestColor() -> String {
-        guard #available(macOS 10.12, *) else {
-            return "gray"
-        }
-        let colors = ColorPreference()
-        return colors.bestColor
-     }
-  >> print(chooseBestColor())
-  << blue
-  ```
--->
-
-In the example above,
-the `ColorPreference` structure requires macOS 10.12 or later.
-The `chooseBestColor()` function begins with an availability guard.
-If the platform version is too old to use `ColorPreference`,
-it falls back to behavior that's always available.
-After the `guard` statement,
-you can use APIs that require macOS 10.12 or later.
-
-In addition to `#available`,
-Swift also supports the opposite check using an unavailability condition.
-For example, the following two checks do the same thing:
+`#available` 외에도 Swift는 `#unavailable` 조건을 사용해 반대의 검사를 지원한다. 예를 들어, 다음 두 검사는 동일한 작업을 수행한다.
 
 ```swift
 if #available(iOS 10, *) {
 } else {
-    // Fallback code
+    // 대체 코드
 }
 
 if #unavailable(iOS 10) {
-    // Fallback code
+    // 대체 코드
 }
 ```
 
-<!--
-  - test: `availability-and-unavailability`
+`#unavailable` 형식을 사용하면 대체 코드만 포함된 경우 코드의 가독성을 높일 수 있다.
 
-  ```swifttest
-  -> if #available(iOS 10, *) {
-     } else {
-        // Fallback code
-     }
 
-  -> if #unavailable(iOS 10) {
-        // Fallback code
-     }
-  ```
--->
-
-Using the `#unavailable` form helps make your code more readable
-when the check contains only fallback code.
-
-<!--
-  FIXME
-  Not a general purpose condition; can't combine with &&, etc.
-  You can use it with if-let, and other Boolean conditions, using a comma
--->
-
-<!--
-This source file is part of the Swift.org open source project
-
-Copyright (c) 2014 - 2022 Apple Inc. and the Swift project authors
-Licensed under Apache License v2.0 with Runtime Library Exception
-
-See https://swift.org/LICENSE.txt for license information
-See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
--->

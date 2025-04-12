@@ -1,35 +1,30 @@
-# Opaque and Boxed Protocol Types
+# 불투명 타입과 박스 프로토콜 타입
 
-Hide implementation details about a value's type.
+값의 타입에 대한 구현 세부사항을 숨기는 방법을 알아본다.
 
-Swift provides two ways to hide details about a value's type:
-opaque types and boxed protocol types.
-Hiding type information
-is useful at boundaries between
-a module and code that calls into the module,
-because the underlying type of the return value can remain private.
+Swift는 값의 타입 정보를 숨기는 두 가지 방법을 제공한다:
+불투명 타입과 박스 프로토콜 타입.
+타입 정보를 숨기는 것은 모듈과 모듈을 호출하는 코드 사이의 경계에서 유용하다.
+반환값의 실제 타입을 비공개로 유지할 수 있기 때문이다.
 
-A function or method that returns an opaque type
-hides its return value's type information.
-Instead of providing a concrete type as the function's return type,
-the return value is described in terms of the protocols it supports.
-Opaque types preserve type identity ---
-the compiler has access to the type information,
-but clients of the module don't.
+불투명 타입을 반환하는 함수나 메서드는
+반환값의 타입 정보를 숨긴다.
+함수의 반환 타입으로 구체적인 타입을 제공하는 대신,
+반환값이 지원하는 프로토콜을 기준으로 설명한다.
+불투명 타입은 타입 식별성을 유지한다 ---
+컴파일러는 타입 정보에 접근할 수 있지만,
+모듈을 사용하는 클라이언트는 접근할 수 없다.
 
-A boxed protocol type can store an instance of any type
-that conforms to the given protocol.
-Boxed protocol types don't preserve type identity ---
-the value's specific type isn't known until runtime,
-and it can change over time as different values are stored.
+박스 프로토콜 타입은 주어진 프로토콜을 준수하는
+어떤 타입의 인스턴스든 저장할 수 있다.
+박스 프로토콜 타입은 타입 식별성을 유지하지 않는다 ---
+값의 구체적인 타입은 런타임에야 알 수 있으며,
+다른 값이 저장되면서 시간에 따라 변경될 수 있다.
 
-## The Problem That Opaque Types Solve
 
-For example,
-suppose you're writing a module that draws ASCII art shapes.
-The basic characteristic of an ASCII art shape
-is a `draw()` function that returns the string representation of that shape,
-which you can use as the requirement for the `Shape` protocol:
+## 불투명 타입이 해결하는 문제
+
+예를 들어, ASCII 아트 도형을 그리는 모듈을 작성한다고 가정해보자. ASCII 아트 도형의 기본 특징은 `draw()` 함수를 통해 해당 도형의 문자열 표현을 반환하는 것이다. 이를 `Shape` 프로토콜의 요구사항으로 정의할 수 있다:
 
 ```swift
 protocol Shape {
@@ -79,11 +74,7 @@ print(smallTriangle.draw())
   ```
 -->
 
-You could use generics to implement operations like flipping a shape vertically,
-as shown in the code below.
-However, there's an important limitation to this approach:
-The flipped result exposes the exact generic types
-that were used to create it.
+도형을 수직으로 뒤집는 연산을 구현하기 위해 제네릭을 사용할 수 있다. 하지만 이 접근 방식에는 중요한 제약이 있다: 뒤집힌 결과는 이를 생성하는 데 사용된 정확한 제네릭 타입을 노출한다.
 
 ```swift
 struct FlippedShape<T: Shape>: Shape {
@@ -119,10 +110,7 @@ print(flippedTriangle.draw())
   ```
 -->
 
-This approach to defining a `JoinedShape<T: Shape, U: Shape>` structure
-that joins two shapes together vertically, like the code below shows,
-results in types like `JoinedShape<Triangle, FlippedShape<Triangle>>`
-from joining a triangle with a flipped triangle.
+이 방식으로 `JoinedShape<T: Shape, U: Shape>` 구조체를 정의하여 두 도형을 수직으로 결합하면, 삼각형과 뒤집힌 삼각형을 결합할 때 `JoinedShape<Triangle, FlippedShape<Triangle>>`과 같은 타입이 생성된다.
 
 ```swift
 struct JoinedShape<T: Shape, U: Shape>: Shape {
@@ -164,56 +152,20 @@ print(joinedTriangles.draw())
   ```
 -->
 
-Exposing detailed information about the creation of a shape
-allows types that aren't meant to be
-part of the ASCII art module's public interface
-to leak out because of the need to state the full return type.
-The code inside the module
-could build up the same shape in a variety of ways,
-and other code outside the module
-that uses the shape shouldn't have to account for
-the implementation details about the list of transformations.
-Wrapper types like `JoinedShape` and `FlippedShape`
-don't matter to the module's users,
-and they shouldn't be visible.
-The module's public interface
-consists of operations like joining and flipping a shape,
-and those operations return another `Shape` value.
+도형 생성에 대한 자세한 정보를 노출하면, ASCII 아트 모듈의 공개 인터페이스에 포함되지 않아야 할 타입이 전체 반환 타입을 명시해야 하는 필요성 때문에 누출될 수 있다. 모듈 내부 코드는 다양한 방식으로 동일한 도형을 구성할 수 있으며, 모듈 외부에서 도형을 사용하는 코드는 변환 목록에 대한 구현 세부 사항을 고려할 필요가 없다. `JoinedShape` 및 `FlippedShape`와 같은 래퍼 타입은 모듈 사용자에게 중요하지 않으며, 노출되어서는 안 된다. 모듈의 공개 인터페이스는 도형을 결합하거나 뒤집는 연산으로 구성되며, 이러한 연산은 다른 `Shape` 값을 반환한다.
 
-## Returning an Opaque Type
 
-You can think of an opaque type like being the reverse of a generic type.
-Generic types let the code that calls a function
-pick the type for that function's parameters and return value
-in a way that's abstracted away from the function implementation.
-For example, the function in the following code
-returns a type that depends on its caller:
+## 불투명 타입 반환하기
+
+불투명 타입은 제네릭 타입의 반대 개념으로 생각할 수 있다. 제네릭 타입은 함수를 호출하는 코드가 함수의 파라미터와 반환값의 타입을 선택할 수 있게 한다. 이때 함수의 구현은 호출자로부터 추상화된다. 예를 들어, 다음 코드의 함수는 호출자에 따라 반환 타입이 결정된다:
 
 ```swift
 func max<T>(_ x: T, _ y: T) -> T where T: Comparable { ... }
 ```
 
-<!--
-  From https://developer.apple.com/documentation/swift/1538951-max
-  Not test code because it won't actually compile
-  and there's nothing to meaningfully test.
--->
+`max(_:_:)`를 호출하는 코드는 `x`와 `y`의 값을 선택하고, 이 값의 타입이 `T`의 구체적인 타입을 결정한다. 호출자는 `Comparable` 프로토콜을 준수하는 어떤 타입이든 사용할 수 있다. 함수 내부의 코드는 일반적인 방식으로 작성되어 호출자가 제공하는 타입을 처리할 수 있다. `max(_:_:)`의 구현은 모든 `Comparable` 타입이 공유하는 기능만 사용한다.
 
-The code that calls `max(_:_:)` chooses the values for `x` and `y`,
-and the type of those values determines the concrete type of `T`.
-The calling code can use any type
-that conforms to the `Comparable` protocol.
-The code inside the function is written in a general way
-so it can handle whatever type the caller provides.
-The implementation of `max(_:_:)` uses only functionality
-that all `Comparable` types share.
-
-Those roles are reversed for a function with an opaque return type.
-An opaque type lets the function implementation
-pick the type for the value it returns
-in a way that's abstracted away from the code that calls the function.
-For example, the function in the following example returns a trapezoid
-without exposing the underlying type of that shape.
+불투명 반환 타입을 가진 함수에서는 이 역할이 반대로 적용된다. 불투명 타입은 함수 구현이 반환값의 타입을 선택할 수 있게 한다. 이때 호출 코드로부터 추상화된다. 예를 들어, 다음 예제의 함수는 사다리꼴을 반환하지만, 해당 도형의 구체적인 타입을 노출하지 않는다.
 
 ```swift
 struct Square: Shape {
@@ -245,68 +197,11 @@ print(trapezoid.draw())
 // *
 ```
 
-<!--
-  - test: `opaque-result`
+이 예제에서 `makeTrapezoid()` 함수는 반환 타입을 `some Shape`로 선언한다. 결과적으로 이 함수는 `Shape` 프로토콜을 준수하는 특정 타입의 값을 반환하지만, 구체적인 타입을 지정하지 않는다. 이 방식으로 `makeTrapezoid()`를 작성하면, 반환값이 도형이라는 기본적인 인터페이스를 표현할 수 있으면서도, 도형을 구성하는 구체적인 타입을 공개하지 않을 수 있다. 이 구현은 두 개의 삼각형과 하나의 사각형을 사용하지만, 함수는 반환 타입을 변경하지 않고도 다양한 방식으로 사다리꼴을 그릴 수 있다.
 
-  ```swifttest
-  -> struct Square: Shape {
-         var size: Int
-         func draw() -> String {
-             let line = String(repeating: "*", count: size)
-             let result = Array<String>(repeating: line, count: size)
-             return result.joined(separator: "\n")
-         }
-     }
+이 예제는 불투명 반환 타입이 제네릭 타입의 반대 개념임을 잘 보여준다. `makeTrapezoid()` 내부의 코드는 `Shape` 프로토콜을 준수하는 어떤 타입이든 반환할 수 있다. 호출 코드는 제네릭 함수의 구현처럼 일반적인 방식으로 작성되어, `makeTrapezoid()`가 반환하는 어떤 `Shape` 값이든 처리할 수 있어야 한다.
 
-  -> func makeTrapezoid() -> some Shape {
-         let top = Triangle(size: 2)
-         let middle = Square(size: 2)
-         let bottom = FlippedShape(shape: top)
-         let trapezoid = JoinedShape(
-             top: top,
-             bottom: JoinedShape(top: middle, bottom: bottom)
-         )
-         return trapezoid
-     }
-  -> let trapezoid = makeTrapezoid()
-  -> print(trapezoid.draw())
-  </ *
-  </ **
-  </ **
-  </ **
-  </ **
-  </ *
-  ```
--->
-
-The `makeTrapezoid()` function in this example
-declares its return type as `some Shape`;
-as a result, the function
-returns a value of some given type that conforms to the `Shape` protocol,
-without specifying any particular concrete type.
-Writing `makeTrapezoid()` this way lets it express
-the fundamental aspect of its public interface ---
-the value it returns is a shape ---
-without making the specific types that the shape is made from
-a part of its public interface.
-This implementation uses two triangles and a square,
-but the function could be rewritten to draw a trapezoid
-in a variety of other ways
-without changing its return type.
-
-This example highlights the way that an opaque return type
-is like the reverse of a generic type.
-The code inside `makeTrapezoid()` can return any type it needs to,
-as long as that type conforms to the `Shape` protocol,
-like the calling code does for a generic function.
-The code that calls the function needs to be written in a general way,
-like the implementation of a generic function,
-so that it can work with any `Shape` value
-that's returned by `makeTrapezoid()`.
-
-You can also combine opaque return types with generics.
-The functions in the following code both return a value
-of some type that conforms to the `Shape` protocol.
+불투명 반환 타입은 제네릭과 함께 사용할 수도 있다. 다음 코드의 두 함수는 모두 `Shape` 프로토콜을 준수하는 어떤 타입의 값을 반환한다.
 
 ```swift
 func flip<T: Shape>(_ shape: T) -> some Shape {
@@ -326,49 +221,9 @@ print(opaqueJoinedTriangles.draw())
 // *
 ```
 
-<!--
-  - test: `opaque-result`
+이 예제에서 `opaqueJoinedTriangles`의 값은 이 장의 앞부분에서 다룬 제네릭 예제의 `joinedTriangles`와 동일하다. 그러나 이 예제에서는 `flip(_:)`과 `join(_:_:)`이 제네릭 도형 연산에서 반환하는 기본 타입을 불투명 반환 타입으로 감싸기 때문에, 해당 타입이 노출되지 않는다. 두 함수는 의존하는 타입이 제네릭이므로 제네릭 함수이며, 함수의 타입 파라미터는 `FlippedShape`와 `JoinedShape`에 필요한 타입 정보를 전달한다.
 
-  ```swifttest
-  -> func flip<T: Shape>(_ shape: T) -> some Shape {
-         return FlippedShape(shape: shape)
-     }
-  -> func join<T: Shape, U: Shape>(_ top: T, _ bottom: U) -> some Shape {
-         JoinedShape(top: top, bottom: bottom)
-     }
-
-  -> let opaqueJoinedTriangles = join(smallTriangle, flip(smallTriangle))
-  -> print(opaqueJoinedTriangles.draw())
-  </ *
-  </ **
-  </ ***
-  </ ***
-  </ **
-  </ *
-  ```
--->
-
-The value of `opaqueJoinedTriangles` in this example
-is the same as `joinedTriangles` in the generics example
-in the <doc:OpaqueTypes#The-Problem-That-Opaque-Types-Solve> section earlier in this chapter.
-However, unlike the value in that example,
-`flip(_:)` and `join(_:_:)` wrap the underlying types
-that the generic shape operations return
-in an opaque return type,
-which prevents those types from being visible.
-Both functions are generic because the types they rely on are generic,
-and the type parameters to the function
-pass along the type information needed by `FlippedShape` and `JoinedShape`.
-
-If a function with an opaque return type
-returns from multiple places,
-all of the possible return values must have the same type.
-For a generic function,
-that return type can use the function's generic type parameters,
-but it must still be a single type.
-For example,
-here's an *invalid* version of the shape-flipping function
-that includes a special case for squares:
+불투명 반환 타입을 가진 함수가 여러 위치에서 반환할 경우, 모든 가능한 반환값은 동일한 타입을 가져야 한다. 제네릭 함수의 경우, 반환 타입은 함수의 제네릭 타입 파라미터를 사용할 수 있지만, 여전히 단일 타입이어야 한다. 예를 들어, 다음은 사각형에 대한 특수 케이스를 포함한 도형 뒤집기 함수의 *잘못된* 버전이다:
 
 ```swift
 func invalidFlip<T: Shape>(_ shape: T) -> some Shape {
@@ -379,45 +234,7 @@ func invalidFlip<T: Shape>(_ shape: T) -> some Shape {
 }
 ```
 
-<!--
-  - test: `opaque-result-err`
-
-  ```swifttest
-  >> protocol Shape {
-  >>     func draw() -> String
-  >> }
-  >> struct Square: Shape {
-  >>     func draw() -> String { return "#" }  // stub implementation
-  >> }
-  >> struct FlippedShape<T: Shape>: Shape {
-  >>     var shape: T
-  >>     func draw() -> String { return "#" } // stub implementation
-  >> }
-  -> func invalidFlip<T: Shape>(_ shape: T) -> some Shape {
-         if shape is Square {
-             return shape // Error: return types don't match
-         }
-         return FlippedShape(shape: shape) // Error: return types don't match
-     }
-  !$ error: function declares an opaque return type 'some Shape', but the return statements in its body do not have matching underlying types
-  !! func invalidFlip<T: Shape>(_ shape: T) -> some Shape {
-  !!      ^                                    ~~~~~~~~~~
-  !$ note: return statement has underlying type 'T'
-  !! return shape // Error: return types don't match
-  !! ^
-  !$ note: return statement has underlying type 'FlippedShape<T>'
-  !! return FlippedShape(shape: shape) // Error: return types don't match
-  !! ^
-  ```
--->
-
-If you call this function with a `Square`, it returns a `Square`;
-otherwise, it returns a `FlippedShape`.
-This violates the requirement to return values of only one type
-and makes `invalidFlip(_:)` invalid code.
-One way to fix `invalidFlip(_:)` is to move the special case for squares
-into the implementation of `FlippedShape`,
-which lets this function always return a `FlippedShape` value:
+이 함수를 `Square`와 함께 호출하면 `Square`를 반환하고, 그렇지 않으면 `FlippedShape`를 반환한다. 이는 단일 타입의 값을 반환해야 한다는 요구사항을 위반하므로 `invalidFlip(_:)`는 유효하지 않은 코드이다. `invalidFlip(_:)`을 수정하는 한 가지 방법은 사각형에 대한 특수 케이스를 `FlippedShape`의 구현으로 옮기는 것이다. 이렇게 하면 함수가 항상 `FlippedShape` 값을 반환할 수 있다:
 
 ```swift
 struct FlippedShape<T: Shape>: Shape {
@@ -432,39 +249,7 @@ struct FlippedShape<T: Shape>: Shape {
 }
 ```
 
-<!--
-  - test: `opaque-result-special-flip`
-
-  ```swifttest
-  >> protocol Shape { func draw() -> String }
-  >> struct Square: Shape {
-  >>     func draw() -> String { return "#" }  // stub implementation
-  >> }
-  -> struct FlippedShape<T: Shape>: Shape {
-         var shape: T
-         func draw() -> String {
-             if shape is Square {
-                return shape.draw()
-             }
-             let lines = shape.draw().split(separator: "\n")
-             return lines.reversed().joined(separator: "\n")
-         }
-     }
-  ```
--->
-
-<!--
-  Another way to fix it is with type erasure.
-  Define a wrapper called AnyShape,
-  and wrap whatever shape you created inside invalidFlip(_:)
-  before returning it.
-  That example is long enough that it breaks the flow here.
--->
-
-The requirement to always return a single type
-doesn't prevent you from using generics in an opaque return type.
-Here's an example of a function that incorporates its type parameter
-into the underlying type of the value it returns:
+단일 타입을 반환해야 한다는 요구사항은 불투명 반환 타입에서 제네릭을 사용하는 것을 방해하지 않는다. 다음은 타입 파라미터를 반환값의 기본 타입에 통합한 함수의 예시이다:
 
 ```swift
 func `repeat`<T: Shape>(shape: T, count: Int) -> some Collection {
@@ -472,34 +257,12 @@ func `repeat`<T: Shape>(shape: T, count: Int) -> some Collection {
 }
 ```
 
-<!--
-  - test: `opaque-result`
+이 경우, 반환값의 기본 타입은 `T`에 따라 달라진다. 어떤 도형이 전달되든, `repeat(shape:count:)`는 해당 도형의 배열을 생성하고 반환한다. 그러나 반환값은 항상 `[T]`라는 동일한 기본 타입을 가지므로, 불투명 반환 타입을 가진 함수가 단일 타입의 값을 반환해야 한다는 요구사항을 충족한다.
 
-  ```swifttest
-  -> func `repeat`<T: Shape>(shape: T, count: Int) -> some Collection {
-         return Array<T>(repeating: shape, count: count)
-     }
-  ```
--->
 
-In this case,
-the underlying type of the return value
-varies depending on `T`:
-Whatever shape is passed it,
-`repeat(shape:count:)` creates and returns an array of that shape.
-Nevertheless,
-the return value always has the same underlying type of `[T]`,
-so it follows the requirement that functions with opaque return types
-must return values of only a single type.
+## 박싱된 프로토콜 타입
 
-## Boxed Protocol Types
-
-A boxed protocol type is also sometimes called an *existential type*,
-which comes from the phrase
-"there exists a type *T* such that *T* conforms to the protocol".
-To make a boxed protocol type,
-write `any` before the name of a protocol.
-Here's an example:
+박싱된 프로토콜 타입은 때때로 *실존 타입(existential type)*이라고도 불린다. 이 용어는 "프로토콜을 준수하는 타입 *T*가 존재한다"는 문구에서 유래했다. 박싱된 프로토콜 타입을 만들려면 프로토콜 이름 앞에 `any`를 붙이면 된다. 다음은 그 예시다:
 
 ```swift
 struct VerticalShapes: Shape {
@@ -565,52 +328,21 @@ print(vertical.draw())
   ```
 -->
 
-In the example above,
-`VerticalShapes` declares the type of `shapes` as `[any Shape]` ---
-an array of boxed `Shape` elements.
-Each element in the array can be a different type,
-and each of those types must conform to the `Shape` protocol.
-To support this runtime flexibility,
-Swift adds a level of indirection when necessary ---
-this indirection is called a *box*,
-and it has a performance cost.
+위 예시에서 `VerticalShapes`는 `shapes`의 타입을 `[any Shape]`로 선언했다. 이는 박싱된 `Shape` 엘리먼트의 배열을 의미한다. 배열의 각 엘리먼트는 서로 다른 타입일 수 있으며, 각 타입은 `Shape` 프로토콜을 준수해야 한다. 이러한 런타임 유연성을 지원하기 위해 Swift는 필요할 때 간접적인 레이어를 추가한다. 이 간접적인 레이어를 *박스*라고 부르며, 이는 성능상의 비용이 발생한다.
 
-Within the `VerticalShapes` type,
-the code can use methods, properties, and subscripts
-that are required by the `Shape` protocol.
-For example, the `draw()` method of `VerticalShapes`
-calls the `draw()` method on each element of the array.
-This method is available because `Shape` requires a `draw()` method.
-In contrast,
-trying to access the `size` property of the triangle,
-or any other properties or methods that aren't required by `Shape`,
-produces an error.
+`VerticalShapes` 타입 내부에서는 `Shape` 프로토콜이 요구하는 메서드, 프로퍼티, 서브스크립트를 사용할 수 있다. 예를 들어, `VerticalShapes`의 `draw()` 메서드는 배열의 각 엘리먼트에서 `draw()` 메서드를 호출한다. 이 메서드는 `Shape` 프로토콜이 `draw()` 메서드를 요구하기 때문에 사용 가능하다. 반면, 삼각형의 `size` 프로퍼티나 `Shape` 프로토콜이 요구하지 않는 다른 프로퍼티나 메서드에 접근하려고 하면 오류가 발생한다.
 
-Contrast the three types you could use for `shapes`:
+`shapes`에 사용할 수 있는 세 가지 타입을 비교해 보자:
 
-- Using generics,
-  by writing `struct VerticalShapes<S: Shape>` and `var shapes: [S]`,
-  makes an array whose elements are some specific shape type,
-  and where the identity of that specific type
-  is visible to any code that interacts with the array.
+- 제네릭을 사용하는 경우, `struct VerticalShapes<S: Shape>`와 `var shapes: [S]`로 작성하면 배열의 엘리먼트는 특정한 하나의 도형 타입이 되며, 이 특정 타입의 정체성은 배열과 상호작용하는 모든 코드에서 확인할 수 있다.
 
-- Using an opaque type,
-  by writing `var shapes: [some Shape]`,
-  makes an array whose elements are some specific shape type,
-  and where that specific type's identity is hidden.
+- 불투명 타입을 사용하는 경우, `var shapes: [some Shape]`로 작성하면 배열의 엘리먼트는 특정한 하나의 도형 타입이 되며, 이 특정 타입의 정체성은 숨겨진다.
 
-- Using a boxed protocol type,
-  by writing `var shapes: [any Shape]`,
-  makes an array that can store elements of different types,
-  and where those types' identities are hidden.
+- 박싱된 프로토콜 타입을 사용하는 경우, `var shapes: [any Shape]`로 작성하면 배열은 서로 다른 타입의 엘리먼트를 저장할 수 있으며, 이 타입들의 정체성은 숨겨진다.
 
-In this case,
-a boxed protocol type is the only approach
-that lets callers of `VerticalShapes` mix different kinds of shapes together.
+이 경우, `VerticalShapes`를 호출하는 쪽에서 서로 다른 종류의 도형을 혼합할 수 있게 해주는 유일한 방법은 박싱된 프로토콜 타입을 사용하는 것이다.
 
-You can use an `as` cast
-when you know the underlying type of a boxed value.
-For example:
+박싱된 값의 실제 타입을 알고 있다면 `as` 캐스팅을 사용할 수 있다. 예를 들어:
 
 ```swift
 if let downcastTriangle = vertical.shapes[0] as? Triangle {
@@ -619,27 +351,14 @@ if let downcastTriangle = vertical.shapes[0] as? Triangle {
 // Prints "5"
 ```
 
-For more information, see <doc:TypeCasting#Downcasting>.
+더 많은 정보는 <doc:TypeCasting#Downcasting>을 참조하라.
 
-## Differences Between Opaque Types and Boxed Protocol Types
 
-Returning an opaque type looks very similar
-to using a boxed protocol type as the return type of a function,
-but these two kinds of return type differ in
-whether they preserve type identity.
-An opaque type refers to one specific type,
-although the caller of the function isn't able to see which type;
-a boxed protocol type can refer to any type that conforms to the protocol.
-Generally speaking,
-boxed protocol types give you more flexibility
-about the underlying types of the values they store,
-and opaque types let you make stronger guarantees
-about those underlying types.
+## 불투명 타입과 박스형 프로토콜 타입의 차이
 
-For example,
-here's a version of `flip(_:)`
-that uses a boxed protocol type as its return type
-instead of an opaque return type:
+함수의 반환 타입으로 불투명 타입을 사용하는 것과 박스형 프로토콜 타입을 사용하는 것은 겉보기에는 매우 유사하다. 하지만 이 두 반환 타입은 타입 정체성을 보존하는지 여부에서 차이가 있다. 불투명 타입은 특정한 하나의 타입을 가리키지만, 함수를 호출하는 쪽에서는 어떤 타입인지 알 수 없다. 반면 박스형 프로토콜 타입은 프로토콜을 준수하는 어떤 타입이든 가리킬 수 있다. 일반적으로 박스형 프로토콜 타입은 저장하는 값의 실제 타입에 대해 더 많은 유연성을 제공하고, 불투명 타입은 그 실제 타입에 대해 더 강력한 보장을 제공한다.
+
+예를 들어, `flip(_:)` 함수의 박스형 프로토콜 타입을 반환 타입으로 사용한 버전은 다음과 같다:
 
 ```swift
 func protoFlip<T: Shape>(_ shape: T) -> Shape {
@@ -647,42 +366,7 @@ func protoFlip<T: Shape>(_ shape: T) -> Shape {
 }
 ```
 
-<!--
-  - test: `opaque-result-existential-error`
-
-  ```swifttest
-  >> protocol Shape {
-  >>     func draw() -> String
-  >> }
-  >> struct Triangle: Shape {
-  >>     var size: Int
-  >>     func draw() -> String { return "#" }  // stub implementation
-  >> }
-  >> struct Square: Shape {
-  >>     var size: Int
-  >>     func draw() -> String { return "#" }  // stub implementation
-  >> }
-  >> struct FlippedShape<T: Shape>: Shape {
-  >>     var shape: T
-  >>     func draw() -> String { return "#" } // stub implementation
-  >> }
-  -> func protoFlip<T: Shape>(_ shape: T) -> Shape {
-        return FlippedShape(shape: shape)
-     }
-  ```
--->
-
-This version of `protoFlip(_:)`
-has the same body as `flip(_:)`,
-and it always returns a value of the same type.
-Unlike `flip(_:)`,
-the value that `protoFlip(_:)` returns isn't required
-to always have the same type ---
-it just has to conform to the `Shape` protocol.
-Put another way,
-`protoFlip(_:)` makes a much looser API contract with its caller
-than `flip(_:)` makes.
-It reserves the flexibility to return values of multiple types:
+이 `protoFlip(_:)` 버전은 `flip(_:)`과 동일한 본문을 가지고 있으며, 항상 동일한 타입의 값을 반환한다. 하지만 `flip(_:)`과 달리 `protoFlip(_:)`이 반환하는 값은 항상 동일한 타입일 필요가 없다. 단지 `Shape` 프로토콜을 준수하기만 하면 된다. 즉, `protoFlip(_:)`은 `flip(_:)`보다 호출자와 더 느슨한 API 계약을 맺는다. 이 함수는 여러 타입의 값을 반환할 수 있는 유연성을 보유한다:
 
 ```swift
 func protoFlip<T: Shape>(_ shape: T) -> Shape {
@@ -694,38 +378,7 @@ func protoFlip<T: Shape>(_ shape: T) -> Shape {
 }
 ```
 
-<!--
-  - test: `opaque-result-existential-error`
-
-  ```swifttest
-  -> func protoFlip<T: Shape>(_ shape: T) -> Shape {
-        if shape is Square {
-           return shape
-        }
-
-        return FlippedShape(shape: shape)
-     }
-  !$ error: invalid redeclaration of 'protoFlip'
-  !! func protoFlip<T: Shape>(_ shape: T) -> Shape {
-  !!      ^
-  !$ note: 'protoFlip' previously declared here
-  !! func protoFlip<T: Shape>(_ shape: T) -> Shape {
-  !!      ^
-  ```
--->
-
-The revised version of the code returns
-an instance of `Square` or an instance of `FlippedShape`,
-depending on what shape is passed in.
-Two flipped shapes returned by this function
-might have completely different types.
-Other valid versions of this function could return values of different types
-when flipping multiple instances of the same shape.
-The less specific return type information from `protoFlip(_:)` means that
-many operations that depend on type information
-aren't available on the returned value.
-For example, it's not possible to write an `==` operator
-comparing results returned by this function.
+이 수정된 버전은 전달된 `shape`에 따라 `Square` 인스턴스 또는 `FlippedShape` 인스턴스를 반환한다. 이 함수가 반환하는 두 개의 뒤집힌 도형은 완전히 다른 타입일 수 있다. 같은 도형의 여러 인스턴스를 뒤집을 때 다른 타입의 값을 반환하는 것도 가능하다. `protoFlip(_:)`의 덜 구체적인 반환 타입 정보는 반환된 값에 대해 타입 정보에 의존하는 많은 연산을 사용할 수 없음을 의미한다. 예를 들어, 이 함수가 반환한 결과를 비교하는 `==` 연산자를 작성할 수 없다.
 
 ```swift
 let protoFlippedTriangle = protoFlip(smallTriangle)
@@ -733,57 +386,13 @@ let sameThing = protoFlip(smallTriangle)
 protoFlippedTriangle == sameThing  // Error
 ```
 
-<!--
-  - test: `opaque-result-existential-error`
+예제의 마지막 줄에서 발생한 오류에는 여러 가지 이유가 있다. 가장 직접적인 문제는 `Shape` 프로토콜에 `==` 연산자가 요구 사항으로 포함되어 있지 않다는 점이다. 이를 추가하려고 해도, `==` 연산자는 좌변과 우변의 인자 타입을 알아야 한다. 이런 종류의 연산자는 일반적으로 프로토콜을 채택한 구체적인 타입과 일치하는 `Self` 타입의 인자를 받지만, 프로토콜에 `Self` 요구 사항을 추가하면 프로토콜을 타입으로 사용할 때 발생하는 타입 소거를 허용하지 않는다.
 
-  ```swifttest
-  >> let smallTriangle = Triangle(size: 3)
-  -> let protoFlippedTriangle = protoFlip(smallTriangle)
-  -> let sameThing = protoFlip(smallTriangle)
-  -> protoFlippedTriangle == sameThing  // Error
-  !$ error: binary operator '==' cannot be applied to two 'any Shape' operands
-  !! protoFlippedTriangle == sameThing  // Error
-  !! ~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~
-  ```
--->
+함수의 반환 타입으로 박스형 프로토콜 타입을 사용하면 프로토콜을 준수하는 어떤 타입이든 반환할 수 있는 유연성을 얻을 수 있다. 하지만 이 유연성의 대가는 반환된 값에 대해 일부 연산을 수행할 수 없다는 점이다. 예제는 `==` 연산자를 사용할 수 없는 것을 보여준다. 이 연산자는 박스형 프로토콜 타입을 사용할 때 보존되지 않는 특정 타입 정보에 의존한다.
 
-The error on the last line of the example occurs for several reasons.
-The immediate issue is that the `Shape` doesn't include an `==` operator
-as part of its protocol requirements.
-If you try adding one, the next issue you'll encounter
-is that the `==` operator needs to know
-the types of its left-hand and right-hand arguments.
-This sort of operator usually takes arguments of type `Self`,
-matching whatever concrete type adopts the protocol,
-but adding a `Self` requirement to the protocol
-doesn't allow for the type erasure that happens
-when you use the protocol as a type.
+이 접근 방식의 또 다른 문제는 도형 변환이 중첩되지 않는다는 점이다. 삼각형을 뒤집은 결과는 `Shape` 타입의 값이고, `protoFlip(_:)` 함수는 `Shape` 프로토콜을 준수하는 어떤 타입의 인자를 받는다. 하지만 박스형 프로토콜 타입의 값은 그 프로토콜을 준수하지 않는다. 즉, `protoFlip(_:)`이 반환한 값은 `Shape`을 준수하지 않는다. 따라서 `protoFlip(protoFlip(smallTriangle))`과 같이 여러 변환을 적용하는 코드는 유효하지 않다. 뒤집힌 도형은 `protoFlip(_:)`의 유효한 인자가 아니기 때문이다.
 
-Using a boxed protocol type as the return type for a function
-gives you the flexibility to return any type that conforms to the protocol.
-However, the cost of that flexibility
-is that some operations aren't possible on the returned values.
-The example shows how the `==` operator isn't available ---
-it depends on specific type information
-that isn't preserved by using a boxed protocol type.
-
-Another problem with this approach is that the shape transformations don't nest.
-The result of flipping a triangle is a value of type `Shape`,
-and the `protoFlip(_:)` function takes an argument
-of some type that conforms to the `Shape` protocol.
-However, a value of a boxed protocol type doesn't conform to that protocol;
-the value returned by `protoFlip(_:)` doesn't conform to `Shape`.
-This means code like `protoFlip(protoFlip(smallTriangle))`
-that applies multiple transformations is invalid
-because the flipped shape isn't a valid argument to `protoFlip(_:)`.
-
-In contrast,
-opaque types preserve the identity of the underlying type.
-Swift can infer associated types,
-which lets you use an opaque return value
-in places where a boxed protocol type can't be used as a return value.
-For example,
-here's a version of the `Container` protocol from <doc:Generics>:
+반면, 불투명 타입은 실제 타입의 정체성을 보존한다. Swift는 연관 타입을 추론할 수 있으므로, 박스형 프로토콜 타입을 반환 값으로 사용할 수 없는 곳에서도 불투명 반환 값을 사용할 수 있다. 예를 들어, <doc:Generics>의 `Container` 프로토콜 버전은 다음과 같다:
 
 ```swift
 protocol Container {
@@ -794,24 +403,7 @@ protocol Container {
 extension Array: Container { }
 ```
 
-<!--
-  - test: `opaque-result, opaque-result-existential-error`
-
-  ```swifttest
-  -> protocol Container {
-         associatedtype Item
-         var count: Int { get }
-         subscript(i: Int) -> Item { get }
-     }
-  -> extension Array: Container { }
-  ```
--->
-
-You can't use `Container` as the return type of a function
-because that protocol has an associated type.
-You also can't use it as constraint in a generic return type
-because there isn't enough information outside the function body
-to infer what the generic type needs to be.
+연관 타입이 있는 프로토콜은 함수의 반환 타입으로 사용할 수 없다. 또한 제네릭 반환 타입의 제약으로 사용할 수도 없다. 함수 본문 외부에는 제네릭 타입이 무엇인지 추론하기에 충분한 정보가 없기 때문이다.
 
 ```swift
 // Error: Protocol with associated types can't be used as a return type.
@@ -825,33 +417,7 @@ func makeProtocolContainer<T, C: Container>(item: T) -> C {
 }
 ```
 
-<!--
-  - test: `opaque-result-existential-error`
-
-  ```swifttest
-  // Error: Protocol with associated types can't be used as a return type.
-  -> func makeProtocolContainer<T>(item: T) -> Container {
-         return [item]
-     }
-
-  // Error: Not enough information to infer C.
-  -> func makeProtocolContainer<T, C: Container>(item: T) -> C {
-         return [item]
-     }
-  !$ error: use of protocol 'Container' as a type must be written 'any Container'
-  !! func makeProtocolContainer<T>(item: T) -> Container {
-  !!                                           ^~~~~~~~~
-  !! any Container
-  !$ error: cannot convert return expression of type '[T]' to return type 'C'
-  !! return [item]
-  !! ^~~~~~
-  !! as! C
-  ```
--->
-
-Using the opaque type `some Container` as a return type
-expresses the desired API contract --- the function returns a container,
-but declines to specify the container's type:
+불투명 타입 `some Container`를 반환 타입으로 사용하면 원하는 API 계약을 표현할 수 있다. 이 함수는 컨테이너를 반환하지만 컨테이너의 타입은 지정하지 않는다:
 
 ```swift
 func makeOpaqueContainer<T>(item: T) -> some Container {
@@ -863,74 +429,12 @@ print(type(of: twelve))
 // Prints "Int"
 ```
 
-<!--
-  - test: `opaque-result`
-
-  ```swifttest
-  -> func makeOpaqueContainer<T>(item: T) -> some Container {
-         return [item]
-     }
-  -> let opaqueContainer = makeOpaqueContainer(item: 12)
-  -> let twelve = opaqueContainer[0]
-  -> print(type(of: twelve))
-  <- Int
-  ```
--->
-
-The type of `twelve` is inferred to be `Int`,
-which illustrates the fact that type inference works with opaque types.
-In the implementation of `makeOpaqueContainer(item:)`,
-the underlying type of the opaque container is `[T]`.
-In this case, `T` is `Int`,
-so the return value is an array of integers
-and the `Item` associated type is inferred to be `Int`.
-The subscript on `Container` returns `Item`,
-which means that the type of `twelve` is also inferred to be `Int`.
-
-<!--
-  TODO: Expansion for the future
-
-  You can combine the flexibility of returning a value of protocol type
-  with the API-boundary enforcement of opaque types
-  by using type erasure
-  like the Swift standard library uses in the
-  `AnySequence <//apple_ref/fake/AnySequence`_ type.
-
-  protocol P { func f() -> Int }
-
-  struct AnyP: P {
-      var p: P
-      func f() -> Int { return p.f() }
-  }
-
-  struct P1 {
-      func f() -> Int { return 100 }
-  }
-  struct P2 {
-      func f() -> Int { return 200 }
-  }
-
-  func opaque(x: Int) -> some P {
-      let result: P
-      if x > 100 {
-          result = P1()
-      }  else {
-          result = P2()
-      }
-      return AnyP(p: result)
-  }
--->
+`twelve`의 타입은 `Int`로 추론된다. 이는 불투명 타입에서도 타입 추론이 작동한다는 사실을 보여준다. `makeOpaqueContainer(item:)`의 구현에서 불투명 컨테이너의 실제 타입은 `[T]`이다. 이 경우 `T`는 `Int`이므로 반환 값은 정수 배열이고, `Item` 연관 타입은 `Int`로 추론된다. `Container`의 서브스크립트는 `Item`을 반환하므로, `twelve`의 타입도 `Int`로 추론된다.
 
 
-## Opaque Parameter Types
+## 불투명 파라미터 타입
 
-In addition to writing `some` to return an opaque type,
-you can also write `some` in the type for a parameter
-to a function, subscript, or initializer.
-However, when you write `some` in a parameter type
-that's just a shorter syntax for generics, not an opaque type.
-For example,
-both of the functions below are equivalent:
+`some` 키워드를 사용해 불투명 타입을 반환하는 것 외에도, 함수, 서브스크립트, 또는 이니셜라이저의 파라미터 타입에 `some`을 사용할 수 있다. 하지만 파라미터 타입에서 `some`을 사용하는 것은 불투명 타입이 아닌 제네릭을 위한 짧은 구문일 뿐이다. 예를 들어, 아래 두 함수는 동일하다:
 
 ```swift
 func drawTwiceGeneric<SomeShape: Shape>(_ shape: SomeShape) -> String {
@@ -944,19 +448,9 @@ func drawTwiceSome(_ shape: some Shape) -> String {
 }
 ```
 
-The `drawTwiceGeneric(_:)` function
-declares a generic type parameter named `SomeShape`,
-with a constraint that requires `SomeShape` to conform to the `Shape` protocol.
-The `drawTwiceSome(_:)` function
-uses the type `some Shape` for its argument.
-This creates a new, unnamed generic type parameter for the function
-with a constraint that requires the type to conform to the `Shape` protocol.
-Because the generic type doesn't have a name,
-you can't refer to that type elsewhere in the function.
+`drawTwiceGeneric(_:)` 함수는 `SomeShape`라는 이름의 제네릭 타입 파라미터를 선언하며, `SomeShape`가 `Shape` 프로토콜을 준수하도록 제약을 설정한다. `drawTwiceSome(_:)` 함수는 인자 타입으로 `some Shape`를 사용한다. 이는 `Shape` 프로토콜을 준수해야 하는 새로운 이름 없는 제네릭 타입 파라미터를 생성한다. 제네릭 타입에 이름이 없기 때문에 함수 내 다른 곳에서 이 타입을 참조할 수 없다.
 
-If you write `some` before more than one parameter's type,
-each of the generic types are independent.
-For example:
+여러 파라미터 타입 앞에 `some`을 사용하면, 각 제네릭 타입은 독립적이다. 예를 들어:
 
 ```swift
 func combine(shape s1: some Shape, with s2: some Shape) -> String {
@@ -966,21 +460,9 @@ func combine(shape s1: some Shape, with s2: some Shape) -> String {
 combine(smallTriangle, trapezoid)
 ```
 
-In the `combine(shape:with:)` function,
-the types of the first and second parameter
-must both conform to the `Shape` protocol,
-but there's no constraint that requires them to be the same type.
-When you call `combine(shape:with)`,
-you can pass two different shapes ---
-in this case, one triangle and one trapezoid.
+`combine(shape:with:)` 함수에서 첫 번째와 두 번째 파라미터의 타입은 모두 `Shape` 프로토콜을 준수해야 하지만, 동일한 타입일 필요는 없다. `combine(shape:with:)`를 호출할 때 두 가지 다른 도형을 전달할 수 있다. 이 경우 한 개의 삼각형과 한 개의 사다리꼴을 전달한다.
 
-Unlike the syntax for named generic type parameters,
-described in <doc:Generics> chapter,
-this lightweight syntax can't include
-a generic `where` clause or any same-type (`==`) constraints.
-In addition,
-using the lightweight syntax for very complex constraints
-can be hard to read.
+<doc:Generics> 장에서 설명한 이름 있는 제네릭 타입 파라미터 구문과 달리, 이 간단한 구문은 제네릭 `where` 절이나 동일 타입 (`==`) 제약을 포함할 수 없다. 또한, 매우 복잡한 제약에 이 간단한 구문을 사용하면 가독성이 떨어질 수 있다.
 
 <!--
 This source file is part of the Swift.org open source project
@@ -991,3 +473,5 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
+
+

@@ -1,78 +1,48 @@
-# Declarations
+# 선언문
 
-Introduce types, operators, variables, and other names and constructs.
+타입, 연산자, 변수, 그리고 다른 이름과 구조를 소개한다.
 
-A *declaration* introduces a new name or construct into your program.
-For example, you use declarations to introduce functions and methods,
-to introduce variables and constants,
-and to define enumeration, structure, class, and protocol types.
-You can also use a declaration to extend the behavior
-of an existing named type and to import symbols into your program that are declared elsewhere.
+*선언문*은 프로그램에 새로운 이름이나 구조를 도입한다. 예를 들어, 함수와 메서드를 소개하거나, 변수와 상수를 도입하고, 열거형, 구조체, 클래스, 프로토콜 타입을 정의할 때 선언문을 사용한다. 또한 기존에 존재하는 이름이 붙은 타입의 동작을 확장하거나, 다른 곳에서 선언된 심볼을 프로그램으로 임포트할 때도 선언문을 사용한다.
 
-In Swift, most declarations are also definitions in the sense that they're implemented
-or initialized at the same time they're declared. That said, because protocols don't
-implement their members, most protocol members are declarations only. For convenience
-and because the distinction isn't that important in Swift,
-the term *declaration* covers both declarations and definitions.
+Swift에서는 대부분의 선언문이 동시에 구현되거나 초기화되기 때문에 정의의 역할도 한다. 그러나 프로토콜은 멤버를 구현하지 않기 때문에, 대부분의 프로토콜 멤버는 선언만 제공한다. 편의상 그리고 이 구분이 Swift에서 크게 중요하지 않기 때문에, *선언문*이라는 용어는 선언과 정의를 모두 포함한다.
 
-> Grammar of a declaration:
+> 선언문 문법:
 >
-> *declaration* → *import-declaration* \
-> *declaration* → *constant-declaration* \
-> *declaration* → *variable-declaration* \
-> *declaration* → *typealias-declaration* \
-> *declaration* → *function-declaration* \
-> *declaration* → *enum-declaration* \
-> *declaration* → *struct-declaration* \
-> *declaration* → *class-declaration* \
-> *declaration* → *actor-declaration* \
-> *declaration* → *protocol-declaration* \
-> *declaration* → *initializer-declaration* \
-> *declaration* → *deinitializer-declaration* \
-> *declaration* → *extension-declaration* \
-> *declaration* → *subscript-declaration* \
-> *declaration* → *macro-declaration* \
-> *declaration* → *operator-declaration* \
-> *declaration* → *precedence-group-declaration*
+> *선언문* → *임포트 선언문* \
+> *선언문* → *상수 선언문* \
+> *선언문* → *변수 선언문* \
+> *선언문* → *타입 별칭 선언문* \
+> *선언문* → *함수 선언문* \
+> *선언문* → *열거형 선언문* \
+> *선언문* → *구조체 선언문* \
+> *선언문* → *클래스 선언문* \
+> *선언문* → *액터 선언문* \
+> *선언문* → *프로토콜 선언문* \
+> *선언문* → *초기화자 선언문* \
+> *선언문* → *디이니셜라이저 선언문* \
+> *선언문* → *확장 선언문* \
+> *선언문* → *서브스크립트 선언문* \
+> *선언문* → *매크로 선언문* \
+> *선언문* → *연산자 선언문* \
+> *선언문* → *우선순위 그룹 선언문*
 
-## Top-Level Code
 
-The top-level code in a Swift source file consists of zero or more statements,
-declarations, and expressions.
-By default, variables, constants, and other named declarations that are declared
-at the top-level of a source file are accessible to code
-in every source file that's part of the same module.
-You can override this default behavior
-by marking the declaration with an access-level modifier,
-as described in <doc:Declarations#Access-Control-Levels>.
+## 최상위 코드
 
-There are two kinds of top-level code:
-top-level declarations and executable top-level code.
-Top-level declarations consist of only declarations,
-and are allowed in all Swift source files.
-Executable top-level code contains statements and expressions,
-not just declarations,
-and is allowed only as the top-level entry point for the program.
+Swift 소스 파일의 최상위 코드는 0개 이상의 구문, 선언, 그리고 표현식으로 구성된다. 기본적으로 소스 파일의 최상위 수준에서 선언된 변수, 상수, 그리고 기타 명명된 선언은 동일한 모듈에 속한 모든 소스 파일의 코드에서 접근할 수 있다. 이 기본 동작은 <doc:Declarations#Access-Control-Levels>에서 설명한 접근 레벨 수정자를 사용해 선언에 표시함으로써 재정의할 수 있다.
 
-The Swift code you compile to make an executable
-can contain at most one of the following approaches
-to mark the top-level entry point,
-regardless of how the code is organized into files and modules:
-the `main` attribute,
-the `NSApplicationMain` attribute,
-the `UIApplicationMain` attribute,
-a `main.swift` file,
-or a file that contains top-level executable code.
+최상위 코드는 크게 두 가지 유형으로 나뉜다: 최상위 선언과 실행 가능한 최상위 코드. 최상위 선언은 선언만으로 이루어지며, 모든 Swift 소스 파일에서 허용된다. 실행 가능한 최상위 코드는 선언뿐만 아니라 구문과 표현식을 포함하며, 프로그램의 최상위 진입점으로만 허용된다.
 
-> Grammar of a top-level declaration:
+실행 파일을 만들기 위해 컴파일하는 Swift 코드는 코드가 파일과 모듈로 어떻게 구성되어 있든 상관없이 다음 접근 방식 중 최대 하나만 사용해 최상위 진입점을 표시할 수 있다: `main` 속성, `NSApplicationMain` 속성, `UIApplicationMain` 속성, `main.swift` 파일, 또는 최상위 실행 가능한 코드를 포함하는 파일.
+
+> 최상위 선언 문법:
 >
 > *top-level-declaration* → *statements*_?_
 
-## Code Blocks
 
-A *code block* is used by a variety of declarations and control structures
-to group statements together.
-It has the following form:
+## 코드 블록
+
+코드 블록은 다양한 선언과 제어 구조에서 여러 문장을 그룹화하는 데 사용된다. 코드 블록은 다음과 같은 형태를 가진다:
 
 ```swift
 {
@@ -80,40 +50,30 @@ It has the following form:
 }
 ```
 
-The *statements* inside a code block include declarations,
-expressions, and other kinds of statements and are executed in order
-of their appearance in source code.
+코드 블록 내부의 *statements*는 선언, 표현식, 그리고 다른 종류의 문장을 포함하며, 소스 코드에 나타난 순서대로 실행된다.
 
 <!--
-  TR: What exactly are the scope rules for Swift?
+  TR: Swift의 스코프 규칙은 정확히 무엇인가?
 -->
 
 <!--
-  TODO: Discuss scope.  I assume a code block creates a new scope?
+  TODO: 스코프에 대해 논의. 코드 블록이 새로운 스코프를 생성한다고 가정하는지?
 -->
 
-> Grammar of a code block:
+> 코드 블록의 문법:
 >
 > *code-block* → **`{`** *statements*_?_ **`}`**
 
-## Import Declaration
 
-An *import declaration* lets you access symbols
-that are declared outside the current file.
-The basic form imports the entire module;
-it consists of the `import` keyword followed by a module name:
+## 임포트(Import) 선언
+
+*임포트 선언*은 현재 파일 외부에서 선언된 심볼에 접근할 수 있게 한다. 기본 형태는 전체 모듈을 임포트하는 방식으로, `import` 키워드 뒤에 모듈 이름을 붙인다:
 
 ```swift
 import <#module#>
 ```
 
-Providing more detail limits which symbols are imported ---
-you can specify a specific submodule
-or a specific declaration within a module or submodule.
-When this detailed form is used,
-only the imported symbol
-(and not the module that declares it)
-is made available in the current scope.
+더 세부적으로 지정하면 특정 심볼만 임포트할 수 있다. 예를 들어, 특정 하위 모듈이나 모듈 내의 특정 선언만 가져올 수 있다. 이렇게 세부적으로 지정하면, 현재 스코프에서 임포트된 심볼만 사용할 수 있고, 해당 심볼을 선언한 모듈은 사용할 수 없다.
 
 ```swift
 import <#import kind#> <#module#>.<#symbol name#>
@@ -121,133 +81,56 @@ import <#module#>.<#submodule#>
 ```
 
 <!--
-  TODO: Need to add more to this section.
+  TODO: 이 섹션에 더 많은 내용을 추가해야 함.
 -->
 
-> Grammar of an import declaration:
+> 임포트 선언의 문법:
 >
 > *import-declaration* → *attributes*_?_ **`import`** *import-kind*_?_ *import-path*
 >
 > *import-kind* → **`typealias`** | **`struct`** | **`class`** | **`enum`** | **`protocol`** | **`let`** | **`var`** | **`func`** \
 > *import-path* → *identifier* | *identifier* **`.`** *import-path*
 
-## Constant Declaration
 
-A *constant declaration* introduces a constant named value into your program.
-Constant declarations are declared using the `let` keyword and have the following form:
+## 상수 선언
+
+*상수 선언*은 프로그램에 명명된 상수 값을 도입한다. 상수 선언은 `let` 키워드를 사용하며, 다음과 같은 형태를 가진다:
 
 ```swift
-let <#constant name#>: <#type#> = <#expression#>
+let <#상수 이름#>: <#타입#> = <#표현식#>
 ```
 
-A constant declaration defines an immutable binding between the *constant name*
-and the value of the initializer *expression*;
-after the value of a constant is set, it can't be changed.
-That said, if a constant is initialized with a class object,
-the object itself can change,
-but the binding between the constant name and the object it refers to can't.
+상수 선언은 *상수 이름*과 초기화 *표현식*의 값 사이에 불변의 바인딩을 정의한다. 상수의 값이 설정된 후에는 변경할 수 없다. 단, 상수가 클래스 객체로 초기화된 경우, 객체 자체는 변경될 수 있지만, 상수 이름과 객체 간의 바인딩은 변경할 수 없다.
 
-When a constant is declared at global scope,
-it must be initialized with a value.
-When a constant declaration occurs in the context of a function or method,
-it can be initialized later,
-as long as it's guaranteed to have a value set
-before the first time its value is read.
-If the compiler can prove that the constant's value is never read,
-the constant isn't required to have a value set at all.
-This analysis is called *definite initialization* ---
-the compiler proves that a value is definitely set before being read.
+상수가 전역 범위에서 선언되면 반드시 값으로 초기화해야 한다. 함수나 메서드의 컨텍스트에서 상수 선언이 발생하면, 상수의 값이 처음 읽히기 전에 값이 설정되도록 보장된다면 나중에 초기화할 수 있다. 컴파일러가 상수의 값이 절대 읽히지 않음을 증명할 수 있다면, 상수에 값을 설정할 필요가 없다. 이 분석을 *명확한 초기화*라고 한다. 컴파일러는 값이 읽히기 전에 반드시 설정됨을 증명한다.
 
-> Note:
-> Definite initialization
-> can't construct proofs that require domain knowledge,
-> and its ability to track state across conditionals has a limit.
-> If you can determine that constant always has a value set,
-> but the compiler can't prove this is the case,
-> try simplifying the code paths that set the value,
-> or use a variable declaration instead.
+> 참고:
+> 명확한 초기화는 도메인 지식을 요구하는 증명을 구성할 수 없으며, 조건문을 통해 상태를 추적하는 능력에도 한계가 있다. 상수에 항상 값이 설정됨을 알 수 있지만, 컴파일러가 이를 증명할 수 없는 경우, 값을 설정하는 코드 경로를 단순화하거나 변수 선언을 사용해 보자.
 
-<!--
-In the most general case,
-DI reduces to the halting problem,
-as shown by Rice's theorem.
--->
+클래스나 구조체 선언의 컨텍스트에서 상수 선언이 발생하면, 이를 *상수 프로퍼티*라고 한다. 상수 선언은 계산된 프로퍼티가 아니므로, getter나 setter를 가지지 않는다.
 
-When a constant declaration occurs in the context of a class or structure
-declaration, it's considered a *constant property*.
-Constant declarations aren't computed properties and therefore don't have getters
-or setters.
-
-If the *constant name* of a constant declaration is a tuple pattern,
-the name of each item in the tuple is bound to the corresponding value
-in the initializer *expression*.
+상수 선언의 *상수 이름*이 튜플 패턴인 경우, 튜플의 각 항목 이름은 초기화 *표현식*의 해당 값에 바인딩된다.
 
 ```swift
 let (firstNumber, secondNumber) = (10, 42)
 ```
 
-<!--
-  - test: `constant-decl`
-
-  ```swifttest
-  -> let (firstNumber, secondNumber) = (10, 42)
-  ```
--->
-
-In this example,
-`firstNumber` is a named constant for the value `10`,
-and `secondNumber` is a named constant for the value `42`.
-Both constants can now be used independently:
+이 예제에서 `firstNumber`는 값 `10`에 대한 명명된 상수이고, `secondNumber`는 값 `42`에 대한 명명된 상수이다. 이제 두 상수를 독립적으로 사용할 수 있다:
 
 ```swift
-print("The first number is \(firstNumber).")
-// Prints "The first number is 10."
-print("The second number is \(secondNumber).")
-// Prints "The second number is 42."
+print("첫 번째 숫자는 \(firstNumber)입니다.")
+// "첫 번째 숫자는 10입니다." 출력
+print("두 번째 숫자는 \(secondNumber)입니다.")
+// "두 번째 숫자는 42입니다." 출력
 ```
 
-<!--
-  - test: `constant-decl`
+타입 주석(`:` *타입*)은 *상수 이름*의 타입을 추론할 수 있는 경우 상수 선언에서 선택 사항이다. 이는 <doc:Types#Type-Inference>에서 설명한다.
 
-  ```swifttest
-  -> print("The first number is \(firstNumber).")
-  <- The first number is 10.
-  -> print("The second number is \(secondNumber).")
-  <- The second number is 42.
-  ```
--->
+상수 타입 프로퍼티를 선언하려면, 선언에 `static` 선언 수정자를 표시한다. 클래스의 상수 타입 프로퍼티는 항상 암묵적으로 final이다. 서브클래스에서의 재정의를 허용하거나 금지하기 위해 `class`나 `final` 선언 수정자를 표시할 수 없다. 타입 프로퍼티는 <doc:Properties#Type-Properties>에서 논의한다.
 
-The type annotation (`:` *type*) is optional in a constant declaration
-when the type of the *constant name* can be inferred,
-as described in <doc:Types#Type-Inference>.
+상수에 대한 더 많은 정보와 사용 시기를 위한 지침은 <doc:TheBasics#Constants-and-Variables>와 <doc:Properties#Stored-Properties>를 참고한다.
 
-To declare a constant type property,
-mark the declaration with the `static` declaration modifier.
-A constant type property of a class is always implicitly final;
-you can't mark it with the `class` or `final` declaration modifier
-to allow or disallow overriding by subclasses.
-Type properties are discussed in <doc:Properties#Type-Properties>.
-
-<!--
-  - test: `class-constants-cant-have-class-or-final`
-
-  ```swifttest
-  -> class Super { class let x = 10 }
-  !$ error: class stored properties not supported in classes; did you mean 'static'?
-  !! class Super { class let x = 10 }
-  !!               ~~~~~     ^
-  -> class S { static final let x = 10 }
-  !$ error: static declarations are already final
-  !! class S { static final let x = 10 }
-  !!                  ^~~~~~
-  !!-
-  ```
--->
-
-For more information about constants and for guidance about when to use them,
-see <doc:TheBasics#Constants-and-Variables> and <doc:Properties#Stored-Properties>.
-
-> Grammar of a constant declaration:
+> 상수 선언의 문법:
 >
 > *constant-declaration* → *attributes*_?_ *declaration-modifiers*_?_ **`let`** *pattern-initializer-list*
 >
@@ -255,58 +138,38 @@ see <doc:TheBasics#Constants-and-Variables> and <doc:Properties#Stored-Propertie
 > *pattern-initializer* → *pattern* *initializer*_?_ \
 > *initializer* → **`=`** *expression*
 
-## Variable Declaration
 
-A *variable declaration* introduces a variable named value into your program
-and is declared using the `var` keyword.
+## 변수 선언
 
-Variable declarations have several forms that declare different kinds
-of named, mutable values,
-including stored and computed variables and properties,
-stored variable and property observers, and static variable properties.
-The appropriate form to use depends on
-the scope at which the variable is declared and the kind of variable you intend to declare.
+*변수 선언*은 프로그램에 특정 이름의 값을 도입하는 과정이다. 이때 `var` 키워드를 사용해 변수를 선언한다.
 
-> Note: You can also declare properties in the context of a protocol declaration,
-> as described in <doc:Declarations#Protocol-Property-Declaration>.
+변수 선언은 다양한 형태로 이루어질 수 있다. 저장된 변수와 계산된 변수, 프로퍼티, 저장 변수 및 프로퍼티 옵저버, 정적 변수 프로퍼티 등 여러 종류의 변경 가능한 값을 선언할 수 있다. 어떤 형태를 사용할지는 변수가 선언되는 범위와 선언하려는 변수의 종류에 따라 결정된다.
 
-You can override a property in a subclass by marking the subclass's property declaration
-with the `override` declaration modifier, as described in <doc:Inheritance#Overriding>.
+> 참고: 프로토콜 선언 컨텍스트에서도 프로퍼티를 선언할 수 있다. 자세한 내용은 <doc:Declarations#Protocol-Property-Declaration>에서 확인할 수 있다.
 
-### Stored Variables and Stored Variable Properties
+서브클래스에서 프로퍼티를 재정의하려면 `override` 선언 수정자를 사용하면 된다. 이에 대한 자세한 설명은 <doc:Inheritance#Overriding>에서 찾아볼 수 있다.
 
-The following form declares a stored variable or stored variable property:
+
+### 저장 변수와 저장 변수 프로퍼티
+
+다음 형태는 저장 변수 또는 저장 변수 프로퍼티를 선언한다:
 
 ```swift
-var <#variable name#>: <#type#> = <#expression#>
+var <#변수 이름#>: <#타입#> = <#표현식#>
 ```
 
-You define this form of a variable declaration at global scope, the local scope
-of a function, or in the context of a class or structure declaration.
-When a variable declaration of this form is declared at global scope or the local
-scope of a function, it's referred to as a *stored variable*.
-When it's declared in the context of a class or structure declaration,
-it's referred to as a *stored variable property*.
+이 형태의 변수 선언은 전역 범위, 함수의 지역 범위, 또는 클래스나 구조체 선언 내에서 정의할 수 있다. 이 형태의 변수 선언이 전역 범위나 함수의 지역 범위에서 선언되면 *저장 변수*로 불린다. 클래스나 구조체 선언 내에서 선언되면 *저장 변수 프로퍼티*로 불린다.
 
-The initializer *expression* can't be present in a protocol declaration,
-but in all other contexts, the initializer *expression* is optional.
-That said, if no initializer *expression* is present,
-the variable declaration must include an explicit type annotation (`:` *type*).
+초기화 *표현식*은 프로토콜 선언에서는 사용할 수 없지만, 다른 모든 상황에서는 선택 사항이다. 초기화 *표현식*이 없으면 변수 선언에 명시적 타입 주석(`:` *타입*)이 반드시 포함되어야 한다.
 
-As with constant declarations,
-if a variable declaration omits the initializer *expression*,
-the variable must have a value set before the first time it is read.
-Also like constant declarations,
-if the *variable name* is a tuple pattern,
-the name of each item in the tuple is bound to the corresponding value
-in the initializer *expression*.
+상수 선언과 마찬가지로, 변수 선언에서 초기화 *표현식*을 생략하면 변수는 처음 읽기 전에 값을 설정해야 한다. 또한 상수 선언과 유사하게, *변수 이름*이 튜플 패턴인 경우 튜플의 각 항목 이름은 초기화 *표현식*의 해당 값에 바인딩된다.
 
-As their names suggest, the value of a stored variable or a stored variable property
-is stored in memory.
+이름에서 알 수 있듯이, 저장 변수나 저장 변수 프로퍼티의 값은 메모리에 저장된다.
 
-### Computed Variables and Computed Properties
 
-The following form declares a computed variable or computed property:
+### 계산 변수와 계산 프로퍼티
+
+다음은 계산 변수 또는 계산 프로퍼티를 선언하는 형식이다:
 
 ```swift
 var <#variable name#>: <#type#> {
@@ -319,119 +182,47 @@ var <#variable name#>: <#type#> {
 }
 ```
 
-You define this form of a variable declaration at global scope, the local scope
-of a function, or in the context of a class, structure, enumeration, or extension declaration.
-When a variable declaration of this form is declared at global scope or the local
-scope of a function, it's referred to as a *computed variable*.
-When it's declared in the context of a class,
-structure, or extension declaration,
-it's referred to as a *computed property*.
+이 형식의 변수 선언은 전역 범위, 함수의 지역 범위, 또는 클래스, 구조체, 열거형, 확장 선언의 컨텍스트에서 정의할 수 있다. 이 형식의 변수 선언이 전역 범위나 함수의 지역 범위에서 선언되면 *계산 변수*라고 부른다. 클래스, 구조체, 또는 확장 선언의 컨텍스트에서 선언되면 *계산 프로퍼티*라고 부른다.
 
-The getter is used to read the value,
-and the setter is used to write the value.
-The setter clause is optional,
-and when only a getter is needed, you can omit both clauses and simply
-return the requested value directly,
-as described in <doc:Properties#Read-Only-Computed-Properties>.
-But if you provide a setter clause, you must also provide a getter clause.
+getter는 값을 읽는 데 사용되고, setter는 값을 쓰는 데 사용된다. setter 절은 선택 사항이며, getter만 필요한 경우에는 두 절을 모두 생략하고 직접 요청된 값을 반환할 수 있다. 이는 <doc:Properties#Read-Only-Computed-Properties>에 설명되어 있다. 하지만 setter 절을 제공한다면, getter 절도 반드시 제공해야 한다.
 
-The *setter name* and enclosing parentheses is optional.
-If you provide a setter name, it's used as the name of the parameter to the setter.
-If you don't provide a setter name, the default parameter name to the setter is `newValue`,
-as described in <doc:Properties#Shorthand-Setter-Declaration>.
+*setter 이름*과 괄호는 선택 사항이다. setter 이름을 제공하면, setter의 매개변수 이름으로 사용된다. setter 이름을 제공하지 않으면, setter의 기본 매개변수 이름은 `newValue`가 된다. 이는 <doc:Properties#Shorthand-Setter-Declaration>에 설명되어 있다.
 
-Unlike stored named values and stored variable properties,
-the value of a computed named value or a computed property isn't stored in memory.
+저장된 명명된 값과 저장된 변수 프로퍼티와 달리, 계산된 명명된 값이나 계산 프로퍼티의 값은 메모리에 저장되지 않는다.
 
-For more information and to see examples of computed properties,
-see <doc:Properties#Computed-Properties>.
+계산 프로퍼티에 대한 더 많은 정보와 예제는 <doc:Properties#Computed-Properties>를 참고한다.
 
-### Stored Variable Observers and Property Observers
 
-You can also declare a stored variable or property with `willSet` and `didSet` observers.
-A stored variable or property declared with observers has the following form:
+### 저장 변수 관찰자와 프로퍼티 관찰자
+
+`willSet`과 `didSet` 관찰자를 사용해 저장 변수나 프로퍼티를 선언할 수 있다. 관찰자가 있는 저장 변수나 프로퍼티는 다음과 같은 형태를 가진다:
 
 ```swift
-var <#variable name#>: <#type#> = <#expression#> {
-   willSet(<#setter name#>) {
-      <#statements#>
+var <#변수 이름#>: <#타입#> = <#표현식#> {
+   willSet(<#setter 이름#>) {
+      <#구문#>
    }
-   didSet(<#setter name#>) {
-      <#statements#>
+   didSet(<#setter 이름#>) {
+      <#구문#>
    }
 }
 ```
 
-You define this form of a variable declaration at global scope, the local scope
-of a function, or in the context of a class or structure declaration.
-When a variable declaration of this form is declared at global scope or the local
-scope of a function, the observers are referred to as *stored variable observers*.
-When it's declared in the context of a class or structure declaration,
-the observers are referred to as *property observers*.
+이 형태의 변수 선언은 전역 범위, 함수의 지역 범위, 또는 클래스나 구조체 선언 내에서 정의할 수 있다. 전역 범위나 함수의 지역 범위에서 이 형태로 변수를 선언하면 관찰자를 *저장 변수 관찰자*라고 부른다. 클래스나 구조체 선언 내에서 선언하면 관찰자를 *프로퍼티 관찰자*라고 부른다.
 
-You can add property observers to any stored property. You can also add property
-observers to any inherited property (whether stored or computed) by overriding
-the property within a subclass, as described in <doc:Inheritance#Overriding-Property-Observers>.
+프로퍼티 관찰자는 모든 저장 프로퍼티에 추가할 수 있다. 또한 상속된 프로퍼티(저장 프로퍼티든 계산 프로퍼티든)에 프로퍼티 관찰자를 추가하려면 하위 클래스에서 해당 프로퍼티를 재정의하면 된다. 이에 대한 자세한 내용은 <doc:Inheritance#Overriding-Property-Observers>를 참고한다.
 
-The initializer *expression* is optional in the context of a class or structure declaration,
-but required elsewhere. The *type* annotation is optional
-when the type can be inferred from the initializer *expression*.
-This expression is evaluated the first time you read the property's value.
-If you overwrite the property's initial value without reading it,
-this expression is evaluated before the first time you write to the property.
+클래스나 구조체 선언 내에서는 초기화 *표현식*이 선택 사항이지만, 다른 곳에서는 필수이다. 초기화 *표현식*에서 타입을 추론할 수 있는 경우 *타입* 주석은 선택 사항이다. 이 표현식은 프로퍼티 값을 처음 읽을 때 평가된다. 프로퍼티 값을 읽지 않고 초기 값을 덮어쓰면, 이 표현식은 프로퍼티에 처음 쓰기 전에 평가된다.
 
-<!--
-  - test: `overwriting-property-without-writing`
+`willSet`과 `didSet` 관찰자는 변수나 프로퍼티의 값이 설정될 때 이를 관찰하고 적절히 대응할 수 있는 방법을 제공한다. 관찰자는 변수나 프로퍼티가 처음 초기화될 때 호출되지 않는다. 대신, 초기화가 아닌 상황에서 값이 설정될 때만 호출된다.
 
-  ```swifttest
-  >> func loudConst(_ x: Int) -> Int {
-  >>     print("initial value:", x)
-  >>     return x
-  >> }
-  >> var x = loudConst(10)
-  >> x = 20
-  >> print("x:", x)
-  << initial value: 10
-  << x: 20
-  >> var y = loudConst(100)
-  >> print("y:", y)
-  << initial value: 100
-  << y: 100
-  ```
--->
+`willSet` 관찰자는 변수나 프로퍼티의 값이 설정되기 직전에 호출된다. 새로운 값은 상수로 `willSet` 관찰자에 전달되므로, `willSet` 절 내에서 이 값을 변경할 수 없다. `didSet` 관찰자는 새로운 값이 설정된 직후에 호출된다. `willSet` 관찰자와 달리, `didSet` 관찰자에는 변수나 프로퍼티의 이전 값이 전달된다. 따라서 이전 값에 접근해야 할 때 유용하다. 다만, `didSet` 관찰자 절 내에서 변수나 프로퍼티에 값을 할당하면, 방금 설정된 값을 대체한다.
 
-The `willSet` and `didSet` observers provide a way to observe (and to respond appropriately)
-when the value of a variable or property is being set.
-The observers aren't called when the variable or property
-is first initialized.
-Instead, they're called only when the value is set outside of an initialization context.
+`willSet`과 `didSet` 절의 *setter 이름*과 괄호는 선택 사항이다. setter 이름을 제공하면, 이 이름이 `willSet`과 `didSet` 관찰자의 매개변수 이름으로 사용된다. setter 이름을 제공하지 않으면, `willSet` 관찰자의 기본 매개변수 이름은 `newValue`이고, `didSet` 관찰자의 기본 매개변수 이름은 `oldValue`이다.
 
-A `willSet` observer is called just before the value of the variable or property
-is set. The new value is passed to the `willSet` observer as a constant,
-and therefore it can't be changed in the implementation of the `willSet` clause.
-The `didSet` observer is called immediately after the new value is set. In contrast
-to the `willSet` observer, the old value of the variable or property
-is passed to the `didSet` observer in case you still need access to it. That said,
-if you assign a value to a variable or property within its own `didSet` observer clause,
-that new value that you assign will replace the one that was just set and passed to
-the `willSet` observer.
+`willSet` 절을 제공할 때 `didSet` 절은 선택 사항이다. 마찬가지로, `didSet` 절을 제공할 때 `willSet` 절도 선택 사항이다.
 
-The *setter name* and enclosing parentheses in the `willSet` and `didSet` clauses are optional.
-If you provide setter names,
-they're used as the parameter names to the `willSet` and `didSet` observers.
-If you don't provide setter names,
-the default parameter name to the `willSet` observer is `newValue`
-and the default parameter name to the `didSet` observer is `oldValue`.
-
-The `didSet` clause is optional when you provide a `willSet` clause.
-Likewise, the `willSet` clause is optional when you provide a `didSet` clause.
-
-If the body of the `didSet` observer refers to the old value,
-the getter is called before the observer,
-to make the old value available.
-Otherwise, the new value is stored without calling the superclass's getter.
-The example below shows a computed property that's defined by the superclass
-and overridden by its subclasses to add an observer.
+`didSet` 관찰자 본문에서 이전 값을 참조하면, 관찰자가 호출되기 전에 getter가 호출되어 이전 값을 사용할 수 있게 한다. 그렇지 않으면, 새로운 값은 슈퍼클래스의 getter를 호출하지 않고 저장된다. 아래 예제는 슈퍼클래스에서 정의된 계산 프로퍼티를 하위 클래스에서 재정의해 관찰자를 추가하는 방법을 보여준다.
 
 ```swift
 class Superclass {
@@ -442,8 +233,8 @@ class Superclass {
     }
 }
 
-// This subclass doesn't refer to oldValue in its observer, so the
-// superclass's getter is called only once to print the value.
+// 이 하위 클래스는 관찰자에서 oldValue를 참조하지 않으므로,
+// 슈퍼클래스의 getter는 값을 출력하기 위해 한 번만 호출된다.
 class New: Superclass {
     override var x: Int {
         didSet { print("New value \(x)") }
@@ -455,8 +246,8 @@ new.x = 100
 // Prints "Getter was called"
 // Prints "New value 100"
 
-// This subclass refers to oldValue in its observer, so the superclass's
-// getter is called once before the setter, and again to print the value.
+// 이 하위 클래스는 관찰자에서 oldValue를 참조하므로,
+// 슈퍼클래스의 getter는 setter 전에 한 번, 그리고 값을 출력하기 위해 다시 한 번 호출된다.
 class NewAndOld: Superclass {
     override var x: Int {
         didSet { print("Old value \(oldValue) - new value \(x)") }
@@ -470,76 +261,14 @@ newAndOld.x = 200
 // Prints "Old value 12 - new value 200"
 ```
 
-<!--
-  - test: `didSet-calls-superclass-getter`
+프로퍼티 관찰자를 사용하는 방법에 대한 더 많은 정보와 예제는 <doc:Properties#Property-Observers>를 참고한다.
 
-  ```swifttest
-  -> class Superclass {
-         private var xValue = 12
-         var x: Int {
-             get { print("Getter was called"); return xValue }
-             set { print("Setter was called"); xValue = newValue }
-         }
-     }
 
-  // This subclass doesn't refer to oldValue in its observer, so the
-  // superclass's getter is called only once to print the value.
-  -> class New: Superclass {
-         override var x: Int {
-             didSet { print("New value \(x)") }
-         }
-     }
-     let new = New()
-     new.x = 100
-  <- Setter was called
-  <- Getter was called
-  <- New value 100
+### 타입 변수 프로퍼티
 
-  // This subclass refers to oldValue in its observer, so the superclass's
-  // getter is called once before the setter, and again to print the value.
-  -> class NewAndOld: Superclass {
-         override var x: Int {
-             didSet { print("Old value \(oldValue) - new value \(x)") }
-         }
-     }
-     let newAndOld = NewAndOld()
-     newAndOld.x = 200
-  <- Getter was called
-  <- Setter was called
-  <- Getter was called
-  <- Old value 12 - new value 200
-  ```
--->
+타입 변수 프로퍼티를 선언하려면 `static` 선언 수식어를 사용한다. 클래스는 타입 계산 프로퍼티에 `class` 선언 수식어를 사용해 서브클래스가 슈퍼클래스의 구현을 재정의할 수 있도록 허용한다. 타입 프로퍼티에 대한 자세한 내용은 <doc:Properties#Type-Properties>에서 다룬다.
 
-For more information and to see an example of how to use property observers,
-see <doc:Properties#Property-Observers>.
-
-<!--
-  - test: `cant-mix-get-set-and-didSet`
-
-  ```swifttest
-  >> struct S {
-  >>     var x: Int {
-  >>         get { print("S getter"); return 12 }
-  >>         set { return }
-  >>         didSet { print("S didSet") }
-  >>     }
-  >> }
-  !$ error: 'didSet' cannot be provided together with a getter
-  !! didSet { print("S didSet") }
-  !! ^
-  ```
--->
-
-### Type Variable Properties
-
-To declare a type variable property,
-mark the declaration with the `static` declaration modifier.
-Classes can mark type computed properties with the `class` declaration modifier instead
-to allow subclasses to override the superclass’s implementation.
-Type properties are discussed in <doc:Properties#Type-Properties>.
-
-> Grammar of a variable declaration:
+> 변수 선언 문법:
 >
 > *variable-declaration* → *variable-declaration-head* *pattern-initializer-list* \
 > *variable-declaration* → *variable-declaration-head* *variable-name* *type-annotation* *code-block* \
@@ -569,35 +298,26 @@ Type properties are discussed in <doc:Properties#Type-Properties>.
 > *didSet-clause* → *attributes*_?_ **`didSet`** *setter-name*_?_ *code-block*
 
 <!--
-  NOTE: Type annotations are required for computed properties -- the
-  types of those properties aren't computed/inferred.
+  NOTE: 계산 프로퍼티에는 타입 어노테이션이 필수적이다 -- 해당 프로퍼티의 타입은 계산되거나 추론되지 않는다.
 -->
 
-## Type Alias Declaration
 
-A *type alias declaration* introduces a named alias of an existing type into your program.
-Type alias declarations are declared using the `typealias` keyword and have the following form:
+## 타입 별칭 선언
+
+*타입 별칭 선언*은 프로그램 내에 기존 타입에 대한 이름을 부여한다. 타입 별칭 선언은 `typealias` 키워드를 사용하며, 다음과 같은 형태를 가진다:
 
 ```swift
-typealias <#name#> = <#existing type#>
+typealias <#이름#> = <#기존 타입#>
 ```
 
-After a type alias is declared, the aliased *name* can be used
-instead of the *existing type* everywhere in your program.
-The *existing type* can be a named type or a compound type.
-Type aliases don't create new types;
-they simply allow a name to refer to an existing type.
+타입 별칭을 선언한 후에는 프로그램 어디에서나 *기존 타입* 대신 *이름*을 사용할 수 있다. *기존 타입*은 이름이 있는 타입이거나 복합 타입일 수 있다. 타입 별칭은 새로운 타입을 생성하지 않으며, 단순히 기존 타입을 가리키는 이름을 제공한다.
 
-A type alias declaration can use generic parameters
-to give a name to an existing generic type. The type alias
-can provide concrete types for some or all of the generic parameters
-of the existing type.
-For example:
+타입 별칭 선언은 제네릭 매개변수를 사용해 기존 제네릭 타입에 이름을 부여할 수 있다. 타입 별칭은 기존 타입의 제네릭 매개변수 중 일부 또는 전체에 대해 구체적인 타입을 제공할 수 있다. 예를 들어:
 
 ```swift
 typealias StringDictionary<Value> = Dictionary<String, Value>
 
-// The following dictionaries have the same type.
+// 다음 두 딕셔너리는 동일한 타입을 가진다.
 var dictionary1: StringDictionary<Int> = [:]
 var dictionary2: Dictionary<String, Int> = [:]
 ```
@@ -614,9 +334,7 @@ var dictionary2: Dictionary<String, Int> = [:]
   ```
 -->
 
-When a type alias is declared with generic parameters, the constraints on those
-parameters must match exactly the constraints on the existing type's generic parameters.
-For example:
+타입 별칭이 제네릭 매개변수와 함께 선언될 때, 해당 매개변수의 제약 조건은 기존 타입의 제네릭 매개변수 제약 조건과 정확히 일치해야 한다. 예를 들어:
 
 ```swift
 typealias DictionaryOfInts<Key: Hashable> = Dictionary<Key, Int>
@@ -630,14 +348,9 @@ typealias DictionaryOfInts<Key: Hashable> = Dictionary<Key, Int>
   ```
 -->
 
-Because the type alias and the existing type can be used interchangeably,
-the type alias can't introduce additional generic constraints.
+타입 별칭과 기존 타입은 서로 교환 가능하게 사용할 수 있으므로, 타입 별칭은 추가적인 제네릭 제약 조건을 도입할 수 없다.
 
-A type alias can forward an existing type's generic parameters
-by omitting all generic parameters from the declaration.
-For example,
-the `Diccionario` type alias declared here
-has the same generic parameters and constraints as `Dictionary`.
+타입 별칭은 선언에서 모든 제네릭 매개변수를 생략함으로써 기존 타입의 제네릭 매개변수를 전달할 수 있다. 예를 들어, 여기서 선언된 `Diccionario` 타입 별칭은 `Dictionary`와 동일한 제네릭 매개변수와 제약 조건을 가진다.
 
 ```swift
 typealias Diccionario = Dictionary
@@ -664,10 +377,7 @@ typealias Diccionario = Dictionary
   typealias ProvidingMoreSpecificConstraints<T: Comparable & Hashable> = Dictionary<T, Int>
 -->
 
-Inside a protocol declaration,
-a type alias can give a shorter and more convenient name
-to a type that's used frequently.
-For example:
+프로토콜 선언 내부에서 타입 별칭은 자주 사용되는 타입에 대해 더 짧고 편리한 이름을 제공할 수 있다. 예를 들어:
 
 ```swift
 protocol Sequence {
@@ -696,13 +406,11 @@ func sum<T: Sequence>(_ sequence: T) -> Int where T.Element == Int {
   ```
 -->
 
-Without this type alias,
-the `sum` function would have to refer to the associated type
-as `T.Iterator.Element` instead of `T.Element`.
+이 타입 별칭이 없다면, `sum` 함수는 연관 타입을 `T.Iterator.Element` 대신 `T.Element`로 참조해야 한다.
 
-See also <doc:Declarations#Protocol-Associated-Type-Declaration>.
+자세한 내용은 <doc:Declarations#Protocol-Associated-Type-Declaration>을 참고한다.
 
-> Grammar of a type alias declaration:
+> 타입 별칭 선언 문법:
 >
 > *typealias-declaration* → *attributes*_?_ *access-level-modifier*_?_ **`typealias`** *typealias-name* *generic-parameter-clause*_?_ *typealias-assignment* \
 > *typealias-name* → *identifier* \
@@ -716,163 +424,89 @@ See also <doc:Declarations#Protocol-Associated-Type-Declaration>.
   typealias-assignment -> ``=`` type
 -->
 
-## Function Declaration
 
-A *function declaration* introduces a function or method into your program.
-A function declared in the context of class, structure, enumeration, or protocol
-is referred to as a *method*.
-Function declarations are declared using the `func` keyword and have the following form:
+## 함수 선언
+
+*함수 선언*은 프로그램에 함수나 메서드를 도입한다. 클래스, 구조체, 열거형, 프로토콜 내부에서 선언된 함수는 *메서드*로 불린다. 함수 선언은 `func` 키워드를 사용하며, 다음과 같은 형태를 가진다:
 
 ```swift
-func <#function name#>(<#parameters#>) -> <#return type#> {
-   <#statements#>
+func <#함수 이름#>(<#매개변수#>) -> <#반환 타입#> {
+   <#구문#>
 }
 ```
 
-If the function has a return type of `Void`,
-the return type can be omitted as follows:
+함수의 반환 타입이 `Void`인 경우, 반환 타입을 생략할 수 있다:
 
 ```swift
-func <#function name#>(<#parameters#>) {
-   <#statements#>
+func <#함수 이름#>(<#매개변수#>) {
+   <#구문#>
 }
 ```
 
-The type of each parameter must be included ---
-it can't be inferred.
-If you write `inout` in front of a parameter's type,
-the parameter can be modified inside the scope of the function.
-In-out parameters are discussed in detail
-in <doc:Declarations#In-Out-Parameters>, below.
+각 매개변수의 타입은 반드시 명시해야 한다. 타입 추론은 불가능하다. 매개변수 타입 앞에 `inout`을 작성하면, 함수 내부에서 해당 매개변수를 수정할 수 있다. in-out 매개변수에 대한 자세한 내용은 아래 <doc:Declarations#In-Out-Parameters>에서 다룬다.
 
-A function declaration whose *statements*
-include only a single expression
-is understood to return the value of that expression.
-This implicit return syntax is considered
-only when the expression's type and the function's return type
-aren't `Void`
-and aren't an enumeration like `Never` that doesn't have any cases.
+함수 선언의 *구문*이 단일 표현식으로만 구성된 경우, 해당 표현식의 값을 반환하는 것으로 이해된다. 이 암시적 반환 구문은 표현식의 타입과 함수의 반환 타입이 `Void`가 아니고, `Never`와 같이 케이스가 없는 열거형이 아닐 때만 고려된다.
 
-<!--
-  As of Swift 5.3,
-  the only way to make an uninhabited type is to create an empty enum,
-  so just say that directly instead of using & defining the compiler jargon.
--->
+함수는 튜플 타입을 반환 타입으로 사용해 여러 값을 반환할 수 있다.
 
-Functions can return multiple values using a tuple type
-as the return type of the function.
+함수 정의는 다른 함수 선언 내부에 나타날 수 있다. 이런 종류의 함수는 *중첩 함수*로 알려져 있다.
 
-<!--
-  TODO: ^-- Add some more here.
--->
+중첩 함수는 값이 절대 벗어나지 않도록 보장된 경우(예: in-out 매개변수) 또는 논스케이핑 함수 인자로 전달된 경우 논스케이핑 함수로 간주된다. 그렇지 않으면 중첩 함수는 스케이핑 함수가 된다.
 
-A function definition can appear inside another function declaration.
-This kind of function is known as a *nested function*.
+중첩 함수에 대한 자세한 내용은 <doc:Functions#Nested-Functions>에서 확인할 수 있다.
 
-A nested function is nonescaping if it captures
-a value that's guaranteed to never escape ---
-such as an in-out parameter ---
-or passed as a nonescaping function argument.
-Otherwise, the nested function is an escaping function.
 
-For a discussion of nested functions,
-see <doc:Functions#Nested-Functions>.
+### 파라미터 이름
 
-### Parameter Names
-
-Function parameters are a comma-separated list
-where each parameter has one of several forms.
-The order of arguments in a function call
-must match the order of parameters in the function's declaration.
-The simplest entry in a parameter list has the following form:
+함수 파라미터는 쉼표로 구분된 목록으로, 각 파라미터는 여러 형태 중 하나를 가진다. 함수 호출 시 전달하는 인자의 순서는 함수 선언 시 파라미터 순서와 일치해야 한다. 파라미터 목록의 가장 간단한 형태는 다음과 같다:
 
 ```swift
-<#parameter name#>: <#parameter type#>
+<#파라미터 이름#>: <#파라미터 타입#>
 ```
 
-A parameter has a name,
-which is used within the function body,
-as well as an argument label,
-which is used when calling the function or method.
-By default,
-parameter names are also used as argument labels.
-For example:
+파라미터는 함수 본문 내에서 사용되는 이름과, 함수나 메서드를 호출할 때 사용되는 인자 레이블을 가진다. 기본적으로 파라미터 이름은 인자 레이블로도 사용된다. 예를 들어:
 
 ```swift
 func f(x: Int, y: Int) -> Int { return x + y }
-f(x: 1, y: 2) // both x and y are labeled
+f(x: 1, y: 2) // x와 y 모두 레이블이 지정됨
 ```
 
-<!--
-  - test: `default-parameter-names`
-
-  ```swifttest
-  -> func f(x: Int, y: Int) -> Int { return x + y }
-  >> let r0 =
-  -> f(x: 1, y: 2) // both x and y are labeled
-  >> assert(r0 == 3)
-  ```
--->
-
-<!--
-  Rewrite the above to avoid bare expressions.
-  Tracking bug is <rdar://problem/35301593>
--->
-
-You can override the default behavior for argument labels
-with one of the following forms:
+기본 인자 레이블 동작을 재정의하려면 다음 형태 중 하나를 사용한다:
 
 ```swift
-<#argument label#> <#parameter name#>: <#parameter type#>
-_ <#parameter name#>: <#parameter type#>
+<#인자 레이블#> <#파라미터 이름#>: <#파라미터 타입#>
+_ <#파라미터 이름#>: <#파라미터 타입#>
 ```
 
-A name before the parameter name
-gives the parameter an explicit argument label,
-which can be different from the parameter name.
-The corresponding argument must use the given argument label
-in function or method calls.
+파라미터 이름 앞에 오는 이름은 파라미터에 명시적인 인자 레이블을 부여하며, 이는 파라미터 이름과 다를 수 있다. 해당 인자는 함수나 메서드 호출 시 주어진 인자 레이블을 반드시 사용해야 한다.
 
-An underscore (`_`) before a parameter name
-suppresses the argument label.
-The corresponding argument must have no label in function or method calls.
+파라미터 이름 앞에 언더스코어(`_`)를 사용하면 인자 레이블을 생략한다. 해당 인자는 함수나 메서드 호출 시 레이블 없이 전달해야 한다.
 
 ```swift
-func repeatGreeting(_ greeting: String, count n: Int) { /* Greet n times */ }
-repeatGreeting("Hello, world!", count: 2) //  count is labeled, greeting is not
+func repeatGreeting(_ greeting: String, count n: Int) { /* n번 인사 */ }
+repeatGreeting("Hello, world!", count: 2) // count는 레이블이 지정되고, greeting은 지정되지 않음
 ```
 
-<!--
-  - test: `overridden-parameter-names`
 
-  ```swifttest
-  -> func repeatGreeting(_ greeting: String, count n: Int) { /* Greet n times */ }
-  -> repeatGreeting("Hello, world!", count: 2) //  count is labeled, greeting is not
-  ```
--->
+### 매개변수 수정자
 
-### Parameter Modifiers
-
-A *parameter modifier* changes how an argument is passed to the function.
+*매개변수 수정자*는 인자가 함수에 전달되는 방식을 변경한다.
 
 ```swift
 <#argument label#> <#parameter name#>: <#parameter modifier#> <#parameter type#>
 ```
 
-To use a parameter modifier,
-write `inout`, `borrowing`, or `consuming`
-before the argument's type.
+매개변수 수정자를 사용하려면,
+인자의 타입 앞에 `inout`, `borrowing`, 또는 `consuming`을 작성한다.
 
 ```swift
 func someFunction(a: inout A, b: consuming B, c: C) { ... }
 ```
 
-#### In-Out Parameters
 
-By default, function arguments in Swift are passed by value:
-Any changes made within the function are not visible in the caller.
-To make an in-out parameter instead,
-you apply the `inout` parameter modifier.
+#### 입출력 매개변수
+
+기본적으로 Swift에서 함수 인자는 값에 의해 전달된다. 함수 내부에서 변경된 내용은 호출자에게 보이지 않는다. 입출력 매개변수를 사용하려면 `inout` 매개변수 수정자를 적용한다.
 
 ```swift
 func someFunction(a: inout Int) {
@@ -880,48 +514,25 @@ func someFunction(a: inout Int) {
 }
 ```
 
-When calling a function that includes in-out parameters,
-the in-out argument must be prefixed with an ampersand (`&`)
-to mark that the function call can change the argument's value.
+입출력 매개변수가 포함된 함수를 호출할 때는, 인자 앞에 앰퍼샌드(`&`)를 붙여 함수 호출이 인자의 값을 변경할 수 있음을 표시한다.
 
 ```swift
 var x = 7
 someFunction(&x)
-print(x)  // Prints "8"
+print(x)  // "8" 출력
 ```
 
-In-out parameters are passed as follows:
+입출력 매개변수는 다음과 같이 전달된다:
 
-1. When the function is called,
-   the value of the argument is copied.
-2. In the body of the function,
-   the copy is modified.
-3. When the function returns,
-   the copy's value is assigned to the original argument.
+1. 함수가 호출되면 인자의 값이 복사된다.
+2. 함수 본문에서 복사된 값이 수정된다.
+3. 함수가 반환될 때 복사된 값이 원래 인자에 할당된다.
 
-This behavior is known as *copy-in copy-out*
-or *call by value result*.
-For example,
-when a computed property or a property with observers
-is passed as an in-out parameter,
-its getter is called as part of the function call
-and its setter is called as part of the function return.
+이 동작을 *복사-입력 복사-출력* 또는 *값 결과 호출*이라고 한다. 예를 들어, 계산 속성이나 관찰자를 가진 속성이 입출력 매개변수로 전달되면, 함수 호출 시 getter가 호출되고 함수 반환 시 setter가 호출된다.
 
-As an optimization,
-when the argument is a value stored at a physical address in memory,
-the same memory location is used both inside and outside the function body.
-The optimized behavior is known as *call by reference*;
-it satisfies all of the requirements
-of the copy-in copy-out model
-while removing the overhead of copying.
-Write your code using the model given by copy-in copy-out,
-without depending on the call-by-reference optimization,
-so that it behaves correctly with or without the optimization.
+최적화를 위해, 인자가 메모리의 물리적 주소에 저장된 값인 경우, 함수 내부와 외부에서 동일한 메모리 위치를 사용한다. 이 최적화된 동작을 *참조 호출*이라고 하며, 복사 오버헤드를 제거하면서 복사-입력 복사-출력 모델의 모든 요구 사항을 충족한다. 코드를 작성할 때는 최적화에 의존하지 않고 복사-입력 복사-출력 모델을 기준으로 작성해야 하며, 최적화 여부에 관계없이 올바르게 동작하도록 해야 한다.
 
-Within a function, don't access a value that was passed as an in-out argument,
-even if the original value is available in the current scope.
-Accessing the original is a simultaneous access of the value,
-which violates memory exclusivity.
+함수 내부에서는 입출력 매개변수로 전달된 값에 접근하지 않아야 한다. 원래 값이 현재 범위에서 사용 가능하더라도 접근하면 동시 접근이 발생하여 메모리 독점성을 위반하게 된다.
 
 ```swift
 var someValue: Int
@@ -929,12 +540,11 @@ func someFunction(a: inout Int) {
     a += someValue
 }
 
-// Error: This causes a runtime exclusivity violation
+// 오류: 런타임 독점성 위반 발생
 someFunction(&someValue)
 ```
 
-For the same reason,
-you can't pass the same value to multiple in-out parameters.
+같은 이유로, 동일한 값을 여러 입출력 매개변수에 전달할 수 없다.
 
 ```swift
 var someValue: Int
@@ -943,26 +553,19 @@ func someFunction(a: inout Int, b: inout Int) {
     b += 1
 }
 
-// Error: Cannot pass the same value to multiple in-out parameters
+// 오류: 동일한 값을 여러 입출력 매개변수에 전달할 수 없음
 someFunction(&someValue, &someValue)
 ```
 
-For more information about memory safety and memory exclusivity,
-see <doc:MemorySafety>.
+메모리 안전성과 메모리 독점성에 대한 자세한 내용은 <doc:MemorySafety>를 참조한다.
 
 <!--
-  When the call-by-reference optimization is in play,
-  it would happen to do what you want.
-  But you still shouldn't do that --
-  as noted above, you're not allowed to depend on
-  behavioral differences that happen because of call by reference.
+  참조 호출 최적화가 적용되면 원하는 대로 동작할 수 있다.
+  하지만 여전히 그렇게 해서는 안 된다.
+  위에서 언급한 것처럼, 참조 호출로 인한 동작 차이에 의존해서는 안 된다.
 -->
 
-A closure or nested function
-that captures an in-out parameter must be nonescaping.
-If you need to capture an in-out parameter
-without mutating it,
-use a capture list to explicitly capture the parameter immutably.
+입출력 매개변수를 캡처하는 클로저나 중첩 함수는 비탈출(nonescaping)이어야 한다. 입출력 매개변수를 변경하지 않고 캡처해야 한다면, 캡처 목록을 사용해 명시적으로 불변으로 캡처한다.
 
 ```swift
 func someFunction(a: inout Int) -> () -> Int {
@@ -987,18 +590,15 @@ func someFunction(a: inout Int) -> () -> Int {
   ```
 -->
 
-If you need to capture and mutate an in-out parameter,
-use an explicit local copy,
-such as in multithreaded code that ensures
-all mutation has finished before the function returns.
+입출력 매개변수를 캡처하고 변경해야 한다면, 명시적으로 로컬 복사본을 사용한다. 예를 들어, 함수가 반환되기 전에 모든 변경이 완료되도록 보장하는 멀티스레드 코드에서 다음과 같이 사용할 수 있다.
 
 ```swift
 func multithreadedFunction(queue: DispatchQueue, x: inout Int) {
-    // Make a local copy and manually copy it back.
+    // 로컬 복사본을 만들고 수동으로 복사본을 다시 복사한다.
     var localX = x
     defer { x = localX }
 
-    // Operate on localX asynchronously, then wait before returning.
+    // localX에 대해 비동기적으로 작업한 후 반환 전에 대기한다.
     queue.async { someMutatingOperation(&localX) }
     queue.sync {}
 }
@@ -1011,19 +611,18 @@ func multithreadedFunction(queue: DispatchQueue, x: inout Int) {
   >> import Dispatch
   >> func someMutatingOperation(_ a: inout Int) {}
   -> func multithreadedFunction(queue: DispatchQueue, x: inout Int) {
-        // Make a local copy and manually copy it back.
+        // 로컬 복사본을 만들고 수동으로 복사본을 다시 복사한다.
         var localX = x
         defer { x = localX }
 
-        // Operate on localX asynchronously, then wait before returning.
+        // localX에 대해 비동기적으로 작업한 후 반환 전에 대기한다.
         queue.async { someMutatingOperation(&localX) }
         queue.sync {}
      }
   ```
 -->
 
-For more discussion and examples of in-out parameters,
-see <doc:Functions#In-Out-Parameters>.
+입출력 매개변수에 대한 더 많은 논의와 예제는 <doc:Functions#In-Out-Parameters>를 참조한다.
 
 <!--
   - test: `escaping-cant-capture-inout`
@@ -1059,50 +658,33 @@ see <doc:Functions#In-Out-Parameters>.
   ```
 -->
 
-#### Borrowing and Consuming Parameters
 
-By default, Swift uses a set of rules
-to automatically manage object lifetime across function calls,
-copying values when required.
-The default rules are designed to minimize overhead in most cases ---
-if you want more specific control,
-you can apply the `borrowing` or `consuming` parameter modifier.
-In this case,
-use `copy` to explicitly mark copy operations.
+#### 파라미터의 차용과 소비
 
-Regardless of whether you use the default rules,
-Swift guarantees that object lifetime and
-ownership are correctly managed in all cases.
-These parameter modifiers impact only the relative efficiency
-of particular usage patterns, not correctness.
+기본적으로 Swift는 함수 호출 간 객체 수명을 자동으로 관리하기 위해 일련의 규칙을 사용한다. 필요할 때 값을 복사하는 방식으로 동작한다. 기본 규칙은 대부분의 경우 오버헤드를 최소화하도록 설계되었다. 더 세밀한 제어가 필요하다면 `borrowing`이나 `consuming` 파라미터 수정자를 사용할 수 있다. 이 경우 `copy`를 사용해 명시적으로 복사 작업을 표시한다.
+
+기본 규칙을 사용하든 아니든, Swift는 모든 경우에 객체 수명과 소유권이 올바르게 관리되도록 보장한다. 이 파라미터 수정자들은 특정 사용 패턴의 상대적 효율성에만 영향을 미치며, 정확성에는 영향을 주지 않는다.
 
 <!--
-TODO: Describe the default rules.
-Essentially, inits and property setters are consuming,
-and everything else is borrowing.
-Where are copies implicitly inserted?
+TODO: 기본 규칙 설명.
+기본적으로 초기화 함수와 프로퍼티 설정자는 consuming,
+그 외는 borrowing으로 동작한다.
+복사 작업은 어디에 암시적으로 삽입되는가?
 -->
 
-The `borrowing` modifier indicates that the function
-does not keep the parameter's value.
-In this case, the caller maintains ownership of the object
-and the responsibility for the object's lifetime.
-Using `borrowing` minimizes overhead when the function
-uses the object only transiently.
+`borrowing` 수정자는 함수가 파라미터의 값을 유지하지 않음을 나타낸다. 이 경우 호출자가 객체의 소유권과 수명 관리 책임을 가진다. 함수가 객체를 일시적으로만 사용할 때 `borrowing`을 사용하면 오버헤드를 최소화할 수 있다.
 
 ```swift
-// `isLessThan` does not keep either argument
+// `isLessThan`은 두 인수 모두를 유지하지 않음
 func isLessThan(lhs: borrowing A, rhs: borrowing A) -> Bool {
     ...
 }
 ```
 
-If the function needs to keep the parameter's value
-for example, by storing it in a global variable ---
-you use `copy` to explicitly copy that value.
+함수가 파라미터의 값을 유지해야 한다면, 예를 들어 전역 변수에 저장해야 한다면 `copy`를 사용해 명시적으로 그 값을 복사한다.
 
 ```swift
-// As above, but this `isLessThan` also wants to record the smallest value
+// 위와 같지만, 이 `isLessThan`은 가장 작은 값을 기록하려 함
 func isLessThan(lhs: borrowing A, rhs: borrowing A) -> Bool {
     if lhs < storedValue {
         storedValue = copy lhs
@@ -1113,40 +695,31 @@ func isLessThan(lhs: borrowing A, rhs: borrowing A) -> Bool {
 }
 ```
 
-Conversely,
-the `consuming` parameter modifier indicates
-that the function takes ownership of the value,
-accepting responsibility for either storing or destroying it
-before the function returns.
+반대로, `consuming` 파라미터 수정자는 함수가 값의 소유권을 가짐을 나타낸다. 함수가 반환되기 전에 값을 저장하거나 파괴할 책임을 가진다.
 
 ```swift
-// `store` keeps its argument, so mark it `consuming`
+// `store`는 인수를 유지하므로 `consuming`으로 표시
 func store(a: consuming A) {
     someGlobalVariable = a
 }
 ```
 
-Using `consuming` minimizes overhead when the caller no longer
-needs to use the object after the function call.
+호출자가 함수 호출 후 객체를 더 이상 사용하지 않을 때 `consuming`을 사용하면 오버헤드를 최소화할 수 있다.
 
 ```swift
-// Usually, this is the last thing you do with a value
+// 일반적으로 이는 값을 사용하는 마지막 작업
 store(a: value)
 ```
 
-If you keep using a copyable object after the function call,
-the compiler automatically makes a copy of that object
-before the function call.
+함수 호출 후 복사 가능한 객체를 계속 사용한다면, 컴파일러는 함수 호출 전에 해당 객체의 복사본을 자동으로 만든다.
 
 ```swift
-// The compiler inserts an implicit copy here
-store(a: someValue)  // This function consumes someValue
-print(someValue)  // This uses the copy of someValue
+// 컴파일러는 여기에 암시적 복사를 삽입
+store(a: someValue)  // 이 함수는 someValue를 소비
+print(someValue)  // someValue의 복사본을 사용
 ```
 
-Unlike `inout`, neither `borrowing` nor
-`consuming` parameters require any special
-notation when you call the function:
+`inout`과 달리, `borrowing`이나 `consuming` 파라미터는 함수를 호출할 때 특별한 표기법이 필요하지 않다.
 
 ```swift
 func someFunction(a: borrowing A, b: consuming B) { ... }
@@ -1154,92 +727,70 @@ func someFunction(a: borrowing A, b: consuming B) { ... }
 someFunction(a: someA, b: someB)
 ```
 
-The explicit use of either `borrowing` or `consuming`
-indicates your intention to more tightly control
-the overhead of runtime ownership management.
-Because copies can cause unexpected runtime ownership
-operations,
-parameters marked with either of these
-modifiers cannot be copied unless you
-use an explicit `copy` keyword:
+`borrowing`이나 `consuming`을 명시적으로 사용하면 런타임 소유권 관리의 오버헤드를 더 엄격하게 제어하려는 의도를 나타낸다. 복사가 예상치 못한 런타임 소유권 작업을 유발할 수 있기 때문에, 이 수정자로 표시된 파라미터는 명시적으로 `copy` 키워드를 사용하지 않으면 복사할 수 없다.
 
 ```swift
 func borrowingFunction1(a: borrowing A) {
-    // Error: Cannot implicitly copy a
-    // This assignment requires a copy because
-    // `a` is only borrowed from the caller.
+    // 오류: a를 암시적으로 복사할 수 없음
+    // 이 할당은 복사가 필요함
+    // `a`는 호출자로부터 차용된 것임
     someGlobalVariable = a
 }
 
 func borrowingFunction2(a: borrowing A) {
-    // OK: Explicit copying works
+    // OK: 명시적 복사는 동작함
     someGlobalVariable = copy a
 }
 
 func consumingFunction1(a: consuming A) {
-    // Error: Cannot implicitly copy a
-    // This assignment requires a copy because
-    // of the following `print`
+    // 오류: a를 암시적으로 복사할 수 없음
+    // 이 할당은 복사가 필요함
+    // 아래 `print` 때문
     someGlobalVariable = a
     print(a)
 }
 
 func consumingFunction2(a: consuming A) {
-    // OK: Explicit copying works regardless
+    // OK: 명시적 복사는 문제없이 동작
     someGlobalVariable = copy a
     print(a)
 }
 
 func consumingFunction3(a: consuming A) {
-    // OK: No copy needed here because this is the last use
+    // OK: 여기서는 복사가 필요 없음. 이게 마지막 사용임
     someGlobalVariable = a
 }
 ```
 
 <!--
-  TODO: `borrowing` and `consuming` keywords with noncopyable argument types
+  TODO: `borrowing`과 `consuming` 키워드를 복사 불가능한 타입 인수와 함께 사용
 -->
 <!--
-  TODO: Any change of parameter modifier is ABI-breaking
+  TODO: 파라미터 수정자의 변경은 ABI 호환성을 깨뜨림
 -->
 
-### Special Kinds of Parameters
 
-Parameters can be ignored,
-take a variable number of values,
-and provide default values
-using the following forms:
+### 특별한 종류의 파라미터
+
+파라미터는 무시할 수도 있고, 다양한 개수의 값을 받을 수도 있으며, 기본값을 제공할 수도 있다. 이러한 기능은 다음과 같은 형태로 사용한다:
 
 ```swift
-_ : <#parameter type#>
-<#parameter name#>: <#parameter type#>...
-<#parameter name#>: <#parameter type#> = <#default argument value#>
+_ : <#파라미터 타입#>
+<#파라미터 이름#>: <#파라미터 타입#>...
+<#파라미터 이름#>: <#파라미터 타입#> = <#기본값#>
 ```
 
-An underscore (`_`) parameter
-is explicitly ignored and can't be accessed within the body of the function.
+언더스코어(`_`)로 표시된 파라미터는 명시적으로 무시되며, 함수 본문 내에서 접근할 수 없다.
 
-A parameter with a base type name followed immediately by three dots (`...`)
-is understood as a variadic parameter.
-A parameter that immediately follows a variadic parameter
-must have an argument label.
-A function can have multiple variadic parameters.
-A variadic parameter is treated as an array that contains elements of the base type name.
-For example, the variadic parameter `Int...` is treated as `[Int]`.
-For an example that uses a variadic parameter,
-see <doc:Functions#Variadic-Parameters>.
+기본 타입 이름 뒤에 바로 점 세 개(`...`)가 오는 파라미터는 가변 인자(variadic parameter)로 이해된다. 가변 인자 바로 뒤에 오는 파라미터는 반드시 인자 레이블이 있어야 한다. 하나의 함수는 여러 개의 가변 인자를 가질 수 있다. 가변 인자는 기본 타입의 요소를 포함하는 배열로 처리된다. 예를 들어, `Int...`라는 가변 인자는 `[Int]`로 처리된다. 가변 인자를 사용하는 예제는 <doc:Functions#Variadic-Parameters>를 참고한다.
 
-A parameter with an equal sign (`=`) and an expression after its type
-is understood to have a default value of the given expression.
-The given expression is evaluated when the function is called.
-If the parameter is omitted when calling the function,
-the default value is used instead.
+타입 뒤에 등호(`=`)와 표현식이 오는 파라미터는 해당 표현식을 기본값으로 가진다. 이 표현식은 함수가 호출될 때 평가된다. 함수를 호출할 때 파라미터를 생략하면 기본값이 대신 사용된다.
 
 ```swift
 func f(x: Int = 42) -> Int { return x }
-f()       // Valid, uses default value
-f(x: 7)   // Valid, uses the value provided
-f(7)      // Invalid, missing argument label
+f()       // 유효함, 기본값 사용
+f(x: 7)   // 유효함, 제공된 값 사용
+f(7)      // 유효하지 않음, 인자 레이블 누락
 ```
 
 <!--
@@ -1248,21 +799,21 @@ f(7)      // Invalid, missing argument label
   ```swifttest
   -> func f(x: Int = 42) -> Int { return x }
   >> let _ =
-  -> f()       // Valid, uses default value
+  -> f()       // 유효함, 기본값 사용
   >> let _ =
-  -> f(x: 7)   // Valid, uses the value provided
+  -> f(x: 7)   // 유효함, 제공된 값 사용
   >> let _ =
-  -> f(7)      // Invalid, missing argument label
+  -> f(7)      // 유효하지 않음, 인자 레이블 누락
   !$ error: missing argument label 'x:' in call
-  !! f(7)      // Invalid, missing argument label
+  !! f(7)      // 유효하지 않음, 인자 레이블 누락
   !!   ^
   !!   x:
   ```
 -->
 
 <!--
-  Rewrite the above to avoid discarding the function's return value.
-  Tracking bug is <rdar://problem/35301593>
+  위의 내용을 함수의 반환값을 버리지 않도록 다시 작성한다.
+  추적 중인 버그는 <rdar://problem/35301593>
 -->
 
 <!--
@@ -1285,24 +836,14 @@ f(7)      // Invalid, missing argument label
   ```
 -->
 
-### Special Kinds of Methods
 
-Methods on an enumeration or a structure
-that modify `self` must be marked with the `mutating` declaration modifier.
+### 특별한 종류의 메서드
 
-Methods that override a superclass method
-must be marked with the `override` declaration modifier.
-It's a compile-time error to override a method without the `override` modifier
-or to use the `override` modifier on a method
-that doesn't override a superclass method.
+열거형이나 구조체에서 `self`를 수정하는 메서드는 `mutating` 선언 수식어를 반드시 붙여야 한다.
 
-Methods associated with a type
-rather than an instance of a type
-must be marked with the `static` declaration modifier for enumerations and structures,
-or with either the `static` or `class` declaration modifier for classes.
-A class type method marked with the `class` declaration modifier
-can be overridden by a subclass implementation;
-a class type method marked with `class final` or `static` can't be overridden.
+슈퍼클래스의 메서드를 오버라이드하는 메서드는 `override` 선언 수식어를 반드시 붙여야 한다. `override` 수식어 없이 메서드를 오버라이드하거나, 슈퍼클래스 메서드를 오버라이드하지 않는 메서드에 `override` 수식어를 사용하면 컴파일 타임 에러가 발생한다.
+
+타입의 인스턴스가 아닌 타입 자체와 연관된 메서드는 열거형과 구조체의 경우 `static` 선언 수식어를 붙여야 하고, 클래스의 경우 `static` 또는 `class` 선언 수식어를 붙여야 한다. `class` 수식어로 표시된 클래스 타입 메서드는 서브클래스에서 오버라이드할 수 있지만, `class final` 또는 `static`으로 표시된 클래스 타입 메서드는 오버라이드할 수 없다.
 
 <!--
   - test: `overriding-class-methods-err`
@@ -1338,41 +879,21 @@ a class type method marked with `class final` or `static` can't be overridden.
   ```
 -->
 
-### Methods with Special Names
 
-Several methods that have special names
-enable syntactic sugar for function call syntax.
-If a type defines one of these methods,
-instances of the type can be used in function call syntax.
-The function call is understood to be a call to
-one of the specially named methods on that instance.
+### 특별한 이름을 가진 메서드
 
-A class, structure, or enumeration type
-can support function call syntax
-by defining a `dynamicallyCall(withArguments:)` method
-or a `dynamicallyCall(withKeywordArguments:)` method,
-as described in <doc:Attributes#dynamicCallable>,
-or by defining a call-as-function method, as described below.
-If the type defines
-both a call-as-function method
-and one of the methods used by the `dynamicCallable` attribute,
-the compiler gives preference to the call-as-function method
-in circumstances where either method could be used.
+특별한 이름을 가진 몇 가지 메서드는 함수 호출 구문을 위한 문법적 편의를 제공한다. 타입이 이러한 메서드 중 하나를 정의하면, 해당 타입의 인스턴스를 함수 호출 구문에서 사용할 수 있다. 함수 호출은 해당 인스턴스의 특별한 이름을 가진 메서드 호출로 이해된다.
 
-The name of a call-as-function method is `callAsFunction()`,
-or another name that begins with `callAsFunction(`
-and adds labeled or unlabeled arguments ---
-for example, `callAsFunction(_:_:)` and `callAsFunction(something:)`
-are also valid call-as-function method names.
+클래스, 구조체, 또는 열거형 타입은 `dynamicallyCall(withArguments:)` 메서드나 `dynamicallyCall(withKeywordArguments:)` 메서드를 정의하거나, 아래 설명된 call-as-function 메서드를 정의함으로써 함수 호출 구문을 지원할 수 있다. 타입이 call-as-function 메서드와 `dynamicCallable` 속성에 사용되는 메서드를 모두 정의한 경우, 컴파일러는 두 메서드 중 어느 것을 사용할 수 있는 상황에서도 call-as-function 메서드를 우선적으로 선택한다.
+
+call-as-function 메서드의 이름은 `callAsFunction()`이거나, `callAsFunction(`으로 시작하고 레이블이 있거나 없는 인자를 추가한 이름일 수 있다. 예를 들어, `callAsFunction(_:_:)`와 `callAsFunction(something:)`도 유효한 call-as-function 메서드 이름이다.
 
 <!--
-  Above, callAsFunction( is in code voice even though
-  it's not actually a symbol that exists in the reader's code.
-  Per discussion with Chuck, this is the closest typographic convention
-  to what we're trying to express here.
+  위에서 callAsFunction(은 코드 서체로 표시되었지만, 실제로 독자의 코드에 존재하는 심볼은 아니다.
+  Chuck과의 논의에 따르면, 여기서 표현하려는 것에 가장 가까운 타이포그래피 규칙이다.
 -->
 
-The following function calls are equivalent:
+다음 함수 호출은 동일하다:
 
 ```swift
 struct CallableStruct {
@@ -1384,7 +905,7 @@ struct CallableStruct {
 let callable = CallableStruct(value: 100)
 callable(4, scale: 2)
 callable.callAsFunction(4, scale: 2)
-// Both function calls print 208.
+// 두 함수 호출 모두 208을 출력한다.
 ```
 
 <!--
@@ -1400,31 +921,18 @@ callable.callAsFunction(4, scale: 2)
   -> let callable = CallableStruct(value: 100)
   -> callable(4, scale: 2)
   -> callable.callAsFunction(4, scale: 2)
-  // Both function calls print 208.
+  // 두 함수 호출 모두 208을 출력한다.
   << 208
   << 208
   ```
 -->
 
-The call-as-function methods
-and the methods from the `dynamicCallable` attribute
-make different trade-offs between
-how much information you encode into the type system
-and how much dynamic behavior is possible at runtime.
-When you declare a call-as-function method,
-you specify the number of arguments,
-and each argument's type and label.
-The `dynamicCallable` attribute's methods specify only the type
-used to hold the array of arguments.
+call-as-function 메서드와 `dynamicCallable` 속성의 메서드는 타입 시스템에 얼마나 많은 정보를 인코딩할지와 런타임에 얼마나 많은 동적 동작이 가능한지 사이에서 다른 트레이드오프를 제공한다. call-as-function 메서드를 선언할 때는 인자의 수와 각 인자의 타입 및 레이블을 지정한다. `dynamicCallable` 속성의 메서드는 인자 배열을 보유하는 데 사용되는 타입만 지정한다.
 
-Defining a call-as-function method,
-or a method from the `dynamicCallable` attribute,
-doesn't let you use an instance of that type
-as if it were a function in any context other than a function call expression.
-For example:
+call-as-function 메서드나 `dynamicCallable` 속성의 메서드를 정의한다고 해서 해당 타입의 인스턴스를 함수 호출 표현식 이외의 다른 컨텍스트에서 함수처럼 사용할 수 있는 것은 아니다. 예를 들어:
 
 ```swift
-let someFunction1: (Int, Int) -> Void = callable(_:scale:)  // Error
+let someFunction1: (Int, Int) -> Void = callable(_:scale:)  // 오류
 let someFunction2: (Int, Int) -> Void = callable.callAsFunction(_:scale:)
 ```
 
@@ -1437,26 +945,22 @@ let someFunction2: (Int, Int) -> Void = callable.callAsFunction(_:scale:)
   >>     func callAsFunction(_ number: Int, scale: Int) { }
   >> }
   >> let callable = CallableStruct(value: 100)
-  -> let someFunction1: (Int, Int) -> Void = callable(_:scale:)  // Error
+  -> let someFunction1: (Int, Int) -> Void = callable(_:scale:)  // 오류
   -> let someFunction2: (Int, Int) -> Void = callable.callAsFunction(_:scale:)
-  >> _ = someFunction1 // suppress unused-constant warning
-  >> _ = someFunction2 // suppress unused-constant warning
-  !$ error: cannot find 'callable(_:scale:)' in scope
-  !! let someFunction1: (Int, Int) -> Void = callable(_:scale:)  // Error
+  >> _ = someFunction1 // 사용되지 않은 상수 경고 억제
+  >> _ = someFunction2 // 사용되지 않은 상수 경고 억제
+  !$ error: 'callable(_:scale:)'를 찾을 수 없음
+  !! let someFunction1: (Int, Int) -> Void = callable(_:scale:)  // 오류
   !! ^~~~~~~~~~~~~~~~~~
   ```
 -->
 
-The `subscript(dynamicMember:)` subscript
-enables syntactic sugar for member lookup,
-as described in <doc:Attributes#dynamicMemberLookup>.
+`subscript(dynamicMember:)` 서브스크립트는 멤버 조회를 위한 문법적 편의를 제공하며, <doc:Attributes#dynamicMemberLookup>에서 설명된다.
 
-### Throwing Functions and Methods
 
-Functions and methods that can throw an error must be marked with the `throws` keyword.
-These functions and methods are known as *throwing functions*
-and *throwing methods*.
-They have the following form:
+### 에러를 던지는 함수와 메서드
+
+에러를 던질 수 있는 함수와 메서드는 `throws` 키워드로 표시한다. 이러한 함수와 메서드를 *에러 던지는 함수(throwing function)*와 *에러 던지는 메서드(throwing method)*라고 부른다. 이들의 기본 형태는 다음과 같다:
 
 ```swift
 func <#function name#>(<#parameters#>) throws -> <#return type#> {
@@ -1464,7 +968,7 @@ func <#function name#>(<#parameters#>) throws -> <#return type#> {
 }
 ```
 
-A function that throws a specific error type has the following form:
+특정 타입의 에러를 던지는 함수는 다음과 같은 형태를 가진다:
 
 ```swift
 func <#function name#>(<#parameters#>) throws(<#error type#>) -> <#return type#> {
@@ -1472,35 +976,18 @@ func <#function name#>(<#parameters#>) throws(<#error type#>) -> <#return type#>
 }
 ```
 
-Calls to a throwing function or method must be wrapped in a `try` or `try!` expression
-(that is, in the scope of a `try` or `try!` operator).
+에러를 던지는 함수나 메서드를 호출할 때는 반드시 `try` 또는 `try!` 표현식으로 감싸야 한다. 즉, `try` 또는 `try!` 연산자의 범위 내에서 호출해야 한다.
 
-A function's type includes whether it can throw an error
-and what type of error it throws.
-This subtype relationship means, for example, you can use a nonthrowing function
-in a context where a throwing one is expected.
-For more information about the type of a throwing function,
-see <doc:Types#Function-Type>.
-For examples of working with errors that have explicit types,
-see <doc:ErrorHandling#Specifying-the-Error-Type>.
+함수의 타입은 에러를 던질 수 있는지 여부와 어떤 타입의 에러를 던지는지를 포함한다. 이 하위 타입 관계는 예를 들어, 에러를 던지는 함수가 예상되는 곳에서 에러를 던지지 않는 함수를 사용할 수 있음을 의미한다. 에러를 던지는 함수의 타입에 대한 자세한 내용은 <doc:Types#Function-Type>을 참고한다. 명시적 타입을 가진 에러를 다루는 예제는 <doc:ErrorHandling#Specifying-the-Error-Type>에서 확인할 수 있다.
 
-You can't overload a function based only on whether the function can throw an error.
-That said,
-you can overload a function based on whether a function *parameter* can throw an error.
+함수가 에러를 던질 수 있는지 여부만으로 함수를 오버로드할 수는 없다. 그러나 함수의 *파라미터*가 에러를 던질 수 있는지 여부를 기준으로 함수를 오버로드할 수는 있다.
 
-A throwing method can't override a nonthrowing method,
-and a throwing method can't satisfy a protocol requirement for a nonthrowing method.
-That said, a nonthrowing method can override a throwing method,
-and a nonthrowing method can satisfy a protocol requirement for a throwing method.
+에러를 던지는 메서드는 에러를 던지지 않는 메서드를 오버라이드할 수 없으며, 에러를 던지지 않는 메서드에 대한 프로토콜 요구사항을 충족할 수도 없다. 반면, 에러를 던지지 않는 메서드는 에러를 던지는 메서드를 오버라이드할 수 있고, 에러를 던지는 메서드에 대한 프로토콜 요구사항을 충족할 수 있다.
 
-### Rethrowing Functions and Methods
 
-A function or method can be declared with the `rethrows` keyword
-to indicate that it throws an error only if one of its function parameters throws an error.
-These functions and methods are known as *rethrowing functions*
-and *rethrowing methods*.
-Rethrowing functions and methods
-must have at least one throwing function parameter.
+### 에러 재전달 함수와 메서드
+
+함수나 메서드는 `rethrows` 키워드를 사용해 선언할 수 있다. 이 키워드는 해당 함수의 인자 중 하나가 에러를 던질 때만 에러를 던진다는 것을 의미한다. 이러한 함수와 메서드를 *에러 재전달 함수*와 *에러 재전달 메서드*라고 부른다. 에러 재전달 함수와 메서드는 최소한 하나 이상의 에러를 던지는 함수 인자를 포함해야 한다.
 
 ```swift
 func someFunction(callback: () throws -> Void) rethrows {
@@ -1518,17 +1005,7 @@ func someFunction(callback: () throws -> Void) rethrows {
   ```
 -->
 
-A rethrowing function or method can contain a `throw` statement
-only inside a `catch` clause.
-This lets you call the throwing function inside a `do`-`catch` statement
-and handle errors in the `catch` clause by throwing a different error.
-In addition,
-the `catch` clause must handle
-only errors thrown by one of the rethrowing function's
-throwing parameters.
-For example, the following is invalid
-because the `catch` clause would handle
-the error thrown by `alwaysThrows()`.
+에러 재전달 함수나 메서드는 `catch` 절 내부에서만 `throw` 문을 사용할 수 있다. 이렇게 하면 `do`-`catch` 문 내부에서 에러를 던지는 함수를 호출하고, `catch` 절에서 다른 에러를 던지며 에러를 처리할 수 있다. 또한 `catch` 절은 에러 재전달 함수의 에러를 던지는 인자로부터 발생한 에러만 처리해야 한다. 예를 들어, 다음 코드는 `catch` 절이 `alwaysThrows()`에서 던진 에러를 처리하기 때문에 유효하지 않다.
 
 ```swift
 func alwaysThrows() throws {
@@ -1537,7 +1014,7 @@ func alwaysThrows() throws {
 func someFunction(callback: () throws -> Void) rethrows {
     do {
         try callback()
-        try alwaysThrows()  // Invalid, alwaysThrows() isn't a throwing parameter
+        try alwaysThrows()  // 유효하지 않음, alwaysThrows()는 에러를 던지는 인자가 아님
     } catch {
         throw AnotherError.error
     }
@@ -1588,13 +1065,9 @@ func someFunction(callback: () throws -> Void) rethrows {
   ```
 -->
 
-A throwing method can't override a rethrowing method,
-and a throwing method can't satisfy a protocol requirement for a rethrowing method.
-That said, a rethrowing method can override a throwing method,
-and a rethrowing method can satisfy a protocol requirement for a throwing method.
+에러를 던지는 메서드는 에러 재전달 메서드를 오버라이드할 수 없으며, 에러 재전달 메서드를 위한 프로토콜 요구사항을 충족할 수도 없다. 반면에, 에러 재전달 메서드는 에러를 던지는 메서드를 오버라이드할 수 있고, 에러를 던지는 메서드를 위한 프로토콜 요구사항을 충족할 수 있다.
 
-An alternative to rethrowing is throwing a specific error type in generic code.
-For example:
+에러 재전달 대신 제네릭 코드에서 특정 에러 타입을 던지는 방법도 있다. 예를 들면:
 
 ```swift
 func someFunction<E: Error>(callback: () throws(E) -> Void) throws(E) {
@@ -1602,11 +1075,7 @@ func someFunction<E: Error>(callback: () throws(E) -> Void) throws(E) {
 }
 ```
 
-This approach to propagating an error
-preserves type information about the error.
-However, unlike marking a function `rethrows`,
-this approach doesn't prevent the function
-from throwing an error of the same type.
+이 방법은 에러에 대한 타입 정보를 보존한다. 하지만 `rethrows`로 함수를 표시하는 것과 달리, 이 방법은 동일한 타입의 에러를 던지는 것을 막지 않는다.
 
 <!--
 TODO: Revisit the comparison between rethrows and throws(E) above,
@@ -1615,12 +1084,10 @@ since it seems likely that the latter will generally replace the former.
 See also rdar://128972373
 -->
 
-### Asynchronous Functions and Methods
 
-Functions and methods that run asynchronously must be marked with the `async` keyword.
-These functions and methods are known as *asynchronous functions*
-and *asynchronous methods*.
-They have the following form:
+### 비동기 함수와 메서드
+
+비동기적으로 실행되는 함수와 메서드는 반드시 `async` 키워드를 사용해 표시해야 한다. 이러한 함수와 메서드를 각각 *비동기 함수*와 *비동기 메서드*라고 부른다. 이들은 다음과 같은 형태를 가진다:
 
 ```swift
 func <#function name#>(<#parameters#>) async -> <#return type#> {
@@ -1628,28 +1095,13 @@ func <#function name#>(<#parameters#>) async -> <#return type#> {
 }
 ```
 
-Calls to an asynchronous function or method
-must be wrapped in an `await` expression ---
-that is, they must be in the scope of an `await` operator.
+비동기 함수나 메서드를 호출할 때는 반드시 `await` 표현식으로 감싸야 한다. 즉, `await` 연산자의 범위 내에서 호출해야 한다.
 
-The `async` keyword is part of the function's type,
-and synchronous functions are subtypes of asynchronous functions.
-As a result, you can use a synchronous function
-in a context where an asynchronous function is expected.
-For example,
-you can override an asynchronous method with a synchronous method,
-and a synchronous method can satisfy a protocol requirement
-that requires an asynchronous method.
+`async` 키워드는 함수의 타입에 포함되며, 동기 함수는 비동기 함수의 하위 타입이다. 따라서 비동기 함수가 필요한 상황에서 동기 함수를 사용할 수 있다. 예를 들어, 비동기 메서드를 동기 메서드로 재정의할 수 있으며, 동기 메서드가 비동기 메서드를 요구하는 프로토콜 요구사항을 충족할 수 있다.
 
-You can overload a function based on whether or not the function is asynchronous.
-At the call site, context determines which overload is used:
-In an asynchronous context, the asynchronous function is used,
-and in a synchronous context, the synchronous function is used.
+함수가 비동기인지 여부에 따라 함수를 오버로드할 수 있다. 호출 지점에서 컨텍스트에 따라 어떤 오버로드가 사용될지 결정된다: 비동기 컨텍스트에서는 비동기 함수가 사용되고, 동기 컨텍스트에서는 동기 함수가 사용된다.
 
-An asynchronous method can't override a synchronous method,
-and an asynchronous method can't satisfy a protocol requirement for a synchronous method.
-That said, a synchronous method can override an asynchronous method,
-and a synchronous method can satisfy a protocol requirement for an asynchronous method.
+비동기 메서드는 동기 메서드를 재정의할 수 없으며, 동기 메서드를 요구하는 프로토콜 요구사항을 충족할 수 없다. 반면, 동기 메서드는 비동기 메서드를 재정의할 수 있고, 비동기 메서드를 요구하는 프로토콜 요구사항을 충족할 수 있다.
 
 <!--
   - test: `sync-satisfy-async-protocol-requirements`
@@ -1665,28 +1117,18 @@ and a synchronous method can satisfy a protocol requirement for an asynchronous 
   ```
 -->
 
-### Functions that Never Return
 
-Swift defines a [`Never`][] type,
-which indicates that a function or method doesn't return to its caller.
-Functions and methods with the `Never` return type are called *nonreturning*.
-Nonreturning functions and methods either cause an irrecoverable error
-or begin a sequence of work that continues indefinitely.
-This means that
-code that would otherwise run immediately after the call is never executed.
-Throwing and rethrowing functions can transfer program control
-to an appropriate `catch` block, even when they're nonreturning.
+### 반환하지 않는 함수
+
+Swift는 [`Never`][] 타입을 정의한다. 이 타입은 함수나 메서드가 호출자에게 제어를 반환하지 않음을 나타낸다. `Never` 반환 타입을 가진 함수와 메서드를 *nonreturning*이라고 부른다. Nonreturning 함수와 메서드는 복구할 수 없는 오류를 발생시키거나 무한히 지속되는 작업을 시작한다. 이는 호출 이후에 실행될 코드가 절대 실행되지 않음을 의미한다. Throwing과 rethrowing 함수는 nonreturning이더라도 적절한 `catch` 블록으로 프로그램 제어를 전달할 수 있다.
 
 [`Never`]: https://developer.apple.com/documentation/swift/never
 
-A nonreturning function or method can be called to conclude the `else` clause
-of a guard statement,
-as discussed in <doc:Statements#Guard-Statement>.
+Nonreturning 함수나 메서드는 guard 문의 `else` 절을 마무리하기 위해 호출할 수 있다. 이는 <doc:Statements#Guard-Statement>에서 논의한 바와 같다.
 
-You can override a nonreturning method,
-but the new method must preserve its return type and nonreturning behavior.
+Nonreturning 메서드를 오버라이드할 수 있지만, 새로운 메서드는 반환 타입과 nonreturning 동작을 유지해야 한다.
 
-> Grammar of a function declaration:
+> 함수 선언 문법:
 >
 > *function-declaration* → *function-head* *function-name* *generic-parameter-clause*_?_ *function-signature* *generic-where-clause*_?_ *function-body*_?_
 >
@@ -1711,49 +1153,33 @@ but the new method must preserve its return type and nonreturning behavior.
 > *default-argument-clause* → **`=`** *expression*
 
 <!--
-  NOTE: Code block is optional in the context of a protocol.
-  Everywhere else, it's required.
-  We could refactor to have a separation between function definition/declaration.
-  There's also the low-level "asm name" FFI
-  which is a definition and declaration corner case.
-  Let's just deal with this difference in prose.
+  NOTE: 프로토콜 컨텍스트에서 코드 블록은 선택 사항이다.
+  다른 모든 경우에는 필수이다.
+  함수 정의/선언을 구분하도록 리팩토링할 수 있다.
+  또한 저수준 "asm name" FFI가 있는데,
+  이는 정의와 선언의 특수한 경우이다.
+  이 차이는 본문에서 다루도록 한다.
 -->
 
-## Enumeration Declaration
 
-An *enumeration declaration* introduces a named enumeration type into your program.
+## 열거형 선언
 
-Enumeration declarations have two basic forms and are declared using the `enum` keyword.
-The body of an enumeration declared using either form contains
-zero or more values --- called *enumeration cases* ---
-and any number of declarations,
-including computed properties,
-instance methods, type methods, initializers, type aliases,
-and even other enumeration, structure, class, and actor declarations.
-Enumeration declarations can't contain deinitializer or protocol declarations.
+열거형 선언은 프로그램에 이름이 있는 열거형 타입을 도입한다.
 
-Enumeration types can adopt any number of protocols, but can’t inherit from classes,
-structures, or other enumerations.
+열거형 선언은 `enum` 키워드를 사용하며, 두 가지 기본 형태가 있다. 두 가지 형태 모두 열거형 본문에는 *열거형 케이스*라고 불리는 값이 0개 이상 포함될 수 있다. 또한 계산 속성, 인스턴스 메서드, 타입 메서드, 초기화 구문, 타입 별칭, 심지어 다른 열거형, 구조체, 클래스, 액터 선언도 포함할 수 있다. 단, 열거형 선언에는 디이니셜라이저나 프로토콜 선언은 포함할 수 없다.
 
-Unlike classes and structures,
-enumeration types don't have an implicitly provided default initializer;
-all initializers must be declared explicitly. Initializers can delegate
-to other initializers in the enumeration, but the initialization process is complete
-only after an initializer assigns one of the enumeration cases to `self`.
+열거형 타입은 여러 프로토콜을 채택할 수 있지만, 클래스, 구조체, 다른 열거형으로부터 상속받을 수는 없다.
 
-Like structures but unlike classes, enumerations are value types;
-instances of an enumeration are copied when assigned to
-variables or constants, or when passed as arguments to a function call.
-For information about value types,
-see <doc:ClassesAndStructures#Structures-and-Enumerations-Are-Value-Types>.
+클래스와 구조체와 달리, 열거형 타입은 암시적으로 제공되는 기본 초기화 구문이 없다. 모든 초기화 구문은 명시적으로 선언해야 한다. 초기화 구문은 열거형 내의 다른 초기화 구문에 위임할 수 있지만, 초기화 과정은 초기화 구문이 `self`에 열거형 케이스 중 하나를 할당한 후에야 완료된다.
 
-You can extend the behavior of an enumeration type with an extension declaration,
-as discussed in <doc:Declarations#Extension-Declaration>.
+구조체와 마찬가지로 클래스와 달리, 열거형은 값 타입이다. 열거형 인스턴스는 변수나 상수에 할당되거나 함수 호출 시 인자로 전달될 때 복사된다. 값 타입에 대한 자세한 내용은 <doc:ClassesAndStructures#Structures-and-Enumerations-Are-Value-Types>를 참조한다.
 
-### Enumerations with Cases of Any Type
+<doc:Declarations#Extension-Declaration>에서 설명한 것처럼, 확장 선언을 통해 열거형 타입의 동작을 확장할 수 있다.
 
-The following form declares an enumeration type that contains
-enumeration cases of any type:
+
+### 다양한 타입을 가진 열거형 케이스
+
+다음은 다양한 타입의 열거형 케이스를 포함하는 열거형 타입을 선언하는 형식이다:
 
 ```swift
 enum <#enumeration name#>: <#adopted protocols#> {
@@ -1762,20 +1188,11 @@ enum <#enumeration name#>: <#adopted protocols#> {
 }
 ```
 
-Enumerations declared in this form are sometimes called *discriminated unions*
-in other programming languages.
+이 방식으로 선언된 열거형은 다른 프로그래밍 언어에서 *구분된 유니온(discriminated unions)* 이라고도 불린다.
 
-In this form, each case block consists of the `case` keyword
-followed by one or more enumeration cases, separated by commas.
-The name of each case must be unique.
-Each case can also specify that it stores values of a given type.
-These types are specified in the *associated value types* tuple,
-immediately following the name of the case.
+이 형식에서 각 케이스 블록은 `case` 키워드 뒤에 하나 이상의 열거형 케이스를 쉼표로 구분하여 작성한다. 각 케이스의 이름은 고유해야 한다. 또한 각 케이스는 특정 타입의 값을 저장할 수 있다. 이 타입들은 케이스 이름 바로 뒤에 *연관 값 타입(associated value types)* 튜플로 지정된다.
 
-Enumeration cases that store associated values can be used as functions
-that create instances of the enumeration with the specified associated values.
-And just like functions,
-you can get a reference to an enumeration case and apply it later in your code.
+연관 값을 저장하는 열거형 케이스는 해당 연관 값을 가진 열거형 인스턴스를 생성하는 함수처럼 사용할 수 있다. 그리고 함수와 마찬가지로, 열거형 케이스에 대한 참조를 얻어 나중에 코드에서 적용할 수 있다.
 
 ```swift
 enum Number {
@@ -1783,9 +1200,9 @@ enum Number {
     case real(Double)
 }
 let f = Number.integer
-// f is a function of type (Int) -> Number
+// f는 (Int) -> Number 타입의 함수이다
 
-// Apply f to create an array of Number instances with integer values
+// f를 적용해 정수 값을 가진 Number 인스턴스 배열 생성
 let evenInts: [Number] = [0, 2, 4, 6].map(f)
 ```
 
@@ -1798,43 +1215,26 @@ let evenInts: [Number] = [0, 2, 4, 6].map(f)
         case real(Double)
      }
   -> let f = Number.integer
-  -> // f is a function of type (Int) -> Number
+  -> // f는 (Int) -> Number 타입의 함수이다
 
-  -> // Apply f to create an array of Number instances with integer values
+  -> // f를 적용해 정수 값을 가진 Number 인스턴스 배열 생성
   -> let evenInts: [Number] = [0, 2, 4, 6].map(f)
   ```
 -->
 
 <!--
-  No expectation for evenInts because there isn't a good way to spell one.
-  Using print() puts a module prefix like tmpabc in front of Number
-  so the expectation would need to be a regex (which we don't have),
-  and assert() would require Number to conform to Equatable.
+  evenInts에 대한 기대값은 없음. print()를 사용하면 Number 앞에 tmpabc와 같은 모듈 접두사가 붙어서
+  기대값을 정규식으로 작성해야 하며(현재는 지원하지 않음), assert()를 사용하려면 Number가 Equatable을 준수해야 함.
 -->
 
-For more information and to see examples of cases with associated value types,
-see <doc:Enumerations#Associated-Values>.
+연관 값 타입을 가진 케이스에 대한 더 많은 정보와 예제는 <doc:Enumerations#Associated-Values>를 참고한다.
 
-#### Enumerations with Indirection
 
-Enumerations can have a recursive structure,
-that is, they can have cases with associated values
-that are instances of the enumeration type itself.
-However, instances of enumeration types have value semantics,
-which means they have a fixed layout in memory.
-To support recursion,
-the compiler must insert a layer of indirection.
+#### 간접 참조를 사용하는 열거형
 
-To enable indirection for a particular enumeration case,
-mark it with the `indirect` declaration modifier.
-An indirect case must have an associated value.
+열거형은 재귀적인 구조를 가질 수 있다. 즉, 열거형 타입 자체의 인스턴스를 연관 값으로 가지는 케이스를 정의할 수 있다. 하지만 열거형 타입의 인스턴스는 값 의미론(value semantics)을 가지기 때문에 메모리에 고정된 레이아웃을 가진다. 재귀를 지원하기 위해 컴파일러는 간접 참조(indirection) 계층을 추가해야 한다.
 
-<!--
-  TODO The word "enable" is kind of a weasel word.
-  Better to have a more concrete discussion of exactly when
-  it is and isn't used.
-  For example, does "indirect enum { X(Int) } mark X as indirect?
--->
+특정 열거형 케이스에 대해 간접 참조를 활성화하려면 `indirect` 선언 수식어를 사용한다. 간접 참조 케이스는 반드시 연관 값을 가져야 한다.
 
 ```swift
 enum Tree<T> {
@@ -1843,98 +1243,30 @@ enum Tree<T> {
 }
 ```
 
-<!--
-  - test: `indirect-enum`
+연관 값을 가지는 모든 열거형 케이스에 대해 간접 참조를 활성화하려면 전체 열거형에 `indirect` 수식어를 붙인다. 이는 `indirect` 수식어를 각 케이스에 일일이 붙여야 하는 번거로움을 줄여준다.
 
-  ```swifttest
-  -> enum Tree<T> {
-        case empty
-        indirect case node(value: T, left: Tree, right: Tree)
-     }
-  >> let l1 = Tree.node(value: 10, left: Tree.empty, right: Tree.empty)
-  >> let l2 = Tree.node(value: 100, left: Tree.empty, right: Tree.empty)
-  >> let t = Tree.node(value: 50, left: l1, right: l2)
-  ```
--->
+`indirect` 수식어가 붙은 열거형은 연관 값을 가지는 케이스와 그렇지 않은 케이스를 혼합하여 포함할 수 있다. 하지만 이미 `indirect` 수식어가 붙은 케이스를 포함할 수는 없다.
 
-To enable indirection for all the cases of an enumeration
-that have an associated value,
-mark the entire enumeration with the `indirect` modifier ---
-this is convenient when the enumeration contains many cases
-that would each need to be marked with the `indirect` modifier.
 
-An enumeration that's marked with the `indirect` modifier
-can contain a mixture of cases that have associated values and cases those that don't.
-That said,
-it can't contain any cases that are also marked with the `indirect` modifier.
+### 원시 값 타입을 가진 열거형
 
-<!--
-  It really should be an associated value **that includes the enum type**
-  but right now the compiler is satisfied with any associated value.
-  Alex emailed Joe Groff 2015-07-08 about this.
--->
-
-<!--
-  assertion indirect-in-indirect
-
-  -> indirect enum E { indirect case c(E) }
-  !! <REPL Input>:1:19: error: enum case in 'indirect' enum cannot also be 'indirect'
-  !! indirect enum E { indirect case c(E) }
-  !!                   ^
--->
-
-<!--
-  assertion indirect-without-recursion
-
-  -> enum E { indirect case c }
-  !! <REPL Input>:1:10: error: enum case 'c' without associated value cannot be 'indirect'
-  !! enum E { indirect case c }
-  !!          ^
-
-  -> enum E1 { indirect case c() }     // This is fine, but probably shouldn't be
-  -> enum E2 { indirect case c(Int) }  // This is fine, but probably shouldn't be
-
-  -> indirect enum E3 { case x }
--->
-
-### Enumerations with Cases of a Raw-Value Type
-
-The following form declares an enumeration type that contains
-enumeration cases of the same basic type:
+다음 형식은 동일한 기본 타입의 원시 값을 가지는 열거형 케이스로 구성된 열거형을 선언한다:
 
 ```swift
-enum <#enumeration name#>: <#raw-value type#>, <#adopted protocols#> {
-    case <#enumeration case 1#> = <#raw value 1#>
-    case <#enumeration case 2#> = <#raw value 2#>
+enum <#열거형 이름#>: <#원시 값 타입#>, <#채택한 프로토콜#> {
+    case <#열거형 케이스 1#> = <#원시 값 1#>
+    case <#열거형 케이스 2#> = <#원시 값 2#>
 }
 ```
 
-In this form, each case block consists of the `case` keyword,
-followed by one or more enumeration cases, separated by commas.
-Unlike the cases in the first form, each case has an underlying
-value, called a *raw value*, of the same basic type.
-The type of these values is specified in the *raw-value type* and must represent an
-integer, floating-point number, string, or single character.
-In particular, the *raw-value type* must conform to the `Equatable` protocol
-and one of the following protocols:
-`ExpressibleByIntegerLiteral` for integer literals,
-`ExpressibleByFloatLiteral` for floating-point literals,
-`ExpressibleByStringLiteral` for string literals that contain any number of characters,
-and `ExpressibleByUnicodeScalarLiteral`
-or `ExpressibleByExtendedGraphemeClusterLiteral` for string literals
-that contain only a single character.
-Each case must have a unique name and be assigned a unique raw value.
+이 형식에서 각 케이스 블록은 `case` 키워드로 시작하며, 쉼표로 구분된 하나 이상의 열거형 케이스로 구성된다. 첫 번째 형식과 달리, 각 케이스는 동일한 기본 타입의 *원시 값*이라는 내부 값을 가진다. 이 값의 타입은 *원시 값 타입*으로 지정되며, 정수, 부동소수점 숫자, 문자열 또는 단일 문자를 나타내야 한다. 특히, *원시 값 타입*은 `Equatable` 프로토콜과 다음 프로토콜 중 하나를 준수해야 한다: 정수 리터럴을 위한 `ExpressibleByIntegerLiteral`, 부동소수점 리터럴을 위한 `ExpressibleByFloatLiteral`, 여러 문자를 포함하는 문자열 리터럴을 위한 `ExpressibleByStringLiteral`, 단일 문자를 포함하는 문자열 리터럴을 위한 `ExpressibleByUnicodeScalarLiteral` 또는 `ExpressibleByExtendedGraphemeClusterLiteral`. 각 케이스는 고유한 이름을 가지고 고유한 원시 값이 할당되어야 한다.
 
 <!--
-  The list of ExpressibleBy... protocols above also appears in LexicalStructure_Literals.
-  This list is shorter because these five protocols are explicitly supported in the compiler.
+  위의 ExpressibleBy... 프로토콜 목록은 LexicalStructure_Literals에도 등장한다.
+  이 목록은 더 짧은데, 이 다섯 가지 프로토콜이 컴파일러에서 명시적으로 지원되기 때문이다.
 -->
 
-If the raw-value type is specified as `Int`
-and you don't assign a value to the cases explicitly,
-they're implicitly assigned the values `0`, `1`, `2`, and so on.
-Each unassigned case of type `Int` is implicitly assigned a raw value
-that's automatically incremented from the raw value of the previous case.
+원시 값 타입이 `Int`로 지정되고 케이스에 명시적으로 값을 할당하지 않으면, 케이스는 암시적으로 `0`, `1`, `2` 등의 값을 할당받는다. `Int` 타입의 할당되지 않은 각 케이스는 이전 케이스의 원시 값에서 자동으로 증가한 값을 암시적으로 할당받는다.
 
 ```swift
 enum ExampleEnum: Int {
@@ -1952,14 +1284,9 @@ enum ExampleEnum: Int {
   ```
 -->
 
-In the above example, the raw value of `ExampleEnum.a` is `0` and the value of
-`ExampleEnum.b` is `1`. And because the value of `ExampleEnum.c` is
-explicitly set to `5`, the value of `ExampleEnum.d` is automatically incremented
-from `5` and is therefore `6`.
+위 예제에서 `ExampleEnum.a`의 원시 값은 `0`이고, `ExampleEnum.b`의 값은 `1`이다. 그리고 `ExampleEnum.c`의 값이 명시적으로 `5`로 설정되었기 때문에, `ExampleEnum.d`의 값은 `5`에서 자동으로 증가하여 `6`이 된다.
 
-If the raw-value type is specified as `String`
-and you don't assign values to the cases explicitly,
-each unassigned case is implicitly assigned a string with the same text as the name of that case.
+원시 값 타입이 `String`으로 지정되고 케이스에 값을 명시적으로 할당하지 않으면, 할당되지 않은 각 케이스는 해당 케이스 이름과 동일한 텍스트를 가진 문자열을 암시적으로 할당받는다.
 
 ```swift
 enum GamePlayMode: String {
@@ -1977,60 +1304,39 @@ enum GamePlayMode: String {
   ```
 -->
 
-In the above example, the raw value of `GamePlayMode.cooperative` is `"cooperative"`,
-the raw value of `GamePlayMode.individual` is `"individual"`,
-and the raw value of `GamePlayMode.competitive` is `"competitive"`.
+위 예제에서 `GamePlayMode.cooperative`의 원시 값은 `"cooperative"`이고, `GamePlayMode.individual`의 원시 값은 `"individual"`, `GamePlayMode.competitive`의 원시 값은 `"competitive"`이다.
 
-Enumerations that have cases of a raw-value type implicitly conform to the
-`RawRepresentable` protocol, defined in the Swift standard library.
-As a result, they have a `rawValue` property
-and a failable initializer with the signature `init?(rawValue: RawValue)`.
-You can use the `rawValue` property to access the raw value of an enumeration case,
-as in `ExampleEnum.b.rawValue`.
-You can also use a raw value to find a corresponding case, if there is one,
-by calling the enumeration's failable initializer,
-as in `ExampleEnum(rawValue: 5)`, which returns an optional case.
-For more information and to see examples of cases with raw-value types,
-see <doc:Enumerations#Raw-Values>.
+원시 값 타입을 가진 열거형 케이스는 Swift 표준 라이브러리에 정의된 `RawRepresentable` 프로토콜을 암시적으로 준수한다. 결과적으로, 이 열거형은 `rawValue` 프로퍼티와 `init?(rawValue: RawValue)` 시그니처를 가진 실패 가능한 초기화자를 제공한다. `rawValue` 프로퍼티를 사용해 열거형 케이스의 원시 값에 접근할 수 있다. 예를 들어, `ExampleEnum.b.rawValue`와 같이 사용한다. 또한 원시 값을 사용해 해당 케이스를 찾을 수도 있다. 예를 들어, `ExampleEnum(rawValue: 5)`와 같이 호출하면 옵셔널 케이스를 반환한다. 원시 값 타입을 가진 케이스에 대한 더 많은 정보와 예제는 <doc:Enumerations#Raw-Values>를 참고한다.
 
-### Accessing Enumeration Cases
 
-To reference the case of an enumeration type, use dot (`.`) syntax,
-as in `EnumerationType.enumerationCase`. When the enumeration type can be inferred
-from context, you can omit it (the dot is still required),
-as described in <doc:Enumerations#Enumeration-Syntax>
-and <doc:Expressions#Implicit-Member-Expression>.
+### 열거형 케이스 접근하기
 
-To check the values of enumeration cases, use a `switch` statement,
-as shown in <doc:Enumerations#Matching-Enumeration-Values-with-a-Switch-Statement>.
-The enumeration type is pattern-matched against the enumeration case patterns
-in the case blocks of the `switch` statement,
-as described in <doc:Patterns#Enumeration-Case-Pattern>.
+열거형 타입의 케이스를 참조하려면 점(`.`) 문법을 사용한다. 예를 들어 `EnumerationType.enumerationCase`와 같이 쓸 수 있다. 문맥에서 열거형 타입을 유추할 수 있는 경우, 타입을 생략할 수 있다. (점은 여전히 필요하다.) 이 내용은 <doc:Enumerations#Enumeration-Syntax>와 <doc:Expressions#Implicit-Member-Expression>에서 자세히 설명한다.
+
+열거형 케이스의 값을 확인하려면 `switch` 문을 사용한다. 이 내용은 <doc:Enumerations#Matching-Enumeration-Values-with-a-Switch-Statement>에서 예제와 함께 설명한다. 열거형 타입은 `switch` 문의 케이스 블록에서 열거형 케이스 패턴과 패턴 매칭을 수행한다. 이 내용은 <doc:Patterns#Enumeration-Case-Pattern>에서 다룬다.
 
 <!--
-  FIXME: Or use if-case:
+  FIXME: 또는 if-case를 사용할 수 있다:
   enum E { case c(Int) }
   let e = E.c(100)
   if case E.c(let i) = e { print(i) }
-  // prints 100
+  // 출력: 100
 -->
 
 <!--
-  NOTE: Note that you can require protocol adoption,
-  by using a protocol type as the raw-value type,
-  but you do need to make it be one of the types
-  that support = in order for you to specify the raw values.
-  You can have: <#raw-value type, protocol conformance#>.
-  UPDATE: You can only have one raw-value type specified.
-  I changed the grammar to be more restrictive in light of this.
+  NOTE: 프로토콜 타입을 raw-value 타입으로 사용해 프로토콜 채택을 요구할 수 있다.
+  하지만 raw 값을 지정하려면 =를 지원하는 타입 중 하나여야 한다.
+  <#raw-value type, protocol conformance#>를 가질 수 있다.
+  업데이트: 하나의 raw-value 타입만 지정할 수 있다.
+  이에 따라 문법을 더 엄격하게 수정했다.
 -->
 
 <!--
-  NOTE: Per Doug and Ted, "('->' type)?" isn't part of the grammar.
-  We removed it from our grammar, below.
+  NOTE: Doug과 Ted에 따르면, "('->' type)?"는 문법의 일부가 아니다.
+  아래 문법에서 이를 제거했다.
 -->
 
-> Grammar of an enumeration declaration:
+> 열거형 선언의 문법:
 >
 > *enum-declaration* → *attributes*_?_ *access-level-modifier*_?_ *union-style-enum* \
 > *enum-declaration* → *attributes*_?_ *access-level-modifier*_?_ *raw-value-style-enum*
@@ -2054,69 +1360,49 @@ as described in <doc:Patterns#Enumeration-Case-Pattern>.
 > *raw-value-literal* → *numeric-literal* | *static-string-literal* | *boolean-literal*
 
 <!--
-  NOTE: The two types of enums are sufficiently different enough to warrant separating
-  the grammar accordingly. ([Contributor 6004] pointed this out in his email.)
-  I'm not sure I'm happy with the names I've chosen for two kinds of enums,
-  so please let me know if you can think of better names (Tim and Dave are OK with them)!
-  I chose union-style-enum, because this kind of enum behaves like a discriminated union,
-  not like an ordinary enum type. They're a kind of "sum" type in the language
-  of ADTs (Algebraic Data Types). Functional languages, like F# for example,
-  actually have both types (discriminated unions and enumeration types),
-  because they behave differently. I'm not sure why we've blended them together,
-  especially given that they have distinct syntactic declaration requirements
-  and they behave differently.
+  NOTE: 두 종류의 열거형은 충분히 다르기 때문에 문법을 분리할 필요가 있다.
+  ([Contributor 6004]이 이메일에서 이 점을 지적했다.)
+  두 종류의 열거형에 대해 선택한 이름이 마음에 들지는 않는다.
+  더 나은 이름을 생각할 수 있다면 알려주길 바란다. (Tim과 Dave는 이 이름에 동의했다!)
+  union-style-enum이라는 이름을 선택한 이유는 이 종류의 열거형이 일반적인 열거형 타입이 아니라
+  구분된 합집합(discriminated union)처럼 동작하기 때문이다.
+  이들은 ADT(Algebraic Data Types)의 용어로 "합" 타입의 일종이다.
+  F#과 같은 함수형 언어는 실제로 두 종류의 타입(구분된 합집합과 열거형 타입)을 모두 가지고 있다.
+  왜냐하면 이들은 서로 다르게 동작하기 때문이다.
+  왜 우리가 이 두 종류를 하나로 합쳤는지 잘 모르겠다.
+  특히 이들은 서로 다른 선언 요구 사항을 가지고 있고, 동작 방식도 다르다.
 -->
 
-## Structure Declaration
 
-A *structure declaration* introduces a named structure type into your program.
-Structure declarations are declared using the `struct` keyword and have the following form:
+## 구조체 선언
+
+*구조체 선언*은 프로그램 내에 이름이 있는 구조체 타입을 도입한다. 구조체 선언은 `struct` 키워드를 사용하며 다음과 같은 형태를 가진다:
 
 ```swift
-struct <#structure name#>: <#adopted protocols#> {
-   <#declarations#>
+struct <#구조체 이름#>: <#채택한 프로토콜#> {
+   <#선언문#>
 }
 ```
 
-The body of a structure contains zero or more *declarations*.
-These *declarations* can include both stored and computed properties,
-type properties, instance methods, type methods, initializers, subscripts,
-type aliases, and even other structure, class, actor, and enumeration declarations.
-Structure declarations can't contain deinitializer or protocol declarations.
-For a discussion and several examples of structures
-that include various kinds of declarations,
-see <doc:ClassesAndStructures>.
+구조체의 본문에는 0개 이상의 *선언문*이 포함될 수 있다. 이 *선언문*은 저장 프로퍼티와 계산 프로퍼티, 타입 프로퍼티, 인스턴스 메서드, 타입 메서드, 초기화 구문, 서브스크립트, 타입 별칭, 그리고 다른 구조체, 클래스, 액터, 열거형 선언까지 포함할 수 있다. 단, 구조체 선언은 디이니셜라이저나 프로토콜 선언을 포함할 수 없다. 다양한 종류의 선언문을 포함한 구조체에 대한 논의와 예제는 <doc:ClassesAndStructures>에서 확인할 수 있다.
 
-Structure types can adopt any number of protocols,
-but can't inherit from classes, enumerations, or other structures.
+구조체 타입은 여러 프로토콜을 채택할 수 있지만, 클래스, 열거형, 또는 다른 구조체로부터 상속받을 수는 없다.
 
-There are three ways to create an instance of a previously declared structure:
+이미 선언된 구조체의 인스턴스를 생성하는 방법은 세 가지가 있다:
 
-- Call one of the initializers declared within the structure,
-  as described in <doc:Initialization#Initializers>.
-- If no initializers are declared,
-  call the structure's memberwise initializer,
-  as described in <doc:Initialization#Memberwise-Initializers-for-Structure-Types>.
-- If no initializers are declared,
-  and all properties of the structure declaration were given initial values,
-  call the structure's default initializer,
-  as described in <doc:Initialization#Default-Initializers>.
+- 구조체 내부에 선언된 초기화 구문 중 하나를 호출한다. 이는 <doc:Initialization#Initializers>에서 설명한다.
+- 초기화 구문이 선언되지 않은 경우, 구조체의 멤버별 초기화 구문을 호출한다. 이는 <doc:Initialization#Memberwise-Initializers-for-Structure-Types>에서 설명한다.
+- 초기화 구문이 선언되지 않고, 구조체 선언의 모든 프로퍼티에 초기값이 지정된 경우, 구조체의 기본 초기화 구문을 호출한다. 이는 <doc:Initialization#Default-Initializers>에서 설명한다.
 
-The process of initializing a structure's declared properties
-is described in <doc:Initialization>.
+구조체의 선언된 프로퍼티를 초기화하는 과정은 <doc:Initialization>에서 설명한다.
 
-Properties of a structure instance can be accessed using dot (`.`) syntax,
-as described in <doc:ClassesAndStructures#Accessing-Properties>.
+구조체 인스턴스의 프로퍼티는 점(`.`) 문법을 사용해 접근할 수 있다. 이는 <doc:ClassesAndStructures#Accessing-Properties>에서 설명한다.
 
-Structures are value types; instances of a structure are copied when assigned to
-variables or constants, or when passed as arguments to a function call.
-For information about value types,
-see <doc:ClassesAndStructures#Structures-and-Enumerations-Are-Value-Types>.
+구조체는 값 타입이다. 따라서 구조체의 인스턴스는 변수나 상수에 할당되거나 함수 호출의 인자로 전달될 때 복사된다. 값 타입에 대한 자세한 정보는 <doc:ClassesAndStructures#Structures-and-Enumerations-Are-Value-Types>에서 확인할 수 있다.
 
-You can extend the behavior of a structure type with an extension declaration,
-as discussed in <doc:Declarations#Extension-Declaration>.
+구조체 타입의 동작을 확장하려면 확장 선언을 사용할 수 있다. 이는 <doc:Declarations#Extension-Declaration>에서 논의한다.
 
-> Grammar of a structure declaration:
+> 구조체 선언의 문법:
 >
 > *struct-declaration* → *attributes*_?_ *access-level-modifier*_?_ **`struct`** *struct-name* *generic-parameter-clause*_?_ *type-inheritance-clause*_?_ *generic-where-clause*_?_ *struct-body* \
 > *struct-name* → *identifier* \
@@ -2125,46 +1411,24 @@ as discussed in <doc:Declarations#Extension-Declaration>.
 > *struct-members* → *struct-member* *struct-members*_?_ \
 > *struct-member* → *declaration* | *compiler-control-statement*
 
-## Class Declaration
 
-A *class declaration* introduces a named class type into your program.
-Class declarations are declared using the `class` keyword and have the following form:
+## 클래스 선언
+
+*클래스 선언*은 프로그램에 이름이 있는 클래스 타입을 도입한다. 클래스 선언은 `class` 키워드를 사용하며 다음과 같은 형태를 가진다:
 
 ```swift
-class <#class name#>: <#superclass#>, <#adopted protocols#> {
-   <#declarations#>
+class <#클래스 이름#>: <#슈퍼클래스#>, <#채택한 프로토콜#> {
+   <#선언#>
 }
 ```
 
-The body of a class contains zero or more *declarations*.
-These *declarations* can include both stored and computed properties,
-instance methods, type methods, initializers,
-a single deinitializer, subscripts, type aliases,
-and even other class, structure, actor, and enumeration declarations.
-Class declarations can't contain protocol declarations.
-For a discussion and several examples of classes
-that include various kinds of declarations,
-see <doc:ClassesAndStructures>.
+클래스의 본문에는 0개 이상의 *선언*이 포함될 수 있다. 이러한 *선언*에는 저장 프로퍼티와 계산 프로퍼티, 인스턴스 메서드, 타입 메서드, 초기화 구문, 단일 소멸자, 서브스크립트, 타입 별칭, 그리고 심지어 다른 클래스, 구조체, 액터, 열거형 선언도 포함될 수 있다. 단, 클래스 선언에는 프로토콜 선언을 포함할 수 없다. 다양한 종류의 선언을 포함한 클래스에 대한 논의와 예제는 <doc:ClassesAndStructures>를 참고한다.
 
-A class type can inherit from only one parent class, its *superclass*,
-but can adopt any number of protocols.
-The *superclass* appears first after the *class name* and colon,
-followed by any *adopted protocols*.
-Generic classes can inherit from other generic and nongeneric classes,
-but a nongeneric class can inherit only from other nongeneric classes.
-When you write the name of a generic superclass class after the colon,
-you must include the full name of that generic class,
-including its generic parameter clause.
+클래스 타입은 하나의 부모 클래스, 즉 *슈퍼클래스*로부터만 상속받을 수 있지만, 임의의 수의 프로토콜을 채택할 수 있다. *슈퍼클래스*는 *클래스 이름*과 콜론 뒤에 먼저 표시되며, 그 다음에 *채택한 프로토콜*이 이어진다. 제네릭 클래스는 다른 제네릭 및 비제네릭 클래스로부터 상속받을 수 있지만, 비제네릭 클래스는 다른 비제네릭 클래스로부터만 상속받을 수 있다. 콜론 뒤에 제네릭 슈퍼클래스의 이름을 작성할 때는 제네릭 매개변수 절을 포함한 전체 이름을 명시해야 한다.
 
-As discussed in <doc:Declarations#Initializer-Declaration>,
-classes can have designated and convenience initializers.
-The designated initializer of a class must initialize all of the class's
-declared properties and it must do so before calling any of its superclass's
-designated initializers.
+<doc:Declarations#Initializer-Declaration>에서 설명한 것처럼, 클래스는 지정 초기화 구문과 편의 초기화 구문을 가질 수 있다. 클래스의 지정 초기화 구문은 클래스의 모든 선언된 프로퍼티를 초기화해야 하며, 슈퍼클래스의 지정 초기화 구문을 호출하기 전에 이를 완료해야 한다.
 
-A class can override properties, methods, subscripts, and initializers of its superclass.
-Overridden properties, methods, subscripts,
-and designated initializers must be marked with the `override` declaration modifier.
+클래스는 슈퍼클래스의 프로퍼티, 메서드, 서브스크립트, 초기화 구문을 재정의할 수 있다. 재정의된 프로퍼티, 메서드, 서브스크립트, 지정 초기화 구문은 `override` 선언 수식어로 표시해야 한다.
 
 <!--
   - test: `designatedInitializersRequireOverride`
@@ -2175,38 +1439,22 @@ and designated initializers must be marked with the `override` declaration modif
   ```
 -->
 
-To require that subclasses implement a superclass's initializer,
-mark the superclass's initializer with the `required` declaration modifier.
-The subclass's implementation of that initializer
-must also be marked with the `required` declaration modifier.
+서브클래스가 슈퍼클래스의 초기화 구문을 구현하도록 요구하려면, 슈퍼클래스의 초기화 구문에 `required` 선언 수식어를 표시한다. 서브클래스에서 해당 초기화 구문을 구현할 때도 `required` 선언 수식어를 표시해야 한다.
 
-Although properties and methods declared in the *superclass* are inherited by
-the current class, designated initializers declared in the *superclass* are only
-inherited when the subclass meets the conditions described in
-<doc:Initialization#Automatic-Initializer-Inheritance>.
-Swift classes don't inherit from a universal base class.
+*슈퍼클래스*에 선언된 프로퍼티와 메서드는 현재 클래스에 상속되지만, *슈퍼클래스*에 선언된 지정 초기화 구문은 서브클래스가 <doc:Initialization#Automatic-Initializer-Inheritance>에 설명된 조건을 충족할 때만 상속된다. Swift 클래스는 범용 베이스 클래스로부터 상속받지 않는다.
 
-There are two ways to create an instance of a previously declared class:
+이전에 선언된 클래스의 인스턴스를 생성하는 방법은 두 가지가 있다:
 
-- Call one of the initializers declared within the class,
-  as described in <doc:Initialization#Initializers>.
-- If no initializers are declared,
-  and all properties of the class declaration were given initial values,
-  call the class's default initializer,
-  as described in <doc:Initialization#Default-Initializers>.
+- 클래스 내부에 선언된 초기화 구문 중 하나를 호출한다. 이는 <doc:Initialization#Initializers>에 설명되어 있다.
+- 초기화 구문이 선언되지 않고, 클래스 선언의 모든 프로퍼티에 초기값이 제공된 경우, 클래스의 기본 초기화 구문을 호출한다. 이는 <doc:Initialization#Default-Initializers>에 설명되어 있다.
 
-Access properties of a class instance with dot (`.`) syntax,
-as described in <doc:ClassesAndStructures#Accessing-Properties>.
+클래스 인스턴스의 프로퍼티에 접근하려면 점(`.`) 구문을 사용한다. 이는 <doc:ClassesAndStructures#Accessing-Properties>에 설명되어 있다.
 
-Classes are reference types; instances of a class are referred to, rather than copied,
-when assigned to variables or constants, or when passed as arguments to a function call.
-For information about reference types,
-see <doc:ClassesAndStructures#Classes-Are-Reference-Types>.
+클래스는 참조 타입이다. 클래스의 인스턴스는 변수나 상수에 할당되거나 함수 호출의 인자로 전달될 때 복사되지 않고 참조된다. 참조 타입에 대한 자세한 내용은 <doc:ClassesAndStructures#Classes-Are-Reference-Types>를 참고한다.
 
-You can extend the behavior of a class type with an extension declaration,
-as discussed in <doc:Declarations#Extension-Declaration>.
+클래스 타입의 동작을 확장하려면 확장 선언을 사용할 수 있다. 이는 <doc:Declarations#Extension-Declaration>에서 논의된다.
 
-> Grammar of a class declaration:
+> 클래스 선언의 문법:
 >
 > *class-declaration* → *attributes*_?_ *access-level-modifier*_?_ **`final`**_?_ **`class`** *class-name* *generic-parameter-clause*_?_ *type-inheritance-clause*_?_ *generic-where-clause*_?_ *class-body* \
 > *class-declaration* → *attributes*_?_ **`final`** *access-level-modifier*_?_ **`class`** *class-name* *generic-parameter-clause*_?_ *type-inheritance-clause*_?_ *generic-where-clause*_?_ *class-body* \
@@ -2216,85 +1464,47 @@ as discussed in <doc:Declarations#Extension-Declaration>.
 > *class-members* → *class-member* *class-members*_?_ \
 > *class-member* → *declaration* | *compiler-control-statement*
 
-## Actor Declaration
 
-An *actor declaration* introduces a named actor type into your program.
-Actor declarations are declared using the `actor` keyword and have the following form:
+## 액터 선언
+
+*액터 선언*은 프로그램에 이름이 있는 액터 타입을 도입한다. 액터 선언은 `actor` 키워드를 사용하며 다음과 같은 형태를 가진다:
 
 ```swift
-actor <#actor name#>: <#adopted protocols#> {
-    <#declarations#>
+actor <#액터 이름#>: <#채택한 프로토콜#> {
+    <#선언#>
 }
 ```
 
-The body of an actor contains zero or more *declarations*.
-These *declarations* can include both stored and computed properties,
-instance methods, type methods, initializers,
-a single deinitializer, subscripts, type aliases,
-and even other class, structure, and enumeration declarations.
-For a discussion and several examples of actors
-that include various kinds of declarations,
-see <doc:Concurrency#Actors>.
+액터의 본문에는 0개 이상의 *선언*이 포함된다. 이러한 *선언*은 저장 프로퍼티와 계산 프로퍼티, 인스턴스 메서드, 타입 메서드, 이니셜라이저, 단일 디이니셜라이저, 서브스크립트, 타입 별칭, 그리고 다른 클래스, 구조체, 열거형 선언까지 포함할 수 있다. 다양한 종류의 선언을 포함하는 액터에 대한 설명과 예제는 <doc:Concurrency#Actors>를 참고한다.
 
-Actor types can adopt any number of protocols,
-but can't inherit from classes, enumerations, structures, or other actors.
-However, an actor that is marked with the `@objc` attribute
-implicitly conforms to the `NSObjectProtocol` protocol
-and is exposed to the Objective-C runtime as a subtype of `NSObject`.
+액터 타입은 여러 프로토콜을 채택할 수 있지만, 클래스, 열거형, 구조체, 또는 다른 액터로부터 상속받을 수는 없다. 그러나 `@objc` 속성이 붙은 액터는 암시적으로 `NSObjectProtocol` 프로토콜을 준수하며, Objective-C 런타임에서 `NSObject`의 하위 타입으로 노출된다.
 
-There are two ways to create an instance of a previously declared actor:
+이미 선언된 액터의 인스턴스를 생성하는 방법은 두 가지이다:
 
-- Call one of the initializers declared within the actor,
-  as described in <doc:Initialization#Initializers>.
-- If no initializers are declared,
-  and all properties of the actor declaration were given initial values,
-  call the actor's default initializer,
-  as described in <doc:Initialization#Default-Initializers>.
+- 액터 내부에 선언된 이니셜라이저 중 하나를 호출한다. 이에 대한 자세한 내용은 <doc:Initialization#Initializers>를 참고한다.
+- 이니셜라이저가 선언되지 않고, 액터 선언의 모든 프로퍼티에 초기값이 지정된 경우, 액터의 기본 이니셜라이저를 호출한다. 이에 대한 자세한 내용은 <doc:Initialization#Default-Initializers>를 참고한다.
 
-By default, members of an actor are isolated to that actor.
-Code, such as the body of a method or the getter for a property,
-is executed on that actor.
-Code within the actor can interact with them synchronously
-because that code is already running on the same actor,
-but code outside the actor must mark them with `await`
-to indicate that this code is asynchronously running code on another actor.
-Key paths can't refer to isolated members of an actor.
-Actor-isolated stored properties can be passed as in-out parameters
-to synchronous functions,
-but not to asynchronous functions.
+기본적으로 액터의 멤버는 해당 액터에 격리된다. 메서드의 본문이나 프로퍼티의 getter와 같은 코드는 해당 액터에서 실행된다. 액터 내부의 코드는 동일한 액터에서 실행되기 때문에 동기적으로 상호작용할 수 있지만, 액터 외부의 코드는 `await`를 사용해 다른 액터에서 비동기적으로 실행되는 코드임을 표시해야 한다. 키 경로는 액터의 격리된 멤버를 참조할 수 없다. 액터에 격리된 저장 프로퍼티는 동기 함수에 in-out 파라미터로 전달할 수 있지만, 비동기 함수에는 전달할 수 없다.
 
-Actors can also have nonisolated members,
-whose declarations are marked with the `nonisolated` keyword.
-A nonisolated member executes like code outside of the actor:
-It can't interact with any of the actor's isolated state,
-and callers don't mark it with `await` when using it.
+액터는 `nonisolated` 키워드로 표시된 비격리 멤버를 가질 수도 있다. 비격리 멤버는 액터 외부의 코드처럼 실행된다. 액터의 격리된 상태와 상호작용할 수 없으며, 호출자가 사용할 때 `await`를 표시할 필요가 없다.
 
-Members of an actor can be marked with the `@objc` attribute
-only if they are nonisolated or asynchronous.
+액터의 멤버는 비격리 멤버이거나 비동기 멤버인 경우에만 `@objc` 속성을 표시할 수 있다.
 
-The process of initializing an actor's declared properties
-is described in <doc:Initialization>.
+액터의 선언된 프로퍼티를 초기화하는 과정은 <doc:Initialization>에 설명되어 있다.
 
-Properties of an actor instance can be accessed using dot (`.`) syntax,
-as described in <doc:ClassesAndStructures#Accessing-Properties>.
+액터 인스턴스의 프로퍼티는 점(`.`) 문법을 사용해 접근할 수 있다. 이에 대한 자세한 내용은 <doc:ClassesAndStructures#Accessing-Properties>를 참고한다.
 
-Actors are reference types; instances of an actor are referred to, rather than copied,
-when assigned to variables or constants, or when passed as arguments to a function call.
-For information about reference types,
-see <doc:ClassesAndStructures#Classes-Are-Reference-Types>.
+액터는 참조 타입이다. 액터의 인스턴스는 변수나 상수에 할당되거나 함수 호출의 인자로 전달될 때 복사되지 않고 참조된다. 참조 타입에 대한 자세한 내용은 <doc:ClassesAndStructures#Classes-Are-Reference-Types>를 참고한다.
 
-You can extend the behavior of an actor type with an extension declaration,
-as discussed in <doc:Declarations#Extension-Declaration>.
+액터 타입의 동작을 확장 선언으로 확장할 수 있다. 이에 대한 자세한 내용은 <doc:Declarations#Extension-Declaration>을 참고한다.
 
 <!--
-  TODO Additional bits from the SE-0306 actors proposal:
+  TODO SE-0306 액터 제안에서 추가된 내용:
 
-  Partial applications of isolated functions are only permitted
-  when the expression is a direct argument
-  whose corresponding parameter is non-escaping and non-Sendable.
+  격리된 함수의 부분 적용은 표현식이 비탈출 및 비-Sendable 파라미터에 해당하는 직접적인 인자인 경우에만 허용된다.
 -->
 
-> Grammar of an actor declaration:
+> 액터 선언의 문법:
 >
 > *actor-declaration* → *attributes*_?_ *access-level-modifier*_?_ **`actor`** *actor-name* *generic-parameter-clause*_?_ *type-inheritance-clause*_?_ *generic-where-clause*_?_ *actor-body* \
 > *actor-name* → *identifier* \
@@ -2303,83 +1513,30 @@ as discussed in <doc:Declarations#Extension-Declaration>.
 > *actor-members* → *actor-member* *actor-members*_?_ \
 > *actor-member* → *declaration* | *compiler-control-statement*
 
-## Protocol Declaration
 
-A *protocol declaration* introduces a named protocol type into your program.
-Protocol declarations are declared
-using the `protocol` keyword and have the following form:
+## 프로토콜 선언
+
+*프로토콜 선언*은 프로그램에 이름이 붙은 프로토콜 타입을 도입한다. 프로토콜 선언은 `protocol` 키워드를 사용하며, 다음과 같은 형태를 가진다:
 
 ```swift
-protocol <#protocol name#>: <#inherited protocols#> {
-   <#protocol member declarations#>
+protocol <#프로토콜 이름#>: <#상속받은 프로토콜#> {
+   <#프로토콜 멤버 선언#>
 }
 ```
 
-Protocol declarations can appear at global scope,
-or nested inside a nongeneric type or nongeneric function.
+프로토콜 선언은 전역 범위에 나타날 수도 있고, 제네릭이 아닌 타입이나 제네릭이 아닌 함수 내부에 중첩될 수도 있다.
 
-The body of a protocol contains zero or more *protocol member declarations*,
-which describe the conformance requirements that any type adopting the protocol must fulfill.
-In particular, a protocol can declare that conforming types must
-implement certain properties, methods, initializers, and subscripts.
-Protocols can also declare special kinds of type aliases,
-called *associated types*, that can specify relationships
-among the various declarations of the protocol.
-Protocol declarations can't contain
-class, structure, enumeration, or other protocol declarations.
-The *protocol member declarations* are discussed in detail below.
+프로토콜의 본문에는 0개 이상의 *프로토콜 멤버 선언*이 포함된다. 이는 프로토콜을 채택한 타입이 반드시 준수해야 하는 요구사항을 설명한다. 특히, 프로토콜은 채택한 타입이 특정 프로퍼티, 메서드, 이니셜라이저, 그리고 서브스크립트를 구현해야 한다고 선언할 수 있다. 프로토콜은 또한 *연관 타입*이라는 특별한 종류의 타입 별칭을 선언할 수 있으며, 이를 통해 프로토콜의 다양한 선언 간의 관계를 지정할 수 있다. 프로토콜 선언에는 클래스, 구조체, 열거형, 또는 다른 프로토콜 선언을 포함할 수 없다. *프로토콜 멤버 선언*에 대해서는 아래에서 자세히 설명한다.
 
-Protocol types can inherit from any number of other protocols.
-When a protocol type inherits from other protocols,
-the set of requirements from those other protocols are aggregated,
-and any type that inherits from the current protocol must conform to all those requirements.
-For an example of how to use protocol inheritance,
-see <doc:Protocols#Protocol-Inheritance>.
+프로토콜 타입은 여러 다른 프로토콜을 상속받을 수 있다. 프로토콜 타입이 다른 프로토콜을 상속받으면, 해당 프로토콜의 요구사항 집합이 통합된다. 그리고 현재 프로토콜을 상속받는 모든 타입은 이 모든 요구사항을 준수해야 한다. 프로토콜 상속을 사용하는 예제는 <doc:Protocols#Protocol-Inheritance>를 참조한다.
 
-> Note: You can also aggregate the conformance requirements of multiple
-> protocols using protocol composition types,
-> as described in <doc:Types#Protocol-Composition-Type>
-> and <doc:Protocols#Protocol-Composition>.
+> 참고: 여러 프로토콜의 준수 요구사항을 통합하려면 프로토콜 합성 타입을 사용할 수도 있다. 이에 대한 자세한 내용은 <doc:Types#Protocol-Composition-Type>과 <doc:Protocols#Protocol-Composition>을 참조한다.
 
-You can add protocol conformance to a previously declared type
-by adopting the protocol in an extension declaration of that type.
-In the extension, you must implement all of the adopted protocol's
-requirements. If the type already implements all of the requirements,
-you can leave the body of the extension declaration empty.
+이미 선언된 타입에 프로토콜 준수를 추가하려면 해당 타입의 익스텐션 선언에서 프로토콜을 채택하면 된다. 익스텐션에서는 채택한 프로토콜의 모든 요구사항을 구현해야 한다. 타입이 이미 모든 요구사항을 구현했다면, 익스텐션 선언의 본문을 비워둘 수 있다.
 
-By default, types that conform to a protocol must implement all
-properties, methods, and subscripts declared in the protocol.
-That said, you can mark these protocol member declarations with the `optional` declaration modifier
-to specify that their implementation by a conforming type is optional.
-The `optional` modifier can be applied
-only to members that are marked with the `objc` attribute,
-and only to members of protocols that are marked
-with the `objc` attribute. As a result, only class types can adopt and conform
-to a protocol that contains optional member requirements.
-For more information about how to use the `optional` declaration modifier
-and for guidance about how to access optional protocol members ---
-for example, when you're not sure whether a conforming type implements them ---
-see <doc:Protocols#Optional-Protocol-Requirements>.
+기본적으로, 프로토콜을 준수하는 타입은 프로토콜에 선언된 모든 프로퍼티, 메서드, 그리고 서브스크립트를 구현해야 한다. 그러나 `optional` 선언 수식어를 사용해 프로토콜 멤버 선언을 표시하면, 준수 타입에서 이들의 구현을 선택적으로 할 수 있다. `optional` 수식어는 `objc` 속성이 표시된 멤버에만 적용할 수 있으며, `objc` 속성이 표시된 프로토콜의 멤버에만 적용할 수 있다. 결과적으로, 선택적 멤버 요구사항이 포함된 프로토콜을 채택하고 준수할 수 있는 것은 클래스 타입뿐이다. `optional` 선언 수식어를 사용하는 방법과 선택적 프로토콜 멤버에 접근하는 방법에 대한 자세한 내용은 <doc:Protocols#Optional-Protocol-Requirements>를 참조한다.
 
-<!--
-  TODO: Currently, you can't check for an optional initializer,
-  so we're leaving those out of the documentation, even though you can mark
-  an initializer with the @optional attribute. It's still being decided by the
-  compiler team. Update this section if they decide to make everything work
-  properly for optional initializer requirements.
--->
-
-The cases of an enumeration can satisfy
-protocol requirements for type members.
-Specifically,
-an enumeration case without any associated values
-satisfies a protocol requirement for
-a get-only type variable of type `Self`,
-and an enumeration case with associated values
-satisfies a protocol requirement for a function that returns `Self`
-whose parameters and their argument labels
-match the case's associated values.
-For example:
+열거형의 케이스는 타입 멤버에 대한 프로토콜 요구사항을 충족할 수 있다. 특히, 연관 값이 없는 열거형 케이스는 `Self` 타입의 읽기 전용 타입 변수에 대한 프로토콜 요구사항을 충족하며, 연관 값이 있는 열거형 케이스는 `Self`를 반환하고 매개변수와 인자 레이블이 케이스의 연관 값과 일치하는 함수에 대한 프로토콜 요구사항을 충족한다. 예를 들어:
 
 ```swift
 protocol SomeProtocol {
@@ -2392,60 +1549,23 @@ enum MyEnum: SomeProtocol {
 }
 ```
 
-<!--
-  - test: `enum-case-satisfy-protocol-requirement`
-
-  ```swifttest
-  -> protocol SomeProtocol {
-         static var someValue: Self { get }
-         static func someFunction(x: Int) -> Self
-     }
-  -> enum MyEnum: SomeProtocol {
-         case someValue
-         case someFunction(x: Int)
-     }
-  ```
--->
-
-To restrict the adoption of a protocol to class types only,
-include the `AnyObject` protocol in the *inherited protocols*
-list after the colon.
-For example, the following protocol can be adopted only by class types:
+프로토콜의 채택을 클래스 타입으로만 제한하려면, 콜론 뒤의 *상속받은 프로토콜* 목록에 `AnyObject` 프로토콜을 포함하면 된다. 예를 들어, 다음 프로토콜은 클래스 타입만 채택할 수 있다:
 
 ```swift
 protocol SomeProtocol: AnyObject {
-    /* Protocol members go here */
+    /* 프로토콜 멤버는 여기에 작성 */
 }
 ```
 
-<!--
-  - test: `protocol-declaration`
+`AnyObject` 요구사항이 표시된 프로토콜을 상속받은 프로토콜 역시 클래스 타입만 채택할 수 있다.
 
-  ```swifttest
-  -> protocol SomeProtocol: AnyObject {
-         /* Protocol members go here */
-     }
-  ```
--->
+> 참고: 프로토콜이 `objc` 속성으로 표시된 경우, `AnyObject` 요구사항이 암시적으로 적용된다. 따라서 프로토콜에 `AnyObject` 요구사항을 명시적으로 표시할 필요는 없다.
 
-Any protocol that inherits from a protocol that's marked with the `AnyObject` requirement
-can likewise be adopted only by class types.
+프로토콜은 이름이 붙은 타입이므로, 코드에서 다른 이름이 붙은 타입과 동일한 위치에 나타날 수 있다. 이에 대한 자세한 내용은 <doc:Protocols#Protocols-as-Types>에서 다룬다. 그러나 프로토콜의 인스턴스를 생성할 수는 없다. 프로토콜은 실제로 지정한 요구사항에 대한 구현을 제공하지 않기 때문이다.
 
-> Note: If a protocol is marked with the `objc` attribute,
-> the `AnyObject` requirement is implicitly applied to that protocol;
-> there’s no need to mark the protocol with the `AnyObject` requirement explicitly.
+프로토콜을 사용해 클래스나 구조체의 델리게이트가 구현해야 하는 메서드를 선언할 수 있다. 이에 대한 자세한 내용은 <doc:Protocols#Delegation>에서 설명한다.
 
-Protocols are named types, and thus they can appear in all the same places
-in your code as other named types, as discussed in <doc:Protocols#Protocols-as-Types>.
-However,
-you can't construct an instance of a protocol,
-because protocols don't actually provide the implementations for the requirements
-they specify.
-
-You can use protocols to declare which methods a delegate of a class or structure
-should implement, as described in <doc:Protocols#Delegation>.
-
-> Grammar of a protocol declaration:
+> 프로토콜 선언의 문법:
 >
 > *protocol-declaration* → *attributes*_?_ *access-level-modifier*_?_ **`protocol`** *protocol-name* *type-inheritance-clause*_?_ *generic-where-clause*_?_ *protocol-body* \
 > *protocol-name* → *identifier* \
@@ -2461,44 +1581,20 @@ should implement, as described in <doc:Protocols#Delegation>.
 > *protocol-member-declaration* → *protocol-associated-type-declaration* \
 > *protocol-member-declaration* → *typealias-declaration*
 
-### Protocol Property Declaration
 
-Protocols declare that conforming types must implement a property
-by including a *protocol property declaration*
-in the body of the protocol declaration.
-Protocol property declarations have a special form of a variable
-declaration:
+### 프로토콜 프로퍼티 선언
+
+프로토콜은 특정 타입이 프로퍼티를 구현해야 한다는 요구사항을 정의한다. 이를 위해 프로토콜 선언 내부에 *프로토콜 프로퍼티 선언*을 포함한다. 프로토콜 프로퍼티 선언은 변수 선언의 특수한 형태를 가진다.
 
 ```swift
-var <#property name#>: <#type#> { get set }
+var <#프로퍼티 이름#>: <#타입#> { get set }
 ```
 
-As with other protocol member declarations, these property declarations
-declare only the getter and setter requirements for types
-that conform to the protocol. As a result, you don't implement the getter or setter
-directly in the protocol in which it's declared.
+다른 프로토콜 멤버 선언과 마찬가지로, 프로토콜 프로퍼티 선언은 해당 프로토콜을 준수하는 타입이 구현해야 하는 getter와 setter 요구사항만을 정의한다. 따라서 프로토콜 내부에서 직접 getter나 setter를 구현하지 않는다.
 
-The getter and setter requirements can be satisfied by a conforming type in a variety of ways.
-If a property declaration includes both the `get` and `set` keywords,
-a conforming type can implement it with a stored variable property
-or a computed property that's both readable and writeable
-(that is, one that implements both a getter and a setter). However,
-that property declaration can't be implemented as a constant property
-or a read-only computed property. If a property declaration includes
-only the `get` keyword, it can be implemented as any kind of property.
-For examples of conforming types that implement the property requirements of a protocol,
-see <doc:Protocols#Property-Requirements>.
+getter와 setter 요구사항은 준수 타입에서 다양한 방식으로 충족될 수 있다. 프로퍼티 선언에 `get`과 `set` 키워드가 모두 포함된 경우, 준수 타입은 저장 프로퍼티 또는 읽기와 쓰기가 모두 가능한 계산 프로퍼티(즉, getter와 setter를 모두 구현한 프로퍼티)로 이를 구현할 수 있다. 그러나 상수 프로퍼티나 읽기 전용 계산 프로퍼티로는 구현할 수 없다. 프로퍼티 선언에 `get` 키워드만 포함된 경우, 어떤 종류의 프로퍼티로도 구현할 수 있다. 프로토콜의 프로퍼티 요구사항을 준수하는 타입의 예시는 <doc:Protocols#Property-Requirements>를 참고한다.
 
-To declare a type property requirement in a protocol declaration,
-mark the property declaration with the `static` keyword.
-Structures and enumerations that conform to the protocol
-declare the property with the `static` keyword,
-and classes that conform to the protocol
-declare the property with either the `static` or `class` keyword.
-Extensions that add protocol conformance to a structure, enumeration, or class
-use the same keyword as the type they extend uses.
-Extensions that provide a default implementation for a type property requirement
-use the `static` keyword.
+프로토콜 선언에서 타입 프로퍼티 요구사항을 선언하려면, 프로퍼티 선언에 `static` 키워드를 추가한다. 프로토콜을 준수하는 구조체와 열거형은 `static` 키워드를 사용해 프로퍼티를 선언하고, 클래스는 `static` 또는 `class` 키워드를 사용해 프로퍼티를 선언한다. 구조체, 열거형, 클래스에 프로토콜 준수를 추가하는 익스텐션은 해당 타입이 사용하는 키워드와 동일한 키워드를 사용한다. 타입 프로퍼티 요구사항에 대한 기본 구현을 제공하는 익스텐션은 `static` 키워드를 사용한다.
 
 <!--
   - test: `protocols-with-type-property-requirements`
@@ -2534,116 +1630,70 @@ use the `static` keyword.
   ```
 -->
 
-See also <doc:Declarations#Variable-Declaration>.
+자세한 내용은 <doc:Declarations#Variable-Declaration>을 참고한다.
 
-> Grammar of a protocol property declaration:
+> 프로토콜 프로퍼티 선언 문법:
 >
 > *protocol-property-declaration* → *variable-declaration-head* *variable-name* *type-annotation* *getter-setter-keyword-block*
 
-### Protocol Method Declaration
 
-Protocols declare that conforming types must implement a method
-by including a protocol method declaration in the body of the protocol declaration.
-Protocol method declarations have the same form as
-function declarations, with two exceptions: They don't include a function body,
-and you can't provide any default parameter values as part of the function declaration.
-For examples of conforming types that implement the method requirements of a protocol,
-see <doc:Protocols#Method-Requirements>.
+### 프로토콜 메서드 선언
 
-To declare a class or static method requirement in a protocol declaration,
-mark the method declaration with the `static` declaration modifier.
-Structures and enumerations that conform to the protocol
-declare the method with the `static` keyword,
-and classes that conform to the protocol
-declare the method with either the `static` or `class` keyword.
-Extensions that add protocol conformance to a structure, enumeration, or class
-use the same keyword as the type they extend uses.
-Extensions that provide a default implementation for a type method requirement
-use the `static` keyword.
+프로토콜은 특정 타입이 해당 프로토콜을 준수하려면 반드시 구현해야 하는 메서드를 정의한다. 프로토콜 메서드 선언은 함수 선언과 비슷한 형태를 가지지만, 두 가지 중요한 차이점이 있다. 첫째, 메서드 본문을 포함하지 않는다. 둘째, 함수 선언에서 기본 매개변수 값을 제공할 수 없다. 프로토콜의 메서드 요구사항을 구현한 타입의 예제는 <doc:Protocols#Method-Requirements>를 참고한다.
 
-See also <doc:Declarations#Function-Declaration>.
+프로토콜 선언에서 클래스 메서드나 정적 메서드 요구사항을 선언하려면, 메서드 선언에 `static` 선언 수정자를 추가한다. 이 프로토콜을 준수하는 구조체와 열거형은 `static` 키워드를 사용해 메서드를 선언하고, 클래스는 `static` 또는 `class` 키워드를 사용한다. 구조체, 열거형, 클래스에 프로토콜 준수를 추가하는 익스텐션은 해당 타입이 사용하는 키워드와 동일한 키워드를 사용한다. 타입 메서드 요구사항에 대한 기본 구현을 제공하는 익스텐션은 `static` 키워드를 사용한다.
+
+자세한 내용은 <doc:Declarations#Function-Declaration>을 참고한다.
 
 <!--
-  TODO: Talk about using ``Self`` in parameters and return types.
+  TODO: 매개변수와 반환 타입에서 ``Self`` 사용에 대해 설명하기
 -->
 
-> Grammar of a protocol method declaration:
+> 프로토콜 메서드 선언 문법:
 >
 > *protocol-method-declaration* → *function-head* *function-name* *generic-parameter-clause*_?_ *function-signature* *generic-where-clause*_?_
 
-### Protocol Initializer Declaration
 
-Protocols declare that conforming types must implement an initializer
-by including a protocol initializer declaration in the body of the protocol declaration.
-Protocol initializer declarations have the same form as
-initializer declarations, except they don't include the initializer's body.
+### 프로토콜 이니셜라이저 선언
 
-A conforming type can satisfy a nonfailable protocol initializer requirement
-by implementing a nonfailable initializer or an `init!` failable initializer.
-A conforming type can satisfy a failable protocol initializer requirement
-by implementing any kind of initializer.
+프로토콜은 프로토콜 선언 본문에 이니셜라이저 선언을 포함함으로써, 해당 프로토콜을 준수하는 타입이 반드시 이니셜라이저를 구현해야 한다고 명시한다. 프로토콜 이니셜라이저 선언은 일반 이니셜라이저 선언과 동일한 형태를 가지지만, 이니셜라이저의 본문은 포함하지 않는다.
 
-When a class implements an initializer to satisfy a protocol's initializer requirement,
-the initializer must be marked with the `required` declaration modifier
-if the class isn't already marked with the `final` declaration modifier.
+프로토콜을 준수하는 타입은 **nonfailable** 프로토콜 이니셜라이저 요구사항을 충족하기 위해 nonfailable 이니셜라이저 또는 `init!` failable 이니셜라이저를 구현할 수 있다. **failable** 프로토콜 이니셜라이저 요구사항은 어떤 종류의 이니셜라이저로도 충족할 수 있다.
 
-See also <doc:Declarations#Initializer-Declaration>.
+클래스가 프로토콜의 이니셜라이저 요구사항을 충족하기 위해 이니셜라이저를 구현할 때, 해당 클래스가 `final` 선언 수식어로 표시되지 않은 경우 이니셜라이저는 `required` 선언 수식어로 표시되어야 한다.
 
-> Grammar of a protocol initializer declaration:
+자세한 내용은 <doc:Declarations#Initializer-Declaration>을 참고한다.
+
+> 프로토콜 이니셜라이저 선언 문법:
 >
 > *protocol-initializer-declaration* → *initializer-head* *generic-parameter-clause*_?_ *parameter-clause* *throws-clause*_?_ *generic-where-clause*_?_ \
 > *protocol-initializer-declaration* → *initializer-head* *generic-parameter-clause*_?_ *parameter-clause* **`rethrows`** *generic-where-clause*_?_
 
-### Protocol Subscript Declaration
 
-Protocols declare that conforming types must implement a subscript
-by including a protocol subscript declaration in the body of the protocol declaration.
-Protocol subscript declarations have a special form of a subscript declaration:
+### 프로토콜 서브스크립트 선언
+
+프로토콜은 해당 프로토콜을 준수하는 타입이 반드시 서브스크립트를 구현해야 한다고 선언한다. 이를 위해 프로토콜 본문에 프로토콜 서브스크립트 선언을 포함한다. 프로토콜 서브스크립트 선언은 특별한 형태의 서브스크립트 선언을 가진다.
 
 ```swift
 subscript (<#parameters#>) -> <#return type#> { get set }
 ```
 
-Subscript declarations only declare the minimum getter and setter implementation
-requirements for types that conform to the protocol.
-If the subscript declaration includes both the `get` and `set` keywords,
-a conforming type must implement both a getter and a setter clause.
-If the subscript declaration includes only the `get` keyword,
-a conforming type must implement *at least* a getter clause
-and optionally can implement a setter clause.
+서브스크립트 선언은 프로토콜을 준수하는 타입이 최소한의 getter와 setter 구현 요구사항을 충족해야 함을 나타낸다. 서브스크립트 선언에 `get`과 `set` 키워드가 모두 포함된 경우, 준수하는 타입은 반드시 getter와 setter를 모두 구현해야 한다. 서브스크립트 선언에 `get` 키워드만 포함된 경우, 준수하는 타입은 최소한 getter를 구현해야 하며, 선택적으로 setter를 구현할 수 있다.
 
-To declare a static subscript requirement in a protocol declaration,
-mark the subscript declaration with the `static` declaration modifier.
-Structures and enumerations that conform to the protocol
-declare the subscript with the `static` keyword,
-and classes that conform to the protocol
-declare the subscript with either the `static` or `class` keyword.
-Extensions that add protocol conformance to a structure, enumeration, or class
-use the same keyword as the type they extend uses.
-Extensions that provide a default implementation for a static subscript requirement
-use the `static` keyword.
+프로토콜 선언에서 정적(static) 서브스크립트 요구사항을 선언하려면, 서브스크립트 선언에 `static` 선언 수식어를 붙인다. 프로토콜을 준수하는 구조체와 열거형은 `static` 키워드를 사용해 서브스크립트를 선언하고, 클래스는 `static` 또는 `class` 키워드를 사용해 서브스크립트를 선언한다. 구조체, 열거형, 클래스에 프로토콜 준수를 추가하는 익스텐션은 해당 타입이 사용하는 키워드와 동일한 키워드를 사용한다. 정적 서브스크립트 요구사항에 대한 기본 구현을 제공하는 익스텐션은 `static` 키워드를 사용한다.
 
-See also <doc:Declarations#Subscript-Declaration>.
+자세한 내용은 <doc:Declarations#Subscript-Declaration>을 참고한다.
 
-> Grammar of a protocol subscript declaration:
+> 프로토콜 서브스크립트 선언 문법:
 >
 > *protocol-subscript-declaration* → *subscript-head* *subscript-result* *generic-where-clause*_?_ *getter-setter-keyword-block*
 
-### Protocol Associated Type Declaration
 
-Protocols declare associated types using the `associatedtype` keyword.
-An associated type provides an alias for a type
-that's used as part of a protocol's declaration.
-Associated types are similar to type parameters in generic parameter clauses,
-but they're associated with `Self` in the protocol in which they're declared.
-In that context, `Self` refers to the eventual type that conforms to the protocol.
-For more information and examples,
-see <doc:Generics#Associated-Types>.
+### 프로토콜 연관 타입 선언
 
-You use a generic `where` clause in a protocol declaration
-to add constraints to an associated types inherited from another protocol,
-without redeclaring the associated types.
-For example, the declarations of `SubProtocol` below are equivalent:
+프로토콜은 `associatedtype` 키워드를 사용해 연관 타입을 선언한다. 연관 타입은 프로토콜 선언의 일부로 사용되는 타입에 대한 별칭을 제공한다. 연관 타입은 제네릭 매개변수 절의 타입 매개변수와 유사하지만, 선언된 프로토콜 내에서 `Self`와 연관된다. 이때 `Self`는 프로토콜을 준수하는 최종 타입을 의미한다. 더 자세한 정보와 예제는 <doc:Generics#Associated-Types>를 참고한다.
+
+프로토콜 선언에서 제네릭 `where` 절을 사용하면, 다른 프로토콜에서 상속받은 연관 타입에 제약을 추가할 수 있다. 이때 연관 타입을 다시 선언할 필요가 없다. 예를 들어, 아래 `SubProtocol`의 선언은 동일하다:
 
 ```swift
 protocol SomeProtocol {
@@ -2651,11 +1701,11 @@ protocol SomeProtocol {
 }
 
 protocol SubProtocolA: SomeProtocol {
-    // This syntax produces a warning.
+    // 이 구문은 경고를 발생시킨다.
     associatedtype SomeType: Equatable
 }
 
-// This syntax is preferred.
+// 이 구문이 더 권장된다.
 protocol SubProtocolB: SomeProtocol where SomeType: Equatable { }
 ```
 
@@ -2668,7 +1718,7 @@ protocol SubProtocolB: SomeProtocol where SomeType: Equatable { }
      }
 
   -> protocol SubProtocolA: SomeProtocol {
-         // This syntax produces a warning.
+         // 이 구문은 경고를 발생시킨다.
          associatedtype SomeType: Equatable
      }
   !$ warning: redeclaration of associated type 'SomeType' from protocol 'SomeProtocol' is better expressed as a 'where' clause on the protocol
@@ -2679,7 +1729,7 @@ protocol SubProtocolB: SomeProtocol where SomeType: Equatable { }
   !! associatedtype SomeType
   !! ^
 
-  // This syntax is preferred.
+  // 이 구문이 더 권장된다.
   -> protocol SubProtocolB: SomeProtocol where SomeType: Equatable { }
   ```
 -->
@@ -2753,27 +1803,20 @@ protocol SubProtocolB: SomeProtocol where SomeType: Equatable { }
   Here you have to pick one or the other -- you can't have both.
 -->
 
-See also <doc:Declarations#Type-Alias-Declaration>.
+<doc:Declarations#Type-Alias-Declaration>도 참고한다.
 
-> Grammar of a protocol associated type declaration:
+> 프로토콜 연관 타입 선언의 문법:
 >
 > *protocol-associated-type-declaration* → *attributes*_?_ *access-level-modifier*_?_ **`associatedtype`** *typealias-name* *type-inheritance-clause*_?_ *typealias-assignment*_?_ *generic-where-clause*_?_
 
-## Initializer Declaration
 
-An *initializer declaration* introduces an initializer for a class,
-structure, or enumeration into your program.
-Initializer declarations are declared using the `init` keyword and have
-two basic forms.
+## 초기화자 선언
 
-Structure, enumeration, and class types can have any number of initializers,
-but the rules and associated behavior for class initializers are different.
-Unlike structures and enumerations, classes have two kinds of initializers:
-designated initializers and convenience initializers,
-as described in <doc:Initialization>.
+*초기화자 선언*은 클래스, 구조체, 또는 열거형을 초기화하는 메서드를 프로그램에 도입한다. 초기화자 선언은 `init` 키워드를 사용하며, 두 가지 기본 형태가 있다.
 
-The following form declares initializers for structures, enumerations,
-and designated initializers of classes:
+구조체, 열거형, 그리고 클래스 타입은 여러 개의 초기화자를 가질 수 있지만, 클래스 초기화자의 규칙과 관련 동작은 다르다. 구조체와 열거형과 달리 클래스에는 지정 초기화자와 편의 초기화자 두 가지 종류가 있다. 이는 <doc:Initialization>에서 자세히 설명한다.
+
+다음은 구조체, 열거형, 그리고 클래스의 지정 초기화자를 선언하는 형태다:
 
 ```swift
 init(<#parameters#>) {
@@ -2781,22 +1824,13 @@ init(<#parameters#>) {
 }
 ```
 
-A designated initializer of a class initializes
-all of the class's properties directly. It can't call any other initializers
-of the same class, and if the class has a superclass, it must call one of
-the superclass's designated initializers.
-If the class inherits any properties from its superclass, one of the
-superclass's designated initializers must be called before any of these
-properties can be set or modified in the current class.
+클래스의 지정 초기화자는 해당 클래스의 모든 프로퍼티를 직접 초기화한다. 동일한 클래스의 다른 초기화자를 호출할 수 없으며, 클래스가 슈퍼클래스를 가진다면 슈퍼클래스의 지정 초기화자 중 하나를 반드시 호출해야 한다. 클래스가 슈퍼클래스로부터 프로퍼티를 상속받았다면, 현재 클래스에서 해당 프로퍼티를 설정하거나 수정하기 전에 슈퍼클래스의 지정 초기화자 중 하나를 호출해야 한다.
 
-Designated initializers can be declared in the context of a class declaration only
-and therefore can't be added to a class using an extension declaration.
+지정 초기화자는 클래스 선언의 컨텍스트에서만 선언할 수 있으며, 따라서 확장 선언을 사용해 클래스에 추가할 수 없다.
 
-Initializers in structures and enumerations can call other declared initializers
-to delegate part or all of the initialization process.
+구조체와 열거형의 초기화자는 다른 선언된 초기화자를 호출해 초기화 과정의 일부 또는 전체를 위임할 수 있다.
 
-To declare convenience initializers for a class,
-mark the initializer declaration with the `convenience` declaration modifier.
+클래스의 편의 초기화자를 선언하려면, 초기화자 선언에 `convenience` 선언 수식어를 붙인다.
 
 ```swift
 convenience init(<#parameters#>) {
@@ -2804,61 +1838,34 @@ convenience init(<#parameters#>) {
 }
 ```
 
-Convenience initializers can delegate the initialization process to another
-convenience initializer or to one of the class's designated initializers.
-That said, the initialization processes must end with a call to a designated
-initializer that ultimately initializes the class's properties.
-Convenience initializers can't call a superclass's initializers.
+편의 초기화자는 초기화 과정을 다른 편의 초기화자나 클래스의 지정 초기화자에게 위임할 수 있다. 하지만 초기화 과정은 반드시 클래스의 프로퍼티를 최종적으로 초기화하는 지정 초기화자 호출로 끝나야 한다. 편의 초기화자는 슈퍼클래스의 초기화자를 호출할 수 없다.
 
-You can mark designated and convenience initializers with the `required`
-declaration modifier to require that every subclass implement the initializer.
-A subclass’s implementation of that initializer
-must also be marked with the `required` declaration modifier.
+지정 초기화자와 편의 초기화자에 `required` 선언 수식어를 붙여 모든 서브클래스가 해당 초기화자를 구현하도록 요구할 수 있다. 서브클래스에서 이 초기화자를 구현할 때도 `required` 선언 수식어를 붙여야 한다.
 
-By default, initializers declared in a superclass
-aren't inherited by subclasses.
-That said, if a subclass initializes all of its stored properties with default values
-and doesn't define any initializers of its own,
-it inherits all of the superclass's initializers.
-If the subclass overrides all of the superclass’s designated initializers,
-it inherits the superclass’s convenience initializers.
+기본적으로 슈퍼클래스에 선언된 초기화자는 서브클래스에 상속되지 않는다. 하지만 서브클래스가 모든 저장 프로퍼티를 기본값으로 초기화하고 자체 초기화자를 정의하지 않았다면, 슈퍼클래스의 모든 초기화자를 상속받는다. 서브클래스가 슈퍼클래스의 모든 지정 초기화자를 재정의하면, 슈퍼클래스의 편의 초기화자를 상속받는다.
 
-As with methods, properties, and subscripts,
-you need to mark overridden designated initializers with the `override` declaration modifier.
+메서드, 프로퍼티, 그리고 서브스크립트와 마찬가지로, 재정의된 지정 초기화자에는 `override` 선언 수식어를 붙여야 한다.
 
-> Note: If you mark an initializer with the `required` declaration modifier,
-> you don't also mark the initializer with the `override` modifier
-> when you override the required initializer in a subclass.
+> 참고: 초기화자에 `required` 선언 수식어를 붙였다면, 서브클래스에서 해당 초기화자를 재정의할 때 `override` 수식어를 함께 붙이지 않는다.
 
-Just like functions and methods, initializers can throw or rethrow errors.
-And just like functions and methods,
-you use the `throws` or `rethrows` keyword after an initializer's parameters
-to indicate the appropriate behavior.
-Likewise, initializers can be asynchronous,
-and you use the `async` keyword to indicate this.
+함수와 메서드처럼 초기화자도 에러를 던지거나 다시 던질 수 있다. 또한 함수와 메서드처럼 초기화자의 파라미터 뒤에 `throws` 또는 `rethrows` 키워드를 사용해 적절한 동작을 나타낸다. 마찬가지로 초기화자는 비동기적일 수 있으며, `async` 키워드를 사용해 이를 나타낸다.
 
-To see examples of initializers in various type declarations,
-see <doc:Initialization>.
+다양한 타입 선언에서 초기화자의 예를 보려면 <doc:Initialization>을 참고한다.
 
-### Failable Initializers
 
-A *failable initializer* is a type of initializer that produces an optional instance
-or an implicitly unwrapped optional instance of the type the initializer is declared on.
-As a result, a failable initializer can return `nil` to indicate that initialization failed.
+### 실패 가능한 초기화 메서드
 
-To declare a failable initializer that produces an optional instance,
-append a question mark to the `init` keyword in the initializer declaration (`init?`).
-To declare a failable initializer that produces an implicitly unwrapped optional instance,
-append an exclamation point instead (`init!`). The example below shows an `init?`
-failable initializer that produces an optional instance of a structure.
+*실패 가능한 초기화 메서드*는 초기화 과정에서 옵셔널 인스턴스나 암시적 언래핑 옵셔널 인스턴스를 반환할 수 있는 초기화 메서드다. 따라서 초기화가 실패할 경우 `nil`을 반환할 수 있다.
+
+옵셔널 인스턴스를 반환하는 실패 가능한 초기화 메서드를 선언하려면, 초기화 메서드 선언에서 `init` 키워드 뒤에 물음표를 붙인다(`init?`). 암시적 언래핑 옵셔널 인스턴스를 반환하는 실패 가능한 초기화 메서드를 선언하려면, 느낌표를 붙인다(`init!`). 아래 예제는 옵셔널 인스턴스를 반환하는 `init?` 실패 가능한 초기화 메서드를 보여준다.
 
 ```swift
 struct SomeStruct {
     let property: String
-    // produces an optional instance of 'SomeStruct'
+    // 'SomeStruct'의 옵셔널 인스턴스를 반환
     init?(input: String) {
         if input.isEmpty {
-            // discard 'self' and return 'nil'
+            // 'self'를 버리고 'nil' 반환
             return nil
         }
         property = input
@@ -2884,14 +1891,13 @@ struct SomeStruct {
   ```
 -->
 
-You call an `init?` failable initializer in the same way that you call a nonfailable initializer,
-except that you must deal with the optionality of the result.
+`init?` 실패 가능한 초기화 메서드를 호출할 때는 일반 초기화 메서드와 동일한 방식으로 호출하되, 결과의 옵셔널성을 처리해야 한다.
 
 ```swift
 if let actualInstance = SomeStruct(input: "Hello") {
-    // do something with the instance of 'SomeStruct'
+    // 'SomeStruct' 인스턴스를 사용
 } else {
-    // initialization of 'SomeStruct' failed and the initializer returned 'nil'
+    // 'SomeStruct' 초기화 실패, 초기화 메서드가 'nil' 반환
 }
 ```
 
@@ -2908,33 +1914,17 @@ if let actualInstance = SomeStruct(input: "Hello") {
   ```
 -->
 
-A failable initializer can return `nil`
-at any point in the implementation of the initializer's body.
+실패 가능한 초기화 메서드는 초기화 메서드 본문의 어느 지점에서든 `nil`을 반환할 수 있다.
 
-A failable initializer can delegate to any kind of initializer.
-A nonfailable initializer can delegate to another nonfailable initializer
-or to an `init!` failable initializer.
-A nonfailable initializer can delegate to an `init?` failable initializer
-by force-unwrapping the result of the superclass's initializer ---
-for example, by writing `super.init()!`.
+실패 가능한 초기화 메서드는 어떤 종류의 초기화 메서드에도 위임할 수 있다. 실패하지 않는 초기화 메서드는 다른 실패하지 않는 초기화 메서드나 `init!` 실패 가능한 초기화 메서드에 위임할 수 있다. 실패하지 않는 초기화 메서드는 `init?` 실패 가능한 초기화 메서드에 위임할 수 있는데, 이때 슈퍼클래스의 초기화 메서드 결과를 강제 언래핑해야 한다. 예를 들어, `super.init()!`과 같이 작성한다.
 
-Initialization failure propagates through initializer delegation.
-Specifically,
-if a failable initializer delegates to an initializer that fails and returns `nil`,
-then the initializer that delegated also fails and implicitly returns `nil`.
-If a nonfailable initializer delegates to an `init!` failable initializer that fails and returns `nil`,
-then a runtime error is raised
-(as if you used the `!` operator to unwrap an optional that has a `nil` value).
+초기화 실패는 초기화 위임을 통해 전파된다. 구체적으로, 실패 가능한 초기화 메서드가 초기화에 실패해 `nil`을 반환하는 초기화 메서드에 위임하면, 위임한 초기화 메서드도 실패하고 암시적으로 `nil`을 반환한다. 실패하지 않는 초기화 메서드가 `init!` 실패 가능한 초기화 메서드에 위임했는데, 해당 초기화 메서드가 실패해 `nil`을 반환하면 런타임 오류가 발생한다. 이는 `nil` 값을 가진 옵셔널을 강제 언래핑할 때와 동일한 상황이다.
 
-A failable designated initializer can be overridden in a subclass
-by any kind of designated initializer.
-A nonfailable designated initializer can be overridden in a subclass
-by a nonfailable designated initializer only.
+실패 가능한 지정 초기화 메서드는 서브클래스에서 어떤 종류의 지정 초기화 메서드로도 재정의할 수 있다. 실패하지 않는 지정 초기화 메서드는 서브클래스에서 실패하지 않는 지정 초기화 메서드로만 재정의할 수 있다.
 
-For more information and to see examples of failable initializers,
-see <doc:Initialization#Failable-Initializers>.
+실패 가능한 초기화 메서드에 대한 더 자세한 정보와 예제는 <doc:Initialization#Failable-Initializers>를 참고한다.
 
-> Grammar of an initializer declaration:
+> 초기화 메서드 선언 문법:
 >
 > *initializer-declaration* → *initializer-head* *generic-parameter-clause*_?_ *parameter-clause* **`async`**_?_ *throws-clause*_?_ *generic-where-clause*_?_ *initializer-body* \
 > *initializer-declaration* → *initializer-head* *generic-parameter-clause*_?_ *parameter-clause* **`async`**_?_ **`rethrows`** *generic-where-clause*_?_ *initializer-body* \
@@ -2943,10 +1933,10 @@ see <doc:Initialization#Failable-Initializers>.
 > *initializer-head* → *attributes*_?_ *declaration-modifiers*_?_ **`init`** **`!`** \
 > *initializer-body* → *code-block*
 
-## Deinitializer Declaration
 
-A *deinitializer declaration* declares a deinitializer for a class type.
-Deinitializers take no parameters and have the following form:
+## 디이니셜라이저 선언
+
+*디이니셜라이저 선언*은 클래스 타입을 위한 디이니셜라이저를 정의한다. 디이니셜라이저는 매개변수를 받지 않으며, 다음과 같은 형태를 가진다:
 
 ```swift
 deinit {
@@ -2954,32 +1944,22 @@ deinit {
 }
 ```
 
-A deinitializer is called automatically when there are no longer any references
-to a class object, just before the class object is deallocated.
-A deinitializer can be declared only in the body of a class declaration ---
-but not in an extension of a class ---
-and each class can have at most one.
+디이니셜라이저는 클래스 객체에 더 이상 참조가 없을 때, 객체가 메모리에서 해제되기 직전에 자동으로 호출된다. 디이니셜라이저는 클래스 선언 본문 안에서만 선언할 수 있으며, 클래스 확장에서는 선언할 수 없다. 또한, 각 클래스는 최대 하나의 디이니셜라이저를 가질 수 있다.
 
-A subclass inherits its superclass's deinitializer,
-which is implicitly called just before the subclass object is deallocated.
-The subclass object isn't deallocated until all deinitializers in its inheritance chain
-have finished executing.
+서브클래스는 슈퍼클래스의 디이니셜라이저를 상속받는다. 이 디이니셜라이저는 서브클래스 객체가 해제되기 직전에 암묵적으로 호출된다. 서브클래스 객체는 상속 체인에 있는 모든 디이니셜라이저가 실행을 마칠 때까지 해제되지 않는다.
 
-Deinitializers aren't called directly.
+디이니셜라이저는 직접 호출할 수 없다.
 
-For an example of how to use a deinitializer in a class declaration,
-see <doc:Deinitialization>.
+클래스 선언에서 디이니셜라이저를 사용하는 예제는 <doc:Deinitialization>을 참고한다.
 
-> Grammar of a deinitializer declaration:
+> 디이니셜라이저 선언 문법:
 >
 > *deinitializer-declaration* → *attributes*_?_ **`deinit`** *code-block*
 
-## Extension Declaration
 
-An *extension declaration* allows you to extend
-the behavior of existing types.
-Extension declarations are declared using the `extension` keyword
-and have the following form:
+## 확장 선언
+
+*확장 선언*을 사용하면 기존 타입의 동작을 확장할 수 있다. 확장 선언은 `extension` 키워드를 사용하며, 다음과 같은 형태를 가진다:
 
 ```swift
 extension <#type name#> where <#requirements#> {
@@ -2987,39 +1967,17 @@ extension <#type name#> where <#requirements#> {
 }
 ```
 
-The body of an extension declaration contains zero or more *declarations*.
-These *declarations* can include computed properties, computed type properties,
-instance methods, type methods, initializers, subscript declarations,
-and even class, structure, and enumeration declarations.
-Extension declarations can't contain deinitializer or protocol declarations,
-stored properties, property observers, or other extension declarations.
-Declarations in a protocol extension can't be marked `final`.
-For a discussion and several examples of extensions that include various kinds of declarations,
-see <doc:Extensions>.
+확장 선언의 본문에는 0개 이상의 *선언*이 포함될 수 있다. 이러한 *선언*은 계산 프로퍼티, 계산 타입 프로퍼티, 인스턴스 메서드, 타입 메서드, 이니셜라이저, 서브스크립트 선언, 그리고 클래스, 구조체, 열거형 선언까지 포함할 수 있다. 확장 선언은 디이니셜라이저나 프로토콜 선언, 저장 프로퍼티, 프로퍼티 옵저버, 또는 다른 확장 선언을 포함할 수 없다. 프로토콜 확장 내의 선언은 `final`로 표시될 수 없다. 다양한 종류의 선언을 포함하는 확장에 대한 논의와 여러 예제는 <doc:Extensions>를 참고한다.
 
-If the *type name* is a class, structure, or enumeration type,
-the extension extends that type.
-If the *type name* is a protocol type,
-the extension extends all types that conform to that protocol.
+*타입 이름*이 클래스, 구조체, 또는 열거형 타입인 경우, 확장은 해당 타입을 확장한다. *타입 이름*이 프로토콜 타입인 경우, 확장은 해당 프로토콜을 준수하는 모든 타입을 확장한다.
 
-Extension declarations that extend a generic type
-or a protocol with associated types
-can include *requirements*.
-If an instance of the extended type
-or of a type that conforms to the extended protocol
-satisfies the *requirements*,
-the instance gains the behavior specified in the declaration.
+제네릭 타입이나 연관 타입을 가진 프로토콜을 확장하는 확장 선언은 *요구사항*을 포함할 수 있다. 확장된 타입의 인스턴스나 확장된 프로토콜을 준수하는 타입의 인스턴스가 *요구사항*을 만족하면, 해당 인스턴스는 선언에 지정된 동작을 얻게 된다.
 
-Extension declarations can contain initializer declarations. That said,
-if the type you're extending is defined in another module,
-an initializer declaration must delegate to an initializer already defined in that module
-to ensure members of that type are properly initialized.
+확장 선언은 이니셜라이저 선언을 포함할 수 있다. 그러나 확장하려는 타입이 다른 모듈에 정의된 경우, 이니셜라이저 선언은 해당 모듈에 이미 정의된 이니셜라이저에 위임해야 하며, 이를 통해 해당 타입의 멤버가 올바르게 초기화되도록 보장한다.
 
-Properties, methods, and initializers of an existing type
-can't be overridden in an extension of that type.
+기존 타입의 프로퍼티, 메서드, 이니셜라이저는 해당 타입의 확장에서 재정의할 수 없다.
 
-Extension declarations can add protocol conformance to an existing
-class, structure, or enumeration type by specifying *adopted protocols*:
+확장 선언은 기존 클래스, 구조체, 또는 열거형 타입에 프로토콜 준수를 추가할 수 있다. 이를 위해 *채택된 프로토콜*을 지정한다:
 
 ```swift
 extension <#type name#>: <#adopted protocols#> where <#requirements#> {
@@ -3027,33 +1985,17 @@ extension <#type name#>: <#adopted protocols#> where <#requirements#> {
 }
 ```
 
-Extension declarations can't add class inheritance to an existing class,
-and therefore you can specify only a list of protocols after the *type name* and colon.
+확장 선언은 기존 클래스에 클래스 상속을 추가할 수 없으므로, *타입 이름*과 콜론 뒤에는 프로토콜 목록만 지정할 수 있다.
 
-### Conditional Conformance
 
-You can extend a generic type
-to conditionally conform to a protocol,
-so that instances of the type conform to the protocol
-only when certain requirements are met.
-You add conditional conformance to a protocol
-by including *requirements* in an extension declaration.
+### 조건부 프로토콜 준수
 
-#### Overridden Requirements Aren't Used in Some Generic Contexts
+제네릭 타입을 확장해 특정 조건을 만족할 때만 프로토콜을 준수하도록 할 수 있다. 이를 조건부 프로토콜 준수라고 한다. 타입의 인스턴스가 특정 요구사항을 충족할 때만 프로토콜을 준수하게 된다. 조건부 프로토콜 준수를 추가하려면 익스텐션 선언에 *요구사항*을 포함하면 된다.
 
-In some generic contexts,
-types that get behavior from conditional conformance to a protocol
-don't always use the specialized implementations
-of that protocol's requirements.
-To illustrate this behavior,
-the following example defines two protocols
-and a generic type that conditionally conforms to both protocols.
 
-<!--
-  This test needs to be compiled so that it will recognize Pair's
-  CustomStringConvertible conformance -- the deprecated REPL doesn't
-  seem to use the description property at all.
--->
+#### 특정 제네릭 컨텍스트에서는 재정의된 요구사항이 사용되지 않는다
+
+일부 제네릭 컨텍스트에서는, 프로토콜에 대한 조건적 준수(conditional conformance)를 통해 동작을 얻는 타입이 해당 프로토콜의 요구사항에 대한 특수화된 구현을 항상 사용하지 않는다. 이 동작을 설명하기 위해, 다음 예제에서는 두 개의 프로토콜과 두 프로토콜에 조건적으로 준수하는 제네릭 타입을 정의한다.
 
 ```swift
 protocol Loggable {
@@ -3096,59 +2038,7 @@ extension String: TitledLoggable {
 }
 ```
 
-<!--
-  - test: `conditional-conformance`
-
-  ```swifttest
-  -> protocol Loggable {
-         func log()
-     }
-     extension Loggable {
-         func log() {
-             print(self)
-         }
-     }
-
-     protocol TitledLoggable: Loggable {
-         static var logTitle: String { get }
-     }
-     extension TitledLoggable {
-         func log() {
-             print("\(Self.logTitle): \(self)")
-         }
-     }
-
-     struct Pair<T>: CustomStringConvertible {
-         let first: T
-         let second: T
-         var description: String {
-             return "(\(first), \(second))"
-         }
-     }
-
-     extension Pair: Loggable where T: Loggable { }
-     extension Pair: TitledLoggable where T: TitledLoggable {
-         static var logTitle: String {
-             return "Pair of '\(T.logTitle)'"
-         }
-     }
-
-     extension String: TitledLoggable {
-        static var logTitle: String {
-           return "String"
-        }
-     }
-  ```
--->
-
-The `Pair` structure conforms to `Loggable` and `TitledLoggable`
-whenever its generic type conforms to `Loggable` or `TitledLoggable`, respectively.
-In the example below,
-`oneAndTwo` is an instance of `Pair<String>`,
-which conforms to `TitledLoggable`
-because `String` conforms to `TitledLoggable`.
-When the `log()` method is called on `oneAndTwo` directly,
-the specialized version containing the title string is used.
+`Pair` 구조체는 제네릭 타입이 `Loggable` 또는 `TitledLoggable`을 준수할 때 각각 `Loggable`과 `TitledLoggable`을 준수한다. 아래 예제에서 `oneAndTwo`는 `Pair<String>`의 인스턴스이며, `String`이 `TitledLoggable`을 준수하기 때문에 `TitledLoggable`을 준수한다. `oneAndTwo`에서 `log()` 메서드를 직접 호출하면, 제목 문자열을 포함한 특수화된 버전이 사용된다.
 
 ```swift
 let oneAndTwo = Pair(first: "one", second: "two")
@@ -3156,23 +2046,7 @@ oneAndTwo.log()
 // Prints "Pair of 'String': (one, two)"
 ```
 
-<!--
-  - test: `conditional-conformance`
-
-  ```swifttest
-  -> let oneAndTwo = Pair(first: "one", second: "two")
-  -> oneAndTwo.log()
-  <- Pair of 'String': (one, two)
-  ```
--->
-
-However, when `oneAndTwo` is used in a generic context
-or as an instance of the `Loggable` protocol,
-the specialized version isn't used.
-Swift picks which implementation of `log()` to call
-by consulting only the minimum requirements that `Pair` needs to conform to `Loggable`.
-For this reason,
-the default implementation provided by the `Loggable` protocol is used instead.
+그러나 `oneAndTwo`가 제네릭 컨텍스트에서 사용되거나 `Loggable` 프로토콜의 인스턴스로 사용될 때는 특수화된 버전이 사용되지 않는다. Swift는 `Pair`가 `Loggable`을 준수하는 데 필요한 최소 요구사항만을 참조하여 `log()`의 구현을 선택한다. 이 때문에 `Loggable` 프로토콜에서 제공하는 기본 구현이 대신 사용된다.
 
 ```swift
 func doSomething<T: Loggable>(with x: T) {
@@ -3182,44 +2056,17 @@ doSomething(with: oneAndTwo)
 // Prints "(one, two)"
 ```
 
-<!--
-  - test: `conditional-conformance`
+`doSomething(_:)`에 전달된 인스턴스에서 `log()`가 호출되면, 로그된 문자열에서 커스텀 제목이 생략된다.
 
-  ```swifttest
-  -> func doSomething<T: Loggable>(with x: T) {
-        x.log()
-     }
-     doSomething(with: oneAndTwo)
-  <- (one, two)
-  ```
--->
 
-When `log()` is called on the instance that's passed to `doSomething(_:)`,
-the customized title is omitted from the logged string.
+### 프로토콜 준수는 중복될 수 없다
 
-### Protocol Conformance Must Not Be Redundant
+구체적인 타입은 특정 프로토콜에 한 번만 준수할 수 있다. Swift는 중복된 프로토콜 준수를 에러로 표시한다. 이러한 에러는 주로 두 가지 상황에서 발생한다. 첫 번째는 동일한 프로토콜을 여러 번 명시적으로 준수하려고 할 때이며, 두 번째는 동일한 프로토콜을 여러 번 암묵적으로 상속받을 때다. 이 두 상황에 대해 아래에서 자세히 설명한다.
 
-A concrete type can conform to a particular protocol only once.
-Swift marks redundant protocol conformances as an error.
-You're likely to encounter this kind of error
-in two kinds of situations.
-The first situation is when
-you explicitly conform to the same protocol multiple times,
-but with different requirements.
-The second situation is when
-you implicitly inherit from the same protocol multiple times.
-These situations are discussed in the sections below.
 
-#### Resolving Explicit Redundancy
+#### 명시적 중복 해결
 
-Multiple extensions on a concrete type
-can't add conformance to the same protocol,
-even if the extensions' requirements are mutually exclusive.
-This restriction is demonstrated in the example below.
-Two extension declarations attempt to add conditional conformance
-to the `Serializable` protocol,
-one for arrays with `Int` elements,
-and one for arrays with `String` elements.
+동일한 타입에 대해 여러 확장을 추가할 때, 동일한 프로토콜을 준수하도록 할 수 없다. 이는 확장의 요구사항이 서로 배타적일지라도 마찬가지다. 아래 예제는 이러한 제약을 보여준다. 두 개의 확장 선언이 `Serializable` 프로토콜에 대한 조건부 준수를 추가하려고 한다. 하나는 `Int` 타입의 배열을 위한 것이고, 다른 하나는 `String` 타입의 배열을 위한 것이다.
 
 ```swift
 protocol Serializable {
@@ -3228,15 +2075,15 @@ protocol Serializable {
 
 extension Array: Serializable where Element == Int {
     func serialize() -> Any {
-        // implementation
+        // 구현
     }
 }
 extension Array: Serializable where Element == String {
     func serialize() -> Any {
-        // implementation
+        // 구현
     }
 }
-// Error: redundant conformance of 'Array<Element>' to protocol 'Serializable'
+// 에러: 'Array<Element>'의 'Serializable' 프로토콜에 대한 중복 준수
 ```
 
 <!--
@@ -3249,29 +2096,27 @@ extension Array: Serializable where Element == String {
 
      extension Array: Serializable where Element == Int {
          func serialize() -> Any {
-             // implementation
+             // 구현
   >>         return 0
   ->     }
      }
      extension Array: Serializable where Element == String {
          func serialize() -> Any {
-             // implementation
+             // 구현
   >>         return 0
   ->     }
      }
-  // Error: redundant conformance of 'Array<Element>' to protocol 'Serializable'
-  !$ error: conflicting conformance of 'Array<Element>' to protocol 'Serializable'; there cannot be more than one conformance, even with different conditional bounds
+  // 에러: 'Array<Element>'의 'Serializable' 프로토콜에 대한 중복 준수
+  !$ error: 'Array<Element>'의 'Serializable' 프로토콜에 대한 충돌하는 준수; 조건부 경계가 다르더라도 하나 이상의 준수를 추가할 수 없음
   !! extension Array: Serializable where Element == String {
   !! ^
-  !$ note: 'Array<Element>' declares conformance to protocol 'Serializable' here
+  !$ note: 'Array<Element>'이 'Serializable' 프로토콜을 준수함을 선언한 위치
   !! extension Array: Serializable where Element == Int {
   !! ^
   ```
 -->
 
-If you need to add conditional conformance based on multiple concrete types,
-create a new protocol that each type can conform to
-and use that protocol as the requirement when declaring conditional conformance.
+여러 구체적인 타입에 대한 조건부 준수를 추가해야 한다면, 각 타입이 준수할 수 있는 새로운 프로토콜을 생성하고, 조건부 준수를 선언할 때 해당 프로토콜을 요구사항으로 사용하면 된다.
 
 ```swift
 protocol SerializableInArray { }
@@ -3280,7 +2125,7 @@ extension String: SerializableInArray { }
 
 extension Array: Serializable where Element: SerializableInArray {
     func serialize() -> Any {
-        // implementation
+        // 구현
     }
 }
 ```
@@ -3296,29 +2141,21 @@ extension Array: Serializable where Element: SerializableInArray {
 
   -> extension Array: Serializable where Element: SerializableInArray {
          func serialize() -> Any {
-             // implementation
+             // 구현
   >>         return 0
   ->     }
      }
   ```
 -->
 
-#### Resolving Implicit Redundancy
 
-When a concrete type conditionally conforms to a protocol,
-that type implicitly conforms to any parent protocols
-with the same requirements.
+#### 암시적 중복 해결하기
 
-If you need a type to conditionally conform to two protocols
-that inherit from a single parent,
-explicitly declare conformance to the parent protocol.
-This avoids implicitly conforming to the parent protocol twice
-with different requirements.
+구체 타입이 조건부로 프로토콜을 준수할 때, 해당 타입은 동일한 요구 사항을 가진 모든 부모 프로토콜에도 암시적으로 준수한다.
 
-The following example explicitly declares
-the conditional conformance of `Array` to `Loggable`
-to avoid a conflict when declaring its conditional conformance
-to both `TitledLoggable` and the new `MarkedLoggable` protocol.
+하나의 부모 프로토콜을 상속받는 두 프로토콜에 대해 조건부로 준수해야 한다면, 부모 프로토콜에 대한 준수를 명시적으로 선언한다. 이렇게 하면 서로 다른 요구 사항으로 부모 프로토콜에 두 번 암시적으로 준수하는 상황을 피할 수 있다.
+
+다음 예제는 `Array`가 `TitledLoggable`과 새로운 `MarkedLoggable` 프로토콜에 조건부로 준수할 때 발생할 수 있는 충돌을 피하기 위해, `Loggable`에 대한 조건부 준수를 명시적으로 선언한다.
 
 ```swift
 protocol MarkedLoggable: Loggable {
@@ -3366,10 +2203,7 @@ extension Array: MarkedLoggable where Element: MarkedLoggable { }
   ```
 -->
 
-Without the extension
-to explicitly declare conditional conformance to `Loggable`,
-the other `Array` extensions would implicitly create these declarations,
-resulting in an error:
+`Loggable`에 대한 조건부 준수를 명시적으로 선언하지 않으면, 다른 `Array` 확장이 암시적으로 이 선언을 생성하게 되어 에러가 발생한다:
 
 ```swift
 extension Array: Loggable where Element: TitledLoggable { }
@@ -3458,7 +2292,7 @@ extension Array: Loggable where Element: MarkedLoggable { }
   ```
 -->
 
-> Grammar of an extension declaration:
+> 확장 선언 문법:
 >
 > *extension-declaration* → *attributes*_?_ *access-level-modifier*_?_ **`extension`** *type-identifier* *type-inheritance-clause*_?_ *generic-where-clause*_?_ *extension-body* \
 > *extension-body* → **`{`** *extension-members*_?_ **`}`**
@@ -3466,13 +2300,10 @@ extension Array: Loggable where Element: MarkedLoggable { }
 > *extension-members* → *extension-member* *extension-members*_?_ \
 > *extension-member* → *declaration* | *compiler-control-statement*
 
-## Subscript Declaration
 
-A *subscript* declaration allows you to add subscripting support for objects
-of a particular type and are typically used to provide a convenient syntax
-for accessing the elements in a collection, list, or sequence.
-Subscript declarations are declared using the `subscript` keyword
-and have the following form:
+## 서브스크립트 선언
+
+*서브스크립트* 선언은 특정 타입의 객체에 서브스크립트 기능을 추가할 수 있게 해준다. 주로 컬렉션, 리스트, 시퀀스 등의 요소에 접근하기 위한 편리한 문법을 제공하는 데 사용된다. 서브스크립트 선언은 `subscript` 키워드를 사용하며, 다음과 같은 형태를 가진다:
 
 ```swift
 subscript (<#parameters#>) -> <#return type#> {
@@ -3485,60 +2316,26 @@ subscript (<#parameters#>) -> <#return type#> {
 }
 ```
 
-Subscript declarations can appear only in the context of a class, structure,
-enumeration, extension, or protocol declaration.
+서브스크립트 선언은 클래스, 구조체, 열거형, 확장, 프로토콜 선언 내에서만 사용할 수 있다.
 
-The *parameters* specify one or more indexes used to access elements of the corresponding type
-in a subscript expression (for example, the `i` in the expression `object[i]`).
-Although the indexes used to access the elements can be of any type,
-each parameter must include a type annotation to specify the type of each index.
-The *return type* specifies the type of the element being accessed.
+*파라미터*는 서브스크립트 표현식에서 해당 타입의 요소에 접근하기 위해 사용되는 하나 이상의 인덱스를 지정한다(예: `object[i]` 표현식에서 `i`). 요소에 접근하는 데 사용되는 인덱스는 어떤 타입이든 가능하지만, 각 파라미터는 인덱스의 타입을 명시하기 위해 타입 어노테이션을 포함해야 한다. *반환 타입*은 접근되는 요소의 타입을 지정한다.
 
-As with computed properties,
-subscript declarations support reading and writing the value of the accessed elements.
-The getter is used to read the value,
-and the setter is used to write the value.
-The setter clause is optional,
-and when only a getter is needed, you can omit both clauses and simply
-return the requested value directly.
-That said, if you provide a setter clause, you must also provide a getter clause.
+계산 프로퍼티와 마찬가지로, 서브스크립트 선언은 요소의 값을 읽고 쓰는 기능을 지원한다. getter는 값을 읽는 데 사용되며, setter는 값을 쓰는 데 사용된다. setter 절은 선택 사항이며, getter만 필요하다면 두 절을 모두 생략하고 요청된 값을 직접 반환할 수 있다. 하지만 setter 절을 제공한다면 반드시 getter 절도 함께 제공해야 한다.
 
-The *setter name* and enclosing parentheses are optional.
-If you provide a setter name, it's used as the name of the parameter to the setter.
-If you don't provide a setter name, the default parameter name to the setter is `value`.
-The type of the parameter to the setter is the same as the *return type*.
+*setter 이름*과 괄호는 선택 사항이다. setter 이름을 제공하면 setter의 파라미터 이름으로 사용된다. setter 이름을 제공하지 않으면 기본 파라미터 이름은 `value`가 된다. setter의 파라미터 타입은 *반환 타입*과 동일하다.
 
-You can overload a subscript declaration in the type in which it's declared,
-as long as the *parameters* or the *return type* differ from the one you're overloading.
-You can also override a subscript declaration inherited from a superclass. When you do so,
-you must mark the overridden subscript declaration with the `override` declaration modifier.
+서브스크립트 선언은 *파라미터*나 *반환 타입*이 다르다면 동일한 타입 내에서 오버로드할 수 있다. 또한 슈퍼클래스에서 상속받은 서브스크립트 선언을 오버라이드할 수도 있다. 이 경우, 오버라이드된 서브스크립트 선언에 `override` 선언 수정자를 표시해야 한다.
 
-Subscript parameters follow the same rules as function parameters,
-with two exceptions.
-By default, the parameters used in subscripting don't have argument labels,
-unlike functions, methods, and initializers.
-However, you can provide explicit argument labels
-using the same syntax that functions, methods, and initializers use.
-In addition, subscripts can't have in-out parameters.
-A subscript parameter can have a default value,
-using the syntax described in <doc:Declarations#Special-Kinds-of-Parameters>.
+서브스크립트 파라미터는 함수 파라미터와 동일한 규칙을 따르지만, 두 가지 예외가 있다. 기본적으로 서브스크립트에 사용되는 파라미터는 함수, 메서드, 이니셜라이저와 달리 인자 레이블을 가지지 않는다. 하지만 함수, 메서드, 이니셜라이저와 동일한 문법을 사용해 명시적으로 인자 레이블을 제공할 수 있다. 또한 서브스크립트는 in-out 파라미터를 가질 수 없다. 서브스크립트 파라미터는 기본값을 가질 수 있으며, 이는 <doc:Declarations#Special-Kinds-of-Parameters>에서 설명한 문법을 사용한다.
 
-You can also declare subscripts in the context of a protocol declaration,
-as described in <doc:Declarations#Protocol-Subscript-Declaration>.
+서브스크립트는 프로토콜 선언 내에서도 선언할 수 있으며, 이는 <doc:Declarations#Protocol-Subscript-Declaration>에서 자세히 설명한다.
 
-For more information about subscripting and to see examples of subscript declarations,
-see <doc:Subscripts>.
+서브스크립트에 대한 더 자세한 정보와 서브스크립트 선언 예제는 <doc:Subscripts>를 참고한다.
 
-### Type Subscript Declarations
 
-To declare a subscript that's exposed by the type,
-rather than by instances of the type,
-mark the subscript declaration with the `static` declaration modifier.
-Classes can mark type computed properties with the `class` declaration modifier instead
-to allow subclasses to override the superclass’s implementation.
-In a class declaration,
-the `static` keyword has the same effect as marking the declaration
-with both the `class` and `final` declaration modifiers.
+### 타입 서브스크립트 선언
+
+타입 인스턴스가 아닌 타입 자체에 의해 노출되는 서브스크립트를 선언하려면, 서브스크립트 선언에 `static` 선언 수정자를 붙인다. 클래스에서는 타입 계산 프로퍼티에 `class` 선언 수정자를 사용해 서브클래스가 슈퍼클래스의 구현을 재정의할 수 있도록 허용할 수 있다. 클래스 선언에서 `static` 키워드는 `class`와 `final` 선언 수정자를 모두 붙인 것과 동일한 효과를 가진다.
 
 <!--
   - test: `cant-override-static-subscript-in-subclass`
@@ -3555,7 +2352,7 @@ with both the `class` and `final` declaration modifiers.
   ```
 -->
 
-> Grammar of a subscript declaration:
+> 서브스크립트 선언 문법:
 >
 > *subscript-declaration* → *subscript-head* *subscript-result* *generic-where-clause*_?_ *code-block* \
 > *subscript-declaration* → *subscript-head* *subscript-result* *generic-where-clause*_?_ *getter-setter-block* \
@@ -3563,33 +2360,24 @@ with both the `class` and `final` declaration modifiers.
 > *subscript-head* → *attributes*_?_ *declaration-modifiers*_?_ **`subscript`** *generic-parameter-clause*_?_ *parameter-clause* \
 > *subscript-result* → **`->`** *attributes*_?_ *type*
 
-## Macro Declaration
 
-A *macro declaration* introduces a new macro.
-It begins with the `macro` keyword
-and has the following form:
+## 매크로 선언
+
+*매크로 선언*은 새로운 매크로를 도입한다. `macro` 키워드로 시작하며, 다음과 같은 형태를 가진다:
 
 ```swift
 macro <#name#> = <#macro implementation#>
 ```
 
-The *macro implementation* is another macro,
-and indicates the location of the code that performs this macro's expansion.
-The code that performs macro expansion is a separate Swift program,
-that uses the [SwiftSyntax][] module to interact with Swift code.
-Call the `externalMacro(module:type:)` macro from the Swift standard library,
-passing in the name of a type that contains the macro's implementation,
-and the name of the module that contains that type.
+*매크로 구현*은 또 다른 매크로를 의미하며, 이 매크로의 확장을 수행하는 코드의 위치를 나타낸다. 매크로 확장을 수행하는 코드는 별도의 Swift 프로그램으로, [SwiftSyntax][] 모듈을 사용해 Swift 코드와 상호작용한다. Swift 표준 라이브러리에서 제공하는 `externalMacro(module:type:)` 매크로를 호출하고, 매크로 구현을 포함하는 타입의 이름과 해당 타입이 포함된 모듈의 이름을 전달한다.
 
 [SwiftSyntax]: https://github.com/swiftlang/swift-syntax
 
-Macros can be overloaded,
-following the same model used by functions.
-A macro declaration appears only at file scope.
+매크로는 함수와 동일한 모델을 따라 오버로드할 수 있다. 매크로 선언은 파일 범위에서만 나타난다.
 
-For an overview of macros in Swift, see <doc:Macros>.
+Swift에서 매크로에 대한 개요는 <doc:Macros>를 참고한다.
 
-> Grammar of a macro declaration:
+> 매크로 선언 구문:
 >
 > *macro-declaration* → *macro-head* *identifier* *generic-parameter-clause*_?_ *macro-signature* *macro-definition*_?_ *generic-where-clause* \
 > *macro-head* → *attributes*_?_ *declaration-modifiers*_?_ **`macro`** \
@@ -3597,76 +2385,48 @@ For an overview of macros in Swift, see <doc:Macros>.
 > *macro-function-signature-result* → **`->`** *type* \
 > *macro-definition* → **`=`** *expression*
 
-## Operator Declaration
 
-An *operator declaration* introduces a new infix, prefix,
-or postfix operator into your program
-and is declared using the `operator` keyword.
+## 연산자 선언
 
-You can declare operators of three different fixities:
-infix, prefix, and postfix.
-The *fixity* of an operator specifies the relative position of an operator
-to its operands.
+*연산자 선언*은 프로그램에 새로운 중위, 전위, 후위 연산자를 도입한다. `operator` 키워드를 사용해 선언한다.
 
-There are three basic forms of an operator declaration,
-one for each fixity.
-The fixity of the operator is specified by marking the operator declaration with the
-`infix`, `prefix`, or `postfix` declaration modifier before the `operator` keyword.
-In each form, the name of the operator can contain only the operator characters
-defined in <doc:LexicalStructure#Operators>.
+연산자는 세 가지 형태로 선언할 수 있다: 중위, 전위, 후위. 연산자의 *위치성*은 연산자가 피연산자에 대해 상대적으로 어디에 위치하는지를 결정한다.
 
-The following form declares a new infix operator:
+연산자 선언에는 세 가지 기본 형태가 있으며, 각각 위치성에 따라 다르다. 연산자의 위치성은 `operator` 키워드 앞에 `infix`, `prefix`, `postfix` 선언 수식자를 붙여 지정한다. 각 형태에서 연산자의 이름은 <doc:LexicalStructure#Operators>에서 정의된 연산자 문자만 포함할 수 있다.
+
+다음은 새로운 중위 연산자를 선언하는 형태이다:
 
 ```swift
 infix operator <#operator name#>: <#precedence group#>
 ```
 
-An *infix operator* is a binary operator that's written between its two operands,
-such as the familiar addition operator (`+`) in the expression `1 + 2`.
+*중위 연산자*는 두 피연산자 사이에 위치하는 이항 연산자이다. 예를 들어, 표현식 `1 + 2`에서 익숙한 덧셈 연산자(`+`)가 있다.
 
-Infix operators can optionally specify a precedence group.
-If you omit the precedence group for an operator,
-Swift uses the default precedence group, `DefaultPrecedence`,
-which specifies a precedence just higher than `TernaryPrecedence`.
-For more information, see <doc:Declarations#Precedence-Group-Declaration>.
+중위 연산자는 선택적으로 우선순위 그룹을 지정할 수 있다. 연산자에 우선순위 그룹을 생략하면, Swift는 기본 우선순위 그룹인 `DefaultPrecedence`를 사용한다. 이 그룹은 `TernaryPrecedence`보다 약간 높은 우선순위를 지정한다. 자세한 내용은 <doc:Declarations#Precedence-Group-Declaration>을 참고한다.
 
-The following form declares a new prefix operator:
+다음은 새로운 전위 연산자를 선언하는 형태이다:
 
 ```swift
 prefix operator <#operator name#>
 ```
 
-A *prefix operator* is a unary operator that's written immediately before its operand,
-such as the prefix logical NOT operator (`!`) in the expression `!a`.
+*전위 연산자*는 피연산자 바로 앞에 위치하는 단항 연산자이다. 예를 들어, 표현식 `!a`에서 전위 논리 NOT 연산자(`!`)가 있다.
 
-Prefix operators declarations don't specify a precedence level.
-Prefix operators are nonassociative.
+전위 연산자 선언은 우선순위 수준을 지정하지 않는다. 전위 연산자는 결합성이 없다.
 
-The following form declares a new postfix operator:
+다음은 새로운 후위 연산자를 선언하는 형태이다:
 
 ```swift
 postfix operator <#operator name#>
 ```
 
-A *postfix operator* is a unary operator that's written immediately after its operand,
-such as the postfix forced-unwrap operator (`!`) in the expression `a!`.
+*후위 연산자*는 피연산자 바로 뒤에 위치하는 단항 연산자이다. 예를 들어, 표현식 `a!`에서 후위 강제 언래핑 연산자(`!`)가 있다.
 
-As with prefix operators, postfix operator declarations don't specify a precedence level.
-Postfix operators are nonassociative.
+전위 연산자와 마찬가지로, 후위 연산자 선언도 우선순위 수준을 지정하지 않는다. 후위 연산자는 결합성이 없다.
 
-After declaring a new operator,
-you implement it by declaring a static method that has the same name as the operator.
-The static method is a member of
-one of the types whose values the operator takes as an argument ---
-for example, an operator that multiplies a `Double` by an `Int`
-is implemented as a static method on either the `Double` or `Int` structure.
-If you're implementing a prefix or postfix operator,
-you must also mark that method declaration with the corresponding `prefix` or `postfix`
-declaration modifier.
-To see an example of how to create and implement a new operator,
-see <doc:AdvancedOperators#Custom-Operators>.
+새로운 연산자를 선언한 후, 해당 연산자와 동일한 이름을 가진 정적 메서드를 선언해 구현한다. 정적 메서드는 연산자가 인자로 받는 값의 타입 중 하나의 멤버이다. 예를 들어, `Double`과 `Int`를 곱하는 연산자는 `Double` 또는 `Int` 구조체에 정적 메서드로 구현된다. 전위 또는 후위 연산자를 구현할 때는 해당 메서드 선언에 `prefix` 또는 `postfix` 선언 수식자를 붙여야 한다. 새로운 연산자를 만들고 구현하는 예제는 <doc:AdvancedOperators#Custom-Operators>를 참고한다.
 
-> Grammar of an operator declaration:
+> 연산자 선언 문법:
 >
 > *operator-declaration* → *prefix-operator-declaration* | *postfix-operator-declaration* | *infix-operator-declaration*
 >
@@ -3676,81 +2436,33 @@ see <doc:AdvancedOperators#Custom-Operators>.
 >
 > *infix-operator-group* → **`:`** *precedence-group-name*
 
-## Precedence Group Declaration
 
-A *precedence group declaration* introduces
-a new grouping for infix operator precedence into your program.
-The precedence of an operator specifies how tightly the operator
-binds to its operands, in the absence of grouping parentheses.
+## 우선순위 그룹 선언
 
-A precedence group declaration has the following form:
+*우선순위 그룹 선언*은 프로그램에 새로운 중위 연산자 우선순위 그룹을 추가한다. 연산자의 우선순위는 그룹화 괄호가 없을 때 연산자가 피연산자와 얼마나 강하게 결합하는지를 결정한다.
+
+우선순위 그룹 선언은 다음과 같은 형태를 가진다:
 
 ```swift
-precedencegroup <#precedence group name#> {
-    higherThan: <#lower group names#>
-    lowerThan: <#higher group names#>
-    associativity: <#associativity#>
-    assignment: <#assignment#>
+precedencegroup <#우선순위 그룹 이름#> {
+    higherThan: <#낮은 그룹 이름#>
+    lowerThan: <#높은 그룹 이름#>
+    associativity: <#결합성#>
+    assignment: <#할당#>
 }
 ```
 
-The *lower group names* and *higher group names* lists specify
-the new precedence group's relation to existing precedence groups.
-The `lowerThan` precedence group attribute may only be used
-to refer to precedence groups declared outside of the current module.
-When two operators compete with each other for their operands,
-such as in the expression `2 + 3 * 5`,
-the operator with the higher relative precedence
-binds more tightly to its operands.
+*낮은 그룹 이름*과 *높은 그룹 이름* 목록은 새로운 우선순위 그룹이 기존 우선순위 그룹과 어떻게 관련되는지를 지정한다. `lowerThan` 우선순위 그룹 속성은 현재 모듈 외부에서 선언된 우선순위 그룹만 참조할 수 있다. 두 연산자가 피연산자를 놓고 경쟁할 때, 예를 들어 `2 + 3 * 5`와 같은 표현식에서, 상대적으로 더 높은 우선순위를 가진 연산자가 피연산자와 더 강하게 결합한다.
 
-> Note: Precedence groups related to each other
-> using *lower group names* and *higher group names*
-> must fit into a single relational hierarchy,
-> but they *don't* have to form a linear hierarchy.
-> This means it's possible to have precedence groups
-> with undefined relative precedence.
-> Operators from those precedence groups
-> can't be used next to each other without grouping parentheses.
+> 참고: *낮은 그룹 이름*과 *높은 그룹 이름*을 사용해 서로 관련된 우선순위 그룹은 단일 관계 계층에 맞아야 하지만, 반드시 선형 계층을 형성할 필요는 없다. 이는 상대적 우선순위가 정의되지 않은 우선순위 그룹이 존재할 수 있음을 의미한다. 이러한 우선순위 그룹의 연산자는 그룹화 괄호 없이 서로 나란히 사용할 수 없다.
 
-Swift defines numerous precedence groups to go along
-with the operators provided by the Swift standard library.
-For example, the addition (`+`) and subtraction (`-`) operators
-belong to the `AdditionPrecedence` group,
-and the multiplication (`*`) and division (`/`) operators
-belong to the `MultiplicationPrecedence` group.
-For a complete list of precedence groups
-provided by the Swift standard library,
-see [Operator Declarations](https://developer.apple.com/documentation/swift/operator_declarations).
+Swift는 Swift 표준 라이브러리에서 제공하는 연산자와 함께 사용할 수 있는 다양한 우선순위 그룹을 정의한다. 예를 들어, 덧셈(`+`)과 뺄셈(`-`) 연산자는 `AdditionPrecedence` 그룹에 속하고, 곱셈(`*`)과 나눗셈(`/`) 연산자는 `MultiplicationPrecedence` 그룹에 속한다. Swift 표준 라이브러리에서 제공하는 우선순위 그룹의 전체 목록은 [Operator Declarations](https://developer.apple.com/documentation/swift/operator_declarations)를 참고한다.
 
-The *associativity* of an operator specifies how a sequence of operators
-with the same precedence level are grouped together in the absence of grouping parentheses.
-You specify the associativity of an operator by writing
-one of the context-sensitive keywords `left`, `right`, or `none` ---
-if your omit the associativity, the default is `none`.
-Operators that are left-associative group left-to-right.
-For example,
-the subtraction operator (`-`) is left-associative,
-so the expression `4 - 5 - 6` is grouped as `(4 - 5) - 6`
-and evaluates to `-7`.
-Operators that are right-associative group right-to-left,
-and operators that are specified with an associativity of `none`
-don't associate at all.
-Nonassociative operators of the same precedence level
-can't appear adjacent to each to other.
-For example,
-the `<` operator has an associativity of `none`,
-which means `1 < 2 < 3` isn't a valid expression.
+연산자의 *결합성*은 동일한 우선순위 수준을 가진 연산자 시퀀스가 그룹화 괄호 없이 어떻게 함께 그룹화되는지를 지정한다. 연산자의 결합성을 지정하려면 `left`, `right`, `none` 중 하나의 컨텍스트 키워드를 작성한다. 결합성을 생략하면 기본값은 `none`이다. 왼쪽 결합성 연산자는 왼쪽에서 오른쪽으로 그룹화된다. 예를 들어, 뺄셈 연산자(`-`)는 왼쪽 결합성을 가지므로, `4 - 5 - 6` 표현식은 `(4 - 5) - 6`으로 그룹화되고 `-7`로 평가된다. 오른쪽 결합성 연산자는 오른쪽에서 왼쪽으로 그룹화되고, `none`으로 지정된 연산자는 전혀 결합하지 않는다. 동일한 우선순위 수준을 가진 비결합성 연산자는 서로 인접할 수 없다. 예를 들어, `<` 연산자는 `none` 결합성을 가지므로 `1 < 2 < 3`은 유효한 표현식이 아니다.
 
-The *assignment* of a precedence group specifies the precedence of an operator
-when used in an operation that includes optional chaining.
-When set to `true`, an operator in the corresponding precedence group
-uses the same grouping rules during optional chaining
-as the assignment operators from the Swift standard library.
-Otherwise, when set to `false` or omitted,
-operators in the precedence group follows the same optional chaining rules
-as operators that don't perform assignment.
+우선순위 그룹의 *할당*은 옵셔널 체이닝을 포함하는 연산에서 연산자의 우선순위를 지정한다. `true`로 설정하면, 해당 우선순위 그룹의 연산자는 Swift 표준 라이브러리의 할당 연산자와 동일한 그룹화 규칙을 사용한다. `false`로 설정하거나 생략하면, 우선순위 그룹의 연산자는 할당을 수행하지 않는 연산자와 동일한 옵셔널 체이닝 규칙을 따른다.
 
-> Grammar of a precedence group declaration:
+> 우선순위 그룹 선언 문법:
 >
 > *precedence-group-declaration* → **`precedencegroup`** *precedence-group-name* **`{`** *precedence-group-attributes*_?_ **`}`**
 >
@@ -3771,199 +2483,100 @@ as operators that don't perform assignment.
 > *precedence-group-names* → *precedence-group-name* | *precedence-group-name* **`,`** *precedence-group-names* \
 > *precedence-group-name* → *identifier*
 
-## Declaration Modifiers
 
-*Declaration modifiers* are keywords or context-sensitive keywords that modify the behavior
-or meaning of a declaration. You specify a declaration modifier by writing the appropriate
-keyword or context-sensitive keyword between a declaration's attributes (if any) and the keyword
-that introduces the declaration.
+## 선언 수정자
 
-- term `class`:
-  Apply this modifier to a member of a class
-  to indicate that the member is a member of the class itself,
-  rather than a member of instances of the class.
-  Members of a superclass that have this modifier
-  and don't have the `final` modifier
-  can be overridden by subclasses.
+*선언 수정자*는 선언의 동작이나 의미를 변경하는 키워드 또는 문맥에 따라 달라지는 키워드다. 선언 수정자를 사용하려면 선언의 속성(있는 경우)과 선언을 시작하는 키워드 사이에 적절한 키워드나 문맥에 따라 달라지는 키워드를 작성한다.
 
-- term `dynamic`:
-  Apply this modifier to any member of a class that can be represented by Objective-C.
-  When you mark a member declaration with the `dynamic` modifier,
-  access to that member is always dynamically dispatched using the Objective-C runtime.
-  Access to that member is never inlined or devirtualized by the compiler.
+- `class` 용어:
+  클래스의 멤버에 이 수정자를 적용하면, 해당 멤버가 클래스의 인스턴스가 아닌 클래스 자체의 멤버임을 나타낸다. 이 수정자가 적용된 슈퍼클래스의 멤버는 `final` 수정자가 없을 경우 서브클래스에서 재정의할 수 있다.
 
-  Because declarations marked with the `dynamic` modifier are dispatched
-  using the Objective-C runtime, they must be marked with the
-  `objc` attribute.
+- `dynamic` 용어:
+  Objective-C로 표현할 수 있는 클래스의 모든 멤버에 이 수정자를 적용한다. `dynamic` 수정자로 멤버 선언을 표시하면, 해당 멤버에 대한 접근은 항상 Objective-C 런타임을 통해 동적으로 디스패치된다. 컴파일러는 이 멤버를 인라인 처리하거나 가상화하지 않는다.
 
-- term `final`:
-  Apply this modifier to a class or to a property, method,
-  or subscript member of a class. It's applied to a class to indicate that the class
-  can't be subclassed. It's applied to a property, method, or subscript of a class
-  to indicate that a class member can't be overridden in any subclass.
-  For an example of how to use the `final` attribute,
-  see <doc:Inheritance#Preventing-Overrides>.
+  `dynamic` 수정자로 표시된 선언은 Objective-C 런타임을 통해 디스패치되므로, `objc` 속성으로 표시해야 한다.
 
-- term `lazy`:
-  Apply this modifier to a stored variable property of a class or structure
-  to indicate that the property's initial value is calculated and stored at most
-  once, when the property is first accessed.
-  For an example of how to use the `lazy` modifier,
-  see <doc:Properties#Lazy-Stored-Properties>.
+- `final` 용어:
+  클래스나 클래스의 프로퍼티, 메서드, 서브스크립트 멤버에 이 수정자를 적용한다. 클래스에 적용하면 해당 클래스는 서브클래싱할 수 없음을 나타낸다. 클래스의 프로퍼티, 메서드, 서브스크립트에 적용하면 해당 멤버는 어떤 서브클래스에서도 재정의할 수 없음을 나타낸다. `final` 속성을 사용하는 예제는 <doc:Inheritance#Preventing-Overrides>를 참고한다.
 
-- term `optional`:
-  Apply this modifier to a protocol's property, method,
-  or subscript members to indicate that a conforming type isn't required
-  to implement those members.
+- `lazy` 용어:
+  클래스나 구조체의 저장 변수 프로퍼티에 이 수정자를 적용하면, 프로퍼티의 초기값이 처음 접근될 때 최대 한 번 계산되어 저장됨을 나타낸다. `lazy` 수정자를 사용하는 예제는 <doc:Properties#Lazy-Stored-Properties>를 참고한다.
 
-  You can apply the `optional` modifier only to protocols that are marked
-  with the `objc` attribute. As a result, only class types can adopt and conform
-  to a protocol that contains optional member requirements.
-  For more information about how to use the `optional` modifier
-  and for guidance about how to access optional protocol members ---
-  for example, when you're not sure whether a conforming type implements them ---
-  see <doc:Protocols#Optional-Protocol-Requirements>.
+- `optional` 용어:
+  프로토콜의 프로퍼티, 메서드, 서브스크립트 멤버에 이 수정자를 적용하면, 해당 프로토콜을 준수하는 타입이 이 멤버를 구현할 필요가 없음을 나타낸다.
+
+  `optional` 수정자는 `objc` 속성으로 표시된 프로토콜에만 적용할 수 있다. 따라서 클래스 타입만이 선택적 멤버 요구사항을 포함하는 프로토콜을 채택하고 준수할 수 있다. `optional` 수정자를 사용하는 방법과 선택적 프로토콜 멤버에 접근하는 방법에 대한 자세한 내용은 <doc:Protocols#Optional-Protocol-Requirements>를 참고한다.
 
 <!--
-  TODO: Currently, you can't check for an optional initializer,
-  so we're leaving those out of the documentation, even though you can mark
-  an initializer with the @optional attribute. It's still being decided by the
-  compiler team. Update this section if they decide to make everything work
-  properly for optional initializer requirements.
+  TODO: 현재는 선택적 이니셜라이저를 확인할 수 없으므로, 이니셜라이저를 @optional 속성으로 표시할 수 있더라도 문서에서 제외하고 있다. 컴파일러 팀이 결정 중이다. 선택적 이니셜라이저 요구사항이 제대로 작동하도록 결정되면 이 섹션을 업데이트한다.
 -->
 
-- term `required`:
-  Apply this modifier to a designated or convenience initializer
-  of a class to indicate that every subclass must implement that initializer.
-  The subclass's implementation of that initializer
-  must also be marked with the `required` modifier.
+- `required` 용어:
+  클래스의 지정 이니셜라이저나 편의 이니셜라이저에 이 수정자를 적용하면, 모든 서브클래스가 해당 이니셜라이저를 구현해야 함을 나타낸다. 서브클래스의 이니셜라이저 구현도 `required` 수정자로 표시해야 한다.
 
-- term `static`:
-  Apply this modifier to a member of a structure, class, enumeration, or protocol
-  to indicate that the member is a member of the type,
-  rather than a member of instances of that type.
-  In the scope of a class declaration,
-  writing the `static` modifier on a member declaration
-  has the same effect as writing the `class` and `final` modifiers
-  on that member declaration.
-  However, constant type properties of a class are an exception:
-  `static` has its normal, nonclass meaning there
-  because you can't write `class` or `final` on those declarations.
+- `static` 용어:
+  구조체, 클래스, 열거형, 프로토콜의 멤버에 이 수정자를 적용하면, 해당 멤버가 타입의 인스턴스가 아닌 타입 자체의 멤버임을 나타낸다. 클래스 선언 범위에서 멤버 선언에 `static` 수정자를 작성하는 것은 `class`와 `final` 수정자를 작성하는 것과 동일한 효과를 가진다. 그러나 클래스의 상수 타입 프로퍼티는 예외다: 이 선언에는 `class`나 `final`을 작성할 수 없으므로 `static`은 일반적인, 비클래스 의미를 가진다.
 
-- term `unowned`:
-  Apply this modifier to a stored variable, constant, or stored property
-  to indicate that the variable or property has an unowned reference
-  to the object stored as its value.
-  If you try to access the variable or property
-  after the object has been deallocated,
-  a runtime error is raised.
-  Like a weak reference,
-  the type of the property or value must be a class type;
-  unlike a weak reference,
-  the type is non-optional.
-  For an example and more information about the `unowned` modifier,
-  see <doc:AutomaticReferenceCounting#Unowned-References>.
+- `unowned` 용어:
+  저장 변수, 상수, 저장 프로퍼티에 이 수정자를 적용하면, 변수나 프로퍼티가 값으로 저장된 객체에 대한 소유하지 않은 참조를 가짐을 나타낸다. 객체가 해제된 후 변수나 프로퍼티에 접근하려고 하면 런타임 오류가 발생한다. 약한 참조와 마찬가지로 프로퍼티나 값의 타입은 클래스 타입이어야 한다. 약한 참조와 달리 타입은 옵셔널이 아니다. `unowned` 수정자에 대한 예제와 자세한 내용은 <doc:AutomaticReferenceCounting#Unowned-References>를 참고한다.
 
-- term `unowned(safe)`:
-  An explicit spelling of `unowned`.
+- `unowned(safe)` 용어:
+  `unowned`의 명시적 표기법이다.
 
-- term `unowned(unsafe)`:
-  Apply this modifier to a stored variable, constant, or stored property
-  to indicate that the variable or property has an unowned reference
-  to the object stored as its value.
-  If you try to access the variable or property
-  after the object has been deallocated,
-  you'll access the memory at the location where the object used to be,
-  which is a memory-unsafe operation.
-  Like a weak reference,
-  the type of the property or value must be a class type;
-  unlike a weak reference,
-  the type is non-optional.
-  For an example and more information about the `unowned` modifier,
-  see <doc:AutomaticReferenceCounting#Unowned-References>.
+- `unowned(unsafe)` 용어:
+  저장 변수, 상수, 저장 프로퍼티에 이 수정자를 적용하면, 변수나 프로퍼티가 값으로 저장된 객체에 대한 소유하지 않은 참조를 가짐을 나타낸다. 객체가 해제된 후 변수나 프로퍼티에 접근하려고 하면, 객체가 있던 메모리 위치에 접근하게 되는데, 이는 메모리 안전하지 않은 작업이다. 약한 참조와 마찬가지로 프로퍼티나 값의 타입은 클래스 타입이어야 한다. 약한 참조와 달리 타입은 옵셔널이 아니다. `unowned` 수정자에 대한 예제와 자세한 내용은 <doc:AutomaticReferenceCounting#Unowned-References>를 참고한다.
 
-- term `weak`:
-  Apply this modifier to a stored variable or stored variable property
-  to indicate that the variable or property has a weak reference to the
-  object stored as its value. The type of the variable or property
-  must be an optional class type.
-  If you access the variable or property
-  after the object has been deallocated,
-  its value is `nil`.
-  For an example and more information about the `weak` modifier,
-  see <doc:AutomaticReferenceCounting#Weak-References>.
+- `weak` 용어:
+  저장 변수나 저장 변수 프로퍼티에 이 수정자를 적용하면, 변수나 프로퍼티가 값으로 저장된 객체에 대한 약한 참조를 가짐을 나타낸다. 변수나 프로퍼티의 타입은 옵셔널 클래스 타입이어야 한다. 객체가 해제된 후 변수나 프로퍼티에 접근하면 값은 `nil`이 된다. `weak` 수정자에 대한 예제와 자세한 내용은 <doc:AutomaticReferenceCounting#Weak-References>를 참고한다.
 
-### Access Control Levels
 
-Swift provides five levels of access control: open, public, internal, file private, and private.
-You can mark a declaration with one of the access-level modifiers below
-to specify the declaration's access level.
-Access control is discussed in detail in <doc:AccessControl>.
+### 접근 제어 수준
 
-- term `open`:
-  Apply this modifier to a declaration to indicate the declaration can be accessed and subclassed
-  by code in the same module as the declaration.
-  Declarations marked with the `open` access-level modifier can also be accessed and subclassed
-  by code in a module that imports the module that contains that declaration.
+Swift는 다섯 가지 접근 제어 수준을 제공한다: `open`, `public`, `internal`, `fileprivate`, `private`.  
+선언에 접근 제어 수준을 지정하려면 아래 접근 제어 수준 지정자 중 하나를 사용한다.  
+접근 제어에 대한 자세한 내용은 <doc:AccessControl>에서 다룬다.
 
-- term `public`:
-  Apply this modifier to a declaration to indicate the declaration can be accessed and subclassed
-  by code in the same module as the declaration.
-  Declarations marked with the `public` access-level modifier can also be accessed (but not subclassed)
-  by code in a module that imports the module that contains that declaration.
+- `open`:  
+  이 지정자를 사용하면 선언이 속한 모듈 내 코드에서 해당 선언에 접근하고 서브클래싱할 수 있다.  
+  또한 `open`으로 표시된 선언은 해당 모듈을 임포트한 모듈의 코드에서도 접근 및 서브클래싱이 가능하다.
 
-- term `package`:
-  Apply this modifier to a declaration
-  to indicate that the declaration can be accessed
-  only by code in the same package as the declaration.
-  A package is a unit of code distribution
-  that you define in the build system you're using.
-  When the build system compiles code,
-  it specifies the package name
-  by passing the `-package-name` flag to the Swift compiler.
-  Two modules are part of the same package
-  if the build system specifies the same package name when building them.
+- `public`:  
+  이 지정자를 사용하면 선언이 속한 모듈 내 코드에서 해당 선언에 접근하고 서브클래싱할 수 있다.  
+  `public`으로 표시된 선언은 해당 모듈을 임포트한 모듈의 코드에서도 접근할 수 있지만, 서브클래싱은 불가능하다.
 
-- term `internal`:
-  Apply this modifier to a declaration to indicate the declaration can be accessed
-  only by code in the same module as the declaration.
-  By default,
-  most declarations are implicitly marked with the `internal` access-level modifier.
+- `package`:  
+  이 지정자를 사용하면 선언이 속한 패키지 내 코드에서만 해당 선언에 접근할 수 있다.  
+  패키지는 빌드 시스템에서 정의한 코드 배포 단위다.  
+  빌드 시스템이 코드를 컴파일할 때 `-package-name` 플래그를 Swift 컴파일러에 전달해 패키지 이름을 지정한다.  
+  두 모듈이 동일한 패키지 이름으로 빌드되면 같은 패키지로 간주된다.
 
-- term `fileprivate`:
-  Apply this modifier to a declaration to indicate the declaration can be accessed
-  only by code in the same source file as the declaration.
+- `internal`:  
+  이 지정자를 사용하면 선언이 속한 모듈 내 코드에서만 해당 선언에 접근할 수 있다.  
+  기본적으로 대부분의 선언은 암묵적으로 `internal` 접근 제어 수준을 가진다.
 
-- term `private`:
-  Apply this modifier to a declaration to indicate the declaration can be accessed
-  only by code within the declaration's immediate enclosing scope.
+- `fileprivate`:  
+  이 지정자를 사용하면 선언이 속한 소스 파일 내 코드에서만 해당 선언에 접근할 수 있다.
 
-For the purpose of access control,
-extensions behave as follows:
+- `private`:  
+  이 지정자를 사용하면 선언이 포함된 스코프 내 코드에서만 해당 선언에 접근할 수 있다.
 
-- If there are multiple extensions in the same file,
-  and those extensions all extend the same type,
-  then all of those extensions have the same access-control scope.
-  The extensions and the type they extend can be in different files.
+접근 제어 관점에서 확장(extension)은 다음과 같이 동작한다:
 
-- If there are extensions in the same file as the type they extend,
-  the extensions have the same access-control scope as the type they extend.
+- 같은 파일에 여러 확장이 있고, 모두 동일한 타입을 확장한다면,  
+  해당 확장들은 동일한 접근 제어 스코프를 가진다.  
+  확장과 확장 대상 타입은 서로 다른 파일에 있을 수 있다.
 
-- Private members declared in a type's declaration
-  can be accessed from extensions to that type.
-  Private members declared in one extension
-  can be accessed from other extensions
-  and from the extended type's declaration.
+- 확장이 확장 대상 타입과 같은 파일에 있다면,  
+  확장은 타입과 동일한 접근 제어 스코프를 가진다.
 
-Each access-level modifier above optionally accepts a single argument,
-which consists of the `set` keyword enclosed in parentheses ---
-for example, `private(set)`.
-Use this form of an access-level modifier when you want to specify an access level
-for the setter of a variable or subscript that's less than or equal
-to the access level of the variable or subscript itself,
-as discussed in <doc:AccessControl#Getters-and-Setters>.
+- 타입 선언에서 `private`으로 선언된 멤버는 해당 타입의 확장에서 접근할 수 있다.  
+  한 확장에서 `private`으로 선언된 멤버는 다른 확장과 확장 대상 타입 선언에서 접근할 수 있다.
 
-> Grammar of a declaration modifier:
+위 접근 제어 지정자는 선택적으로 괄호로 둘러싼 `set` 키워드를 인자로 받을 수 있다(예: `private(set)`).  
+이 형식은 변수나 서브스크립트의 setter에 변수나 서브스크립트 자체의 접근 제어 수준보다 낮거나 같은 접근 제어 수준을 지정할 때 사용한다.  
+자세한 내용은 <doc:AccessControl#Getters-and-Setters>에서 다룬다.
+
+> 선언 지정자 문법:
 >
 > *declaration-modifier* → **`class`** | **`convenience`** | **`dynamic`** | **`final`** | **`infix`** | **`lazy`** | **`optional`** | **`override`** | **`postfix`** | **`prefix`** | **`required`** | **`static`** | **`unowned`** | **`unowned`** **`(`** **`safe`** **`)`** | **`unowned`** **`(`** **`unsafe`** **`)`** | **`weak`** \
 > *declaration-modifier* → *access-level-modifier* \
@@ -3991,3 +2604,5 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
+
+

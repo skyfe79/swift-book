@@ -1,52 +1,34 @@
-# Generic Parameters and Arguments
+# 제네릭 타입과 인자
 
-Generalize declarations to abstract away concrete types.
+구체적인 타입을 추상화하기 위해 선언을 일반화한다.
 
-This chapter describes parameters and arguments for generic types, functions, and
-initializers. When you declare a generic type, function, subscript, or initializer,
-you specify the type parameters that the generic type, function, or initializer
-can work with. These type parameters act as placeholders that
-are replaced by actual concrete type arguments when an instance of a generic type is
-created or a generic function or initializer is called.
+이 장에서는 제네릭 타입, 함수, 이니셜라이저에 사용되는 파라미터와 인자에 대해 설명한다. 제네릭 타입, 함수, 서브스크립트, 이니셜라이저를 선언할 때, 해당 제네릭이 처리할 수 있는 타입 파라미터를 지정한다. 이 타입 파라미터는 플레이스홀더 역할을 하며, 제네릭 타입의 인스턴스가 생성되거나 제네릭 함수나 이니셜라이저가 호출될 때 실제 구체적인 타입 인자로 대체된다.
 
-For an overview of generics in Swift, see <doc:Generics>.
+Swift에서 제네릭에 대한 개요는 <doc:Generics>를 참고한다.
 
 <!--
-  NOTE: Generic types are sometimes referred to as :newTerm:`parameterized types`
-  because they're declared with one or more type parameters.
+  NOTE: 제네릭 타입은 때때로 :newTerm:`파라미터화된 타입`이라고도 불린다.
+  하나 이상의 타입 파라미터로 선언되기 때문이다.
 -->
 
-## Generic Parameter Clause
 
-A *generic parameter clause* specifies the type parameters of a generic
-type or function, along with any associated constraints and requirements on those parameters.
-A generic parameter clause is enclosed in angle brackets (<>)
-and has the following form:
+## 제네릭 매개변수 절
+
+**제네릭 매개변수 절**은 제네릭 타입이나 함수의 타입 매개변수를 정의한다. 이때 각 매개변수에 대한 제약 조건과 요구 사항을 함께 명시한다. 제네릭 매개변수 절은 꺾쇠 괄호(<>)로 둘러싸여 있으며, 다음과 같은 형태를 가진다.
 
 ```swift
 <<#generic parameter list#>>
 ```
 
-The *generic parameter list* is a comma-separated list of generic parameters,
-each of which has the following form:
+**제네릭 매개변수 목록**은 쉼표로 구분된 제네릭 매개변수들의 목록이다. 각 매개변수는 다음과 같은 형태를 가진다.
 
 ```swift
 <#type parameter#>: <#constraint#>
 ```
 
-A generic parameter consists of a *type parameter* followed by
-an optional *constraint*. A *type parameter* is simply the name
-of a placeholder type
-(for example, `T`, `U`, `V`, `Key`, `Value`, and so on).
-You have access to the type parameters (and any of their associated types) in the rest of the
-type, function, or initializer declaration, including in the signature of the function
-or initializer.
+제네릭 매개변수는 **타입 매개변수**와 선택적인 **제약 조건**으로 구성된다. **타입 매개변수**는 단순히 플레이스홀더 타입의 이름이다. 예를 들어 `T`, `U`, `V`, `Key`, `Value` 등이 있다. 타입 매개변수(그리고 관련된 타입들)는 해당 타입, 함수, 또는 초기화 선언의 나머지 부분에서 사용할 수 있다. 여기에는 함수나 초기화의 시그니처도 포함된다.
 
-The *constraint* specifies that a type parameter inherits
-from a specific class or conforms to a protocol or protocol composition.
-For example, in the generic function below, the generic parameter `T: Comparable`
-indicates that any type argument substituted
-for the type parameter `T` must conform to the `Comparable` protocol.
+**제약 조건**은 타입 매개변수가 특정 클래스를 상속하거나 프로토콜 또는 프로토콜 조합을 준수해야 함을 명시한다. 예를 들어, 아래 제네릭 함수에서 `T: Comparable`은 타입 매개변수 `T`에 대체되는 모든 타입이 `Comparable` 프로토콜을 준수해야 함을 나타낸다.
 
 ```swift
 func simpleMax<T: Comparable>(_ x: T, _ y: T) -> T {
@@ -70,15 +52,11 @@ func simpleMax<T: Comparable>(_ x: T, _ y: T) -> T {
   ```
 -->
 
-Because `Int` and `Double`, for example, both conform to the `Comparable` protocol,
-this function accepts arguments of either type. In contrast with generic types, you don't
-specify a generic argument clause when you use a generic function or initializer.
-The type arguments are instead inferred from the type of the arguments passed
-to the function or initializer.
+예를 들어 `Int`와 `Double`은 모두 `Comparable` 프로토콜을 준수하므로, 이 함수는 두 타입의 인자를 모두 받을 수 있다. 제네릭 타입과 달리, 제네릭 함수나 초기화를 사용할 때는 제네릭 인자 절을 명시하지 않는다. 대신 함수나 초기화에 전달된 인자의 타입으로부터 타입 인자를 추론한다.
 
 ```swift
-simpleMax(17, 42) // T is inferred to be Int
-simpleMax(3.14159, 2.71828) // T is inferred to be Double
+simpleMax(17, 42) // T는 Int로 추론됨
+simpleMax(3.14159, 2.71828) // T는 Double로 추론됨
 ```
 
 <!--
@@ -99,55 +77,24 @@ simpleMax(3.14159, 2.71828) // T is inferred to be Double
   Tracking bug is <rdar://problem/35301593>
 -->
 
-### Generic Where Clauses
 
-You can specify additional requirements on type parameters and their associated types
-by including a generic `where` clause right before the opening curly brace
-of a type or function's body.
-A generic `where` clause consists of the `where` keyword,
-followed by a comma-separated list of one or more *requirements*.
+### 제네릭 Where 절
+
+타입 매개변수와 관련 타입에 추가 요구사항을 지정하려면, 타입이나 함수의 본문을 여는 중괄호 바로 앞에 제네릭 `where` 절을 추가한다. 제네릭 `where` 절은 `where` 키워드 뒤에 쉼표로 구분된 하나 이상의 *요구사항* 목록으로 구성된다.
 
 ```swift
 where <#requirements#>
 ```
 
-The *requirements* in a generic `where` clause specify that a type parameter inherits from
-a class or conforms to a protocol or protocol composition.
-Although the generic `where` clause provides syntactic
-sugar for expressing simple constraints on type parameters
-(for example, `<T: Comparable>` is equivalent to `<T> where T: Comparable` and so on),
-you can use it to provide more complex constraints on type parameters
-and their associated types. For example,
-you can constrain the associated types of type parameters to conform to protocols.
-For example, `<S: Sequence> where S.Iterator.Element: Equatable`
-specifies that `S` conforms to the `Sequence` protocol
-and that the associated type `S.Iterator.Element`
-conforms to the `Equatable` protocol.
-This constraint ensures that each element of the sequence is equatable.
+제네릭 `where` 절의 *요구사항*은 타입 매개변수가 특정 클래스를 상속하거나 프로토콜 또는 프로토콜 조합을 준수하도록 지정한다. 제네릭 `where` 절은 타입 매개변수에 대한 간단한 제약 조건을 표현하는 데 사용할 수 있지만, 더 복잡한 제약 조건을 지정할 수도 있다. 예를 들어, 타입 매개변수의 관련 타입이 특정 프로토콜을 준수하도록 제약을 걸 수 있다. `<S: Sequence> where S.Iterator.Element: Equatable`는 `S`가 `Sequence` 프로토콜을 준수하고, `S.Iterator.Element`가 `Equatable` 프로토콜을 준수하도록 지정한다. 이 제약 조건은 시퀀스의 각 요소가 비교 가능하도록 보장한다.
 
-You can also specify the requirement that two types be identical,
-using the `==` operator. For example,
-`<S1: Sequence, S2: Sequence> where S1.Iterator.Element == S2.Iterator.Element`
-expresses the constraints that `S1` and `S2` conform to the `Sequence` protocol
-and that the elements of both sequences must be of the same type.
+또한 `==` 연산자를 사용해 두 타입이 동일해야 한다는 요구사항을 지정할 수 있다. 예를 들어, `<S1: Sequence, S2: Sequence> where S1.Iterator.Element == S2.Iterator.Element`는 `S1`과 `S2`가 `Sequence` 프로토콜을 준수하고, 두 시퀀스의 요소가 동일한 타입이어야 한다는 제약 조건을 표현한다.
 
-Any type argument substituted for a type parameter must
-meet all the constraints and requirements placed on the type parameter.
+타입 매개변수에 대체되는 모든 타입 인자는 해당 타입 매개변수에 부과된 모든 제약 조건과 요구사항을 충족해야 한다.
 
-A generic `where` clause can appear
-as part of a declaration that includes type parameters,
-or as part of a declaration
-that's nested inside of a declaration that includes type parameters.
-The generic `where` clause for a nested declaration
-can still refer to the type parameters of the enclosing declaration;
-however,
-the requirements from that `where` clause
-apply only to the declaration where it's written.
+제네릭 `where` 절은 타입 매개변수를 포함하는 선언의 일부로 나타날 수 있으며, 타입 매개변수를 포함하는 선언 내부에 중첩된 선언의 일부로도 나타날 수 있다. 중첩된 선언의 제네릭 `where` 절은 여전히 외부 선언의 타입 매개변수를 참조할 수 있다. 그러나 해당 `where` 절의 요구사항은 해당 절이 작성된 선언에만 적용된다.
 
-If the enclosing declaration also has a `where` clause,
-the requirements from both clauses are combined.
-In the example below, `startsWithZero()` is available
-only if `Element` conforms to both `SomeProtocol` and `Numeric`.
+외부 선언에도 `where` 절이 있는 경우, 두 절의 요구사항이 결합된다. 아래 예제에서 `startsWithZero()`는 `Element`가 `SomeProtocol`과 `Numeric`을 모두 준수할 때만 사용할 수 있다.
 
 ```swift
 extension Collection where Element: SomeProtocol {
@@ -194,17 +141,11 @@ extension Collection where Element: SomeProtocol {
   ```
 -->
 
-You can overload a generic function or initializer by providing different
-constraints, requirements, or both on the type parameters.
-When you call an overloaded generic function or initializer,
-the compiler uses these constraints to resolve which overloaded function
-or initializer to invoke.
+제네릭 함수나 이니셜라이저를 오버로드하려면 타입 매개변수에 다른 제약 조건이나 요구사항을 제공할 수 있다. 오버로드된 제네릭 함수나 이니셜라이저를 호출할 때, 컴파일러는 이러한 제약 조건을 사용해 어떤 오버로드된 함수나 이니셜라이저를 호출할지 결정한다.
 
-For more information about generic `where` clauses and to see an example
-of one in a generic function declaration,
-see <doc:Generics#Generic-Where-Clauses>.
+제네릭 `where` 절에 대한 더 자세한 정보와 제네릭 함수 선언에서의 예제는 <doc:Generics#Generic-Where-Clauses>를 참고한다.
 
-> Grammar of a generic parameter clause:
+> 제네릭 매개변수 절 문법:
 >
 > *generic-parameter-clause* → **`<`** *generic-parameter-list* **`>`** \
 > *generic-parameter-list* → *generic-parameter* | *generic-parameter* **`,`** *generic-parameter-list* \
@@ -226,23 +167,16 @@ see <doc:Generics#Generic-Where-Clauses>.
   (a comma-separated list types inside of a comma-separated list of requirements).
 -->
 
-## Generic Argument Clause
 
-A *generic argument clause* specifies the type arguments of a generic
-type.
-A generic argument clause is enclosed in angle brackets (<>)
-and has the following form:
+## 제네릭 인자 절
+
+*제네릭 인자 절*은 제네릭 타입의 타입 인자를 지정한다. 제네릭 인자 절은 꺾쇠 괄호(<>)로 둘러싸여 있으며, 다음과 같은 형태를 가진다:
 
 ```swift
 <<#generic argument list#>>
 ```
 
-The *generic argument list* is a comma-separated list of type arguments.
-A *type argument* is the name of an actual concrete type that replaces
-a corresponding type parameter in the generic parameter clause of a generic type.
-The result is a specialized version of that generic type.
-The example below shows a simplified version of the Swift standard library's
-generic dictionary type.
+*제네릭 인자 목록*은 쉼표로 구분된 타입 인자들의 목록이다. *타입 인자*는 제네릭 타입의 제네릭 매개변수 절에서 해당 타입 매개변수를 대체하는 실제 구체 타입의 이름이다. 이를 통해 해당 제네릭 타입의 특수화된 버전을 만들 수 있다. 아래 예제는 Swift 표준 라이브러리의 제네릭 Dictionary 타입을 간략화한 버전을 보여준다.
 
 ```swift
 struct Dictionary<Key: Hashable, Value>: Collection, ExpressibleByDictionaryLiteral {
@@ -254,19 +188,9 @@ struct Dictionary<Key: Hashable, Value>: Collection, ExpressibleByDictionaryLite
   TODO: How are we supposed to wrap code lines like the above?
 -->
 
-The specialized version of the generic `Dictionary` type, `Dictionary<String, Int>`
-is formed by replacing the generic parameters `Key: Hashable` and `Value`
-with the concrete type arguments `String` and `Int`. Each type argument must satisfy
-all the constraints of the generic parameter it replaces, including any additional
-requirements specified in a generic `where` clause. In the example above,
-the `Key` type parameter is constrained to conform to the `Hashable` protocol
-and therefore `String` must also conform to the `Hashable` protocol.
+제네릭 `Dictionary` 타입의 특수화된 버전인 `Dictionary<String, Int>`는 제네릭 매개변수 `Key: Hashable`과 `Value`를 구체 타입 인자인 `String`과 `Int`로 대체하여 만들어진다. 각 타입 인자는 대체하는 제네릭 매개변수의 모든 제약 조건을 충족해야 하며, 제네릭 `where` 절에서 지정된 추가 요구사항도 만족해야 한다. 위 예제에서 `Key` 타입 매개변수는 `Hashable` 프로토콜을 준수해야 하므로, `String`도 `Hashable` 프로토콜을 준수해야 한다.
 
-You can also replace a type parameter with a type argument that's itself
-a specialized version of a generic type (provided it satisfies the appropriate
-constraints and requirements). For example, you can replace the type parameter
-`Element` in `Array<Element>` with a specialized version of an array, `Array<Int>`,
-to form an array whose elements are themselves arrays of integers.
+타입 매개변수를 제네릭 타입의 특수화된 버전인 타입 인자로 대체할 수도 있다(해당 제약 조건과 요구사항을 충족한다면). 예를 들어, `Array<Element>`의 타입 매개변수 `Element`를 정수 배열의 특수화된 버전인 `Array<Int>`로 대체하여, 요소가 정수 배열인 배열을 만들 수 있다.
 
 ```swift
 let arrayOfArrays: Array<Array<Int>> = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
@@ -280,11 +204,9 @@ let arrayOfArrays: Array<Array<Int>> = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
   ```
 -->
 
-As mentioned in <doc:GenericParametersAndArguments#Generic-Parameter-Clause>,
-you don't use a generic argument clause to specify the type arguments
-of a generic function or initializer.
+<doc:GenericParametersAndArguments#Generic-Parameter-Clause>에서 언급했듯이, 제네릭 함수나 이니셜라이저의 타입 인자를 지정할 때는 제네릭 인자 절을 사용하지 않는다.
 
-> Grammar of a generic argument clause:
+> 제네릭 인자 절 문법:
 >
 > *generic-argument-clause* → **`<`** *generic-argument-list* **`>`** \
 > *generic-argument-list* → *generic-argument* | *generic-argument* **`,`** *generic-argument-list* \
@@ -299,3 +221,5 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
+
+

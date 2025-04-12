@@ -1,46 +1,29 @@
-# Memory Safety
+# 메모리 안전성
 
-Structure your code to avoid conflicts when accessing memory.
+메모리 접근 시 충돌이 발생하지 않도록 코드를 구조화한다.
 
-By default, Swift prevents unsafe behavior from happening in your code.
-For example,
-Swift ensures that variables are initialized before they're used,
-memory isn't accessed after it's been deallocated,
-and array indices are checked for out-of-bounds errors.
+Swift는 기본적으로 코드에서 안전하지 않은 동작이 발생하지 않도록 방지한다. 예를 들어, Swift는 변수가 사용되기 전에 초기화되도록 보장하고, 메모리가 해제된 후에는 접근하지 않도록 하며, 배열 인덱스가 범위를 벗어나지 않도록 검사한다.
 
-Swift also makes sure that multiple accesses
-to the same area of memory don't conflict,
-by requiring code that modifies a location in memory
-to have exclusive access to that memory.
-Because Swift manages memory automatically,
-most of the time you don't have to think about accessing memory at all.
-However,
-it's important to understand where potential conflicts can occur,
-so you can avoid writing code that has conflicting access to memory.
-If your code does contain conflicts,
-you'll get a compile-time or runtime error.
+또한 Swift는 메모리의 동일한 영역에 대한 여러 접근이 충돌하지 않도록 한다. 이를 위해 메모리의 특정 위치를 수정하는 코드가 해당 메모리에 대한 독점적인 접근 권한을 갖도록 요구한다. Swift가 메모리를 자동으로 관리하기 때문에 대부분의 경우 메모리 접근에 대해 생각할 필요가 없다. 그러나 잠재적인 충돌이 발생할 수 있는 상황을 이해하는 것이 중요하다. 이를 통해 메모리에 대한 충돌 접근이 발생하는 코드를 작성하지 않도록 할 수 있다. 코드에 충돌이 포함되어 있다면 컴파일 타임 또는 런타임 오류가 발생한다.
 
 <!--
   TODO: maybe re-introduce this text...
 
-  Memory safety refers to...
-  The term *safety* usually refers to :newTerm:`memory safety`...
-  Unsafe access to memory is available, if you ask for it explicitly...
+  메모리 안전성은...
+  *안전성*이라는 용어는 일반적으로 :newTerm:`메모리 안전성`을 의미한다...
+  명시적으로 요청하면 안전하지 않은 메모리 접근이 가능하다...
 -->
 
-## Understanding Conflicting Access to Memory
 
-Access to memory happens in your code
-when you do things like set the value of a variable
-or pass an argument to a function.
-For example,
-the following code contains both a read access and a write access:
+## 메모리 접근 충돌 이해하기
+
+메모리에 접근하는 일은 변수에 값을 설정하거나 함수에 인자를 전달할 때 발생한다. 예를 들어, 다음 코드는 메모리에 대한 쓰기 접근과 읽기 접근을 모두 포함한다:
 
 ```swift
-// A write access to the memory where one is stored.
+// one이 저장된 메모리에 대한 쓰기 접근
 var one = 1
 
-// A read access from the memory where one is stored.
+// one이 저장된 메모리에서 읽기 접근
 print("We're number \(one)!")
 ```
 
@@ -57,123 +40,47 @@ print("We're number \(one)!")
   ```
 -->
 
-<!--
-  Might be worth a different example,
-  or else I'm going to keep getting "We are Number One" stuck in my head.
--->
+메모리 접근 충돌은 코드의 다른 부분이 동시에 같은 메모리 위치에 접근하려 할 때 발생할 수 있다. 동시에 여러 번 메모리 위치에 접근하면 예측할 수 없거나 일관되지 않은 동작이 발생할 수 있다. Swift에서는 여러 줄에 걸쳐 값을 수정할 수 있기 때문에, 값이 수정되는 도중에 해당 값에 접근하려는 시도가 가능하다.
 
-A conflicting access to memory can occur
-when different parts of your code are trying
-to access the same location in memory at the same time.
-Multiple accesses to a location in memory at the same time
-can produce unpredictable or inconsistent behavior.
-In Swift, there are ways to modify a value
-that span several lines of code,
-making it possible to attempt to access a value
-in the middle of its own modification.
-
-You can see a similar problem
-by thinking about how you update a budget
-that's written on a piece of paper.
-Updating the budget is a two-step process:
-First you add the items' names and prices,
-and then you change the total amount
-to reflect the items currently on the list.
-Before and after the update,
-you can read any information from the budget
-and get a correct answer,
-as shown in the figure below.
+이와 유사한 문제를 예산을 업데이트하는 과정을 통해 생각해볼 수 있다. 예산 업데이트는 두 단계로 이루어진다: 먼저 항목의 이름과 가격을 추가한 다음, 현재 목록에 있는 항목을 반영해 총액을 변경한다. 업데이트 전후에는 예산에서 정보를 읽어 정확한 답을 얻을 수 있다.
 
 ![](memory_shopping)
 
-While you're adding items to the budget,
-it's in a temporary, invalid state
-because the total amount hasn't been updated
-to reflect the newly added items.
-Reading the total amount
-during the process of adding an item
-gives you incorrect information.
+항목을 예산에 추가하는 동안, 새로 추가된 항목을 반영해 총액이 업데이트되지 않았기 때문에 예산은 일시적으로 유효하지 않은 상태가 된다. 항목을 추가하는 과정에서 총액을 읽으면 잘못된 정보를 얻을 수 있다.
 
-This example also demonstrates
-a challenge you may encounter
-when fixing conflicting access to memory:
-There are sometimes multiple ways to fix the conflict
-that produce different answers,
-and it's not always obvious which answer is correct.
-In this example,
-depending on whether you wanted the original total amount
-or the updated total amount,
-either $5 or $320 could be the correct answer.
-Before you can fix the conflicting access,
-you have to determine what it was intended to do.
+이 예제는 메모리 접근 충돌을 해결할 때 마주할 수 있는 어려움도 보여준다. 충돌을 해결하는 방법은 여러 가지가 있을 수 있으며, 어떤 답이 올바른지 항상 명확하지 않다. 이 예제에서는 원래 총액을 원하는지 업데이트된 총액을 원하는지에 따라 $5 또는 $320이 정답이 될 수 있다. 메모리 접근 충돌을 해결하기 전에 의도한 바가 무엇인지 먼저 파악해야 한다.
 
-> Note: If you've written concurrent or multithreaded code,
-> conflicting access to memory might be a familiar problem.
-> However,
-> the conflicting access discussed here can happen
-> on a single thread and
-> *doesn't* involve concurrent or multithreaded code.
+> 참고: 동시성 또는 멀티스레드 코드를 작성해본 적이 있다면 메모리 접근 충돌이 익숙한 문제일 수 있다. 그러나 여기서 논의하는 메모리 접근 충돌은 단일 스레드에서도 발생할 수 있으며, 동시성 또는 멀티스레드 코드와는 관련이 없다.
 >
-> If you have conflicting access to memory
-> from within a single thread,
-> Swift guarantees that you'll get an error
-> at either compile time or runtime.
-> For multithreaded code,
-> use [Thread Sanitizer](https://developer.apple.com/documentation/xcode/diagnosing_memory_thread_and_crash_issues_early)
-> to help detect conflicting access across threads.
+> 단일 스레드 내에서 메모리 접근 충돌이 발생하면 Swift는 컴파일 시간 또는 런타임에 오류를 발생시킨다. 멀티스레드 코드의 경우 [Thread Sanitizer](https://developer.apple.com/documentation/xcode/diagnosing_memory_thread_and_crash_issues_early)를 사용해 스레드 간의 메모리 접근 충돌을 감지할 수 있다.
 
 <!--
-  TODO: The xref above doesn't seem to give enough information.
-  What should I be looking for when I get to the linked page?
+  TODO: 위의 xref는 충분한 정보를 제공하지 않는 것 같다.
+  링크된 페이지에 도달했을 때 무엇을 찾아야 하는가?
 -->
 
-### Characteristics of Memory Access
 
-There are three characteristics of memory access
-to consider in the context of conflicting access:
-whether the access is a read or a write,
-the duration of the access,
-and the location in memory being accessed.
-Specifically,
-a conflict occurs if you have two accesses
-that meet all of the following conditions:
+### 메모리 접근의 특성
 
-- The accesses aren't both reads, and aren't both atomic.
-- They access the same location in memory.
-- Their durations overlap.
+메모리 접근 충돌을 고려할 때는 세 가지 특성을 살펴봐야 한다. 접근이 읽기인지 쓰기인지, 접근 지속 시간이 얼마나 되는지, 그리고 메모리에서 어떤 위치를 접근하는지가 그것이다. 구체적으로, 두 접근이 다음 조건을 모두 만족하면 충돌이 발생한다:
 
-The difference between a read and write access
-is usually obvious:
-a write access changes the location in memory,
-but a read access doesn't.
-The location in memory
-refers to what is being accessed ---
-for example, a variable, constant, or property.
-The duration of a memory access
-is either instantaneous or long-term.
+- 두 접근이 모두 읽기가 아니며, 모두 아토믹(atomic)하지 않다.
+- 같은 메모리 위치를 접근한다.
+- 접근 지속 시간이 겹친다.
 
-An access is *atomic* if
-it's a call to an atomic operation on [`Atomic`] or [`AtomicLazyReference`],
-or it it uses only C atomic operations;
-otherwise it's nonatomic.
-For a list of C atomic functions, see the `stdatomic(3)` man page.
+읽기와 쓰기 접근의 차이는 일반적으로 명확하다. 쓰기 접근은 메모리 위치를 변경하지만, 읽기 접근은 그렇지 않다. 메모리 위치는 접근 대상(예: 변수, 상수, 프로퍼티)을 의미한다. 메모리 접근 지속 시간은 순간적이거나 장기적일 수 있다.
+
+접근이 *아토믹*하다는 것은 [`Atomic`]이나 [`AtomicLazyReference`]의 아토믹 연산을 호출하거나, C 아토믹 연산만을 사용하는 경우를 말한다. 그렇지 않으면 논아토믹(nonatomic)이다. C 아토믹 함수 목록은 `stdatomic(3)` 매뉴얼 페이지를 참고한다.
 
 [`Atomic`]: https://developer.apple.com/documentation/synchronization/atomic
 [`AtomicLazyReference`]: https://developer.apple.com/documentation/synchronization/atomiclazyreference
 
 <!--
-  Using the C atomic functions from Swift
-  requires some shimming that's out of scope for TSPL - for example:
+  Swift에서 C 아토믹 함수를 사용하려면 TSPL 범위를 벗어나는 추가 작업이 필요하다. 예시:
   https://github.com/apple/swift-se-0282-experimental/tree/master/Sources/_AtomicsShims
 -->
 
-An access is *instantaneous*
-if it's not possible for other code to run
-after that access starts but before it ends.
-By their nature, two instantaneous accesses can't happen at the same time.
-Most memory access is instantaneous.
-For example,
-all the read and write accesses in the code listing below are instantaneous:
+접근이 *순간적*이라는 것은 해당 접근이 시작된 후 끝나기 전에 다른 코드가 실행될 가능성이 없는 것을 의미한다. 순간적 접근 두 개는 동시에 발생할 수 없다. 대부분의 메모리 접근은 순간적이다. 예를 들어, 아래 코드의 모든 읽기와 쓰기 접근은 순간적이다:
 
 ```swift
 func oneMore(than number: Int) -> Int {
@@ -201,39 +108,16 @@ print(myNumber)
   ```
 -->
 
-However,
-there are several ways to access memory,
-called *long-term* accesses,
-that span the execution of other code.
-The difference between instantaneous access and long-term access
-is that it’s possible for other code to run
-after a long-term access starts but before it ends,
-which is called *overlap*.
-A long-term access can overlap
-with other long-term accesses and instantaneous accesses.
+하지만 *장기적* 접근이라고 불리는 몇 가지 메모리 접근 방식이 있다. 이는 다른 코드가 실행되는 동안에도 지속된다. 순간적 접근과 장기적 접근의 차이는, 장기적 접근이 시작된 후 끝나기 전에 다른 코드가 실행될 가능성이 있다는 점이다. 이를 *겹침(overlap)*이라고 한다. 장기적 접근은 다른 장기적 접근이나 순간적 접근과 겹칠 수 있다.
 
-Overlapping accesses appear primarily in code that uses
-in-out parameters in functions and methods
-or mutating methods of a structure.
-The specific kinds of Swift code that use long-term accesses
-are discussed in the sections below.
+겹치는 접근은 주로 함수와 메서드의 in-out 매개변수를 사용하거나 구조체의 뮤테이션 메서드를 사용하는 코드에서 나타난다. 장기적 접근을 사용하는 Swift 코드의 구체적인 종류는 아래 섹션에서 다룬다.
 
-## Conflicting Access to In-Out Parameters
 
-A function has long-term write access
-to all of its in-out parameters.
-The write access for an in-out parameter starts
-after all of the non-in-out parameters have been evaluated
-and lasts for the entire duration of that function call.
-If there are multiple in-out parameters,
-the write accesses start in the same order as the parameters appear.
+## 인아웃 매개변수에 대한 접근 충돌
 
-One consequence of this long-term write access
-is that you can't access the original
-variable that was passed as in-out,
-even if scoping rules and access control would otherwise permit it ---
-any access to the original creates a conflict.
-For example:
+함수는 모든 인아웃 매개변수에 대해 장기적인 쓰기 접근 권한을 가진다. 인아웃 매개변수에 대한 쓰기 접근은 모든 비인아웃 매개변수가 평가된 후에 시작되며, 함수 호출이 끝날 때까지 지속된다. 만약 여러 개의 인아웃 매개변수가 있다면, 쓰기 접근은 매개변수가 나타나는 순서대로 시작된다.
+
+이러한 장기적인 쓰기 접근의 한 가지 결과는, 스코핑 규칙과 접근 제어가 허용하더라도 인아웃으로 전달된 원본 변수에 접근할 수 없다는 점이다. 원본 변수에 대한 어떤 접근이든 충돌을 일으킨다. 예를 들어:
 
 ```swift
 var stepSize = 1
@@ -243,86 +127,28 @@ func increment(_ number: inout Int) {
 }
 
 increment(&stepSize)
-// Error: conflicting accesses to stepSize
+// 에러: stepSize에 대한 접근 충돌
 ```
 
-<!--
-  - test: `memory-increment`
-
-  ```swifttest
-  -> var stepSize = 1
-
-  -> func increment(_ number: inout Int) {
-         number += stepSize
-     }
-
-  -> increment(&stepSize)
-  // Error: conflicting accesses to stepSize
-  xx Simultaneous accesses to 0x10e8667d8, but modification requires exclusive access.
-  xx Previous access (a modification) started at  (0x10e86b032).
-  xx Current access (a read) started at:
-  ```
--->
-
-In the code above,
-`stepSize` is a global variable,
-and it's normally accessible from within `increment(_:)`.
-However,
-the read access to `stepSize` overlaps with
-the write access to `number`.
-As shown in the figure below,
-both `number` and `stepSize` refer to the same location in memory.
-The read and write accesses
-refer to the same memory and they overlap,
-producing a conflict.
+위 코드에서 `stepSize`는 전역 변수이며, 일반적으로 `increment(_:)` 함수 내에서 접근할 수 있다. 그러나 `stepSize`에 대한 읽기 접근은 `number`에 대한 쓰기 접근과 겹친다. 아래 그림에서 보듯, `number`와 `stepSize`는 모두 메모리의 같은 위치를 참조한다. 읽기와 쓰기 접근이 같은 메모리를 참조하고 겹치기 때문에 충돌이 발생한다.
 
 ![](memory_increment)
 
-One way to solve this conflict
-is to make an explicit copy of `stepSize`:
+이 충돌을 해결하는 한 가지 방법은 `stepSize`의 명시적인 복사본을 만드는 것이다:
 
 ```swift
-// Make an explicit copy.
+// 명시적인 복사본 생성
 var copyOfStepSize = stepSize
 increment(&copyOfStepSize)
 
-// Update the original.
+// 원본 업데이트
 stepSize = copyOfStepSize
-// stepSize is now 2
+// stepSize는 이제 2
 ```
 
-<!--
-  - test: `memory-increment-copy`
+`increment(_:)`를 호출하기 전에 `stepSize`의 복사본을 만들면, `copyOfStepSize`의 값이 현재 스텝 크기만큼 증가하는 것이 명확해진다. 읽기 접근은 쓰기 접근이 시작되기 전에 끝나므로 충돌이 발생하지 않는다.
 
-  ```swifttest
-  >> var stepSize = 1
-  >> func increment(_ number: inout Int) {
-  >>     number += stepSize
-  >> }
-  // Make an explicit copy.
-  -> var copyOfStepSize = stepSize
-  -> increment(&copyOfStepSize)
-
-  // Update the original.
-  -> stepSize = copyOfStepSize
-  /> stepSize is now \(stepSize)
-  </ stepSize is now 2
-  ```
--->
-
-When you make a copy of `stepSize` before calling `increment(_:)`,
-it's clear that the value of `copyOfStepSize` is incremented
-by the current step size.
-The read access ends before the write access starts,
-so there isn't a conflict.
-
-Another consequence of long-term write access
-to in-out parameters is that
-passing a single variable
-as the argument for multiple in-out parameters
-of the same function
-produces a conflict.
-For example:
+인아웃 매개변수에 대한 장기적인 쓰기 접근의 또 다른 결과는, 같은 함수의 여러 인아웃 매개변수에 단일 변수를 인자로 전달하면 충돌이 발생한다는 점이다. 예를 들어:
 
 ```swift
 func balance(_ x: inout Int, _ y: inout Int) {
@@ -332,80 +158,32 @@ func balance(_ x: inout Int, _ y: inout Int) {
 }
 var playerOneScore = 42
 var playerTwoScore = 30
-balance(&playerOneScore, &playerTwoScore)  // OK
+balance(&playerOneScore, &playerTwoScore)  // 정상
 balance(&playerOneScore, &playerOneScore)
-// Error: conflicting accesses to playerOneScore
+// 에러: playerOneScore에 대한 접근 충돌
 ```
 
-<!--
-  - test: `memory-balance`
+위의 `balance(_:_:)` 함수는 두 매개변수를 수정하여 총 값을 균등하게 나눈다. `playerOneScore`와 `playerTwoScore`를 인자로 전달하면 충돌이 발생하지 않는다. 시간적으로 겹치는 두 쓰기 접근이 있지만, 서로 다른 메모리 위치를 접근하기 때문이다. 반면, `playerOneScore`를 두 매개변수의 값으로 전달하면 같은 메모리 위치에 동시에 두 쓰기 접근을 시도하므로 충돌이 발생한다.
 
-  ```swifttest
-  -> func balance(_ x: inout Int, _ y: inout Int) {
-         let sum = x + y
-         x = sum / 2
-         y = sum - x
-     }
-  -> var playerOneScore = 42
-  -> var playerTwoScore = 30
-  -> balance(&playerOneScore, &playerTwoScore)  // OK
-  -> balance(&playerOneScore, &playerOneScore)
-  // Error: conflicting accesses to playerOneScore
-  !$ error: inout arguments are not allowed to alias each other
-  !! balance(&playerOneScore, &playerOneScore)
-  !!                          ^~~~~~~~~~~~~~~
-  !$ note: previous aliasing argument
-  !! balance(&playerOneScore, &playerOneScore)
-  !!         ^~~~~~~~~~~~~~~
-  !$ error: overlapping accesses to 'playerOneScore', but modification requires exclusive access; consider copying to a local variable
-  !! balance(&playerOneScore, &playerOneScore)
-  !!                          ^~~~~~~~~~~~~~~
-  !$ note: conflicting access is here
-  !! balance(&playerOneScore, &playerOneScore)
-  !!         ^~~~~~~~~~~~~~~
-  ```
--->
+> 참고: 연산자도 함수이기 때문에, 인아웃 매개변수에 대해 장기적인 접근 권한을 가질 수 있다. 예를 들어, `balance(_:_:)`가 `<^>`라는 연산자 함수라면, `playerOneScore <^> playerOneScore`를 작성하면 `balance(&playerOneScore, &playerOneScore)`와 같은 충돌이 발생한다.
 
-The `balance(_:_:)` function above
-modifies its two parameters
-to divide the total value evenly between them.
-Calling it with `playerOneScore` and `playerTwoScore` as arguments
-doesn't produce a conflict ---
-there are two write accesses that overlap in time,
-but they access different locations in memory.
-In contrast,
-passing `playerOneScore` as the value for both parameters
-produces a conflict
-because it tries to perform two write accesses
-to the same location in memory at the same time.
 
-> Note: Because operators are functions,
-> they can also have long-term accesses to their in-out parameters.
-> For example, if `balance(_:_:)` was an operator function named `<^>`,
-> writing `playerOneScore <^> playerOneScore`
-> would result in the same conflict
-> as `balance(&playerOneScore, &playerOneScore)`.
-
-## Conflicting Access to self in Methods
+## 메서드 내에서 self에 대한 접근 충돌
 
 <!--
-  This (probably?) applies to all value types,
-  but structures are the only place you can observe it.
-  Enumerations can have mutating methods
-  but you can't mutate their associated values in place,
-  and tuples can't have methods.
+  이 내용은 (아마도?) 모든 값 타입에 적용되지만,
+  구조체에서만 이를 관찰할 수 있다.
+  열거형은 뮤테이션 메서드를 가질 수 있지만,
+  연관된 값을 직접 변경할 수는 없다.
+  튜플은 메서드를 가질 수 없다.
 -->
 
 <!--
-  Methods behave like self is passed to the method as inout
-  because, under the hood, that's exactly what happens.
+  메서드는 self가 inout 매개변수로 전달된 것처럼 동작한다.
+  실제로 그렇게 동작하기 때문이다.
 -->
 
-A mutating method on a structure has write access to `self`
-for the duration of the method call.
-For example, consider a game where each player
-has a health amount, which decreases when taking damage,
-and an energy amount, which decreases when using special abilities.
+구조체의 뮤테이션 메서드는 메서드 호출 기간 동안 `self`에 대한 쓰기 접근 권한을 가진다. 예를 들어, 각 플레이어가 체력과 에너지를 가지고 있는 게임을 생각해 보자. 플레이어는 데미지를 입으면 체력이 감소하고, 특수 능력을 사용하면 에너지가 감소한다.
 
 ```swift
 struct Player {
@@ -442,15 +220,7 @@ struct Player {
   ```
 -->
 
-In the `restoreHealth()` method above,
-a write access to `self` starts at the beginning of the method
-and lasts until the method returns.
-In this case, there's no other code
-inside `restoreHealth()`
-that could have an overlapping access to the properties of a `Player` instance.
-The `shareHealth(with:)` method below
-takes another `Player` instance as an in-out parameter,
-creating the possibility of overlapping accesses.
+위의 `restoreHealth()` 메서드에서, `self`에 대한 쓰기 접근은 메서드가 시작될 때 시작되어 메서드가 반환될 때까지 지속된다. 이 경우, `restoreHealth()` 내부에는 `Player` 인스턴스의 프로퍼티에 중복 접근할 가능성이 있는 다른 코드가 없다. 아래의 `shareHealth(with:)` 메서드는 다른 `Player` 인스턴스를 in-out 매개변수로 받아 중복 접근이 발생할 가능성을 만든다.
 
 ```swift
 extension Player {
@@ -480,25 +250,11 @@ oscar.shareHealth(with: &maria)  // OK
   ```
 -->
 
-In the example above,
-calling the `shareHealth(with:)` method
-for Oscar's player to share health with Maria's player
-doesn't cause a conflict.
-There's a write access to `oscar` during the method call
-because `oscar` is the value of `self` in a mutating method,
-and there's a write access to `maria`
-for the same duration
-because `maria` was passed as an in-out parameter.
-As shown in the figure below,
-they access different locations in memory.
-Even though the two write accesses overlap in time,
-they don't conflict.
+위 예제에서, Oscar 플레이어가 Maria 플레이어와 체력을 공유하기 위해 `shareHealth(with:)` 메서드를 호출할 때 충돌이 발생하지 않는다. 메서드 호출 동안 `oscar`는 뮤테이션 메서드의 `self` 값이므로 `oscar`에 대한 쓰기 접근이 발생하고, `maria`는 in-out 매개변수로 전달되었으므로 같은 기간 동안 `maria`에 대한 쓰기 접근이 발생한다. 아래 그림에서 보듯이, 이들은 서로 다른 메모리 위치에 접근한다. 두 쓰기 접근이 시간적으로 겹치더라도 충돌하지 않는다.
 
 ![](memory_share_health_maria)
 
-However,
-if you pass `oscar` as the argument to `shareHealth(with:)`,
-there's a conflict:
+그러나 `oscar`를 `shareHealth(with:)`의 인자로 전달하면 충돌이 발생한다:
 
 ```swift
 oscar.shareHealth(with: &oscar)
@@ -526,111 +282,31 @@ oscar.shareHealth(with: &oscar)
   ```
 -->
 
-The mutating method needs write access to `self`
-for the duration of the method,
-and the in-out parameter needs write access to `teammate`
-for the same duration.
-Within the method,
-both `self` and `teammate` refer to
-the same location in memory ---
-as shown in the figure below.
-The two write accesses
-refer to the same memory and they overlap,
-producing a conflict.
+뮤테이션 메서드는 메서드 호출 기간 동안 `self`에 대한 쓰기 접근이 필요하고, in-out 매개변수는 같은 기간 동안 `teammate`에 대한 쓰기 접근이 필요하다. 메서드 내에서 `self`와 `teammate`는 동일한 메모리 위치를 참조한다. 아래 그림에서 볼 수 있듯이, 두 쓰기 접근이 동일한 메모리를 참조하고 시간적으로 겹치기 때문에 충돌이 발생한다.
 
 ![](memory_share_health_oscar)
 
-## Conflicting Access to Properties
 
-Types like structures, tuples, and enumerations
-are made up of individual constituent values,
-such as the properties of a structure or the elements of a tuple.
-Because these are value types, mutating any piece of the value
-mutates the whole value,
-meaning read or write access to one of the properties
-requires read or write access to the whole value.
-For example,
-overlapping write accesses to the elements of a tuple
-produces a conflict:
+## 프로퍼티 접근 충돌
+
+구조체, 튜플, 열거형과 같은 타입은 각각의 구성 값으로 이루어져 있다. 예를 들어 구조체의 프로퍼티나 튜플의 요소가 이에 해당한다. 이러한 타입은 값 타입이기 때문에 값의 일부를 변경하면 전체 값이 변경된다. 즉, 프로퍼티 중 하나에 읽기 또는 쓰기 접근을 하려면 전체 값에 대한 접근이 필요하다. 예를 들어, 튜플의 요소에 중복된 쓰기 접근이 발생하면 충돌이 발생한다:
 
 ```swift
 var playerInformation = (health: 10, energy: 20)
 balance(&playerInformation.health, &playerInformation.energy)
-// Error: conflicting access to properties of playerInformation
+// Error: playerInformation의 프로퍼티에 대한 접근 충돌
 ```
 
-<!--
-  - test: `memory-tuple`
+위 예제에서 `balance(_:_:)` 함수를 튜플의 요소에 호출하면 충돌이 발생한다. 이는 `playerInformation`에 중복된 쓰기 접근이 발생하기 때문이다. `playerInformation.health`와 `playerInformation.energy` 모두 in-out 매개변수로 전달되며, 이는 `balance(_:_:)` 함수가 호출되는 동안 두 값에 대한 쓰기 접근이 필요함을 의미한다. 두 경우 모두 튜플 요소에 쓰기 접근하려면 전체 튜플에 대한 쓰기 접근이 필요하다. 따라서 `playerInformation`에 두 번의 쓰기 접근이 중복되면서 충돌이 발생한다.
 
-  ```swifttest
-  >> func balance(_ x: inout Int, _ y: inout Int) {
-  >>     let sum = x + y
-  >>     x = sum / 2
-  >>     y = sum - x
-  >> }
-  -> var playerInformation = (health: 10, energy: 20)
-  -> balance(&playerInformation.health, &playerInformation.energy)
-  // Error: conflicting access to properties of playerInformation
-  xx Simultaneous accesses to 0x10794d848, but modification requires exclusive access.
-  xx Previous access (a modification) started at  (0x107952037).
-  xx Current access (a modification) started at:
-  ```
--->
-
-In the example above,
-calling `balance(_:_:)` on the elements of a tuple
-produces a conflict
-because there are overlapping write accesses to `playerInformation`.
-Both `playerInformation.health` and `playerInformation.energy`
-are passed as in-out parameters,
-which means `balance(_:_:)` needs write access to them
-for the duration of the function call.
-In both cases, a write access to the tuple element
-requires a write access to the entire tuple.
-This means there are two write accesses to `playerInformation`
-with durations that overlap,
-causing a conflict.
-
-The code below shows that the same error appears
-for overlapping write accesses
-to the properties of a structure
-that's stored in a global variable.
+아래 코드는 전역 변수로 저장된 구조체의 프로퍼티에 중복된 쓰기 접근이 발생할 때 동일한 오류가 나타나는 것을 보여준다:
 
 ```swift
 var holly = Player(name: "Holly", health: 10, energy: 10)
 balance(&holly.health, &holly.energy)  // Error
 ```
 
-<!--
-  - test: `memory-share-health-global`
-
-  ```swifttest
-  >> struct Player {
-  >>     var name: String
-  >>     var health: Int
-  >>     var energy: Int
-  >> }
-  >> func balance(_ x: inout Int, _ y: inout Int) {
-  >>     let sum = x + y
-  >>     x = sum / 2
-  >>     y = sum - x
-  >> }
-  -> var holly = Player(name: "Holly", health: 10, energy: 10)
-  -> balance(&holly.health, &holly.energy)  // Error
-  xx Simultaneous accesses to 0x10794d848, but modification requires exclusive access.
-  xx Previous access (a modification) started at  (0x107952037).
-  xx Current access (a modification) started at:
-  ```
--->
-
-In practice,
-most access to the properties of a structure
-can overlap safely.
-For example,
-if the variable `holly` in the example above
-is changed to a local variable instead of a global variable,
-the compiler can prove that overlapping access
-to stored properties of the structure is safe:
+실제로는 구조체의 프로퍼티에 대한 대부분의 접근이 안전하게 중복될 수 있다. 예를 들어, 위 예제에서 변수 `holly`를 전역 변수가 아닌 지역 변수로 변경하면 컴파일러가 구조체의 저장 프로퍼티에 대한 중복 접근이 안전하다고 판단할 수 있다:
 
 ```swift
 func someFunction() {
@@ -639,120 +315,14 @@ func someFunction() {
 }
 ```
 
-<!--
-  - test: `memory-share-health-local`
+위 예제에서 Oscar의 health와 energy는 `balance(_:_:)` 함수의 두 in-out 매개변수로 전달된다. 컴파일러는 두 저장 프로퍼티가 서로 상호작용하지 않으므로 메모리 안전성이 보장된다고 판단할 수 있다.
 
-  ```swifttest
-  >> struct Player {
-  >>     var name: String
-  >>     var health: Int
-  >>     var energy: Int
-  >> }
-  >> func balance(_ x: inout Int, _ y: inout Int) {
-  >>     let sum = x + y
-  >>     x = sum / 2
-  >>     y = sum - x
-  >> }
-  -> func someFunction() {
-         var oscar = Player(name: "Oscar", health: 10, energy: 10)
-         balance(&oscar.health, &oscar.energy)  // OK
-     }
-  >> someFunction()
-  ```
--->
+구조체의 프로퍼티에 대한 중복 접근을 금지하는 제약은 항상 메모리 안전성을 보장하기 위해 필요한 것은 아니다. 메모리 안전성은 보장되어야 하지만, 독점적 접근은 메모리 안전성보다 더 엄격한 요구 사항이다. 따라서 일부 코드는 메모리 안전성을 보장하더라도 메모리에 대한 독점적 접근을 위반할 수 있다. Swift는 컴파일러가 메모리에 대한 비독점적 접근이 여전히 안전하다고 증명할 수 있다면 이러한 메모리 안전 코드를 허용한다. 특히, 다음 조건이 충족되면 구조체의 프로퍼티에 대한 중복 접근이 안전하다고 판단할 수 있다:
 
-In the example above,
-Oscar's health and energy are passed
-as the two in-out parameters to `balance(_:_:)`.
-The compiler can prove that memory safety is preserved
-because the two stored properties don't interact in any way.
+- 인스턴스의 저장 프로퍼티에만 접근하고, 계산 프로퍼티나 클래스 프로퍼티에는 접근하지 않는다.
+- 구조체가 지역 변수의 값이며, 전역 변수가 아니다.
+- 구조체가 클로저에 의해 캡처되지 않거나, nonescaping 클로저에만 캡처된다.
 
-The restriction against
-overlapping access to properties of a structure
-isn't always necessary to preserve memory safety.
-Memory safety is the desired guarantee,
-but exclusive access is a stricter requirement than memory safety ---
-which means some code preserves memory safety,
-even though it violates exclusive access to memory.
-Swift allows this memory-safe code if the compiler can prove
-that the nonexclusive access to memory is still safe.
-Specifically, it can prove
-that overlapping access to properties of a structure is safe
-if the following conditions apply:
+컴파일러가 접근이 안전하다고 증명할 수 없다면 해당 접근을 허용하지 않는다.
 
-- You're accessing only stored properties of an instance,
-  not computed properties or class properties.
-- The structure is the value of a local variable,
-  not a global variable.
-- The structure is either not captured by any closures,
-  or it's captured only by nonescaping closures.
 
-If the compiler can't prove the access is safe,
-it doesn't allow the access.
-
-<!--
-  Because there's no syntax
-  to mutate an enum's associated value in place,
-  we can't show that overlapping mutations
-  to two different associated values on the same enum
-  would violate exclusivity.
-  Otherwise, we'd want an example of that
-  in this section too --
-  it's the moral equivalent of property access.
--->
-
-<!--
-  .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. ..
--->
-
-<!--
-  In Swift 4, the only way to create a long-term read
-  is to use implicit pointer conversion
-  when passing a value as a nonmutating unsafe pointer parameter,
-  as in the example below.
-  There's discussion in <rdar://problem/33115142>
-  about changing the semantics of nonmutating method calls
-  to be long-term reads,
-  but it's not clear if/when that change will land.
-
-  ::
-
-      var global = 4
-
-      func foo(_ x: UnsafePointer<Int>){
-          global = 7
-      }
-
-      foo(&global)
-      print(global)
-
-      // Simultaneous accesses to 0x106761618, but modification requires exclusive access.
-      // Previous access (a read) started at temp2`main + 87 (0x10675e417).
-      // Current access (a modification) started at:
-      // 0    libswiftCore.dylib                 0x0000000106ac7b90 swift_beginAccess + 605
-      // 1    temp2                              0x000000010675e500 foo(_:) + 39
-      // 2    temp2                              0x000000010675e3c0 main + 102
-      // 3    libdyld.dylib                      0x00007fff69c75144 start + 1
-      // Fatal access conflict detected.
--->
-
-<!--
-  TEXT FOR THE FUTURE
-
-  Versions of Swift before Swift 5 ensure memory safety
-  by aggressively making a copy of the shared mutable state
-  when a conflicting access is possible.
-  The copy is no longer shared, preventing the possibility of conflicts.
-  However, the copying approach has a negative impact
-  on performance and memory usage.
--->
-
-<!--
-This source file is part of the Swift.org open source project
-
-Copyright (c) 2014 - 2022 Apple Inc. and the Swift project authors
-Licensed under Apache License v2.0 with Runtime Library Exception
-
-See https://swift.org/LICENSE.txt for license information
-See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
--->

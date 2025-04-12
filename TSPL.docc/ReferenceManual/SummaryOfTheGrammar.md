@@ -1,6 +1,6 @@
-# Summary of the Grammar
+# 문법 요약
 
-Read the whole formal grammar.
+전체 공식 문법을 살펴본다.
 
 <!--
 
@@ -596,10 +596,10 @@ make the same change here also.
 > Grammar of a switch statement:
 >
 > *switch-statement* → **`switch`** *expression* **`{`** *switch-cases*_?_ **`}`** \
-> *switch-cases* → *switch-case* *switch-cases*_?_ \
-> *switch-case* → *case-label* *statements* \
-> *switch-case* → *default-label* *statements* \
-> *switch-case* → *conditional-switch-case*
+> *switch-cases* → *switch-expression-case* *switch-expression-cases*_?_ \
+> *switch-expression-case* → *case-label* *statements* \
+> *switch-expression-case* → *default-label* *statements* \
+> *switch-expression-case* → *conditional-switch-case*
 >
 > *case-label* → *attributes*_?_ **`case`** *case-item-list* **`:`** \
 > *case-item-list* → *pattern* *where-clause*_?_ | *pattern* *where-clause*_?_ **`,`** *case-item-list* \
@@ -981,127 +981,4 @@ make the same change here also.
 >
 > *precedence-group-assignment* → **`assignment`** **`:`** *boolean-literal*
 >
-> *precedence-group-associativity* → **`associativity`** **`:`** **`left`** \
-> *precedence-group-associativity* → **`associativity`** **`:`** **`right`** \
-> *precedence-group-associativity* → **`associativity`** **`:`** **`none`**
->
-> *precedence-group-names* → *precedence-group-name* | *precedence-group-name* **`,`** *precedence-group-names* \
-> *precedence-group-name* → *identifier*
-
-> Grammar of a declaration modifier:
->
-> *declaration-modifier* → **`class`** | **`convenience`** | **`dynamic`** | **`final`** | **`infix`** | **`lazy`** | **`optional`** | **`override`** | **`postfix`** | **`prefix`** | **`required`** | **`static`** | **`unowned`** | **`unowned`** **`(`** **`safe`** **`)`** | **`unowned`** **`(`** **`unsafe`** **`)`** | **`weak`** \
-> *declaration-modifier* → *access-level-modifier* \
-> *declaration-modifier* → *mutation-modifier* \
-> *declaration-modifier* → *actor-isolation-modifier* \
-> *declaration-modifiers* → *declaration-modifier* *declaration-modifiers*_?_
->
-> *access-level-modifier* → **`private`** | **`private`** **`(`** **`set`** **`)`** \
-> *access-level-modifier* → **`fileprivate`** | **`fileprivate`** **`(`** **`set`** **`)`** \
-> *access-level-modifier* → **`internal`** | **`internal`** **`(`** **`set`** **`)`** \
-> *access-level-modifier* → **`package`** | **`package`** **`(`** **`set`** **`)`** \
-> *access-level-modifier* → **`public`** | **`public`** **`(`** **`set`** **`)`** \
-> *access-level-modifier* → **`open`** | **`open`** **`(`** **`set`** **`)`**
->
-> *mutation-modifier* → **`mutating`** | **`nonmutating`**
->
-> *actor-isolation-modifier* → **`nonisolated`**
-
-## Attributes
-
-> Grammar of an attribute:
->
-> *attribute* → **`@`** *attribute-name* *attribute-argument-clause*_?_ \
-> *attribute-name* → *identifier* \
-> *attribute-argument-clause* → **`(`** *balanced-tokens*_?_ **`)`** \
-> *attributes* → *attribute* *attributes*_?_
->
-> *balanced-tokens* → *balanced-token* *balanced-tokens*_?_ \
-> *balanced-token* → **`(`** *balanced-tokens*_?_ **`)`** \
-> *balanced-token* → **`[`** *balanced-tokens*_?_ **`]`** \
-> *balanced-token* → **`{`** *balanced-tokens*_?_ **`}`** \
-> *balanced-token* → Any identifier, keyword, literal, or operator \
-> *balanced-token* → Any punctuation except  **`(`**,  **`)`**,  **`[`**,  **`]`**,  **`{`**, or  **`}`**
-
-## Patterns
-
-> Grammar of a pattern:
->
-> *pattern* → *wildcard-pattern* *type-annotation*_?_ \
-> *pattern* → *identifier-pattern* *type-annotation*_?_ \
-> *pattern* → *value-binding-pattern* \
-> *pattern* → *tuple-pattern* *type-annotation*_?_ \
-> *pattern* → *enum-case-pattern* \
-> *pattern* → *optional-pattern* \
-> *pattern* → *type-casting-pattern* \
-> *pattern* → *expression-pattern*
-
-> Grammar of a wildcard pattern:
->
-> *wildcard-pattern* → **`_`**
-
-> Grammar of an identifier pattern:
->
-> *identifier-pattern* → *identifier*
-
-> Grammar of a value-binding pattern:
->
-> *value-binding-pattern* → **`var`** *pattern* | **`let`** *pattern*
-
-> Grammar of a tuple pattern:
->
-> *tuple-pattern* → **`(`** *tuple-pattern-element-list*_?_ **`)`** \
-> *tuple-pattern-element-list* → *tuple-pattern-element* | *tuple-pattern-element* **`,`** *tuple-pattern-element-list* \
-> *tuple-pattern-element* → *pattern* | *identifier* **`:`** *pattern*
-
-> Grammar of an enumeration case pattern:
->
-> *enum-case-pattern* → *type-identifier*_?_ **`.`** *enum-case-name* *tuple-pattern*_?_
-
-> Grammar of an optional pattern:
->
-> *optional-pattern* → *identifier-pattern* **`?`**
-
-> Grammar of a type casting pattern:
->
-> *type-casting-pattern* → *is-pattern* | *as-pattern* \
-> *is-pattern* → **`is`** *type* \
-> *as-pattern* → *pattern* **`as`** *type*
-
-> Grammar of an expression pattern:
->
-> *expression-pattern* → *expression*
-
-## Generic Parameters and Arguments
-
-> Grammar of a generic parameter clause:
->
-> *generic-parameter-clause* → **`<`** *generic-parameter-list* **`>`** \
-> *generic-parameter-list* → *generic-parameter* | *generic-parameter* **`,`** *generic-parameter-list* \
-> *generic-parameter* → *type-name* \
-> *generic-parameter* → *type-name* **`:`** *type-identifier* \
-> *generic-parameter* → *type-name* **`:`** *protocol-composition-type*
->
-> *generic-where-clause* → **`where`** *requirement-list* \
-> *requirement-list* → *requirement* | *requirement* **`,`** *requirement-list* \
-> *requirement* → *conformance-requirement* | *same-type-requirement*
->
-> *conformance-requirement* → *type-identifier* **`:`** *type-identifier* \
-> *conformance-requirement* → *type-identifier* **`:`** *protocol-composition-type* \
-> *same-type-requirement* → *type-identifier* **`==`** *type*
-
-> Grammar of a generic argument clause:
->
-> *generic-argument-clause* → **`<`** *generic-argument-list* **`>`** \
-> *generic-argument-list* → *generic-argument* | *generic-argument* **`,`** *generic-argument-list* \
-> *generic-argument* → *type*
-
-<!--
-This source file is part of the Swift.org open source project
-
-Copyright (c) 2014 - 2022 Apple Inc. and the Swift project authors
-Licensed under Apache License v2.0 with Runtime Library Exception
-
-See https://swift.org/LICENSE.txt for license information
-See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
--->
+> *precedence-group-associativity* → **`associativity`

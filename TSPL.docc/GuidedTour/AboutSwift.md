@@ -1,56 +1,34 @@
-# About Swift
+# Swift 언어 개요
 
-Understand the high-level goals of the language.
+Swift 언어의 주요 목표를 이해해 보자.
 
-Swift is a fantastic way to write software
-for phones, tablets, desktops, servers,
-or anything else that runs code.
-It's a safe and fast programming language
-that combines the best in modern language thinking
-with wisdom from a diverse open source community.
+Swift는 휴대폰, 태블릿, 데스크톱, 서버 등 코드를 실행할 수 있는 모든 플랫폼에서 소프트웨어를 개발하는 데 탁월한 선택이다. 이 언어는 안전성과 속도를 모두 갖추고 있으며, 모던 프로그래밍 언어의 최신 사고방식과 다양한 오픈 소스 커뮤니티의 지혜를 결합했다.
 
-Swift is friendly to new programmers,
-without sacrificing the power and flexibility
-that experienced programmers need.
-It's an industrial-quality programming language
-that's as expressive and enjoyable as a scripting language.
-The compiler is optimized for performance
-and the language is optimized for development,
-without compromising on either.
+Swift는 초보자에게도 친숙하면서도, 경험 많은 개발자가 필요로 하는 강력한 기능과 유연성을 제공한다. 이 언어는 산업 수준의 프로그래밍 언어로서, 스크립트 언어처럼 표현력이 뛰어나고 사용하기 즐겁다. 컴파일러는 성능을 최적화했고, 언어 자체는 개발 생산성을 높이도록 설계되었다. 두 가지 모두를 훼손하지 않으면서 균형을 유지한다.
 
-Swift defines away large classes of common programming errors
-by adopting modern programming patterns:
+Swift는 모던 프로그래밍 패턴을 도입해 일반적인 프로그래밍 오류를 크게 줄인다:
 
-- Variables are always initialized before use.
-- Array indices are checked for out-of-bounds errors.
-- Integers are checked for overflow.
-- Optionals ensure that `nil` values are handled explicitly.
-- Memory is managed automatically.
-- Error handling allows controlled recovery from unexpected failures.
+- 변수는 사용 전에 항상 초기화된다.
+- 배열 인덱스는 범위를 벗어나는지 검사한다.
+- 정수 오버플로를 자동으로 확인한다.
+- 옵셔널을 통해 `nil` 값을 명시적으로 처리한다.
+- 메모리는 자동으로 관리된다.
+- 에러 처리 기능으로 예기치 않은 실패 상황에서도 제어된 복구가 가능하다.
 
-Swift code is compiled and optimized to get the most out of modern hardware.
-The syntax and standard library have been designed
-based on the guiding principle that
-the obvious way to write your code should also perform the best.
-Its combination of safety and speed make Swift an excellent choice for
-everything from "Hello, world!" to an entire operating system.
+Swift 코드는 모던 하드웨어의 성능을 최대한 활용하도록 컴파일되고 최적화된다. 문법과 표준 라이브러리는 직관적인 코드 작성이 최고의 성능을 내도록 설계되었다. 이러한 안전성과 속도의 조합 덕분에 Swift는 "Hello, world!" 같은 간단한 프로그램부터 운영체제 전체를 개발하는 데까지 적합한 언어이다.
 
-Swift combines a modern, lightweight syntax
-that's familiar for developers coming from other popular languages
-with powerful features like type inference and pattern matching,
-allowing complex ideas to be expressed in a clear and concise manner.
-As a result, code is easier to read, write, and maintain.
+Swift는 타입 추론과 패턴 매칭 같은 강력한 기능을 제공하면서도, 다른 인기 있는 언어에서 온 개발자들에게 익숙한 모던하고 가벼운 문법을 갖추고 있다. 이를 통해 복잡한 아이디어도 명확하고 간결하게 표현할 수 있다. 결과적으로 코드를 읽고, 작성하고, 유지보수하기가 더 쉬워진다.
 
-Swift continues to evolve with thoughtful new features and powerful capabilities.
-The goals for Swift are ambitious.
-We can’t wait to see what you create with it.
+Swift는 지속적으로 발전하며, 새로운 기능과 강력한 능력을 추가하고 있다. Swift의 목표는 매우 야심차다. 여러분이 Swift로 무엇을 만들어낼지 기대가 크다.
 
 <!--
-This source file is part of the Swift.org open source project
+이 소스 파일은 Swift.org 오픈 소스 프로젝트의 일부입니다.
 
-Copyright (c) 2014 - 2022 Apple Inc. and the Swift project authors
-Licensed under Apache License v2.0 with Runtime Library Exception
+Copyright (c) 2014 - 2022 Apple Inc. 및 Swift 프로젝트 기여자들
+Apache License v2.0 및 Runtime Library Exception에 따라 라이선스가 부여됨
 
-See https://swift.org/LICENSE.txt for license information
-See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
+라이선스 정보는 https://swift.org/LICENSE.txt에서 확인할 수 있습니다.
+Swift 프로젝트 기여자 목록은 https://swift.org/CONTRIBUTORS.txt에서 확인할 수 있습니다.
 -->
+
+

@@ -1,57 +1,34 @@
-# Advanced Operators
+# 고급 연산자
 
-Define custom operators, perform bitwise operations, and use builder syntax.
+커스텀 연산자를 정의하고, 비트 연산을 수행하며, 빌더 구문을 사용하는 방법을 알아본다.
 
-In addition to the operators described in <doc:BasicOperators>,
-Swift provides several advanced operators that perform more complex value manipulation.
-These include all of the bitwise and bit shifting operators you will be familiar with
-from C and Objective-C.
+<doc:BasicOperators>에서 설명한 기본 연산자 외에도, Swift는 더 복잡한 값 조작을 수행하는 여러 고급 연산자를 제공한다. 이 연산자들은 C와 Objective-C에서 익숙할 만한 모든 비트 연산자와 비트 시프트 연산자를 포함한다.
 
-Unlike arithmetic operators in C,
-arithmetic operators in Swift don't overflow by default.
-Overflow behavior is trapped and reported as an error.
-To opt in to overflow behavior,
-use Swift's second set of arithmetic operators that overflow by default,
-such as the overflow addition operator (`&+`).
-All of these overflow operators begin with an ampersand (`&`).
+C 언어의 산술 연산자와 달리, Swift의 산술 연산자는 기본적으로 오버플로우를 허용하지 않는다. 오버플로우가 발생하면 이를 감지하고 오류로 보고한다. 오버플로우 동작을 허용하려면, Swift에서 기본적으로 오버플로우를 허용하는 두 번째 산술 연산자 집합을 사용하면 된다. 예를 들어, 오버플로우 덧셈 연산자(`&+`)가 있다. 이러한 모든 오버플로우 연산자는 앰퍼샌드(`&`)로 시작한다.
 
-When you define your own structures, classes, and enumerations,
-it can be useful to provide your own implementations of
-the standard Swift operators for these custom types.
-Swift makes it easy to provide tailored implementations of these operators
-and to determine exactly what their behavior should be for each type you create.
+커스텀 구조체, 클래스, 열거형을 정의할 때, 이러한 타입에 대해 표준 Swift 연산자의 커스텀 구현을 제공하는 것이 유용할 수 있다. Swift는 이러한 연산자의 맞춤형 구현을 쉽게 제공할 수 있도록 하며, 생성한 각 타입에 대해 연산자의 동작을 정확히 결정할 수 있게 해준다.
 
-You're not limited to the predefined operators.
-Swift gives you the freedom to define your own custom
-infix, prefix, postfix, and assignment operators,
-with custom precedence and associativity values.
-These operators can be used and adopted in your code like any of the predefined operators,
-and you can even extend existing types to support the custom operators you define.
+미리 정의된 연산자에만 제한되지 않는다. Swift는 커스텀 중위(infix), 전위(prefix), 후위(postfix), 할당(assignment) 연산자를 정의할 수 있는 자유를 제공한다. 이때 커스텀 우선순위와 결합성 값을 지정할 수 있다. 이러한 연산자는 미리 정의된 연산자와 마찬가지로 코드에서 사용하고 채택할 수 있으며, 기존 타입을 확장하여 정의한 커스텀 연산자를 지원하도록 할 수도 있다.
 
-## Bitwise Operators
 
-*Bitwise operators* enable you to manipulate
-the individual raw data bits within a data structure.
-They're often used in low-level programming,
-such as graphics programming and device driver creation.
-Bitwise operators can also be useful when you work with raw data from external sources,
-such as encoding and decoding data for communication over a custom protocol.
+## 비트 연산자
 
-Swift supports all of the bitwise operators found in C, as described below.
+**비트 연산자**는 데이터 구조 내의 개별 비트를 직접 조작할 수 있게 해준다. 이 연산자는 그래픽 프로그래밍이나 디바이스 드라이버 개발과 같은 저수준 프로그래밍에서 자주 사용된다. 또한 커스텀 프로토콜을 통한 통신을 위해 데이터를 인코딩하거나 디코딩할 때와 같이 외부 소스로부터의 원시 데이터를 다룰 때도 유용하게 활용할 수 있다.
 
-### Bitwise NOT Operator
+Swift는 C 언어에서 사용되는 모든 비트 연산자를 지원한다. 아래에서 이들 연산자에 대해 자세히 알아보자.
 
-The *bitwise NOT operator* (`~`) inverts all bits in a number:
+
+### 비트 NOT 연산자
+
+*비트 NOT 연산자*(`~`)는 숫자의 모든 비트를 반전시킨다:
 
 ![](bitwiseNOT)
 
-The bitwise NOT operator is a prefix operator,
-and appears immediately before the value it operates on,
-without any white space:
+비트 NOT 연산자는 접두사 연산자로, 연산 대상 값 바로 앞에 공백 없이 위치한다:
 
 ```swift
 let initialBits: UInt8 = 0b00001111
-let invertedBits = ~initialBits  // equals 11110000
+let invertedBits = ~initialBits  // 11110000과 동일
 ```
 
 <!--
@@ -65,35 +42,20 @@ let invertedBits = ~initialBits  // equals 11110000
   ```
 -->
 
-`UInt8` integers have eight bits
-and can store any value between `0` and `255`.
-This example initializes a `UInt8` integer with the binary value `00001111`,
-which has its first four bits set to `0`,
-and its second four bits set to `1`.
-This is equivalent to a decimal value of `15`.
+`UInt8` 정수는 8비트를 가지며 `0`부터 `255`까지의 값을 저장할 수 있다. 이 예제에서는 이진 값 `00001111`로 `UInt8` 정수를 초기화한다. 이 값은 처음 4비트가 `0`이고, 나머지 4비트가 `1`로 설정되어 있다. 이는 십진수 `15`와 동일하다.
 
 <!-- Apple Books screenshot begins here. -->
 
-The bitwise NOT operator is then used to create a new constant called `invertedBits`,
-which is equal to `initialBits`,
-but with all of the bits inverted.
-Zeros become ones, and ones become zeros.
-The value of `invertedBits` is `11110000`,
-which is equal to an unsigned decimal value of `240`.
+비트 NOT 연산자는 `initialBits`와 동일하지만 모든 비트가 반전된 `invertedBits`라는 새로운 상수를 생성하는 데 사용된다. `0`은 `1`이 되고, `1`은 `0`이 된다. `invertedBits`의 값은 `11110000`이며, 이는 부호 없는 십진수 `240`과 동일하다.
 
-### Bitwise AND Operator
 
-The *bitwise AND operator* (`&`) combines the bits of two numbers.
-It returns a new number whose bits are set to `1`
-only if the bits were equal to `1` in *both* input numbers:
+### 비트 AND 연산자
+
+*비트 AND 연산자*(`&`)는 두 숫자의 비트를 결합한다. 이 연산자는 두 입력 숫자의 비트가 모두 `1`인 경우에만 새로운 숫자의 비트를 `1`로 설정한다:
 
 ![](bitwiseAND)
 
-In the example below,
-the values of `firstSixBits` and `lastSixBits`
-both have four middle bits equal to `1`.
-The bitwise AND operator combines them to make the number `00111100`,
-which is equal to an unsigned decimal value of `60`:
+아래 예제에서 `firstSixBits`와 `lastSixBits`의 값은 모두 가운데 네 비트가 `1`이다. 비트 AND 연산자는 이 두 값을 결합해 `00111100`이라는 숫자를 만든다. 이 값은 부호 없는 10진수 `60`과 같다:
 
 ```swift
 let firstSixBits: UInt8 = 0b11111100
@@ -112,20 +74,16 @@ let middleFourBits = firstSixBits & lastSixBits  // equals 00111100
   ```
 -->
 
-### Bitwise OR Operator
 
-The *bitwise OR operator* (`|`) compares the bits of two numbers.
-The operator returns a new number whose bits are set to `1`
-if the bits are equal to `1` in *either* input number:
+### 비트 OR 연산자
+
+*비트 OR 연산자*(`|`)는 두 숫자의 비트를 비교한다. 이 연산자는 두 입력 숫자 중 하나라도 비트가 `1`인 경우, 새로운 숫자의 해당 비트를 `1`로 설정한다.
 
 ![](bitwiseOR)
 
 <!-- Apple Books screenshot ends here. -->
 
-In the example below,
-the values of `someBits` and `moreBits` have different bits set to `1`.
-The bitwise OR operator combines them to make the number `11111110`,
-which equals an unsigned decimal of `254`:
+아래 예제에서 `someBits`와 `moreBits`는 서로 다른 비트가 `1`로 설정되어 있다. 비트 OR 연산자는 이 두 값을 결합해 `11111110`이라는 숫자를 만드는데, 이는 부호 없는 10진수로 `254`에 해당한다.
 
 ```swift
 let someBits: UInt8 = 0b10110010
@@ -144,22 +102,14 @@ let combinedbits = someBits | moreBits  // equals 11111110
   ```
 -->
 
-### Bitwise XOR Operator
 
-The *bitwise XOR operator*, or “exclusive OR operator” (`^`),
-compares the bits of two numbers.
-The operator returns a new number whose bits are set to `1`
-where the input bits are different
-and are set to `0` where the input bits are the same:
+### 비트 XOR 연산자
+
+*비트 XOR 연산자* 또는 "배타적 OR 연산자"(`^`)는 두 숫자의 비트를 비교한다. 이 연산자는 입력 비트가 서로 다른 위치에 `1`을, 같은 위치에 `0`을 설정한 새로운 숫자를 반환한다.
 
 ![](bitwiseXOR)
 
-In the example below,
-the values of `firstBits` and `otherBits` each have a bit set to `1`
-in a location that the other does not.
-The bitwise XOR operator sets both of these bits to `1` in its output value.
-All of the other bits in `firstBits` and `otherBits` match
-and are set to `0` in the output value:
+아래 예제에서 `firstBits`와 `otherBits`는 각각 다른 위치에 `1`을 가지고 있다. 비트 XOR 연산자는 이 두 비트를 모두 `1`로 설정한다. `firstBits`와 `otherBits`의 나머지 비트는 일치하므로 출력 값에서 `0`으로 설정된다.
 
 ```swift
 let firstBits: UInt8 = 0b00010100
@@ -178,44 +128,33 @@ let outputBits = firstBits ^ otherBits  // equals 00010001
   ```
 -->
 
-### Bitwise Left and Right Shift Operators
 
-The *bitwise left shift operator* (`<<`)
-and *bitwise right shift operator* (`>>`)
-move all bits in a number to the left or the right by a certain number of places,
-according to the rules defined below.
+### 비트 단위 왼쪽 및 오른쪽 시프트 연산자
 
-Bitwise left and right shifts have the effect of
-multiplying or dividing an integer by a factor of two.
-Shifting an integer's bits to the left by one position doubles its value,
-whereas shifting it to the right by one position halves its value.
+*비트 단위 왼쪽 시프트 연산자* (`<<`)와 *비트 단위 오른쪽 시프트 연산자* (`>>`)는 숫자의 모든 비트를 특정 위치 수만큼 왼쪽 또는 오른쪽으로 이동한다. 이 동작은 아래 정의된 규칙에 따라 수행된다.
+
+비트 단위 왼쪽 및 오른쪽 시프트는 정수를 2의 배수로 곱하거나 나누는 효과를 가진다. 정수의 비트를 왼쪽으로 한 칸 이동하면 값이 두 배가 되고, 오른쪽으로 한 칸 이동하면 값이 절반이 된다.
 
 <!--
-  TODO: mention the caveats to this claim.
+  TODO: 이 주장에 대한 주의사항을 언급한다.
 -->
 
-#### Shifting Behavior for Unsigned Integers
 
-The bit-shifting behavior for unsigned integers is as follows:
+#### 부호 없는 정수의 비트 시프트 동작
 
-1. Existing bits are moved to the left or right by the requested number of places.
-2. Any bits that are moved beyond the bounds of the integer's storage are discarded.
-3. Zeros are inserted in the spaces left behind
-   after the original bits are moved to the left or right.
+부호 없는 정수(unsigned integers)의 비트 시프트 동작은 다음과 같다:
 
-This approach is known as a *logical shift*.
+1. 기존 비트를 지정된 횟수만큼 왼쪽 또는 오른쪽으로 이동한다.
+2. 정수의 저장 공간을 벗어난 비트는 버린다.
+3. 원래 비트가 이동한 후 남은 자리에는 0을 채운다.
 
-The illustration below shows the results of `11111111 << 1`
-(which is `11111111` shifted to the left by `1` place),
-and `11111111 >> 1`
-(which is `11111111` shifted to the right by `1` place).
-Green numbers are shifted,
-gray numbers are discarded,
-and pink zeros are inserted:
+이 방식을 *논리적 시프트(logical shift)*라고 부른다.
+
+아래 그림은 `11111111 << 1`(왼쪽으로 1칸 이동)과 `11111111 >> 1`(오른쪽으로 1칸 이동)의 결과를 보여준다. 초록색 숫자는 이동한 비트, 회색 숫자는 버려진 비트, 분홍색 0은 삽입된 비트를 나타낸다:
 
 ![](bitshiftUnsigned)
 
-Here's how bit shifting looks in Swift code:
+Swift 코드에서 비트 시프트는 다음과 같이 동작한다:
 
 ```swift
 let shiftBits: UInt8 = 4   // 00000100 in binary
@@ -254,7 +193,7 @@ shiftBits >> 2             // 00000001
   Tracking bug is <rdar://problem/35301593>
 -->
 
-You can use bit shifting to encode and decode values within other data types:
+비트 시프트를 사용하면 다른 데이터 타입 내부의 값을 인코딩하거나 디코딩할 수 있다:
 
 ```swift
 let pink: UInt32 = 0xCC6699
@@ -277,122 +216,63 @@ let blueComponent = pink & 0x0000FF           // blueComponent is 0x99, or 153
   ```
 -->
 
-This example uses a `UInt32` constant called `pink` to store a
-Cascading Style Sheets color value for the color pink.
-The CSS color value `#CC6699` is written as
-`0xCC6699` in Swift's hexadecimal number representation.
-This color is then decomposed into its
-red (`CC`), green (`66`), and blue (`99`) components
-by the bitwise AND operator (`&`) and the bitwise right shift operator (`>>`).
+이 예제에서는 `UInt32` 타입의 상수 `pink`를 사용해 CSS 색상 값인 분홍색(`#CC6699`)을 저장한다. Swift에서 이 색상 값은 `0xCC6699`로 표현된다. 이 색상은 비트 AND 연산자(`&`)와 비트 오른쪽 시프트 연산자(`>>`)를 사용해 빨간색(`CC`), 초록색(`66`), 파란색(`99`) 성분으로 분해한다.
 
-The red component is obtained by performing a bitwise AND
-between the numbers `0xCC6699` and `0xFF0000`.
-The zeros in `0xFF0000` effectively “mask” the second and third bytes of `0xCC6699`,
-causing the `6699` to be ignored and leaving `0xCC0000` as the result.
+빨간색 성분은 `0xCC6699`와 `0xFF0000` 사이의 비트 AND 연산을 통해 얻는다. `0xFF0000`의 0은 `0xCC6699`의 두 번째와 세 번째 바이트를 "마스킹"하여 `6699`를 무시하고 `0xCC0000`을 결과로 남긴다. 이 숫자는 16칸 오른쪽으로 시프트(`>> 16`)된다. 16진수에서 각 문자 쌍은 8비트를 사용하므로, 16칸 오른쪽으로 이동하면 `0xCC0000`이 `0x0000CC`로 변환된다. 이는 `0xCC`와 같으며, 10진수 값으로 `204`이다.
 
-This number is then shifted 16 places to the right (`>> 16`).
-Each pair of characters in a hexadecimal number uses 8 bits,
-so a move 16 places to the right will convert `0xCC0000` into `0x0000CC`.
-This is the same as `0xCC`, which has a decimal value of `204`.
+마찬가지로, 초록색 성분은 `0xCC6699`와 `0x00FF00` 사이의 비트 AND 연산을 통해 얻는다. 이 연산은 `0x006600`을 결과로 반환한다. 이 값은 8칸 오른쪽으로 시프트되어 `0x66`이 되며, 10진수 값으로 `102`이다.
 
-Similarly, the green component is obtained by performing a bitwise AND
-between the numbers `0xCC6699` and `0x00FF00`,
-which gives an output value of `0x006600`.
-This output value is then shifted eight places to the right,
-giving a value of `0x66`, which has a decimal value of `102`.
+마지막으로, 파란색 성분은 `0xCC6699`와 `0x0000FF` 사이의 비트 AND 연산을 통해 얻는다. 이 연산은 `0x000099`를 결과로 반환한다. `0x000099`는 이미 `0x99`와 같으며, 10진수 값으로 `153`이므로 오른쪽 시프트 없이 그대로 사용한다.
 
-Finally, the blue component is obtained by performing a bitwise AND
-between the numbers `0xCC6699` and `0x0000FF`,
-which gives an output value of `0x000099`.
-Because `0x000099` already equals `0x99`,
-which has a decimal value of `153`,
-this value is used without shifting it to the right,
 
-#### Shifting Behavior for Signed Integers
+#### 부호 있는 정수의 시프트 동작
 
-The shifting behavior is more complex for signed integers than for unsigned integers,
-because of the way signed integers are represented in binary.
-(The examples below are based on 8-bit signed integers for simplicity,
-but the same principles apply for signed integers of any size.)
+부호 있는 정수의 시프트 동작은 부호 없는 정수보다 복잡하다. 이는 부호 있는 정수가 바이너리로 표현되는 방식 때문이다. (아래 예제는 간단히 8비트 부호 있는 정수를 기준으로 설명하지만, 동일한 원칙이 모든 크기의 부호 있는 정수에 적용된다.)
 
-Signed integers use their first bit (known as the *sign bit*)
-to indicate whether the integer is positive or negative.
-A sign bit of `0` means positive, and a sign bit of `1` means negative.
+부호 있는 정수는 첫 번째 비트(*부호 비트*)를 사용해 정수가 양수인지 음수인지 나타낸다. 부호 비트가 `0`이면 양수, `1`이면 음수를 의미한다.
 
-The remaining bits (known as the *value bits*) store the actual value.
-Positive numbers are stored in exactly the same way as for unsigned integers,
-counting upwards from `0`.
-Here's how the bits inside an `Int8` look for the number `4`:
+나머지 비트(*값 비트*)는 실제 값을 저장한다. 양수는 부호 없는 정수와 동일한 방식으로 저장되며, `0`부터 시작해 증가한다. 다음은 `Int8`에서 숫자 `4`의 비트 표현이다:
 
 ![](bitshiftSignedFour)
 
-The sign bit is `0` (meaning “positive”),
-and the seven value bits are just the number `4`,
-written in binary notation.
+부호 비트는 `0`(양수)이고, 값 비트는 `4`를 바이너리로 표현한 것이다.
 
-Negative numbers, however, are stored differently.
-They're stored by subtracting their absolute value from `2` to the power of `n`,
-where `n` is the number of value bits.
-An eight-bit number has seven value bits,
-so this means `2` to the power of `7`, or `128`.
+음수는 다르게 저장된다. 음수는 절댓값을 `2`의 `n`제곱에서 빼는 방식으로 저장되며, 여기서 `n`은 값 비트의 수다. 8비트 숫자는 7개의 값 비트를 가지므로, `2`의 `7`제곱인 `128`에서 절댓값을 뺀다.
 
-Here's how the bits inside an `Int8` look for the number `-4`:
+다음은 `Int8`에서 숫자 `-4`의 비트 표현이다:
 
 ![](bitshiftSignedMinusFour)
 
-This time, the sign bit is `1` (meaning “negative”),
-and the seven value bits have a binary value of `124` (which is `128 - 4`):
+이번에는 부호 비트가 `1`(음수)이고, 값 비트는 `124`(즉, `128 - 4`)를 바이너리로 표현한 것이다:
 
 ![](bitshiftSignedMinusFourValue)
 
-This encoding for negative numbers is known as a *two's complement* representation.
-It may seem an unusual way to represent negative numbers,
-but it has several advantages.
+음수를 표현하는 이 방식을 *2의 보수 표현법*이라고 한다. 처음 보기에는 음수를 표현하는 이상한 방식처럼 보일 수 있지만, 몇 가지 장점이 있다.
 
-First, you can add `-1` to `-4`,
-simply by performing a standard binary addition of all eight bits
-(including the sign bit),
-and discarding anything that doesn't fit in the eight bits once you're done:
+첫째, `-1`과 `-4`를 더할 때, 모든 8비트(부호 비트 포함)에 대해 표준 바이너리 덧셈을 수행하고, 8비트를 초과하는 부분을 버리면 된다:
 
 ![](bitshiftSignedAddition)
 
-Second, the two's complement representation also lets you
-shift the bits of negative numbers to the left and right like positive numbers,
-and still end up doubling them for every shift you make to the left,
-or halving them for every shift you make to the right.
-To achieve this, an extra rule is used when signed integers are shifted to the right:
-When you shift signed integers to the right,
-apply the same rules as for unsigned integers,
-but fill any empty bits on the left with the *sign bit*,
-rather than with a zero.
+둘째, 2의 보수 표현법은 음수의 비트를 양수처럼 왼쪽이나 오른쪽으로 시프트할 수 있게 한다. 왼쪽으로 시프트할 때마다 값을 두 배로, 오른쪽으로 시프트할 때마다 값을 절반으로 줄일 수 있다. 이를 위해 부호 있는 정수를 오른쪽으로 시프트할 때는 추가 규칙을 적용한다: 부호 있는 정수를 오른쪽으로 시프트할 때, 부호 없는 정수와 동일한 규칙을 적용하되, 왼쪽의 빈 비트를 `0` 대신 *부호 비트*로 채운다.
 
 ![](bitshiftSigned)
 
-This action ensures that signed integers have the same sign after they're shifted to the right,
-and is known as an *arithmetic shift*.
+이 동작은 부호 있는 정수가 오른쪽으로 시프트된 후에도 동일한 부호를 유지하게 하며, 이를 *산술 시프트*라고 한다.
 
-Because of the special way that positive and negative numbers are stored,
-shifting either of them to the right moves them closer to zero.
-Keeping the sign bit the same during this shift means that
-negative integers remain negative as their value moves closer to zero.
+양수와 음수가 특별한 방식으로 저장되기 때문에, 오른쪽으로 시프트하면 두 값 모두 0에 가까워진다. 시프트 동안 부호 비트를 유지하면, 음수는 값이 0에 가까워져도 여전히 음수로 남는다.
 
-## Overflow Operators
 
-If you try to insert a number into an integer constant or variable
-that can't hold that value,
-by default Swift reports an error rather than allowing an invalid value to be created.
-This behavior gives extra safety when you work with numbers that are too large or too small.
+## 오버플로우 연산자
 
-For example, the `Int16` integer type can hold
-any signed integer between `-32768` and `32767`.
-Trying to set an `Int16` constant or variable to a number outside of this range
-causes an error:
+정수 상수나 변수에 저장할 수 없는 값을 넣으려고 하면, Swift는 기본적으로 유효하지 않은 값이 생성되는 것을 허용하는 대신 오류를 발생시킨다. 이 동작은 너무 크거나 작은 숫자를 다룰 때 추가적인 안전성을 제공한다.
+
+예를 들어, `Int16` 정수 타입은 `-32768`부터 `32767`까지의 부호 있는 정수를 저장할 수 있다. 이 범위를 벗어나는 숫자를 `Int16` 상수나 변수에 할당하려고 하면 오류가 발생한다:
 
 ```swift
 var potentialOverflow = Int16.max
-// potentialOverflow equals 32767, which is the maximum value an Int16 can hold
+// potentialOverflow는 32767로, Int16이 저장할 수 있는 최대값이다
 potentialOverflow += 1
-// this causes an error
+// 이 코드는 오류를 발생시킨다
 ```
 
 <!--
@@ -408,33 +288,26 @@ potentialOverflow += 1
   ```
 -->
 
-Providing error handling when values get too large or too small
-gives you much more flexibility when coding for boundary value conditions.
+값이 너무 크거나 작을 때 오류 처리를 제공하면 경계값 조건을 다룰 때 더 많은 유연성을 얻을 수 있다.
 
-However, when you specifically want an overflow condition
-to truncate the number of available bits,
-you can opt in to this behavior rather than triggering an error.
-Swift provides three arithmetic *overflow operators* that opt in to
-the overflow behavior for integer calculations.
-These operators all begin with an ampersand (`&`):
+그러나 특정 상황에서 오버플로우 조건을 통해 사용 가능한 비트 수를 줄이는 동작을 원한다면, 오류를 발생시키는 대신 이 동작을 선택할 수 있다. Swift는 정수 계산에서 오버플로우 동작을 선택할 수 있는 세 가지 산술 *오버플로우 연산자*를 제공한다. 이 연산자들은 모두 앰퍼샌드(`&`)로 시작한다:
 
-- Overflow addition (`&+`)
-- Overflow subtraction (`&-`)
-- Overflow multiplication (`&*`)
+- 오버플로우 덧셈 (`&+`)
+- 오버플로우 뺄셈 (`&-`)
+- 오버플로우 곱셈 (`&*`)
 
-### Value Overflow
 
-Numbers can overflow in both the positive and negative direction.
+### 값의 오버플로우
 
-Here's an example of what happens when
-an unsigned integer is allowed to overflow in the positive direction,
-using the overflow addition operator (`&+`):
+숫자는 양수와 음수 방향 모두에서 오버플로우가 발생할 수 있다.
+
+다음은 부호 없는 정수(unsigned integer)가 양수 방향으로 오버플로우될 때의 예시로, 오버플로우 덧셈 연산자(`&+`)를 사용한다:
 
 ```swift
 var unsignedOverflow = UInt8.max
-// unsignedOverflow equals 255, which is the maximum value a UInt8 can hold
+// unsignedOverflow는 255로, UInt8이 가질 수 있는 최댓값이다.
 unsignedOverflow = unsignedOverflow &+ 1
-// unsignedOverflow is now equal to 0
+// unsignedOverflow는 이제 0이 된다.
 ```
 
 <!--
@@ -450,26 +323,17 @@ unsignedOverflow = unsignedOverflow &+ 1
   ```
 -->
 
-The variable `unsignedOverflow` is initialized with the maximum value a `UInt8` can hold
-(`255`, or `11111111` in binary).
-It's then incremented by `1` using the overflow addition operator (`&+`).
-This pushes its binary representation just over the size that a `UInt8` can hold,
-causing it to overflow beyond its bounds,
-as shown in the diagram below.
-The value that remains within the bounds of the `UInt8`
-after the overflow addition is `00000000`, or zero.
+변수 `unsignedOverflow`는 `UInt8`이 가질 수 있는 최댓값(`255`, 또는 바이너리로 `11111111`)으로 초기화된다. 이후 오버플로우 덧셈 연산자(`&+`)를 사용해 `1`을 더한다. 이 연산은 `UInt8`이 담을 수 있는 크기를 넘어서게 되고, 오버플로우가 발생한다. 오버플로우 이후 `UInt8`의 범위 내에 남은 값은 `00000000`, 즉 0이 된다.
 
 ![](overflowAddition)
 
-Something similar happens when
-an unsigned integer is allowed to overflow in the negative direction.
-Here's an example using the overflow subtraction operator (`&-`):
+부호 없는 정수가 음수 방향으로 오버플로우될 때도 비슷한 현상이 발생한다. 다음은 오버플로우 뺄셈 연산자(`&-`)를 사용한 예시다:
 
 ```swift
 var unsignedOverflow = UInt8.min
-// unsignedOverflow equals 0, which is the minimum value a UInt8 can hold
+// unsignedOverflow는 0으로, UInt8이 가질 수 있는 최솟값이다.
 unsignedOverflow = unsignedOverflow &- 1
-// unsignedOverflow is now equal to 255
+// unsignedOverflow는 이제 255가 된다.
 ```
 
 <!--
@@ -485,24 +349,17 @@ unsignedOverflow = unsignedOverflow &- 1
   ```
 -->
 
-The minimum value that a `UInt8` can hold is zero,
-or `00000000` in binary.
-If you subtract `1` from `00000000` using the overflow subtraction operator (`&-`),
-the number will overflow and wrap around to `11111111`,
-or `255` in decimal.
+`UInt8`이 가질 수 있는 최솟값은 0, 즉 바이너리로 `00000000`이다. 오버플로우 뺄셈 연산자(`&-`)를 사용해 `00000000`에서 `1`을 빼면, 숫자가 오버플로우되어 `11111111`, 즉 10진수로 `255`가 된다.
 
 ![](overflowUnsignedSubtraction)
 
-Overflow also occurs for signed integers.
-All addition and subtraction for signed integers is performed in bitwise fashion,
-with the sign bit included as part of the numbers being added or subtracted,
-as described in <doc:AdvancedOperators#Bitwise-Left-and-Right-Shift-Operators>.
+부호 있는 정수(signed integer)에서도 오버플로우가 발생한다. 부호 있는 정수의 모든 덧셈과 뺄셈은 비트 단위로 수행되며, 숫자의 부호 비트도 연산에 포함된다. 이는 <doc:AdvancedOperators#Bitwise-Left-and-Right-Shift-Operators>에서 설명한 바와 같다.
 
 ```swift
 var signedOverflow = Int8.min
-// signedOverflow equals -128, which is the minimum value an Int8 can hold
+// signedOverflow는 -128로, Int8이 가질 수 있는 최솟값이다.
 signedOverflow = signedOverflow &- 1
-// signedOverflow is now equal to 127
+// signedOverflow는 이제 127이 된다.
 ```
 
 <!--
@@ -518,41 +375,24 @@ signedOverflow = signedOverflow &- 1
   ```
 -->
 
-The minimum value that an `Int8` can hold is `-128`,
-or `10000000` in binary.
-Subtracting `1` from this binary number with the overflow operator
-gives a binary value of `01111111`,
-which toggles the sign bit and gives positive `127`,
-the maximum positive value that an `Int8` can hold.
+`Int8`이 가질 수 있는 최솟값은 `-128`, 즉 바이너리로 `10000000`이다. 오버플로우 연산자를 사용해 이 바이너리 값에서 `1`을 빼면 `01111111`이 되며, 부호 비트가 바뀌어 `Int8`이 가질 수 있는 최댓값인 `127`이 된다.
 
 ![](overflowSignedSubtraction)
 
-For both signed and unsigned integers,
-overflow in the positive direction
-wraps around from the maximum valid integer value back to the minimum,
-and overflow in the negative direction
-wraps around from the minimum value to the maximum.
+부호 있는 정수와 부호 없는 정수 모두에서, 양수 방향의 오버플로우는 최댓값에서 최솟값으로 순환하고, 음수 방향의 오버플로우는 최솟값에서 최댓값으로 순환한다.
 
-## Precedence and Associativity
 
-Operator *precedence* gives some operators higher priority than others;
-these operators are applied first.
+## 연산자 우선순위와 결합 방향
 
-Operator *associativity* defines how operators of the same precedence
-are grouped together ---
-either grouped from the left, or grouped from the right.
-Think of it as meaning “they associate with the expression to their left,”
-or “they associate with the expression to their right.”
+연산자 *우선순위*는 어떤 연산자가 다른 연산자보다 더 높은 우선권을 가지는지를 결정한다. 즉, 우선순위가 높은 연산자가 먼저 계산된다.
 
-It's important to consider
-each operator's precedence and associativity
-when working out the order in which a compound expression will be calculated.
-For example,
-operator precedence explains why the following expression equals `17`.
+연산자 *결합 방향*은 동일한 우선순위를 가진 연산자들이 어떻게 묶이는지를 정의한다. 이는 연산자가 왼쪽에 있는 표현식과 결합하는지, 아니면 오른쪽에 있는 표현식과 결합하는지를 나타낸다. 쉽게 말해, "왼쪽에 있는 표현식과 결합한다" 또는 "오른쪽에 있는 표현식과 결합한다"는 의미로 이해할 수 있다.
+
+복합 표현식이 어떤 순서로 계산될지 파악할 때는 각 연산자의 우선순위와 결합 방향을 고려하는 것이 중요하다. 예를 들어, 아래 표현식이 왜 `17`이라는 결과를 내는지는 연산자 우선순위로 설명할 수 있다.
 
 ```swift
 2 + 3 % 4 * 5
-// this equals 17
+// 이 결과는 17이다
 ```
 
 <!--
@@ -572,26 +412,15 @@ operator precedence explains why the following expression equals `17`.
   Tracking bug is <rdar://problem/35301593>
 -->
 
-If you read strictly from left to right,
-you might expect the expression to be calculated as follows:
+만약 이 표현식을 왼쪽에서 오른쪽으로 순서대로 읽는다면, 다음과 같이 계산될 것으로 예상할 수 있다:
 
-- `2` plus `3` equals `5`
-- `5` remainder `4` equals `1`
-- `1` times `5` equals `5`
+- `2` 더하기 `3`은 `5`
+- `5` 나누기 `4`의 나머지는 `1`
+- `1` 곱하기 `5`는 `5`
 
-However, the actual answer is `17`, not `5`.
-Higher-precedence operators are evaluated before lower-precedence ones.
-In Swift, as in C,
-the remainder operator (`%`) and the multiplication operator (`*`)
-have a higher precedence than the addition operator (`+`).
-As a result, they're both evaluated before the addition is considered.
+하지만 실제 결과는 `5`가 아니라 `17`이다. 이는 우선순위가 높은 연산자가 낮은 연산자보다 먼저 계산되기 때문이다. Swift에서는 C 언어와 마찬가지로 나머지 연산자(`%`)와 곱셈 연산자(`*`)가 덧셈 연산자(`+`)보다 우선순위가 높다. 따라서 이 두 연산자가 덧셈보다 먼저 계산된다.
 
-However, remainder and multiplication have the *same* precedence as each other.
-To work out the exact evaluation order to use,
-you also need to consider their associativity.
-Remainder and multiplication both associate with the expression to their left.
-Think of this as adding implicit parentheses around these parts of the expression,
-starting from their left:
+그런데 나머지 연산자와 곱셈 연산자는 서로 *동일한* 우선순위를 가진다. 이때 정확한 계산 순서를 파악하려면 결합 방향도 고려해야 한다. 나머지 연산자와 곱셈 연산자는 모두 왼쪽에 있는 표현식과 결합한다. 이는 표현식의 해당 부분에 왼쪽부터 묵시적 괄호를 추가하는 것과 같다:
 
 ```swift
 2 + ((3 % 4) * 5)
@@ -612,7 +441,7 @@ starting from their left:
   Tracking bug is <rdar://problem/35301593>
 -->
 
-`(3 % 4)` is `3`, so this is equivalent to:
+`(3 % 4)`는 `3`이므로, 이 표현식은 다음과 동일하다:
 
 ```swift
 2 + (3 * 5)
@@ -633,7 +462,7 @@ starting from their left:
   Tracking bug is <rdar://problem/35301593>
 -->
 
-`(3 * 5)` is `15`, so this is equivalent to:
+`(3 * 5)`는 `15`이므로, 이 표현식은 다음과 동일하다:
 
 ```swift
 2 + 15
@@ -654,33 +483,20 @@ starting from their left:
   Tracking bug is <rdar://problem/35301593>
 -->
 
-This calculation yields the final answer of `17`.
+이 계산의 최종 결과는 `17`이다.
 
-For information about the operators provided by the Swift standard library,
-including a complete list of the operator precedence groups and associativity settings,
-see [Operator Declarations](https://developer.apple.com/documentation/swift/operator_declarations).
+Swift 표준 라이브러리에서 제공하는 연산자에 대한 정보, 그리고 연산자 우선순위 그룹과 결합 방향 설정의 전체 목록은 [Operator Declarations](https://developer.apple.com/documentation/swift/operator_declarations)에서 확인할 수 있다.
 
-> Note: Swift's operator precedences and associativity rules are simpler and more predictable
-> than those found in C and Objective-C.
-> However, this means that they aren't exactly the same as in C-based languages.
-> Be careful to ensure that operator interactions still behave in the way you intend
-> when porting existing code to Swift.
+> 주의: Swift의 연산자 우선순위와 결합 방향 규칙은 C나 Objective-C보다 더 단순하고 예측 가능하다. 하지만 이는 Swift가 C 기반 언어와 완전히 동일하지 않다는 것을 의미한다. 기존 코드를 Swift로 포팅할 때는 연산자의 상호작용이 의도한 대로 동작하는지 주의 깊게 확인해야 한다.
 
-## Operator Methods
 
-Classes and structures can provide their own implementations of existing operators.
-This is known as *overloading* the existing operators.
+## 연산자 메서드
 
-The example below shows how to implement
-the arithmetic addition operator (`+`) for a custom structure.
-The arithmetic addition operator is a binary operator
-because it operates on two targets
-and it's an infix operator because it appears between those two targets.
+클래스와 구조체는 기존 연산자를 직접 구현할 수 있다. 이를 *연산자 오버로딩*이라고 한다.
 
-The example defines a `Vector2D` structure for
-a two-dimensional position vector `(x, y)`,
-followed by a definition of an *operator method*
-to add together instances of the `Vector2D` structure:
+아래 예제는 커스텀 구조체에 대해 산술 덧셈 연산자(`+`)를 구현하는 방법을 보여준다. 산술 덧셈 연산자는 두 개의 대상에 대해 동작하므로 바이너리 연산자이며, 두 대상 사이에 위치하므로 중위 연산자이다.
+
+예제에서는 2차원 위치 벡터 `(x, y)`를 나타내는 `Vector2D` 구조체를 정의하고, 이 구조체의 인스턴스를 더하는 *연산자 메서드*를 정의한다:
 
 ```swift
 struct Vector2D {
@@ -710,31 +526,17 @@ extension Vector2D {
   ```
 -->
 
-The operator method is defined as a type method on `Vector2D`,
-with a method name that matches the operator to be overloaded (`+`).
-Because addition isn't part of the essential behavior for a vector,
-the type method is defined in an extension of `Vector2D`
-rather than in the main structure declaration of `Vector2D`.
-Because the arithmetic addition operator is a binary operator,
-this operator method takes two input parameters of type `Vector2D`
-and returns a single output value, also of type `Vector2D`.
+연산자 메서드는 `Vector2D`에 대한 타입 메서드로 정의되며, 메서드 이름은 오버로딩할 연산자(`+`)와 일치한다. 덧셈은 벡터의 필수 동작이 아니므로, 이 타입 메서드는 `Vector2D`의 기본 구조체 선언이 아닌 확장에서 정의된다. 산술 덧셈 연산자는 바이너리 연산자이므로, 이 연산자 메서드는 `Vector2D` 타입의 두 입력 매개변수를 받고, `Vector2D` 타입의 단일 출력 값을 반환한다.
 
-In this implementation, the input parameters are named `left` and `right`
-to represent the `Vector2D` instances that will be on
-the left side and right side of the `+` operator.
-The method returns a new `Vector2D` instance,
-whose `x` and `y` properties are
-initialized with the sum of the `x` and `y` properties from
-the two `Vector2D` instances that are added together.
+이 구현에서 입력 매개변수는 `+` 연산자의 왼쪽과 오른쪽에 위치할 `Vector2D` 인스턴스를 나타내기 위해 `left`와 `right`로 명명된다. 메서드는 새로운 `Vector2D` 인스턴스를 반환하며, 이 인스턴스의 `x`와 `y` 속성은 더해진 두 `Vector2D` 인스턴스의 `x`와 `y` 속성의 합으로 초기화된다.
 
-The type method
-can be used as an infix operator between existing `Vector2D` instances:
+이 타입 메서드는 기존 `Vector2D` 인스턴스 사이에서 중위 연산자로 사용할 수 있다:
 
 ```swift
 let vector = Vector2D(x: 3.0, y: 1.0)
 let anotherVector = Vector2D(x: 2.0, y: 4.0)
 let combinedVector = vector + anotherVector
-// combinedVector is a Vector2D instance with values of (5.0, 5.0)
+// combinedVector는 (5.0, 5.0) 값을 가진 Vector2D 인스턴스이다.
 ```
 
 <!--
@@ -744,28 +546,21 @@ let combinedVector = vector + anotherVector
   -> let vector = Vector2D(x: 3.0, y: 1.0)
   -> let anotherVector = Vector2D(x: 2.0, y: 4.0)
   -> let combinedVector = vector + anotherVector
-  /> combinedVector is a Vector2D instance with values of (\(combinedVector.x), \(combinedVector.y))
-  </ combinedVector is a Vector2D instance with values of (5.0, 5.0)
+  /> combinedVector는 (\(combinedVector.x), \(combinedVector.y)) 값을 가진 Vector2D 인스턴스이다.
+  </ combinedVector는 (5.0, 5.0) 값을 가진 Vector2D 인스턴스이다.
   ```
 -->
 
-This example adds together the vectors `(3.0, 1.0)` and `(2.0, 4.0)`
-to make the vector `(5.0, 5.0)`, as illustrated below.
+이 예제는 벡터 `(3.0, 1.0)`와 `(2.0, 4.0)`를 더해 벡터 `(5.0, 5.0)`를 만든다. 아래 그림에서 이를 확인할 수 있다.
 
 ![](vectorAddition)
 
-### Prefix and Postfix Operators
 
-The example shown above demonstrates a custom implementation of a binary infix operator.
-Classes and structures can also provide implementations
-of the standard *unary operators*.
-Unary operators operate on a single target.
-They're *prefix* if they precede their target (such as `-a`)
-and *postfix* operators if they follow their target (such as `b!`).
+### 접두사와 접미사 연산자
 
-You implement a prefix or postfix unary operator by writing
-the `prefix` or `postfix` modifier
-before the `func` keyword when declaring the operator method:
+위 예제는 커스텀 이항 중위 연산자를 구현한 것을 보여준다. 클래스와 구조체는 또한 표준 *단항 연산자*를 구현할 수 있다. 단항 연산자는 하나의 대상에 대해 동작한다. 이 연산자는 대상 앞에 위치하면 *접두사* 연산자(예: `-a`)이고, 대상 뒤에 위치하면 *접미사* 연산자(예: `b!`)이다.
+
+접두사 또는 접미사 단항 연산자를 구현하려면, 연산자 메서드를 선언할 때 `func` 키워드 앞에 `prefix` 또는 `postfix` 수식어를 붙인다:
 
 ```swift
 extension Vector2D {
@@ -787,22 +582,16 @@ extension Vector2D {
   ```
 -->
 
-The example above implements the unary minus operator
-(`-a`) for `Vector2D` instances.
-The unary minus operator is a prefix operator,
-and so this method has to be qualified with the `prefix` modifier.
+위 예제는 `Vector2D` 인스턴스에 대한 단항 마이너스 연산자(`-a`)를 구현한다. 단항 마이너스 연산자는 접두사 연산자이므로, 이 메서드는 `prefix` 수식어로 한정해야 한다.
 
-For simple numeric values, the unary minus operator converts
-positive numbers into their negative equivalent and vice versa.
-The corresponding implementation for `Vector2D` instances
-performs this operation on both the `x` and `y` properties:
+단순한 숫자 값의 경우, 단항 마이너스 연산자는 양수를 음수로, 음수를 양수로 변환한다. `Vector2D` 인스턴스에 대한 해당 구현은 `x`와 `y` 프로퍼티 모두에 이 연산을 수행한다:
 
 ```swift
 let positive = Vector2D(x: 3.0, y: 4.0)
 let negative = -positive
-// negative is a Vector2D instance with values of (-3.0, -4.0)
+// negative는 (-3.0, -4.0) 값을 가진 Vector2D 인스턴스이다.
 let alsoPositive = -negative
-// alsoPositive is a Vector2D instance with values of (3.0, 4.0)
+// alsoPositive는 (3.0, 4.0) 값을 가진 Vector2D 인스턴스이다.
 ```
 
 <!--
@@ -819,16 +608,12 @@ let alsoPositive = -negative
   ```
 -->
 
-### Compound Assignment Operators
 
-*Compound assignment operators* combine assignment (`=`) with another operation.
-For example, the addition assignment operator (`+=`)
-combines addition and assignment into a single operation.
-You mark a compound assignment operator's left input parameter type as `inout`,
-because the parameter's value will be modified directly from within the operator method.
+### 복합 할당 연산자
 
-The example below implements
-an addition assignment operator method for `Vector2D` instances:
+*복합 할당 연산자*는 할당(`=`)을 다른 연산과 결합한다. 예를 들어, 덧셈 할당 연산자(`+=`)는 덧셈과 할당을 하나의 연산으로 합친다. 복합 할당 연산자의 왼쪽 입력 매개변수 타입은 `inout`으로 표시한다. 매개변수의 값이 연산자 메서드 내부에서 직접 수정되기 때문이다.
+
+아래 예제는 `Vector2D` 인스턴스에 대한 덧셈 할당 연산자 메서드를 구현한다:
 
 ```swift
 extension Vector2D {
@@ -850,11 +635,7 @@ extension Vector2D {
   ```
 -->
 
-Because an addition operator was defined earlier,
-you don't need to reimplement the addition process here.
-Instead, the addition assignment operator method
-takes advantage of the existing addition operator method,
-and uses it to set the left value to be the left value plus the right value:
+이전에 덧셈 연산자를 정의했기 때문에, 여기서 덧셈 과정을 다시 구현할 필요가 없다. 대신, 덧셈 할당 연산자 메서드는 기존의 덧셈 연산자 메서드를 활용하고, 이를 사용해 왼쪽 값을 왼쪽 값 더하기 오른쪽 값으로 설정한다:
 
 ```swift
 var original = Vector2D(x: 1.0, y: 2.0)
@@ -875,11 +656,7 @@ original += vectorToAdd
   ```
 -->
 
-> Note: It isn't possible to overload the default
-> assignment operator (`=`).
-> Only the compound assignment operators can be overloaded.
-> Similarly, the ternary conditional operator
-> (`a ? b : c`) can't be overloaded.
+> 주의: 기본 할당 연산자(`=`)를 오버로드할 수 없다. 오직 복합 할당 연산자만 오버로드할 수 있다. 마찬가지로 삼항 조건 연산자(`a ? b : c`)도 오버로드할 수 없다.
 
 <!--
   - test: `cant-overload-assignment`
@@ -899,23 +676,12 @@ original += vectorToAdd
   ```
 -->
 
-### Equivalence Operators
 
-By default, custom classes and structures don't have an implementation of
-the *equivalence operators*,
-known as the *equal to* operator (`==`) and *not equal to* operator (`!=`).
-You usually implement the `==` operator,
-and use the Swift standard library's default implementation of the `!=` operator
-that negates the result of the `==` operator.
-There are two ways to implement the `==` operator:
-You can implement it yourself,
-or for many types, you can ask Swift to synthesize
-an implementation for you.
-In both cases,
-you add conformance to the Swift standard library's `Equatable` protocol.
+### 동등 연산자
 
-You provide an implementation of the `==` operator
-in the same way as you implement other infix operators:
+기본적으로 커스텀 클래스와 구조체는 *동등 연산자*를 구현하지 않는다. 여기서 동등 연산자는 *같음* 연산자(`==`)와 *같지 않음* 연산자(`!=`)를 의미한다. 일반적으로 `==` 연산자를 직접 구현하고, `!=` 연산자는 Swift 표준 라이브러리가 제공하는 기본 구현을 사용한다. 이때 `!=` 연산자는 `==` 연산자의 결과를 부정하는 방식으로 동작한다. `==` 연산자를 구현하는 방법은 두 가지다. 직접 구현하거나, 많은 타입의 경우 Swift가 자동으로 구현을 생성하도록 요청할 수 있다. 두 경우 모두 Swift 표준 라이브러리의 `Equatable` 프로토콜을 준수해야 한다.
+
+다른 중위 연산자를 구현하는 것과 같은 방식으로 `==` 연산자를 구현할 수 있다:
 
 ```swift
 extension Vector2D: Equatable {
@@ -937,14 +703,9 @@ extension Vector2D: Equatable {
   ```
 -->
 
-The example above implements an `==` operator
-to check whether two `Vector2D` instances have equivalent values.
-In the context of `Vector2D`,
-it makes sense to consider “equal” as meaning
-“both instances have the same `x` values and `y` values”,
-and so this is the logic used by the operator implementation.
+위 예제는 두 `Vector2D` 인스턴스가 동일한 값을 가지는지 확인하기 위해 `==` 연산자를 구현한다. `Vector2D`의 경우 "두 인스턴스가 동일한 `x` 값과 `y` 값을 가진다"는 의미로 "같음"을 정의하는 것이 합리적이며, 이 로직이 연산자 구현에 사용된다.
 
-You can now use this operator to check whether two `Vector2D` instances are equivalent:
+이제 이 연산자를 사용해 두 `Vector2D` 인스턴스가 동등한지 확인할 수 있다:
 
 ```swift
 let twoThree = Vector2D(x: 2.0, y: 3.0)
@@ -968,19 +729,14 @@ if twoThree == anotherTwoThree {
   ```
 -->
 
-In many simple cases, you can ask Swift
-to provide synthesized implementations of the equivalence operators for you,
-as described in <doc:Protocols#Adopting-a-Protocol-Using-a-Synthesized-Implementation>.
+많은 간단한 경우, Swift가 동등 연산자의 구현을 자동으로 생성하도록 요청할 수 있다. 이는 <doc:Protocols#Adopting-a-Protocol-Using-a-Synthesized-Implementation>에서 설명한 바와 같다.
 
-## Custom Operators
 
-You can declare and implement your own *custom operators* in addition to
-the standard operators provided by Swift.
-For a list of characters that can be used to define custom operators,
-see <doc:LexicalStructure#Operators>.
+## 커스텀 연산자
 
-New operators are declared at a global level using the `operator` keyword,
-and are marked with the `prefix`, `infix` or `postfix` modifiers:
+Swift에서 제공하는 표준 연산자 외에도 여러분은 직접 *커스텀 연산자*를 선언하고 구현할 수 있다. 커스텀 연산자를 정의할 때 사용할 수 있는 문자 목록은 <doc:LexicalStructure#Operators>를 참고한다.
+
+새로운 연산자는 `operator` 키워드를 사용해 전역 수준에서 선언하며, `prefix`, `infix`, `postfix` 수식어로 표시한다:
 
 ```swift
 prefix operator +++
@@ -994,15 +750,7 @@ prefix operator +++
   ```
 -->
 
-The example above defines a new prefix operator called `+++`.
-This operator doesn't have an existing meaning in Swift,
-and so it's given its own custom meaning below in the specific context of
-working with `Vector2D` instances. For the purposes of this example,
-`+++` is treated as a new “prefix doubling” operator.
-It doubles the `x` and `y` values of a `Vector2D` instance,
-by adding the vector to itself with the addition assignment operator defined earlier.
-To implement the `+++` operator,
-you add a type method called `+++` to `Vector2D` as follows:
+위 예제는 `+++`라는 새로운 전위 연산자를 정의한다. 이 연산자는 Swift에서 아직 정의된 의미가 없으므로, 아래에서 `Vector2D` 인스턴스를 다루는 특정 맥락에서 새로운 의미를 부여한다. 이 예제에서는 `+++`를 새로운 "전위 두 배 연산자"로 간주한다. 이 연산자는 앞서 정의한 덧셈 할당 연산자를 사용해 `Vector2D` 인스턴스의 `x`와 `y` 값을 두 배로 만든다. `+++` 연산자를 구현하려면 `Vector2D`에 `+++`라는 타입 메서드를 다음과 같이 추가한다:
 
 ```swift
 extension Vector2D {
@@ -1038,21 +786,14 @@ let afterDoubling = +++toBeDoubled
   ```
 -->
 
-### Precedence for Custom Infix Operators
 
-Custom infix operators each belong to a precedence group.
-A precedence group specifies an operator's precedence relative
-to other infix operators, as well as the operator's associativity.
-See <doc:AdvancedOperators#Precedence-and-Associativity> for an explanation of
-how these characteristics affect an infix operator's interaction
-with other infix operators.
+### 커스텀 중위 연산자의 우선순위
 
-A custom infix operator that isn't explicitly placed into a precedence group is
-given a default precedence group with a precedence immediately higher
-than the precedence of the ternary conditional operator.
+커스텀 중위 연산자는 각각 특정 우선순위 그룹에 속한다. 우선순위 그룹은 연산자의 우선순위와 결합 방향을 정의한다. 이 특성들이 다른 중위 연산자와 어떻게 상호작용하는지에 대한 자세한 설명은 <doc:AdvancedOperators#Precedence-and-Associativity>를 참고한다.
 
-The following example defines a new custom infix operator called `+-`,
-which belongs to the precedence group `AdditionPrecedence`:
+명시적으로 우선순위 그룹을 지정하지 않은 커스텀 중위 연산자는 기본 우선순위 그룹에 할당된다. 이 기본 그룹은 삼항 조건 연산자보다 한 단계 높은 우선순위를 가진다.
+
+다음 예제는 `+-`이라는 새로운 커스텀 중위 연산자를 정의한다. 이 연산자는 `AdditionPrecedence` 우선순위 그룹에 속한다:
 
 ```swift
 infix operator +-: AdditionPrecedence
@@ -1064,7 +805,7 @@ extension Vector2D {
 let firstVector = Vector2D(x: 1.0, y: 2.0)
 let secondVector = Vector2D(x: 3.0, y: 4.0)
 let plusMinusVector = firstVector +- secondVector
-// plusMinusVector is a Vector2D instance with values of (4.0, -2.0)
+// plusMinusVector는 (4.0, -2.0) 값을 가진 Vector2D 인스턴스다.
 ```
 
 <!--
@@ -1085,21 +826,9 @@ let plusMinusVector = firstVector +- secondVector
   ```
 -->
 
-This operator adds together the `x` values of two vectors,
-and subtracts the `y` value of the second vector from the first.
-Because it's in essence an “additive” operator,
-it has been given the same precedence group
-as additive infix operators such as `+` and `-`.
-For information about the operators provided by the Swift standard library,
-including a complete list of the operator precedence groups and associativity settings,
-see [Operator Declarations](https://developer.apple.com/documentation/swift/operator_declarations).
-For more information about precedence groups and to see the syntax for
-defining your own operators and precedence groups,
-see <doc:Declarations#Operator-Declaration>.
+이 연산자는 두 벡터의 `x` 값을 더하고, 첫 번째 벡터의 `y` 값에서 두 번째 벡터의 `y` 값을 뺀다. 기본적으로 "덧셈" 연산자이기 때문에, `+`와 `-`와 같은 덧셈 연산자와 동일한 우선순위 그룹을 가진다. Swift 표준 라이브러리에서 제공하는 연산자와 우선순위 그룹, 결합 방향에 대한 전체 목록은 [Operator Declarations](https://developer.apple.com/documentation/swift/operator_declarations)를 참고한다. 우선순위 그룹에 대한 자세한 정보와 커스텀 연산자 및 우선순위 그룹을 정의하는 문법은 <doc:Declarations#Operator-Declaration>을 확인한다.
 
-> Note: You don't specify a precedence when defining a prefix or postfix operator.
-> However, if you apply both a prefix and a postfix operator to the same operand,
-> the postfix operator is applied first.
+> 참고: 전위 연산자나 후위 연산자를 정의할 때는 우선순위를 지정하지 않는다. 하지만 동일한 피연산자에 전위 연산자와 후위 연산자를 모두 적용할 경우, 후위 연산자가 먼저 적용된다.
 
 <!--
   - test: `postfixOperatorsAreAppliedBeforePrefixOperators`
@@ -1126,18 +855,12 @@ see <doc:Declarations#Operator-Declaration>.
   ```
 -->
 
+
 ## Result Builders
 
-A *result builder* is a type you define
-that adds syntax for creating nested data,
-like a list or tree,
-in a natural, declarative way.
-The code that uses the result builder
-can include ordinary Swift syntax, like `if`  and `for`,
-to handle conditional or repeated pieces of data.
+*Result Builder*는 리스트나 트리 같은 중첩된 데이터를 자연스럽고 선언적인 방식으로 생성하기 위한 구문을 추가하는 타입이다. Result Builder를 사용하는 코드는 조건문이나 반복문과 같은 일반적인 Swift 구문을 포함할 수 있다.
 
-The code below defines a few types for drawing on a single line
-using stars and text.
+아래 코드는 별과 텍스트를 사용해 한 줄에 그림을 그리는 몇 가지 타입을 정의한다.
 
 ```swift
 protocol Drawable {
@@ -1199,20 +922,9 @@ struct AllCaps: Drawable {
   ```
 -->
 
-The `Drawable` protocol defines the requirement
-for something that can be drawn, like a line or shape:
-The type must implement a `draw()` method.
-The `Line` structure represents a single-line drawing,
-and it serves the top-level container for most drawings.
-To draw a `Line`,
-the structure calls `draw()` on each of the line's components,
-and then concatenates the resulting strings into a single string.
-The `Text` structure wraps a string to make it part of a drawing.
-The `AllCaps` structure wraps and modifies another drawing,
-converting any text in the drawing to uppercase.
+`Drawable` 프로토콜은 선이나 도형처럼 그릴 수 있는 것에 대한 요구사항을 정의한다. 해당 타입은 `draw()` 메서드를 구현해야 한다. `Line` 구조체는 한 줄로 된 그림을 나타내며, 대부분의 그림에서 최상위 컨테이너 역할을 한다. `Line`을 그리기 위해 구조체는 각 구성 요소의 `draw()`를 호출하고, 결과 문자열을 하나로 합친다. `Text` 구조체는 문자열을 감싸서 그림의 일부로 만든다. `AllCaps` 구조체는 다른 그림을 감싸고 수정하며, 그림 안의 모든 텍스트를 대문자로 변환한다.
 
-It's possible to make a drawing with these types
-by calling their initializers:
+이 타입들을 사용해 그림을 만들려면 초기화 메서드를 호출하면 된다.
 
 ```swift
 let name: String? = "Ravi Patel"
@@ -1244,20 +956,9 @@ print(manualDrawing.draw())
   ```
 -->
 
-This code works, but it's a little awkward.
-The deeply nested parentheses after `AllCaps` are hard to read.
-The fallback logic to use "World" when `name` is `nil`
-has to be done inline using the `??` operator,
-which would be difficult with anything more complex.
-If you needed to include switches or `for` loops
-to build up part of the drawing, there's no way to do that.
-A result builder lets you rewrite code like this
-so that it looks like normal Swift code.
+이 코드는 동작하지만 약간 불편하다. `AllCaps` 뒤의 깊게 중첩된 괄호는 읽기 어렵다. `name`이 `nil`일 때 "World"를 사용하는 폴백 로직은 `??` 연산자를 사용해 인라인으로 처리해야 하며, 더 복잡한 경우에는 어려울 수 있다. 그림의 일부를 구성하기 위해 `switch`나 `for` 루프를 포함해야 한다면, 이를 구현할 방법이 없다. Result Builder를 사용하면 이 코드를 일반 Swift 코드처럼 보이게 다시 작성할 수 있다.
 
-To define a result builder,
-you write the `@resultBuilder` attribute on a type declaration.
-For example, this code defines a result builder called `DrawingBuilder`,
-which lets you use a declarative syntax to describe a drawing:
+Result Builder를 정의하려면 타입 선언에 `@resultBuilder` 속성을 작성한다. 예를 들어, 이 코드는 `DrawingBuilder`라는 Result Builder를 정의하며, 선언적 구문을 사용해 그림을 설명할 수 있게 한다.
 
 ```swift
 @resultBuilder
@@ -1293,18 +994,9 @@ struct DrawingBuilder {
   ```
 -->
 
-The `DrawingBuilder` structure defines three methods
-that implement parts of the result builder syntax.
-The `buildBlock(_:)` method adds support for
-writing a series of lines in a block of code.
-It combines the components in that block into a `Line`.
-The `buildEither(first:)` and `buildEither(second:)` methods
-add support for `if`-`else`.
+`DrawingBuilder` 구조체는 Result Builder 구문의 일부를 구현하는 세 가지 메서드를 정의한다. `buildBlock(_:)` 메서드는 코드 블록 안에 일련의 줄을 작성하는 기능을 추가한다. 이 메서드는 블록 안의 구성 요소를 `Line`으로 결합한다. `buildEither(first:)`와 `buildEither(second:)` 메서드는 `if`-`else` 구문을 지원한다.
 
-You can apply the `@DrawingBuilder` attribute to a function's parameter,
-which turns a closure passed to the function
-into the value that the result builder creates from that closure.
-For example:
+`@DrawingBuilder` 속성을 함수의 매개변수에 적용하면, 함수에 전달된 클로저를 Result Builder가 생성한 값으로 변환한다. 예를 들어:
 
 ```swift
 func draw(@DrawingBuilder content: () -> Drawable) -> Drawable {
@@ -1376,19 +1068,7 @@ print(personalGreeting.draw())
   ```
 -->
 
-The `makeGreeting(for:)` function takes a `name` parameter
-and uses it to draw a personalized greeting.
-The `draw(_:)` and `caps(_:)` functions
-both take a single closure as their argument,
-which is marked with the `@DrawingBuilder` attribute.
-When you call those functions,
-you use the special syntax that `DrawingBuilder` defines.
-Swift transforms that declarative description of a drawing
-into a series of calls to the methods on `DrawingBuilder`
-to build up the value that's passed as the function argument.
-For example,
-Swift transforms the call to `caps(_:)` in that example
-into code like the following:
+`makeGreeting(for:)` 함수는 `name` 매개변수를 받아 개인화된 인사말을 그린다. `draw(_:)`와 `caps(_:)` 함수는 모두 단일 클로저를 인자로 받으며, 이 클로저는 `@DrawingBuilder` 속성으로 표시된다. 이 함수들을 호출할 때 `DrawingBuilder`가 정의한 특별한 구문을 사용한다. Swift는 그림에 대한 선언적 설명을 `DrawingBuilder`의 메서드 호출로 변환해 함수 인자로 전달된 값을 구성한다. 예를 들어, Swift는 `caps(_:)` 호출을 다음과 같은 코드로 변환한다.
 
 ```swift
 let capsDrawing = caps {
@@ -1424,15 +1104,9 @@ let capsDrawing = caps {
   ```
 -->
 
-Swift transforms the `if`-`else` block into
-calls to the `buildEither(first:)` and `buildEither(second:)` methods.
-Although you don't call these methods in your own code,
-showing the result of the transformation
-makes it easier to see how Swift transforms your code
-when you use the `DrawingBuilder` syntax.
+Swift는 `if`-`else` 블록을 `buildEither(first:)`와 `buildEither(second:)` 메서드 호출로 변환한다. 이 메서드들을 직접 호출하지는 않지만, 변환 결과를 보면 Swift가 `DrawingBuilder` 구문을 사용할 때 코드를 어떻게 변환하는지 쉽게 이해할 수 있다.
 
-To add support for writing `for` loops in the special drawing syntax,
-add a `buildArray(_:)` method.
+특별한 그림 구문에서 `for` 루프를 작성할 수 있도록 지원하려면 `buildArray(_:)` 메서드를 추가한다.
 
 ```swift
 extension DrawingBuilder {
@@ -1470,12 +1144,9 @@ let manyStars = draw {
   ```
 -->
 
-In the code above, the `for` loop creates an array of drawings,
-and the `buildArray(_:)` method turns that array into a `Line`.
+위 코드에서 `for` 루프는 그림 배열을 생성하고, `buildArray(_:)` 메서드는 이 배열을 `Line`으로 변환한다.
 
-For a complete list of how Swift transforms builder syntax
-into calls to the builder type's methods,
-see <doc:Attributes#resultBuilder>.
+Swift가 Builder 구문을 Builder 타입의 메서드 호출로 변환하는 전체 목록은 <doc:Attributes#resultBuilder>를 참조한다.
 
 <!--
   The following needs more work...

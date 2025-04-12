@@ -1,78 +1,63 @@
-# Statements
+# 구문
 
-Group expressions and control the flow of execution.
+표현식을 그룹화하고 실행 흐름을 제어한다.
 
-In Swift, there are three kinds of statements: simple statements, compiler control statements,
-and control flow statements.
-Simple statements are the most common and consist of either an expression or a declaration.
-Compiler control statements allow the program to change aspects of the compiler's behavior
-and include a conditional compilation block and a line control statement.
+Swift에는 세 가지 종류의 구문이 있다: 단순 구문, 컴파일러 제어 구문, 그리고 제어 흐름 구문.
+단순 구문은 가장 일반적으로 사용되며 표현식이나 선언문으로 구성된다.
+컴파일러 제어 구문은 프로그램이 컴파일러의 동작 방식을 변경할 수 있게 하며, 조건부 컴파일 블록과 라인 제어 구문이 포함된다.
 
-Control flow statements are used to control the flow of execution in a program.
-There are several types of control flow statements in Swift, including
-loop statements, branch statements, and control transfer statements.
-Loop statements allow a block of code to be executed repeatedly,
-branch statements allow a certain block of code to be executed
-only when certain conditions are met,
-and control transfer statements provide a way to alter the order in which code is executed.
-In addition, Swift provides a `do` statement to introduce scope,
-and catch and handle errors,
-and a `defer` statement for running cleanup actions just before the current scope exits.
+제어 흐름 구문은 프로그램의 실행 흐름을 제어하는 데 사용된다.
+Swift에는 여러 종류의 제어 흐름 구문이 있으며, 루프 구문, 분기 구문, 그리고 제어 전달 구문이 포함된다.
+루프 구문은 코드 블록을 반복적으로 실행할 수 있게 한다.
+분기 구문은 특정 조건이 충족될 때만 코드 블록을 실행한다.
+제어 전달 구문은 코드 실행 순서를 변경하는 방법을 제공한다.
+또한 Swift는 `do` 구문을 통해 스코프를 도입하고 오류를 잡아 처리할 수 있다.
+`defer` 구문은 현재 스코프가 종료되기 직전에 정리 작업을 실행한다.
 
-A semicolon (`;`) can optionally appear after any statement
-and is used to separate multiple statements if they appear on the same line.
+세미콜론(`;`)은 선택적으로 모든 구문 뒤에 올 수 있으며, 같은 줄에 여러 구문이 있을 때 구분자로 사용된다.
 
-> Grammar of a statement:
+> 구문 문법:
 >
-> *statement* → *expression* **`;`**_?_ \
-> *statement* → *declaration* **`;`**_?_ \
-> *statement* → *loop-statement* **`;`**_?_ \
-> *statement* → *branch-statement* **`;`**_?_ \
-> *statement* → *labeled-statement* **`;`**_?_ \
-> *statement* → *control-transfer-statement* **`;`**_?_ \
-> *statement* → *defer-statement* **`;`**_?_ \
-> *statement* → *do-statement* **`;`**_?_ \
-> *statement* → *compiler-control-statement* \
-> *statements* → *statement* *statements*_?_
+> *구문* → *표현식* **`;`**_?_ \
+> *구문* → *선언문* **`;`**_?_ \
+> *구문* → *루프-구문* **`;`**_?_ \
+> *구문* → *분기-구문* **`;`**_?_ \
+> *구문* → *레이블-구문* **`;`**_?_ \
+> *구문* → *제어-전달-구문* **`;`**_?_ \
+> *구문* → *defer-구문* **`;`**_?_ \
+> *구문* → *do-구문* **`;`**_?_ \
+> *구문* → *컴파일러-제어-구문* \
+> *구문들* → *구문* *구문들*_?_
 
 <!--
-  NOTE: Removed semicolon-statement as syntactic category,
-  because, according to Doug, they're not really statements.
-  For example, you can't have
+  참고: 세미콜론 구문을 문법적 범주에서 제거했다.
+  Doug에 따르면, 이들은 실제로 구문이 아니기 때문이다.
+  예를 들어, 다음과 같은 코드는 불가능하다:
       if foo { ; }
-  but you should be able to if it's truly considered a statement.
-  The semicolon isn't even required for the compiler; we just added
-  rules that require them in some places to enforce a certain amount
-  of readability.
+  하지만 정말로 구문으로 간주된다면 가능해야 한다.
+  세미콜론은 컴파일러에게 필수적이지 않다. 단지 가독성을 위해
+  일부 위치에서 이를 요구하는 규칙을 추가했을 뿐이다.
 -->
 
-## Loop Statements
 
-Loop statements allow a block of code to be executed repeatedly,
-depending on the conditions specified in the loop.
-Swift has three loop statements:
-a `for`-`in` statement,
-a `while` statement,
-and a `repeat`-`while` statement.
+## 반복문
 
-Control flow in a loop statement can be changed by a `break` statement
-and a `continue` statement and is discussed in <doc:Statements#Break-Statement> and
-<doc:Statements#Continue-Statement> below.
+반복문은 특정 조건에 따라 코드 블록을 반복해서 실행할 수 있게 해준다. Swift는 세 가지 반복문을 제공한다: `for`-`in` 문, `while` 문, 그리고 `repeat`-`while` 문이다.
 
-> Grammar of a loop statement:
+반복문의 제어 흐름은 `break` 문과 `continue` 문으로 변경할 수 있다. 이에 대한 자세한 내용은 아래 <doc:Statements#Break-Statement>와 <doc:Statements#Continue-Statement>에서 다룬다.
+
+> 반복문 문법:
 >
 > *loop-statement* → *for-in-statement* \
 > *loop-statement* → *while-statement* \
 > *loop-statement* → *repeat-while-statement*
 
-### For-In Statement
 
-A `for`-`in` statement allows a block of code to be executed
-once for each item in a collection (or any type)
-that conforms to the
-[`Sequence`](https://developer.apple.com/documentation/swift/sequence) protocol.
+### For-In 문
 
-A `for`-`in` statement has the following form:
+`for`-`in` 문은 [`Sequence`](https://developer.apple.com/documentation/swift/sequence) 프로토콜을 준수하는 컬렉션(또는 모든 타입)의 각 항목에 대해 코드 블록을 한 번씩 실행할 수 있게 한다.
+
+`for`-`in` 문은 다음과 같은 형태를 가진다:
 
 ```swift
 for <#item#> in <#collection#> {
@@ -80,68 +65,52 @@ for <#item#> in <#collection#> {
 }
 ```
 
-The `makeIterator()` method is called on the *collection* expression
-to obtain a value of an iterator type --- that is,
-a type that conforms to the
-[`IteratorProtocol`](https://developer.apple.com/documentation/swift/iteratorprotocol) protocol.
-The program begins executing a loop
-by calling the `next()` method on the iterator.
-If the value returned isn't `nil`,
-it's assigned to the *item* pattern,
-the program executes the *statements*,
-and then continues execution at the beginning of the loop.
-Otherwise, the program doesn't perform assignment or execute the *statements*,
-and it's finished executing the `for`-`in` statement.
+*컬렉션* 표현식에 대해 `makeIterator()` 메서드를 호출해 이터레이터 타입의 값을 얻는다. 이터레이터 타입은 [`IteratorProtocol`](https://developer.apple.com/documentation/swift/iteratorprotocol) 프로토콜을 준수하는 타입이다. 프로그램은 이터레이터의 `next()` 메서드를 호출해 루프를 시작한다. 반환된 값이 `nil`이 아니면, 그 값을 *item* 패턴에 할당하고 *statements*를 실행한 후 루프의 시작 부분으로 돌아가 실행을 계속한다. 반환된 값이 `nil`이면, 할당이나 *statements* 실행을 하지 않고 `for`-`in` 문의 실행을 종료한다.
 
-> Grammar of a for-in statement:
+> For-In 문의 문법:
 >
 > *for-in-statement* → **`for`** **`case`**_?_ *pattern* **`in`** *expression* *where-clause*_?_ *code-block*
 
-### While Statement
 
-A `while` statement allows a block of code to be executed repeatedly,
-as long as a condition remains true.
+### While 문
 
-A `while` statement has the following form:
+`while` 문은 특정 조건이 참일 동안 코드 블록을 반복적으로 실행한다.
+
+`while` 문은 다음과 같은 형태를 가진다:
 
 ```swift
-while <#condition#> {
-   <#statements#>
+while <#조건#> {
+   <#실행할 코드#>
 }
 ```
 
-A `while` statement is executed as follows:
+`while` 문은 다음과 같은 순서로 실행된다:
 
-1. The *condition* is evaluated.
+1. **조건**을 평가한다.
+   - 조건이 `true`이면 2단계로 진행한다.
+   - 조건이 `false`이면 `while` 문 실행을 종료한다.
+2. **실행할 코드**를 실행한 후, 다시 1단계로 돌아간다.
 
-   If `true`, execution continues to step 2.
-   If `false`, the program is finished executing the `while` statement.
-2. The program executes the *statements*, and execution returns to step 1.
+조건은 **실행할 코드**가 실행되기 전에 평가되므로, `while` 문 내부의 코드는 0번 이상 실행될 수 있다.
 
-Because the value of the *condition* is evaluated before the *statements* are executed,
-the *statements* in a `while` statement can be executed zero or more times.
+조건의 값은 `Bool` 타입이거나 `Bool`로 변환 가능한 타입이어야 한다. 또한 조건은 옵셔널 바인딩 선언일 수도 있으며, 이는 <doc:TheBasics#Optional-Binding>에서 다룬다.
 
-The value of the *condition*
-must be of type `Bool` or a type bridged to `Bool`.
-The condition can also be an optional binding declaration,
-as discussed in <doc:TheBasics#Optional-Binding>.
-
-> Grammar of a while statement:
+> While 문의 문법:
 >
-> *while-statement* → **`while`** *condition-list* *code-block*
+> *while-statement* → **`while`** *조건-목록* *코드-블록*
 >
-> *condition-list* → *condition* | *condition* **`,`** *condition-list* \
-> *condition* → *expression* | *availability-condition* | *case-condition* | *optional-binding-condition*
+> *조건-목록* → *조건* | *조건* **`,`** *조건-목록* \
+> *조건* → *표현식* | *가용성-조건* | *케이스-조건* | *옵셔널-바인딩-조건*
 >
-> *case-condition* → **`case`** *pattern* *initializer* \
-> *optional-binding-condition* → **`let`** *pattern* *initializer*_?_ | **`var`** *pattern* *initializer*_?_
+> *케이스-조건* → **`case`** *패턴* *초기화자* \
+> *옵셔널-바인딩-조건* → **`let`** *패턴* *초기화자*_?_ | **`var`** *패턴* *초기화자*_?_
 
-### Repeat-While Statement
 
-A `repeat`-`while` statement allows a block of code to be executed one or more times,
-as long as a condition remains true.
+### Repeat-While 문
 
-A `repeat`-`while` statement has the following form:
+`repeat`-`while` 문은 조건이 참인 동안 코드 블록을 한 번 이상 실행할 수 있게 해준다.
+
+`repeat`-`while` 문은 다음과 같은 형태를 가진다:
 
 ```swift
 repeat {
@@ -149,319 +118,178 @@ repeat {
 } while <#condition#>
 ```
 
-A `repeat`-`while` statement is executed as follows:
+`repeat`-`while` 문은 다음과 같은 순서로 실행된다:
 
-1. The program executes the *statements*,
-   and execution continues to step 2.
-2. The *condition* is evaluated.
+1. 프로그램이 *statements*를 실행한 후, 2단계로 진행한다.
+2. *condition*을 평가한다.
 
-   If `true`, execution returns to step 1.
-   If `false`, the program is finished executing the `repeat`-`while` statement.
+   - 조건이 `true`이면 1단계로 돌아간다.
+   - 조건이 `false`이면 `repeat`-`while` 문 실행을 종료한다.
 
-Because the value of the *condition* is evaluated after the *statements* are executed,
-the *statements* in a `repeat`-`while` statement are executed at least once.
+*condition*은 *statements*가 실행된 후에 평가되기 때문에, `repeat`-`while` 문 안의 *statements*는 최소 한 번은 실행된다.
 
-The value of the *condition*
-must be of type `Bool` or a type bridged to `Bool`.
+*condition*의 값은 반드시 `Bool` 타입이거나 `Bool`로 변환 가능한 타입이어야 한다.
 
-> Grammar of a repeat-while statement:
+> repeat-while 문의 문법:
 >
 > *repeat-while-statement* → **`repeat`** *code-block* **`while`** *expression*
 
-## Branch Statements
 
-Branch statements allow the program to execute certain parts of code
-depending on the value of one or more conditions.
-The values of the conditions specified in a branch statement
-control how the program branches and, therefore, what block of code is executed.
-Swift has three branch statements:
-an `if` statement, a `guard` statement, and a `switch` statement.
+## 분기문
 
-Control flow in an `if` statement or a `switch` statement can be changed by a `break` statement
-and is discussed in <doc:Statements#Break-Statement> below.
+분기문은 프로그램이 하나 이상의 조건 값에 따라 특정 코드 부분을 실행할 수 있게 한다. 분기문에 지정된 조건 값은 프로그램이 어떻게 분기할지, 그리고 어떤 코드 블록을 실행할지를 결정한다. Swift는 세 가지 분기문을 제공한다: `if` 문, `guard` 문, 그리고 `switch` 문.
 
-> Grammar of a branch statement:
+`if` 문이나 `switch` 문에서의 제어 흐름은 `break` 문에 의해 변경될 수 있으며, 이에 대한 내용은 아래 <doc:Statements#Break-Statement>에서 다룬다.
+
+> 분기문 문법:
 >
 > *branch-statement* → *if-statement* \
 > *branch-statement* → *guard-statement* \
 > *branch-statement* → *switch-statement*
 
-### If Statement
 
-An `if` statement is used for executing code
-based on the evaluation of one or more conditions.
+### If 문
 
-There are two basic forms of an `if` statement.
-In each form, the opening and closing braces are required.
+`if` 문은 하나 이상의 조건을 평가한 결과에 따라 코드를 실행할 때 사용한다.
 
-The first form allows code to be executed only when a condition is true
-and has the following form:
+`if` 문에는 두 가지 기본 형태가 있다. 두 형태 모두 여는 중괄호와 닫는 중괄호가 필수적으로 필요하다.
+
+첫 번째 형태는 조건이 참일 때만 코드를 실행한다. 형태는 다음과 같다:
 
 ```swift
-if <#condition#> {
-   <#statements#>
+if <#조건#> {
+   <#실행할 코드#>
 }
 ```
 
-The second form of an `if` statement provides an additional *else clause*
-(introduced by the `else` keyword)
-and is used for executing one part of code when the condition is true
-and another part of code when the same condition is false.
-When a single else clause is present, an `if` statement has the following form:
+두 번째 형태는 추가적인 *else 절*을 제공한다. `else` 키워드로 시작하며, 조건이 참일 때와 거짓일 때 각각 다른 코드를 실행한다. 단일 else 절이 있는 경우, `if` 문의 형태는 다음과 같다:
 
 ```swift
-if <#condition#> {
-   <#statements to execute if condition is true#>
+if <#조건#> {
+   <#조건이 참일 때 실행할 코드#>
 } else {
-   <#statements to execute if condition is false#>
+   <#조건이 거짓일 때 실행할 코드#>
 }
 ```
 
-The else clause of an `if` statement can contain another `if` statement
-to test more than one condition.
-An `if` statement chained together in this way has the following form:
+`if` 문의 else 절은 다른 `if` 문을 포함할 수 있다. 이를 통해 여러 조건을 테스트할 수 있다. 이런 방식으로 연결된 `if` 문의 형태는 다음과 같다:
 
 ```swift
-if <#condition 1#> {
-   <#statements to execute if condition 1 is true#>
-} else if <#condition 2#> {
-   <#statements to execute if condition 2 is true#>
+if <#조건 1#> {
+   <#조건 1이 참일 때 실행할 코드#>
+} else if <#조건 2#> {
+   <#조건 2이 참일 때 실행할 코드#>
 } else {
-   <#statements to execute if both conditions are false#>
+   <#두 조건 모두 거짓일 때 실행할 코드#>
 }
 ```
 
-The value of any condition in an `if` statement
-must be of type `Bool` or a type bridged to `Bool`.
-The condition can also be an optional binding declaration,
-as discussed in <doc:TheBasics#Optional-Binding>.
+`if` 문에서 사용하는 모든 조건의 값은 `Bool` 타입이거나 `Bool`로 변환 가능한 타입이어야 한다. 조건은 또한 옵셔널 바인딩 선언일 수도 있다. 이 내용은 <doc:TheBasics#Optional-Binding>에서 다룬다.
 
-> Grammar of an if statement:
+> If 문의 문법:
 >
 > *if-statement* → **`if`** *condition-list* *code-block* *else-clause*_?_ \
 > *else-clause* → **`else`** *code-block* | **`else`** *if-statement*
 
-### Guard Statement
 
-A `guard` statement is used to transfer program control out of a scope
-if one or more conditions aren't met.
+### 가드 문
 
-A `guard` statement has the following form:
+`guard` 문은 하나 이상의 조건이 충족되지 않을 때 프로그램의 제어를 현재 스코프 밖으로 전달하는 데 사용한다.
+
+`guard` 문은 다음과 같은 형태를 가진다:
 
 ```swift
-guard <#condition#> else {
-   <#statements#>
+guard <#조건#> else {
+   <#실행문#>
 }
 ```
 
-The value of any condition in a `guard` statement
-must be of type `Bool` or a type bridged to `Bool`.
-The condition can also be an optional binding declaration,
-as discussed in <doc:TheBasics#Optional-Binding>.
+`guard` 문의 조건은 `Bool` 타입이거나 `Bool`로 변환 가능한 타입이어야 한다. 조건은 옵셔널 바인딩 선언일 수도 있으며, 이는 <doc:TheBasics#Optional-Binding>에서 다룬다.
 
-Any constants or variables assigned a value
-from an optional binding declaration in a `guard` statement condition
-can be used for the rest of the guard statement's enclosing scope.
+`guard` 문의 조건에서 옵셔널 바인딩 선언을 통해 할당된 상수나 변수는 가드 문이 포함된 스코프의 나머지 부분에서 사용할 수 있다.
 
-The `else` clause of a `guard` statement is required,
-and must either call a function with the `Never` return type
-or transfer program control outside the guard statement's enclosing scope
-using one of the following statements:
+`guard` 문의 `else` 절은 필수이며, `Never` 반환 타입을 가진 함수를 호출하거나 다음 중 하나를 사용해 가드 문의 스코프 밖으로 제어를 전달해야 한다:
 
 - `return`
 - `break`
 - `continue`
 - `throw`
 
-Control transfer statements are discussed in <doc:Statements#Control-Transfer-Statements> below.
-For more information on functions with the `Never` return type,
-see <doc:Declarations#Functions-that-Never-Return>.
+제어 전달문에 대해서는 <doc:Statements#Control-Transfer-Statements>에서 다룬다. `Never` 반환 타입을 가진 함수에 대한 자세한 내용은 <doc:Declarations#Functions-that-Never-Return>을 참고한다.
 
-> Grammar of a guard statement:
+> 가드 문 문법:
 >
 > *guard-statement* → **`guard`** *condition-list* **`else`** *code-block*
 
-### Switch Statement
 
-A `switch` statement allows certain blocks of code to be executed
-depending on the value of a control expression.
+### Switch 문
 
-A `switch` statement has the following form:
+`switch` 문은 제어 표현식의 값에 따라 특정 코드 블록을 실행할 수 있게 한다.
+
+`switch` 문은 다음과 같은 형태를 가진다:
 
 ```swift
-switch <#control expression#> {
-case <#pattern 1#>:
-    <#statements#>
-case <#pattern 2#> where <#condition#>:
-    <#statements#>
-case <#pattern 3#> where <#condition#>,
-    <#pattern 4#> where <#condition#>:
-    <#statements#>
+switch <#제어 표현식#> {
+case <#패턴 1#>:
+    <#구문#>
+case <#패턴 2#> where <#조건#>:
+    <#구문#>
+case <#패턴 3#> where <#조건#>,
+    <#패턴 4#> where <#조건#>:
+    <#구문#>
 default:
-    <#statements#>
+    <#구문#>
 }
 ```
 
-The *control expression* of the `switch` statement is evaluated
-and then compared with the patterns specified in each case.
-If a match is found,
-the program executes the *statements* listed within the scope of that case.
-The scope of each case can't be empty.
-As a result, you must include at least one statement
-following the colon (`:`) of each case label. Use a single `break` statement
-if you don't intend to execute any code in the body of a matched case.
+`switch` 문의 *제어 표현식*을 평가한 후, 각 `case`에 지정된 패턴과 비교한다. 일치하는 패턴이 있으면 해당 `case` 범위 내의 *구문*을 실행한다. 각 `case`의 범위는 비어 있을 수 없다. 따라서 각 `case` 레이블의 콜론(`:`) 뒤에 최소한 하나의 구문을 포함해야 한다. 만약 일치하는 `case`의 본문에서 어떤 코드도 실행하지 않으려면 단일 `break` 구문을 사용한다.
 
-The values of expressions your code can branch on are very flexible. For example,
-in addition to the values of scalar types, such as integers and characters,
-your code can branch on the values of any type, including floating-point numbers, strings,
-tuples, instances of custom classes, and optionals.
-The value of the *control expression* can even be matched to the value of a case in an enumeration
-and checked for inclusion in a specified range of values.
-For examples of how to use these various types of values in `switch` statements,
-see <doc:ControlFlow#Switch> in <doc:ControlFlow>.
+코드가 분기할 수 있는 표현식의 값은 매우 유연하다. 예를 들어, 정수나 문자와 같은 스칼라 타입의 값 외에도, 부동소수점 숫자, 문자열, 튜플, 커스텀 클래스의 인스턴스, 옵셔널 등 모든 타입의 값에 대해 분기할 수 있다. *제어 표현식*의 값은 열거형의 `case` 값과 일치하거나 특정 범위의 값에 포함되는지 확인할 수도 있다. `switch` 문에서 이러한 다양한 타입의 값을 사용하는 방법에 대한 예제는 <doc:ControlFlow#Switch>를 참조한다.
 
-A `switch` case can optionally contain a `where` clause after each pattern.
-A *where clause* is introduced by the `where` keyword followed by an expression,
-and is used to provide an additional condition
-before a pattern in a case is considered matched to the *control expression*.
-If a `where` clause is present, the *statements* within the relevant case
-are executed only if the value of the *control expression*
-matches one of the patterns of the case and the expression of the `where` clause evaluates to `true`.
-For example, a *control expression* matches the case in the example below
-only if it's a tuple that contains two elements of the same value, such as `(1, 1)`.
+`switch` 문의 `case`는 각 패턴 뒤에 선택적으로 `where` 절을 포함할 수 있다. *where 절*은 `where` 키워드와 뒤따르는 표현식으로 구성되며, `case`의 패턴이 *제어 표현식*과 일치하는지 확인하기 전에 추가 조건을 제공한다. `where` 절이 있으면, *제어 표현식*의 값이 `case`의 패턴 중 하나와 일치하고 `where` 절의 표현식이 `true`로 평가될 때만 해당 `case` 내의 *구문*이 실행된다. 예를 들어, 아래 예제에서 *제어 표현식*은 `(1, 1)`과 같이 두 요소가 같은 값을 가진 튜플일 때만 해당 `case`와 일치한다.
 
 ```swift
 case let (x, y) where x == y:
 ```
 
-<!--
-  - test: `switch-case-statement`
+위 예제에서 볼 수 있듯이, `case`의 패턴은 `let` 키워드를 사용해 상수를 바인딩할 수도 있다(또한 `var` 키워드를 사용해 변수를 바인딩할 수도 있다). 이 상수(또는 변수)는 해당 `where` 절과 `case` 범위 내의 나머지 코드에서 참조할 수 있다. 만약 `case`가 제어 표현식과 일치하는 여러 패턴을 포함한다면, 모든 패턴은 동일한 상수 또는 변수 바인딩을 포함해야 하며, 각 바인딩된 변수 또는 상수는 모든 패턴에서 동일한 타입을 가져야 한다.
 
-  ```swifttest
-  >> switch (1, 1) {
-  -> case let (x, y) where x == y:
-  >> break
-  >> default: break
-  >> }
-  ```
--->
+`switch` 문은 `default` 키워드로 시작하는 기본 `case`를 포함할 수도 있다. 기본 `case` 내의 코드는 다른 어떤 `case`도 제어 표현식과 일치하지 않을 때만 실행된다. `switch` 문은 기본 `case`를 하나만 포함할 수 있으며, 이는 `switch` 문의 끝에 위치해야 한다.
 
-As the above example shows, patterns in a case can also bind constants
-using the `let` keyword (they can also bind variables using the `var` keyword).
-These constants (or variables) can then be referenced in a corresponding `where` clause
-and throughout the rest of the code within the scope of the case.
-If the case contains multiple patterns that match the control expression,
-all of the patterns must contain the same constant or variable bindings,
-and each bound variable or constant must have the same type
-in all of the case's patterns.
+패턴 매칭 연산의 실제 실행 순서, 특히 `case` 내 패턴의 평가 순서는 지정되지 않았지만, `switch` 문의 패턴 매칭은 소스 코드에서 나타나는 순서대로 평가되는 것처럼 동작한다. 따라서 여러 `case`가 동일한 값으로 평가되는 패턴을 포함하고 있어 제어 표현식의 값과 일치할 수 있다면, 프로그램은 소스 코드 순서상 첫 번째로 일치하는 `case` 내의 코드만 실행한다.
 
-<!--
-  The discussion above about multi-pattern cases
-  matches discussion of multi-pattern catch under Do Statement.
--->
 
-A `switch` statement can also include a default case, introduced by the `default` keyword.
-The code within a default case is executed only if no other cases match the control expression.
-A `switch` statement can include only one default case,
-which must appear at the end of the `switch` statement.
+#### Switch 문은 모든 경우를 처리해야 한다
 
-Although the actual execution order of pattern-matching operations,
-and in particular the evaluation order of patterns in cases, is unspecified,
-pattern matching in a `switch` statement behaves
-as if the evaluation is performed in source order --- that is,
-the order in which they appear in source code.
-As a result, if multiple cases contain patterns that evaluate to the same value,
-and thus can match the value of the control expression,
-the program executes only the code within the first matching case in source order.
+Swift에서,  
+제어 표현식의 타입이 가질 수 있는 모든 가능한 값은  
+적어도 하나의 case 패턴과 일치해야 한다.  
+이것이 실질적으로 불가능한 경우  
+(예를 들어, 제어 표현식의 타입이 `Int`인 경우),  
+요구 사항을 충족시키기 위해 default case를 추가할 수 있다.
 
-<!--
-  - test: `switch-case-with-multiple-patterns`
 
-  ```swifttest
-  >> let tuple = (1, 1)
-  >> switch tuple {
-  >>     case (let x, 5), (let x, 1): print(x)
-  >>     default: print(2)
-  >> }
-  << 1
-  ```
--->
+#### 향후 열거형 케이스 전환
 
-<!--
-  - test: `switch-case-with-multiple-patterns-err`
+*비동결 열거형(nonfrozen enumeration)*은 미래에 새로운 열거형 케이스를 추가할 수 있는 특별한 종류의 열거형이다. 앱을 컴파일하고 배포한 후에도 새로운 케이스가 추가될 수 있다. 비동결 열거형을 전환할 때는 추가적인 고려가 필요하다. 라이브러리 작성자가 열거형을 비동결로 표시하면, 새로운 열거형 케이스를 추가할 권리를 보유하게 되며, 해당 열거형과 상호작용하는 모든 코드는 재컴파일 없이도 미래의 케이스를 처리할 수 있어야 한다. 라이브러리 진화 모드로 컴파일된 코드, Swift 표준 라이브러리, Apple 프레임워크의 Swift 오버레이, 그리고 C 및 Objective-C 코드는 비동결 열거형을 선언할 수 있다. 동결 및 비동결 열거형에 대한 자세한 정보는 <doc:Attributes#frozen>을 참고한다.
 
-  ```swifttest
-  >> let tuple = (1, 1)
-  >> switch tuple {
-  >>     case (let x, 5), (let x as Any, 1): print(1)
-  >>     default: print(2)
-  >> }
-  !$ error: pattern variable bound to type 'Any', expected type 'Int'
-  !! case (let x, 5), (let x as Any, 1): print(1)
-  !!                       ^
-  ```
--->
+비동결 열거형 값을 전환할 때는, 모든 케이스에 해당하는 전환 케이스가 이미 존재하더라도 항상 기본 케이스를 포함해야 한다. 기본 케이스에 `@unknown` 속성을 적용할 수 있는데, 이는 기본 케이스가 미래에 추가될 열거형 케이스와만 매치되어야 함을 나타낸다. Swift는 기본 케이스가 컴파일 시점에 알려진 열거형 케이스와 매치될 경우 경고를 발생시킨다. 이 경고는 라이브러리 작성자가 새로운 케이스를 추가했지만, 해당 케이스에 대한 전환 케이스가 없음을 알려준다.
 
-#### Switch Statements Must Be Exhaustive
-
-In Swift,
-every possible value of the control expression’s type
-must match the value of at least one pattern of a case.
-When this simply isn’t feasible
-(for example, when the control expression’s type is `Int`),
-you can include a default case to satisfy the requirement.
-
-#### Switching Over Future Enumeration Cases
-
-A *nonfrozen enumeration* is a special kind of enumeration
-that may gain new enumeration cases in the future ---
-even after you compile and ship an app.
-Switching over a nonfrozen enumeration requires extra consideration.
-When a library's authors mark an enumeration as nonfrozen,
-they reserve the right to add new enumeration cases,
-and any code that interacts with that enumeration
-*must* be able to handle those future cases without being recompiled.
-Code that's compiled in library evolution mode,
-code in the Swift standard library,
-Swift overlays for Apple frameworks,
-and C and Objective-C code can declare nonfrozen enumerations.
-For information about frozen and nonfrozen enumerations,
-see <doc:Attributes#frozen>.
-
-When switching over a nonfrozen enumeration value,
-you always need to include a default case,
-even if every case of the enumeration already has a corresponding switch case.
-You can apply the `@unknown` attribute to the default case,
-which indicates that the default case should match only enumeration cases
-that are added in the future.
-Swift produces a warning
-if the default case matches
-any enumeration case that's known at compiler time.
-This future warning informs you that the library author
-added a new case to the enumeration
-that doesn't have a corresponding switch case.
-
-The following example switches over all three existing cases of
-the Swift standard library's [`Mirror.AncestorRepresentation`](https://developer.apple.com/documentation/swift/mirror/ancestorrepresentation)
-enumeration.
-If you add additional cases in the future,
-the compiler generates a warning to indicate
-that you need to update the switch statement
-to take the new cases into account.
+다음 예제는 Swift 표준 라이브러리의 [`Mirror.AncestorRepresentation`](https://developer.apple.com/documentation/swift/mirror/ancestorrepresentation) 열거형의 기존 세 가지 케이스를 전환한다. 만약 미래에 추가적인 케이스가 생기면, 컴파일러는 새로운 케이스를 고려하도록 전환문을 업데이트해야 한다는 경고를 생성한다.
 
 ```swift
 let representation: Mirror.AncestorRepresentation = .generated
 switch representation {
 case .customized:
-    print("Use the nearest ancestor’s implementation.")
+    print("가장 가까운 조상의 구현을 사용한다.")
 case .generated:
-    print("Generate a default mirror for all ancestor classes.")
+    print("모든 조상 클래스에 대한 기본 미러를 생성한다.")
 case .suppressed:
-    print("Suppress the representation of all ancestor classes.")
+    print("모든 조상 클래스의 표현을 억제한다.")
 @unknown default:
-    print("Use a representation that was unknown when this code was compiled.")
+    print("이 코드가 컴파일될 때 알려지지 않은 표현을 사용한다.")
 }
-// Prints "Generate a default mirror for all ancestor classes."
+// "모든 조상 클래스에 대한 기본 미러를 생성한다." 출력
 ```
 
 <!--
@@ -471,31 +299,24 @@ case .suppressed:
   -> let representation: Mirror.AncestorRepresentation = .generated
   -> switch representation {
      case .customized:
-         print("Use the nearest ancestor’s implementation.")
+         print("가장 가까운 조상의 구현을 사용한다.")
      case .generated:
-         print("Generate a default mirror for all ancestor classes.")
+         print("모든 조상 클래스에 대한 기본 미러를 생성한다.")
      case .suppressed:
-         print("Suppress the representation of all ancestor classes.")
+         print("모든 조상 클래스의 표현을 억제한다.")
   -> @unknown default:
-         print("Use a representation that was unknown when this code was compiled.")
+         print("이 코드가 컴파일될 때 알려지지 않은 표현을 사용한다.")
      }
-  <- Generate a default mirror for all ancestor classes.
+  <- 모든 조상 클래스에 대한 기본 미러를 생성한다.
   ```
 -->
 
-#### Execution Does Not Fall Through Cases Implicitly
 
-After the code within a matched case has finished executing,
-the program exits from the `switch` statement.
-Program execution doesn't continue or "fall through" to the next case or default case.
-That said, if you want execution to continue from one case to the next,
-explicitly include a `fallthrough` statement,
-which simply consists of the `fallthrough` keyword,
-in the case from which you want execution to continue.
-For more information about the `fallthrough` statement,
-see <doc:Statements#Fallthrough-Statement> below.
+#### case 문 실행 후 자동으로 다음 case로 넘어가지 않음
 
-> Grammar of a switch statement:
+일치하는 case 내부의 코드가 실행을 마치면, 프로그램은 `switch` 문을 빠져나간다. 프로그램 실행이 자동으로 다음 case나 default case로 넘어가지 않는다. 만약 하나의 case에서 다음 case로 실행을 이어가고 싶다면, `fallthrough` 문을 명시적으로 추가해야 한다. `fallthrough` 문은 단순히 `fallthrough` 키워드로 구성된다. `fallthrough` 문에 대한 자세한 내용은 아래 <doc:Statements#Fallthrough-Statement>를 참고한다.
+
+> switch 문의 문법:
 >
 > *switch-statement* → **`switch`** *expression* **`{`** *switch-cases*_?_ **`}`** \
 > *switch-cases* → *switch-case* *switch-cases*_?_ \
@@ -517,27 +338,18 @@ see <doc:Statements#Fallthrough-Statement> below.
 > *switch-else-directive-clause* → *else-directive* *switch-cases*_?_
 
 <!--
-  The grammar above uses attributes-OPT to match what's used
-  in all other places where attributes are allowed,
-  although as of Swift 4.2 only a single attribute (@unknown) is allowed.
+  위 문법은 다른 모든 속성이 허용되는 곳에서 사용되는 attributes-OPT를 사용하지만,
+  Swift 4.2 기준으로는 단일 속성(@unknown)만 허용된다.
 -->
 
-## Labeled Statement
 
-You can prefix a loop statement, an `if` statement, a `switch` statement,
-or a `do` statement with a *statement label*,
-which consists of the name of the label followed immediately by a colon (:).
-Use statement labels with `break` and `continue` statements to be explicit
-about how you want to change control flow in a loop statement or a `switch` statement,
-as discussed in <doc:Statements#Break-Statement> and
-<doc:Statements#Continue-Statement> below.
+## 레이블 문법
 
-The scope of a labeled statement is the entire statement following the statement label.
-You can nest labeled statements, but the name of each statement label must be unique.
+루프 문, `if` 문, `switch` 문, `do` 문 앞에 *문장 레이블*을 붙일 수 있다. 문장 레이블은 레이블 이름과 바로 뒤에 오는 콜론(:)으로 구성된다. `break`와 `continue` 문과 함께 문장 레이블을 사용하면 루프 문이나 `switch` 문에서 제어 흐름을 어떻게 변경할지 명확히 지정할 수 있다. 이 내용은 아래 <doc:Statements#Break-Statement>와 <doc:Statements#Continue-Statement>에서 더 자세히 다룬다.
 
-For more information and to see examples
-of how to use statement labels,
-see <doc:ControlFlow#Labeled-Statements> in <doc:ControlFlow>.
+레이블 문의 범위는 레이블 뒤에 오는 전체 문장이다. 레이블 문을 중첩할 수 있지만, 각 레이블 이름은 고유해야 한다.
+
+문장 레이블을 사용하는 방법에 대한 자세한 정보와 예제는 <doc:ControlFlow>의 <doc:ControlFlow#Labeled-Statements>를 참고한다.
 
 <!--
   - test: `backtick-identifier-is-legal-label`
@@ -555,7 +367,7 @@ see <doc:ControlFlow#Labeled-Statements> in <doc:ControlFlow>.
   ```
 -->
 
-> Grammar of a labeled statement:
+> 레이블 문법:
 >
 > *labeled-statement* → *statement-label* *loop-statement* \
 > *labeled-statement* → *statement-label* *if-statement* \
@@ -565,14 +377,12 @@ see <doc:ControlFlow#Labeled-Statements> in <doc:ControlFlow>.
 > *statement-label* → *label-name* **`:`** \
 > *label-name* → *identifier*
 
-## Control Transfer Statements
 
-Control transfer statements can change the order in which code in your program is executed
-by unconditionally transferring program control from one piece of code to another.
-Swift has five control transfer statements: a `break` statement, a `continue` statement,
-a `fallthrough` statement, a `return` statement, and a `throw` statement.
+## 제어 흐름 전환문
 
-> Grammar of a control transfer statement:
+제어 흐름 전환문은 프로그램의 실행 순서를 변경할 수 있다. 이 문법은 특정 코드에서 다른 코드로 프로그램의 제어를 무조건적으로 전환한다. Swift는 다섯 가지 제어 흐름 전환문을 제공한다: `break` 문, `continue` 문, `fallthrough` 문, `return` 문, 그리고 `throw` 문.
+
+> 제어 흐름 전환문 문법:
 >
 > *control-transfer-statement* → *break-statement* \
 > *control-transfer-statement* → *continue-statement* \
@@ -580,174 +390,117 @@ a `fallthrough` statement, a `return` statement, and a `throw` statement.
 > *control-transfer-statement* → *return-statement* \
 > *control-transfer-statement* → *throw-statement*
 
-### Break Statement
 
-A `break` statement ends program execution of a loop,
-an `if` statement, or a `switch` statement.
-A `break` statement can consist of only the `break` keyword,
-or it can consist of the `break` keyword followed by the name of a statement label,
-as shown below.
+### Break 문
+
+`break` 문은 반복문, `if` 문, 또는 `switch` 문의 실행을 종료한다. `break` 문은 단독으로 `break` 키워드만 사용할 수도 있고, `break` 키워드 뒤에 문장 레이블 이름을 붙여 사용할 수도 있다. 아래 예제를 참고한다.
 
 ```swift
 break
 break <#label name#>
 ```
 
-When a `break` statement is followed by the name of a statement label,
-it ends program execution of the loop,
-`if` statement, or `switch` statement named by that label.
+`break` 문 뒤에 문장 레이블 이름이 오면, 해당 레이블이 붙은 반복문, `if` 문, 또는 `switch` 문의 실행을 종료한다.
 
-When a `break` statement isn't followed by the name of a statement label,
-it ends program execution of the `switch` statement or the innermost enclosing loop
-statement in which it occurs.
-You can't use an unlabeled `break` statement to break out of an `if` statement.
+`break` 문 뒤에 문장 레이블 이름이 없으면, `switch` 문 또는 `break` 문이 포함된 가장 안쪽의 반복문 실행을 종료한다. 레이블이 없는 `break` 문은 `if` 문을 벗어나는 데 사용할 수 없다.
 
-In both cases, program control is then transferred to the first line
-of code following the enclosing loop or `switch` statement, if any.
+두 경우 모두, 프로그램의 제어는 반복문 또는 `switch` 문 다음에 오는 첫 번째 코드 라인으로 이동한다.
 
-For examples of how to use a `break` statement,
-see <doc:ControlFlow#Break> and <doc:ControlFlow#Labeled-Statements>
-in <doc:ControlFlow>.
+`break` 문 사용 예제는 <doc:ControlFlow#Break>와 <doc:ControlFlow#Labeled-Statements>를 참고한다.
 
-> Grammar of a break statement:
+> Break 문 문법:
 >
 > *break-statement* → **`break`** *label-name*_?_
 
-### Continue Statement
 
-A `continue` statement ends program execution of the current iteration of a loop
-statement but doesn't stop execution of the loop statement.
-A `continue` statement can consist of only the `continue` keyword,
-or it can consist of the `continue` keyword followed by the name of a statement label,
-as shown below.
+### continue 문
+
+`continue` 문은 현재 루프 반복의 실행을 종료하지만, 루프 자체의 실행을 멈추지는 않는다. `continue` 문은 단순히 `continue` 키워드만으로 구성될 수도 있고, `continue` 키워드 뒤에 문장 레이블 이름을 붙여 사용할 수도 있다. 아래 예제를 참고하라.
 
 ```swift
 continue
 continue <#label name#>
 ```
 
-When a `continue` statement is followed by the name of a statement label,
-it ends program execution of the current iteration
-of the loop statement named by that label.
+`continue` 문 뒤에 문장 레이블 이름이 붙으면, 해당 레이블이 지정한 루프 문의 현재 반복 실행이 종료된다. 레이블 이름이 없으면, `continue` 문이 포함된 가장 안쪽의 루프 문의 현재 반복 실행이 종료된다.
 
-When a `continue` statement isn't followed by the name of a statement label,
-it ends program execution of the current iteration
-of the innermost enclosing loop statement in which it occurs.
+두 경우 모두 프로그램 제어는 해당 루프 문의 조건 평가 부분으로 이동한다.
 
-In both cases, program control is then transferred to the condition
-of the enclosing loop statement.
+`for` 문에서는 `continue` 문이 실행된 후에도 증가식이 평가된다. 이는 루프 본문 실행 후에 증가식이 평가되기 때문이다.
 
-In a `for` statement,
-the increment expression is still evaluated after the `continue` statement is executed,
-because the increment expression is evaluated after the execution of the loop's body.
+`continue` 문 사용 예제는 <doc:ControlFlow#Continue>와 <doc:ControlFlow#Labeled-Statements>를 참고하라.
 
-For examples of how to use a `continue` statement,
-see <doc:ControlFlow#Continue> and <doc:ControlFlow#Labeled-Statements>
-in <doc:ControlFlow>.
-
-> Grammar of a continue statement:
+> continue 문 문법:
 >
 > *continue-statement* → **`continue`** *label-name*_?_
 
-### Fallthrough Statement
 
-A `fallthrough` statement consists of the `fallthrough` keyword
-and occurs only in a case block of a `switch` statement.
-A `fallthrough` statement causes program execution to continue
-from one case in a `switch` statement to the next case.
-Program execution continues to the next case
-even if the patterns of the case label don't match
-the value of the `switch` statement's control expression.
+### Fallthrough 문
 
-A `fallthrough` statement can appear anywhere inside a `switch` statement,
-not just as the last statement of a case block,
-but it can't be used in the final case block.
-It also can't transfer control into a case block
-whose pattern contains value binding patterns.
+`fallthrough` 문은 `fallthrough` 키워드로 구성되며, `switch` 문의 `case` 블록 내에서만 사용할 수 있다. 이 문은 `switch` 문에서 하나의 `case` 블록이 끝난 후, 다음 `case` 블록으로 실행을 이어가도록 한다. 다음 `case` 블록으로 실행이 이어지는 것은, 해당 `case` 라벨의 패턴이 `switch` 문의 제어 표현식 값과 일치하지 않더라도 마찬가지다.
 
-For an example of how to use a `fallthrough` statement in a `switch` statement,
-see <doc:ControlFlow#Control-Transfer-Statements>
-in <doc:ControlFlow>.
+`fallthrough` 문은 `switch` 문 내 어디에서나 사용할 수 있으며, 반드시 `case` 블록의 마지막 문장일 필요는 없다. 하지만, `fallthrough` 문은 마지막 `case` 블록에서는 사용할 수 없다. 또한, 값 바인딩 패턴을 포함하는 `case` 블록으로 제어를 전달할 수도 없다.
 
-> Grammar of a fallthrough statement:
+`switch` 문에서 `fallthrough` 문을 어떻게 사용하는지에 대한 예제는 <doc:ControlFlow#Control-Transfer-Statements>를 참고한다.
+
+> Fallthrough 문의 문법:
 >
 > *fallthrough-statement* → **`fallthrough`**
 
-### Return Statement
 
-A `return` statement occurs in the body of a function or method definition
-and causes program execution to return to the calling function or method.
-Program execution continues at the point immediately following the function or method call.
+### 반환문
 
-A `return` statement can consist of only the `return` keyword,
-or it can consist of the `return` keyword followed by an expression, as shown below.
+반환문(`return` statement)은 함수나 메서드 정의 내부에 위치하며, 프로그램 실행을 호출한 함수나 메서드로 되돌린다. 프로그램 실행은 함수나 메서드 호출 바로 다음 지점에서 계속된다.
+
+반환문은 `return` 키워드만으로 구성될 수도 있고, `return` 키워드 뒤에 표현식을 포함할 수도 있다. 아래 예제를 참고한다.
 
 ```swift
 return
 return <#expression#>
 ```
 
-When a `return` statement is followed by an expression,
-the value of the expression is returned to the calling function or method.
-If the value of the expression doesn't match the value of the return type
-declared in the function or method declaration,
-the expression's value is converted to the return type
-before it's returned to the calling function or method.
+반환문 뒤에 표현식이 오는 경우, 해당 표현식의 값은 호출한 함수나 메서드로 반환된다. 만약 표현식의 값이 함수나 메서드 선언에서 지정한 반환 타입과 일치하지 않으면, 반환되기 전에 해당 값은 반환 타입으로 변환된다.
 
-> Note: As described in <doc:Declarations#Failable-Initializers>, a special form of the `return` statement (`return nil`)
-> can be used in a failable initializer to indicate initialization failure.
+> 참고: <doc:Declarations#Failable-Initializers>에서 설명한 것처럼, 실패 가능한 초기화 메서드에서는 특수한 형태의 반환문(`return nil`)을 사용해 초기화 실패를 나타낼 수 있다.
 
 <!--
-  TODO: Discuss how the conversion takes place and what is allowed to be converted
-  in the (yet to be written) chapter on subtyping and type conversions.
+  TODO: 변환이 어떻게 이루어지는지, 그리고 어떤 타입 변환이 허용되는지에 대해
+  (아직 작성되지 않은) 하위 타입 및 타입 변환 장에서 다룰 예정이다.
 -->
 
-When a `return` statement isn't followed by an expression,
-it can be used only to return from a function or method that doesn't return a value
-(that is, when the return type of the function or method is `Void` or `()`).
+반환문 뒤에 표현식이 없는 경우, 이는 값을 반환하지 않는 함수나 메서드(즉, 반환 타입이 `Void` 또는 `()`인 경우)에서만 사용할 수 있다.
 
-> Grammar of a return statement:
+> 반환문 문법:
 >
 > *return-statement* → **`return`** *expression*_?_
 
-### Throw Statement
 
-A `throw` statement occurs in the body of a throwing function or method,
-or in the body of a closure expression whose type is marked with the `throws` keyword.
+### `throw` 구문
 
-A `throw` statement causes a program to end execution of the current scope
-and begin error propagation to its enclosing scope.
-The error that's thrown continues to propagate until it's handled by a `catch` clause
-of a `do` statement.
+`throw` 구문은 에러를 던지는 함수나 메서드의 본문에서 발생한다. 또는 `throws` 키워드로 타입이 표시된 클로저 표현식의 본문에서도 사용할 수 있다.
 
-A `throw` statement consists of the `throw` keyword
-followed by an expression, as shown below.
+`throw` 구문은 프로그램이 현재 스코프의 실행을 중단하고, 에러를 상위 스코프로 전파하도록 만든다. 던져진 에러는 `do` 구문의 `catch` 절에서 처리될 때까지 계속 전파된다.
+
+`throw` 구문은 `throw` 키워드와 그 뒤에 오는 표현식으로 구성된다. 아래 예제를 참고하자.
 
 ```swift
 throw <#expression#>
 ```
 
-The value of the *expression* must have a type that conforms to
-the `Error` protocol.
-If the `do` statement or function that contains the `throw` statement
-declares the type of errors it throws,
-the value of the *expression* must be an instance of that type.
+여기서 *표현식*의 값은 반드시 `Error` 프로토콜을 준수하는 타입이어야 한다. `throw` 구문을 포함하는 `do` 구문이나 함수가 던지는 에러의 타입을 명시했다면, *표현식*의 값은 해당 타입의 인스턴스여야 한다.
 
-For an example of how to use a `throw` statement,
-see <doc:ErrorHandling#Propagating-Errors-Using-Throwing-Functions>
-in <doc:ErrorHandling>.
+`throw` 구문을 사용하는 방법에 대한 예제는 <doc:ErrorHandling#Propagating-Errors-Using-Throwing-Functions>를 참고하자. 이 내용은 <doc:ErrorHandling> 문서에서 확인할 수 있다.
 
-> Grammar of a throw statement:
+> `throw` 구문의 문법:
 >
 > *throw-statement* → **`throw`** *expression*
 
-## Defer Statement
 
-A `defer` statement is used for executing code
-just before transferring program control outside of the scope
-that the `defer` statement appears in.
+## defer 문
 
-A `defer` statement has the following form:
+`defer` 문은 프로그램의 제어가 해당 `defer` 문이 포함된 스코프를 벗어나기 직전에 코드를 실행하기 위해 사용한다.
+
+`defer` 문은 다음과 같은 형태를 가진다:
 
 ```swift
 defer {
@@ -755,14 +508,9 @@ defer {
 }
 ```
 
-The statements within the `defer` statement are executed
-no matter how program control is transferred.
-This means that a `defer` statement can be used, for example,
-to perform manual resource management such as closing file descriptors,
-and to perform actions that need to happen even if an error is thrown.
+`defer` 문 내부의 코드는 프로그램의 제어가 어떻게 전달되든 상관없이 반드시 실행된다. 이를 통해 파일 디스크립터를 닫는 등 수동 리소스 관리를 수행하거나, 오류가 발생하더라도 반드시 실행되어야 하는 작업을 처리할 수 있다.
 
-The *statements* in the `defer` statement
-are executed at the end of the scope that encloses the `defer` statement.
+`defer` 문 내부의 *statements*는 해당 `defer` 문이 포함된 스코프가 끝나는 시점에 실행된다.
 
 ```swift
 func f(x: Int) {
@@ -802,17 +550,9 @@ f(x: 5)
   ```
 -->
 
-In the code above,
-the `defer` in the `if` statement
-executes before the `defer` declared in the function `f`
-because the scope of the `if` statement ends
-before the scope of the function.
+위 코드에서 `if` 문 내부의 `defer`는 함수 `f`에 선언된 `defer`보다 먼저 실행된다. 이는 `if` 문의 스코프가 함수의 스코프보다 먼저 종료되기 때문이다.
 
-If multiple `defer` statements appear in the same scope,
-the order they appear is the reverse of the order they're executed.
-Executing the last `defer` statement in a given scope first
-means that statements inside that last `defer` statement
-can refer to resources that will be cleaned up by other `defer` statements.
+동일한 스코프 내에 여러 `defer` 문이 존재할 경우, 실행 순서는 선언된 순서의 반대가 된다. 즉, 마지막에 선언된 `defer` 문이 가장 먼저 실행된다. 이를 통해 마지막 `defer` 문 내부의 코드가 다른 `defer` 문에서 정리될 리소스를 참조할 수 있다.
 
 ```swift
 func f() {
@@ -840,26 +580,20 @@ f()
   ```
 -->
 
-The statements in the `defer` statement can't
-transfer program control outside of the `defer` statement.
+`defer` 문 내부의 코드는 프로그램의 제어를 `defer` 문 외부로 전달할 수 없다.
 
-> Grammar of a defer statement:
+> defer 문의 문법:
 >
 > *defer-statement* → **`defer`** *code-block*
 
-## Do Statement
 
-The `do` statement is used to introduce a new scope
-and can optionally contain one or more `catch` clauses,
-which contain patterns that match against defined error conditions.
-Variables and constants declared in the scope of a `do` statement
-can be accessed only within that scope.
+## Do 문
 
-A `do` statement in Swift is similar to
-curly braces (`{}`) in C used to delimit a code block,
-and doesn't incur a performance cost at runtime.
+`do` 문은 새로운 스코프를 도입하며, 선택적으로 하나 이상의 `catch` 절을 포함할 수 있다. `catch` 절은 정의된 오류 조건과 일치하는 패턴을 포함한다. `do` 문의 스코프 내에서 선언된 변수와 상수는 해당 스코프 내에서만 접근할 수 있다.
 
-A `do` statement has the following form:
+Swift의 `do` 문은 C 언어에서 코드 블록을 구분하기 위해 사용하는 중괄호(`{}`)와 유사하며, 런타임에 성능 비용을 발생시키지 않는다.
+
+`do` 문은 다음과 같은 형태를 가진다:
 
 ```swift
 do {
@@ -876,8 +610,7 @@ do {
 }
 ```
 
-A `do` statement can optionally specify the type of error it throws,
-which has the following form:
+`do` 문은 선택적으로 발생할 수 있는 오류의 타입을 지정할 수 있으며, 이는 다음과 같은 형태를 가진다:
 
 ```swift
 do throws(<#type#>) {
@@ -889,73 +622,32 @@ do throws(<#type#>) {
 }
 ```
 
-If the `do` statement includes a `throws` clause,
-the `do` block can throw errors of only the specified *type*.
-The *type* must be
-a concrete type that conforms to the `Error` protocol,
-an opaque type that conforms to the `Error` protocol,
-or the boxed protocol type `any Error`.
-If the `do` statement doesn't specify the type of error it throws,
-Swift infers the error type as follows:
+`do` 문에 `throws` 절이 포함된 경우, `do` 블록은 지정된 *타입*의 오류만 발생시킬 수 있다. *타입*은 `Error` 프로토콜을 준수하는 구체적인 타입, `Error` 프로토콜을 준수하는 불투명 타입, 또는 박스화된 프로토콜 타입인 `any Error`여야 한다. `do` 문이 발생할 수 있는 오류 타입을 지정하지 않으면, Swift는 다음과 같이 오류 타입을 추론한다:
 
-- If every `throws` statement and `try` expression in the `do` code block
-  is nested inside of an exhaustive error-handling mechanism,
-  then Swift infers that the `do` statement is nonthrowing.
+- `do` 코드 블록 내의 모든 `throws` 문과 `try` 표현식이 완전한 오류 처리 메커니즘 내에 중첩된 경우, Swift는 `do` 문이 오류를 발생시키지 않는다고 추론한다.
 
-- If the `do` code block contains code that throws
-  errors of only a single type
-  outside of exhaustive error handling,
-  other than throwing `Never`,
-  then Swift infers that the `do` statement throws that concrete error type.
+- `do` 코드 블록이 완전한 오류 처리 외부에서 단일 타입의 오류만 발생시키는 코드를 포함하고 있고, `Never`를 발생시키지 않는 경우, Swift는 `do` 문이 해당 구체적인 오류 타입을 발생시킨다고 추론한다.
 
-- If the `do` code block contains code that throws
-  errors of more than a single type
-  outside of exhaustive error handling,
-  then Swift infers that the `do` statement throws `any Error`.
+- `do` 코드 블록이 완전한 오류 처리 외부에서 여러 타입의 오류를 발생시키는 코드를 포함하고 있는 경우, Swift는 `do` 문이 `any Error`를 발생시킨다고 추론한다.
 
-For more information about working with errors that have explicit types,
-see <doc:ErrorHandling#Specifying-the-Error-Type>.
+명시적 타입의 오류를 다루는 방법에 대한 자세한 내용은 <doc:ErrorHandling#Specifying-the-Error-Type>을 참조한다.
 
-If any statement in the `do` code block throws an error,
-program control is transferred
-to the first `catch` clause whose pattern matches the error.
-If none of the clauses match,
-the error propagates to the surrounding scope.
-If an error is unhandled at the top level,
-program execution stops with a runtime error.
+`do` 코드 블록 내의 어떤 문장이 오류를 발생시키면, 프로그램 제어는 해당 오류와 일치하는 첫 번째 `catch` 절로 전달된다. 일치하는 절이 없으면, 오류는 주변 스코프로 전파된다. 최상위 수준에서 오류가 처리되지 않으면, 프로그램 실행은 런타임 오류와 함께 중단된다.
 
-Like a `switch` statement,
-the compiler attempts to infer whether `catch` clauses are exhaustive.
-If such a determination can be made, the error is considered handled.
-Otherwise, the error can propagate out of the containing scope,
-which means
-the error must be handled by an enclosing `catch` clause
-or the containing function must be declared with `throws`.
+`switch` 문과 마찬가지로, 컴파일러는 `catch` 절이 완전한지 여부를 추론하려고 시도한다. 이러한 판단이 가능하면, 오류는 처리된 것으로 간주된다. 그렇지 않으면, 오류는 포함된 스코프 밖으로 전파될 수 있으며, 이는 오류가 포함된 `catch` 절에 의해 처리되거나 포함된 함수가 `throws`로 선언되어야 함을 의미한다.
 
-A `catch` clause that has multiple patterns
-matches the error if any of its patterns match the error.
-If a `catch` clause contains multiple patterns,
-all of the patterns must contain the same constant or variable bindings,
-and each bound variable or constant must have the same type
-in all of the `catch` clause's patterns.
+여러 패턴을 가진 `catch` 절은 해당 패턴 중 하나라도 오류와 일치하면 오류를 처리한다. `catch` 절이 여러 패턴을 포함하는 경우, 모든 패턴은 동일한 상수 또는 변수 바인딩을 포함해야 하며, 각 바인딩된 변수 또는 상수는 `catch` 절의 모든 패턴에서 동일한 타입을 가져야 한다.
 
 <!--
-  The discussion above of multi-pattern catch
-  matches the discussion of multi-pattern case under Switch Statement.
+  위의 다중 패턴 catch에 대한 논의는
+  Switch Statement에서의 다중 패턴 case에 대한 논의와 일치한다.
 -->
 
-To ensure that an error is handled,
-use a `catch` clause with a pattern that matches all errors,
-such as a wildcard pattern (`_`).
-If a `catch` clause doesn't specify a pattern,
-the `catch` clause matches and binds any error to a local constant named `error`.
-For more information about the patterns you can use in a `catch` clause,
-see <doc:Patterns>.
+오류가 처리되도록 보장하기 위해, 모든 오류와 일치하는 패턴(예: 와일드카드 패턴(`_`))을 가진 `catch` 절을 사용한다. `catch` 절이 패턴을 지정하지 않으면, `catch` 절은 모든 오류를 `error`라는 로컬 상수에 바인딩하여 처리한다. `catch` 절에서 사용할 수 있는 패턴에 대한 자세한 내용은 <doc:Patterns>를 참조한다.
 
-To see an example of how to use a `do` statement with several `catch` clauses,
-see <doc:ErrorHandling#Handling-Errors>.
+여러 `catch` 절과 함께 `do` 문을 사용하는 예제를 보려면 <doc:ErrorHandling#Handling-Errors>를 참조한다.
 
-> Grammar of a do statement:
+> Do 문의 문법:
 >
 > *do-statement* → **`do`** *throws-clause*_?_ *code-block* *catch-clauses*_?_ \
 > *catch-clauses* → *catch-clause* *catch-clauses*_?_ \
@@ -963,131 +655,102 @@ see <doc:ErrorHandling#Handling-Errors>.
 > *catch-pattern-list* → *catch-pattern* | *catch-pattern* **`,`** *catch-pattern-list* \
 > *catch-pattern* → *pattern* *where-clause*_?_
 
-## Compiler Control Statements
 
-Compiler control statements allow the program to change aspects of the compiler's behavior.
-Swift has three compiler control statements:
-a conditional compilation block
-a line control statement,
-and a compile-time diagnostic statement.
+## 컴파일러 제어 구문
 
-> Grammar of a compiler control statement:
+컴파일러 제어 구문은 프로그램이 컴파일러의 동작 방식을 변경할 수 있게 한다. Swift는 세 가지 컴파일러 제어 구문을 제공한다:
+조건부 컴파일 블록, 라인 제어 구문, 그리고 컴파일 타임 진단 구문이다.
+
+> 컴파일러 제어 구문 문법:
 >
 > *compiler-control-statement* → *conditional-compilation-block* \
 > *compiler-control-statement* → *line-control-statement* \
 > *compiler-control-statement* → *diagnostic-statement*
 
-### Conditional Compilation Block
 
-A conditional compilation block allows code to be conditionally compiled
-depending on the value of one or more compilation conditions.
+### 조건부 컴파일 블록
 
-Every conditional compilation block begins with the `#if` compilation directive
-and ends with the `#endif` compilation directive.
-A simple conditional compilation block has the following form:
+조건부 컴파일 블록은 하나 이상의 컴파일 조건에 따라 코드를 조건적으로 컴파일할 수 있게 해준다.
+
+모든 조건부 컴파일 블록은 `#if` 컴파일 지시문으로 시작하고 `#endif` 컴파일 지시문으로 끝난다. 간단한 조건부 컴파일 블록은 다음과 같은 형태를 가진다:
 
 ```swift
-#if <#compilation condition#>
-    <#statements#>
+#if <#컴파일 조건#>
+    <#구문#>
 #endif
 ```
 
-Unlike the condition of an `if` statement,
-the *compilation condition* is evaluated at compile time.
-As a result,
-the *statements* are compiled and executed only if the *compilation condition*
-evaluates to `true` at compile time.
+`if` 문의 조건과 달리, *컴파일 조건*은 컴파일 시점에 평가된다. 결과적으로, *구문*은 *컴파일 조건*이 컴파일 시점에 `true`로 평가될 때만 컴파일되고 실행된다.
 
-The *compilation condition* can include the `true` and `false` Boolean literals,
-an identifier used with the `-D` command line flag, or any of the platform
-conditions listed in the table below.
+*컴파일 조건*은 `true`와 `false` 불리언 리터럴, `-D` 커맨드라인 플래그와 함께 사용된 식별자, 또는 아래 표에 나열된 플랫폼 조건 중 하나를 포함할 수 있다.
 
-| Platform condition | Valid arguments |
-| ------------------ | --------------- |
+| 플랫폼 조건 | 유효한 인자 |
+| ----------- | ----------- |
 | `os()` | `macOS`, `iOS`, `watchOS`, `tvOS`, `visionOS`, `Linux`, `Windows` |
 | `arch()` | `i386`, `x86_64`, `arm`, `arm64` |
-| `swift()` | `>=` or `<` followed by a version number |
-| `compiler()` | `>=` or `<` followed by a version number |
-| `canImport()` | A module name |
+| `swift()` | `>=` 또는 `<` 뒤에 버전 번호 |
+| `compiler()` | `>=` 또는 `<` 뒤에 버전 번호 |
+| `canImport()` | 모듈 이름 |
 | `targetEnvironment()` | `simulator`, `macCatalyst` |
 
 <!--
-  The lists above match <https://www.swift.org/platform-support/>
-  and include only platforms with *official* support.
-  For the full list of operating systems and architectures,
-  including those with unofficial or experimental support,
-  see the values of
-  SupportedConditionalCompilationOSs and SupportedConditionalCompilationArches
-  in the file lib/Basic/LangOptions.cpp.
-  The compiler also accepts pretty much any string --
-  for example "#if os(toaster)" compiles just fine,
-  but Swift doesn't actually support running on a toaster oven --
-  so don't rely on that when checking possible os/arch values.
+  위 목록은 <https://www.swift.org/platform-support/>와 일치하며,
+  *공식* 지원 플랫폼만 포함한다.
+  비공식 또는 실험적 지원을 포함한 전체 운영 체제 및 아키텍처 목록은
+  lib/Basic/LangOptions.cpp 파일의
+  SupportedConditionalCompilationOSs와 SupportedConditionalCompilationArches 값을 참조하라.
+  컴파일러는 거의 모든 문자열을 허용한다.
+  예를 들어 "#if os(toaster)"는 컴파일되지만,
+  Swift는 실제로 토스터 오븐에서 실행되도록 지원하지 않으므로,
+  가능한 os/arch 값을 확인할 때 이에 의존하지 않도록 주의하라.
 -->
 
 <!--
-  The target environment "UIKitForMac"
-  is understood by the compiler as a synonym for "macCatalyst",
-  but that spelling is marked "Must be removed" outside of a few places,
-  so it's omitted from the table above.
+  컴파일러는 "UIKitForMac"을 "macCatalyst"의 동의어로 이해하지만,
+  이 철자는 몇 군데를 제외하고 "Must be removed"로 표시되어 있으므로,
+  위 표에서 생략했다.
 -->
 
-The version number for the `swift()` and `compiler()` platform conditions
-consists of a major number, optional minor number, optional patch number, and so on,
-with a dot (`.`) separating each part of the version number.
-There must not be whitespace between the comparison operator and the version number.
-The version for `compiler()` is the compiler version,
-regardless of the Swift version setting passed to the compiler.
-The version for `swift()` is the language version currently being compiled.
-For example, if you compile your code using the Swift 5 compiler in Swift 4.2 mode,
-the compiler version is 5 and the language version is 4.2.
-With those settings,
-the following code prints all three messages:
+`swift()`와 `compiler()` 플랫폼 조건의 버전 번호는 주 버전, 선택적 부 버전, 선택적 패치 버전 등으로 구성되며, 각 부분은 점(`.`)으로 구분된다. 비교 연산자와 버전 번호 사이에 공백이 없어야 한다. `compiler()`의 버전은 컴파일러 버전이며, 컴파일러에 전달된 Swift 버전 설정과 무관하다. `swift()`의 버전은 현재 컴파일 중인 언어 버전이다. 예를 들어, Swift 5 컴파일러를 사용하여 Swift 4.2 모드로 코드를 컴파일하면, 컴파일러 버전은 5이고 언어 버전은 4.2이다. 이 설정에서 다음 코드는 세 메시지를 모두 출력한다:
 
 ```swift
 #if compiler(>=5)
-print("Compiled with the Swift 5 compiler or later")
+print("Swift 5 컴파일러 이상으로 컴파일됨")
 #endif
 #if swift(>=4.2)
-print("Compiled in Swift 4.2 mode or later")
+print("Swift 4.2 모드 이상으로 컴파일됨")
 #endif
 #if compiler(>=5) && swift(<5)
-print("Compiled with the Swift 5 compiler or later in a Swift mode earlier than 5")
+print("Swift 5 컴파일러 이상으로 컴파일되었지만, Swift 5 이전 모드로 컴파일됨")
 #endif
-// Prints "Compiled with the Swift 5 compiler or later"
-// Prints "Compiled in Swift 4.2 mode or later"
-// Prints "Compiled with the Swift 5 compiler or later in a Swift mode earlier than 5"
+// "Swift 5 컴파일러 이상으로 컴파일됨" 출력
+// "Swift 4.2 모드 이상으로 컴파일됨" 출력
+// "Swift 5 컴파일러 이상으로 컴파일되었지만, Swift 5 이전 모드로 컴파일됨" 출력
 ```
 
 <!--
   ```swifttest
   -> #if compiler(>=5)
-     print("Compiled with the Swift 5 compiler or later")
+     print("Swift 5 컴파일러 이상으로 컴파일됨")
      #endif
      #if swift(>=4.2)
-     print("Compiled in Swift 4.2 mode or later")
+     print("Swift 4.2 모드 이상으로 컴파일됨")
      #endif
      #if compiler(>=5) && swift(<5)
-     print("Compiled with the Swift 5 compiler or later in a Swift mode earlier than 5")
+     print("Swift 5 컴파일러 이상으로 컴파일되었지만, Swift 5 이전 모드로 컴파일됨")
      #endif
-  <- Compiled with the Swift 5 compiler or later
-  <- Compiled in Swift 4.2 mode or later
-  // Prints "Compiled with the Swift 5 compiler or later in a Swift mode earlier than 5"
+  <- Swift 5 컴파일러 이상으로 컴파일됨
+  <- Swift 4.2 모드 이상으로 컴파일됨
+  // "Swift 5 컴파일러 이상으로 컴파일되었지만, Swift 5 이전 모드로 컴파일됨" 출력
   ```
 -->
 
 <!--
-  That testcode is cheating by explicitly printing the third line of output,
-  since it's not actually running in Swift 4.2 mode.
+  이 테스트 코드는 실제로 Swift 4.2 모드에서 실행되지 않으므로,
+  명시적으로 세 번째 줄의 출력을 출력하는 방식으로 속임수를 쓴다.
 -->
 
-The argument for the `canImport()` platform condition
-is the name of a module that may not be present on all platforms.
-The module can include periods (`.`) in its name.
-This condition tests whether it's possible to import the module,
-but doesn't actually import it.
-If the module is present, the platform condition returns `true`;
-otherwise, it returns `false`.
+`canImport()` 플랫폼 조건의 인자는 모든 플랫폼에 존재하지 않을 수 있는 모듈의 이름이다. 모듈 이름에는 점(`.`)이 포함될 수 있다. 이 조건은 모듈을 임포트할 수 있는지 테스트하지만, 실제로 임포트하지는 않는다. 모듈이 존재하면 플랫폼 조건은 `true`를 반환하고, 그렇지 않으면 `false`를 반환한다.
 
 <!--
   - test: `canImport_A, canImport`
@@ -1117,23 +780,19 @@ otherwise, it returns `false`.
   >> let s = SomeStruct()
   >> #if canImport(canImport_A)
   >> #else
-  >> #error("Can't import A")
+  >> #error("A를 임포트할 수 없음")
   >> #endif
 
   >> #if canImport(canImport_A.B)
   >> #else
-  >> #error("Can't import A.B")
+  >> #error("A.B를 임포트할 수 없음")
   >> #endif
   ```
 -->
 
-The `targetEnvironment()` platform condition
-returns `true` when code is being compiled for the specified environment;
-otherwise, it returns `false`.
+`targetEnvironment()` 플랫폼 조건은 코드가 지정된 환경을 위해 컴파일될 때 `true`를 반환하고, 그렇지 않으면 `false`를 반환한다.
 
-> Note: The `arch(arm)` platform condition doesn't return `true` for ARM 64 devices.
-> The `arch(i386)` platform condition returns `true`
-> when code is compiled for the 32–bit iOS simulator.
+> 참고: `arch(arm)` 플랫폼 조건은 ARM 64 디바이스에 대해 `true`를 반환하지 않는다. `arch(i386)` 플랫폼 조건은 32비트 iOS 시뮬레이터를 위해 코드가 컴파일될 때 `true`를 반환한다.
 
 <!--
   - test: `pound-if-swift-version`
@@ -1164,7 +823,7 @@ otherwise, it returns `false`.
   -> #if swift(>= 2.1)
          print(4)
      #endif
-  !$ error: unary operator cannot be separated from its operand
+  !$ error: 단항 연산자는 피연산자와 분리될 수 없음
   !! #if swift(>= 2.1)
   !!           ^ ~
   !!-
@@ -1189,44 +848,25 @@ otherwise, it returns `false`.
   ```
 -->
 
-You can combine and negate compilation conditions using the logical operators
-`&&`, `||`, and `!`
-and use parentheses for grouping.
-These operators have the same associativity and precedence as the
-logical operators that are used to combine ordinary Boolean expressions.
+논리 연산자 `&&`, `||`, `!`를 사용하여 컴파일 조건을 결합하거나 부정할 수 있으며, 그룹화를 위해 괄호를 사용할 수 있다. 이러한 연산자는 일반 불리언 표현식을 결합하는 데 사용되는 논리 연산자와 동일한 결합성과 우선순위를 가진다.
 
-Similar to an `if` statement,
-you can add multiple conditional branches to test for different compilation conditions.
-You can add any number of additional branches using `#elseif` clauses.
-You can also add a final additional branch using an `#else` clause.
-Conditional compilation blocks that contain multiple branches
-have the following form:
+`if` 문과 유사하게, 여러 조건부 분기를 추가하여 서로 다른 컴파일 조건을 테스트할 수 있다. `#elseif` 절을 사용하여 원하는 만큼 추가 분기를 추가할 수 있다. 또한 `#else` 절을 사용하여 최종 추가 분기를 추가할 수 있다. 여러 분기를 포함하는 조건부 컴파일 블록은 다음과 같은 형태를 가진다:
 
 ```swift
-#if <#compilation condition 1#>
-    <#statements to compile if compilation condition 1 is true#>
-#elseif <#compilation condition 2#>
-    <#statements to compile if compilation condition 2 is true#>
+#if <#컴파일 조건 1#>
+    <#컴파일 조건 1이 true일 때 컴파일할 구문#>
+#elseif <#컴파일 조건 2#>
+    <#컴파일 조건 2이 true일 때 컴파일할 구문#>
 #else
-    <#statements to compile if both compilation conditions are false#>
+    <#두 컴파일 조건 모두 false일 때 컴파일할 구문#>
 #endif
 ```
 
-> Note: Each statement in the body of a conditional compilation block is parsed
-> even if it's not compiled.
-> However, there's an exception
-> if the compilation condition includes a `swift()` or `compiler()` platform condition:
-> The statements are parsed
-> only if the language or compiler version matches
-> what is specified in the platform condition.
-> This exception ensures that an older compiler doesn't attempt to parse
-> syntax introduced in a newer version of Swift.
+> 참고: 조건부 컴파일 블록의 각 구문은 컴파일되지 않더라도 파싱된다. 그러나 컴파일 조건에 `swift()` 또는 `compiler()` 플랫폼 조건이 포함된 경우 예외가 있다: 구문은 언어 또는 컴파일러 버전이 플랫폼 조건에 지정된 내용과 일치할 때만 파싱된다. 이 예외는 이전 버전의 컴파일러가 Swift의 새 버전에서 도입된 구문을 파싱하려고 시도하지 않도록 보장한다.
 
-For information about how you can wrap
-explicit member expressions in conditional compilation blocks,
-see <doc:Expressions#Explicit-Member-Expression>.
+명시적 멤버 표현식을 조건부 컴파일 블록으로 감싸는 방법에 대한 자세한 내용은 <doc:Expressions#Explicit-Member-Expression>을 참조하라.
 
-> Grammar of a conditional compilation block:
+> 조건부 컴파일 블록의 문법:
 >
 > *conditional-compilation-block* → *if-directive-clause* *elseif-directive-clauses*_?_ *else-directive-clause*_?_ *endif-directive*
 >
@@ -1261,112 +901,90 @@ see <doc:Expressions#Explicit-Member-Expression>.
 > *environment* → **`simulator`** | **`macCatalyst`**
 
 <!--
-  Testing notes:
+  테스트 노트:
 
-  !!true doesn't work but !(!true) does -- this matches normal expressions
-  #if can be nested, as expected
-
-  Also, the body of a conditional compilation block contains *zero* or more statements.
-  Thus, this is allowed:
-      #if
-      #elseif
-      #else
-      #endif
+  !!true는 동작하지 않지만 !(!true)는 동작한다. 이는 일반 표현식과 일치한다.
 -->
 
-### Line Control Statement
 
-A line control statement is used to specify a line number and filename
-that can be different from the line number and filename of the source code being compiled.
-Use a line control statement to change the source code location
-used by Swift for diagnostic and debugging purposes.
+#if를 중첩해서 사용할 수 있다. 이는 일반적으로 예상되는 동작이다.
 
-A line control statement has the following forms:
+또한, 조건부 컴파일 블록의 본문에는 *0개 이상*의 문장이 포함될 수 있다. 따라서 다음과 같은 코드도 유효하다:
+
+
+#if
+
+#elseif
+
+#else
+
+#endif
+
+-->
+
+
+### 라인 컨트롤 구문
+
+라인 컨트롤 구문은 컴파일 중인 소스 코드의 라인 번호와 파일명과 다른 값을 지정할 때 사용한다. 이 구문은 Swift가 진단 및 디버깅 목적으로 사용하는 소스 코드 위치를 변경한다.
+
+라인 컨트롤 구문은 다음과 같은 형태를 가진다:
 
 ```swift
 #sourceLocation(file: <#file path#>, line: <#line number#>)
 #sourceLocation()
 ```
 
-The first form of a line control statement changes the values
-of the `#line`, `#file`, `#fileID`, and `#filePath`
-literal expressions, beginning with the line of code following the line control statement.
-The *line number* changes the value of `#line`,
-and is any integer literal greater than zero.
-The *file path* changes the value of `#file`, `#fileID`, and `#filePath`,
-and is a string literal.
-The specified string becomes the value of `#filePath`,
-and the last path component of the string is used by the value of `#fileID`.
-For information about `#file`, `#fileID`, and `#filePath`,
-see <doc:Expressions#Literal-Expression>.
+첫 번째 형태의 라인 컨트롤 구문은 `#line`, `#file`, `#fileID`, `#filePath` 리터럴 표현식의 값을 변경한다. 이 변경은 라인 컨트롤 구문 다음 줄부터 적용된다. *line number*는 `#line`의 값을 변경하며, 0보다 큰 정수 리터럴이어야 한다. *file path*는 `#file`, `#fileID`, `#filePath`의 값을 변경하며, 문자열 리터럴이어야 한다. 지정된 문자열은 `#filePath`의 값이 되고, 이 문자열의 마지막 경로 구성 요소는 `#fileID`의 값으로 사용된다. `#file`, `#fileID`, `#filePath`에 대한 자세한 내용은 <doc:Expressions#Literal-Expression>을 참고한다.
 
-The second form of a line control statement, `#sourceLocation()`,
-resets the source code location back to the default line numbering and file path.
+두 번째 형태의 라인 컨트롤 구문인 `#sourceLocation()`은 소스 코드 위치를 기본 라인 번호와 파일 경로로 재설정한다.
 
-> Grammar of a line control statement:
+> 라인 컨트롤 구문 문법:
 >
 > *line-control-statement* → **`#sourceLocation`** **`(`** **`file:`** *file-path* **`,`** **`line:`** *line-number* **`)`** \
 > *line-control-statement* → **`#sourceLocation`** **`(`** **`)`** \
-> *line-number* → A decimal integer greater than zero \
+> *line-number* → 0보다 큰 십진 정수 \
 > *file-path* → *static-string-literal*
 
-### Compile-Time Diagnostic Statement
 
-Prior to Swift 5.9,
-the `#warning` and `#error` statements emit a diagnostic during compilation.
-This behavior is now provided by
-the [`warning(_:)`][] and [`error(_:)`][] macros in the Swift standard library.
+### 컴파일 타임 진단 문장
+
+Swift 5.9 이전에는 `#warning`과 `#error` 문장이 컴파일 중에 진단 메시지를 출력했다. 이제는 Swift 표준 라이브러리의 [`warning(_:)`][]과 [`error(_:)`][] 매크로가 이러한 기능을 제공한다.
 
 [`warning(_:)`]: https://developer.apple.com/documentation/swift/warning(_:)
 [`error(_:)`]: https://developer.apple.com/documentation/swift/error(_:)
 
-## Availability Condition
 
-An *availability condition* is used as a condition of an `if`, `while`,
-and `guard` statement to query the availability of APIs at runtime,
-based on specified platforms arguments.
+## 가용성 조건
 
-An availability condition has the following form:
+*가용성 조건*은 `if`, `while`, `guard` 문에서 특정 플랫폼 인자를 기반으로 런타임에 API의 가용성을 확인하기 위해 사용한다.
+
+가용성 조건은 다음과 같은 형태를 가진다:
 
 ```swift
-if #available(<#platform name#> <#version#>, <#...#>, *) {
-    <#statements to execute if the APIs are available#>
+if #available(<#플랫폼 이름#> <#버전#>, <#...#>, *) {
+    <#API가 사용 가능할 때 실행할 코드#>
 } else {
-    <#fallback statements to execute if the APIs are unavailable#>
+    <#API가 사용 불가능할 때 실행할 대체 코드#>
 }
 ```
 
-You use an availability condition to execute a block of code,
-depending on whether the APIs you want to use are available at runtime.
-The compiler uses the information from the availability condition
-when it verifies that the APIs in that block of code are available.
+가용성 조건을 사용하면 런타임에 사용하려는 API가 사용 가능한지에 따라 코드 블록을 실행할 수 있다. 컴파일러는 가용성 조건에서 제공된 정보를 사용해 해당 코드 블록 내의 API가 사용 가능한지 확인한다.
 
-The availability condition takes a comma-separated list of platform names and versions.
-Use `iOS`, `macOS`, `watchOS`, `tvOS` and `visionOS` for the platform names,
-and include the corresponding version numbers.
-The `*` argument is required and specifies that, on any other platform,
-the body of the code block guarded by the availability condition
-executes on the minimum deployment target specified by your target.
+가용성 조건은 쉼표로 구분된 플랫폼 이름과 버전 목록을 인자로 받는다. 플랫폼 이름으로 `iOS`, `macOS`, `watchOS`, `tvOS`, `visionOS`를 사용하고, 해당 버전 번호를 포함한다. `*` 인자는 필수이며, 다른 모든 플랫폼에서 가용성 조건으로 보호된 코드 블록이 타겟의 최소 배포 타겟에서 실행됨을 지정한다.
 
-Unlike Boolean conditions, you can't combine availability conditions using
-logical operators like `&&` and `||`.
-Instead of using `!` to negate an availability condition,
-use an unavailability condition, which has the following form:
+불리언 조건과 달리, 가용성 조건은 `&&`나 `||` 같은 논리 연산자로 결합할 수 없다. 또한 `!`를 사용해 가용성 조건을 부정하는 대신, 다음과 같은 형태의 *비가용성 조건*을 사용한다:
 
 ```swift
-if #unavailable(<#platform name#> <#version#>, <#...#>) {
-    <#fallback statements to execute if the APIs are unavailable#>
+if #unavailable(<#플랫폼 이름#> <#버전#>, <#...#>) {
+    <#API가 사용 불가능할 때 실행할 대체 코드#>
 } else {
-    <#statements to execute if the APIs are available#>
+    <#API가 사용 가능할 때 실행할 코드#>
 }
 ```
 
-The `#unavailable` form is syntactic sugar that negates the condition.
-In an unavailability condition,
-the `*` argument is implicit and must not be included.
-It has the same meaning as the `*` argument in an availability condition.
+`#unavailable` 형태는 조건을 부정하는 문법적 설탕이다. 비가용성 조건에서는 `*` 인자가 암시적으로 포함되며, 명시적으로 포함해서는 안 된다. 이는 가용성 조건에서의 `*` 인자와 동일한 의미를 가진다.
 
-> Grammar of an availability condition:
+> 가용성 조건 문법:
 >
 > *availability-condition* → **`#available`** **`(`** *availability-arguments* **`)`** \
 > *availability-condition* → **`#unavailable`** **`(`** *availability-arguments* **`)`** \
@@ -1387,8 +1005,8 @@ It has the same meaning as the `*` argument in an availability condition.
 > *platform-version* → *decimal-digits* **`.`** *decimal-digits* **`.`** *decimal-digits*
 
 <!--
-  If you need to add a new platform to this list,
-  you probably need to update the list under @available too.
+  새로운 플랫폼을 이 목록에 추가해야 한다면,
+  @available 아래의 목록도 업데이트해야 할 가능성이 높다.
 -->
 
 <!--
@@ -1446,11 +1064,13 @@ It has the same meaning as the `*` argument in an availability condition.
 -->
 
 <!--
-This source file is part of the Swift.org open source project
+이 소스 파일은 Swift.org 오픈 소스 프로젝트의 일부입니다.
 
 Copyright (c) 2014 - 2022 Apple Inc. and the Swift project authors
-Licensed under Apache License v2.0 with Runtime Library Exception
+Apache License v2.0 및 Runtime Library Exception에 따라 라이선스가 부여됩니다.
 
-See https://swift.org/LICENSE.txt for license information
-See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
+라이선스 정보는 https://swift.org/LICENSE.txt에서 확인할 수 있습니다.
+Swift 프로젝트 작성자 목록은 https://swift.org/CONTRIBUTORS.txt에서 확인할 수 있습니다.
 -->
+
+

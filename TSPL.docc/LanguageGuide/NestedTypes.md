@@ -1,39 +1,27 @@
-# Nested Types
+# 중첩 타입
 
-Define types inside the scope of another type.
+타입을 다른 타입의 스코프 안에 정의한다.
 
-Enumerations are often created to support a specific class or structure's functionality.
-Similarly, it can be convenient to define utility structures
-purely for use within the context of a more complex type,
-and protocols that are normally used in conjunction with a specific type.
-To accomplish this, Swift enables you to define *nested types*,
-whereby you nest supporting types like enumerations, structures, and protocols
-within the definition of the type they support.
+열거형은 특정 클래스나 구조체의 기능을 지원하기 위해 자주 생성된다. 마찬가지로, 더 복잡한 타입의 컨텍스트 내에서만 사용하기 위한 유틸리티 구조체나 특정 타입과 함께 사용되는 프로토콜을 정의하는 것이 편리할 때가 있다. 이를 위해 Swift는 *중첩 타입*을 정의할 수 있도록 지원한다. 중첩 타입은 열거형, 구조체, 프로토콜과 같은 지원 타입을 해당 타입의 정의 안에 중첩시키는 것을 의미한다.
 
-To nest a type within another type,
-write its definition within the outer braces of the type it supports.
-Types can be nested to as many levels as are required.
+타입을 다른 타입 안에 중첩시키려면, 지원하는 타입의 외부 중괄호 안에 해당 타입의 정의를 작성한다. 타입은 필요한 만큼의 수준으로 중첩할 수 있다.
 
-## Nested Types in Action
 
-The example below defines a structure called `BlackjackCard`,
-which models a playing card as used in the game of Blackjack.
-The `BlackjackCard` structure contains two nested enumeration types
-called `Suit` and `Rank`.
+## 중첩 타입의 활용
 
-In Blackjack, the Ace cards have a value of either one or eleven.
-This feature is represented by a structure called `Values`,
-which is nested within the `Rank` enumeration:
+아래 예제는 블랙잭 게임에서 사용하는 카드를 모델링한 `BlackjackCard` 구조체를 정의한다. `BlackjackCard` 구조체는 `Suit`와 `Rank`라는 두 개의 중첩 열거형 타입을 포함한다.
+
+블랙잭에서 에이스 카드는 1 또는 11의 값을 가진다. 이 특징은 `Rank` 열거형 내부에 중첩된 `Values` 구조체로 표현된다:
 
 ```swift
 struct BlackjackCard {
 
-    // nested Suit enumeration
+    // 중첩 Suit 열거형
     enum Suit: Character {
         case spades = "♠", hearts = "♡", diamonds = "♢", clubs = "♣"
     }
 
-    // nested Rank enumeration
+    // 중첩 Rank 열거형
     enum Rank: Int {
         case two = 2, three, four, five, six, seven, eight, nine, ten
         case jack, queen, king, ace
@@ -52,7 +40,7 @@ struct BlackjackCard {
         }
     }
 
-    // BlackjackCard properties and methods
+    // BlackjackCard 프로퍼티와 메서드
     let rank: Rank, suit: Suit
     var description: String {
         var output = "suit is \(suit.rawValue),"
@@ -71,12 +59,12 @@ struct BlackjackCard {
   ```swifttest
   -> struct BlackjackCard {
 
-        // nested Suit enumeration
+        // 중첩 Suit 열거형
         enum Suit: Character {
            case spades = "♠", hearts = "♡", diamonds = "♢", clubs = "♣"
         }
 
-        // nested Rank enumeration
+        // 중첩 Rank 열거형
         enum Rank: Int {
            case two = 2, three, four, five, six, seven, eight, nine, ten
            case jack, queen, king, ace
@@ -95,7 +83,7 @@ struct BlackjackCard {
            }
         }
 
-        // BlackjackCard properties and methods
+        // BlackjackCard 프로퍼티와 메서드
         let rank: Rank, suit: Suit
         var description: String {
            var output = "suit is \(suit.rawValue),"
@@ -109,41 +97,20 @@ struct BlackjackCard {
   ```
 -->
 
-The `Suit` enumeration describes the four common playing card suits,
-together with a raw `Character` value to represent their symbol.
+`Suit` 열거형은 네 가지 카드 문양을 설명하며, 각 문양의 심볼을 나타내는 `Character` 원시 값을 가진다.
 
-The `Rank` enumeration describes the thirteen possible playing card ranks,
-together with a raw `Int` value to represent their face value.
-(This raw `Int` value isn't used for the Jack, Queen, King, and Ace cards.)
+`Rank` 열거형은 13가지 카드 랭크를 설명하며, 각 랭크의 숫자 값을 나타내는 `Int` 원시 값을 가진다. (잭, 퀸, 킹, 에이스 카드에는 이 원시 값을 사용하지 않는다.)
 
-As mentioned above, the `Rank` enumeration defines
-a further nested structure of its own, called `Values`.
-This structure encapsulates the fact that most cards have one value,
-but the Ace card has two values.
-The `Values` structure defines two properties to represent this:
+위에서 언급한 대로, `Rank` 열거형은 `Values`라는 중첩 구조체를 추가로 정의한다. 이 구조체는 대부분의 카드가 하나의 값을 가지지만, 에이스 카드는 두 개의 값을 가진다는 사실을 캡슐화한다. `Values` 구조체는 이를 나타내기 위해 두 가지 프로퍼티를 정의한다:
 
-- `first`, of type `Int`
-- `second`, of type `Int?`, or “optional `Int`”
+- `first`: `Int` 타입
+- `second`: `Int?` 타입, 즉 "옵셔널 `Int`"
 
-`Rank` also defines a computed property, `values`,
-which returns an instance of the `Values` structure.
-This computed property considers the rank of the card
-and initializes a new `Values` instance with appropriate values based on its rank.
-It uses special values for `jack`, `queen`, `king`, and `ace`.
-For the numeric cards, it uses the rank's raw `Int` value.
+`Rank`는 또한 `values`라는 계산 프로퍼티를 정의한다. 이 프로퍼티는 `Values` 구조체의 인스턴스를 반환한다. 이 계산 프로퍼티는 카드의 랭크를 고려해 적절한 값으로 새로운 `Values` 인스턴스를 초기화한다. 잭, 퀸, 킹, 에이스에 대해 특별한 값을 사용하며, 숫자 카드의 경우 랭크의 원시 `Int` 값을 사용한다.
 
-The `BlackjackCard` structure itself has two properties --- `rank` and `suit`.
-It also defines a computed property called `description`,
-which uses the values stored in `rank` and `suit` to build
-a description of the name and value of the card.
-The `description` property uses optional binding to check whether there's
-a second value to display, and if so,
-inserts additional description detail for that second value.
+`BlackjackCard` 구조체 자체는 `rank`와 `suit` 두 가지 프로퍼티를 가진다. 또한 `description`이라는 계산 프로퍼티를 정의하는데, 이 프로퍼티는 `rank`와 `suit`에 저장된 값을 사용해 카드의 이름과 값을 설명하는 문자열을 만든다. `description` 프로퍼티는 옵셔널 바인딩을 사용해 두 번째 값이 있는지 확인하고, 있다면 해당 값을 추가 설명에 포함한다.
 
-Because `BlackjackCard` is a structure with no custom initializers,
-it has an implicit memberwise initializer,
-as described in <doc:Initialization#Memberwise-Initializers-for-Structure-Types>.
-You can use this initializer to initialize a new constant called `theAceOfSpades`:
+`BlackjackCard`는 사용자 정의 이니셜라이저가 없는 구조체이므로, <doc:Initialization#Memberwise-Initializers-for-Structure-Types>에서 설명한 대로 암시적 멤버와이즈 이니셜라이저를 가진다. 이 이니셜라이저를 사용해 `theAceOfSpades`라는 새로운 상수를 초기화할 수 있다:
 
 ```swift
 let theAceOfSpades = BlackjackCard(rank: .ace, suit: .spades)
@@ -161,21 +128,16 @@ print("theAceOfSpades: \(theAceOfSpades.description)")
   ```
 -->
 
-Even though `Rank` and `Suit` are nested within `BlackjackCard`,
-their type can be inferred from context,
-and so the initialization of this instance is able to refer to the enumeration cases
-by their case names (`.ace` and `.spades`) alone.
-In the example above, the `description` property correctly reports that
-the Ace of Spades has a value of `1` or `11`.
+`Rank`와 `Suit`가 `BlackjackCard` 내부에 중첩되어 있더라도, 이들의 타입은 문맥에서 추론할 수 있으므로 이 인스턴스의 초기화는 열거형 케이스를 케이스 이름(`.ace`와 `.spades`)만으로 참조할 수 있다. 위 예제에서 `description` 프로퍼티는 스페이드 에이스가 `1` 또는 `11`의 값을 가진다고 정확히 보고한다.
 
-## Referring to Nested Types
 
-To use a nested type outside of its definition context,
-prefix its name with the name of the type it's nested within:
+## 중첩 타입 참조하기
+
+정의된 문맥 밖에서 중첩 타입을 사용하려면, 해당 타입이 속한 타입의 이름을 접두사로 붙인다:
 
 ```swift
 let heartsSymbol = BlackjackCard.Suit.hearts.rawValue
-// heartsSymbol is "♡"
+// heartsSymbol은 "♡"
 ```
 
 <!--
@@ -188,16 +150,16 @@ let heartsSymbol = BlackjackCard.Suit.hearts.rawValue
   ```
 -->
 
-For the example above,
-this enables the names of `Suit`, `Rank`, and `Values` to be kept deliberately short,
-because their names are naturally qualified by the context in which they're defined.
+위 예제에서 `Suit`, `Rank`, `Values`와 같은 이름은 의도적으로 짧게 유지할 수 있다. 이는 해당 이름들이 정의된 문맥에 의해 자연스럽게 한정되기 때문이다.
 
 <!--
-This source file is part of the Swift.org open source project
+이 소스 파일은 Swift.org 오픈 소스 프로젝트의 일부입니다.
 
-Copyright (c) 2014 - 2022 Apple Inc. and the Swift project authors
-Licensed under Apache License v2.0 with Runtime Library Exception
+Copyright (c) 2014 - 2022 Apple Inc. 및 Swift 프로젝트 작성자
+Apache License v2.0 및 Runtime Library Exception에 따라 라이선스가 부여됨
 
-See https://swift.org/LICENSE.txt for license information
-See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
+라이선스 정보는 https://swift.org/LICENSE.txt에서 확인할 수 있습니다.
+Swift 프로젝트 작성자 목록은 https://swift.org/CONTRIBUTORS.txt에서 확인할 수 있습니다.
 -->
+
+

@@ -1,25 +1,14 @@
-# Collection Types
+# 컬렉션 타입
 
-Organize data using arrays, sets, and dictionaries.
+배열, 집합, 딕셔너리를 활용해 데이터를 구조화한다.
 
-Swift provides three primary *collection types*,
-known as arrays, sets, and dictionaries,
-for storing collections of values.
-Arrays are ordered collections of values.
-Sets are unordered collections of unique values.
-Dictionaries are unordered collections of key-value associations.
+Swift는 값의 컬렉션을 저장하기 위해 세 가지 주요 *컬렉션 타입*을 제공한다. 이는 배열, 집합, 딕셔너리로 알려져 있다. 배열은 값의 순서 있는 컬렉션이고, 집합은 중복 없는 값의 순서 없는 컬렉션이다. 딕셔너리는 키-값 쌍의 순서 없는 컬렉션이다.
 
 ![](CollectionTypes_intro)
 
-Arrays, sets, and dictionaries in Swift are always clear about
-the types of values and keys that they can store.
-This means that you can't insert a value of the wrong type
-into a collection by mistake.
-It also means you can be confident about the type of values
-you will retrieve from a collection.
+Swift의 배열, 집합, 딕셔너리는 저장할 수 있는 값과 키의 타입을 항상 명확히 정의한다. 따라서 잘못된 타입의 값을 실수로 컬렉션에 삽입할 수 없다. 또한 컬렉션에서 어떤 타입의 값을 가져올지 확신할 수 있다.
 
-> Note: Swift's array, set, and dictionary types are implemented as *generic collections*.
-> For more about generic types and collections, see <doc:Generics>.
+> 참고: Swift의 배열, 집합, 딕셔너리 타입은 *제네릭 컬렉션*으로 구현된다. 제네릭 타입과 컬렉션에 대한 자세한 내용은 <doc:Generics>를 참고한다.
 
 <!--
   TODO: should I mention the Collection protocol, to which both of these conform?
@@ -33,49 +22,33 @@ you will retrieve from a collection.
   TODO: discuss collection equality
 -->
 
-## Mutability of Collections
 
-If you create an array, a set, or a dictionary, and assign it to a variable,
-the collection that's created will be *mutable*.
-This means that you can change (or *mutate*) the collection after it's created
-by adding, removing, or changing items in the collection.
-If you assign an array, a set, or a dictionary to a constant,
-that collection is *immutable*,
-and its size and contents can't be changed.
+## 컬렉션의 변경 가능성
 
-> Note: It's good practice to create immutable collections
-> in all cases where the collection doesn't need to change.
-> Doing so makes it easier for you to reason about your code
-> and enables the Swift compiler to optimize the performance of
-> the collections you create.
+배열, 집합, 또는 딕셔너리를 생성하고 변수에 할당하면, 해당 컬렉션은 *변경 가능* 상태가 된다. 즉, 컬렉션을 생성한 후에도 내부의 항목을 추가, 삭제, 또는 수정할 수 있다. 반면, 배열, 집합, 또는 딕셔너리를 상수에 할당하면, 그 컬렉션은 *변경 불가능* 상태가 되며, 크기와 내용을 변경할 수 없다.
 
-## Arrays
+> 참고: 컬렉션을 변경할 필요가 없는 경우에는 불변 컬렉션을 생성하는 것이 좋다. 이렇게 하면 코드를 더 쉽게 이해할 수 있고, Swift 컴파일러가 생성한 컬렉션의 성능을 최적화할 수 있다.
 
-An *array* stores values of the same type in an ordered list.
-The same value can appear in an array multiple times at different positions.
 
-> Note: Swift's `Array` type is bridged to Foundation's `NSArray` class.
+## 배열
+
+*배열*은 동일한 타입의 값을 순서대로 저장한다. 배열에서는 같은 값이 서로 다른 위치에 여러 번 나타날 수 있다.
+
+> 참고: Swift의 `Array` 타입은 Foundation의 `NSArray` 클래스와 연결된다.
 >
-> For more information about using `Array` with Foundation and Cocoa,
-> see [Bridging Between Array and NSArray](https://developer.apple.com/documentation/swift/array#2846730).
+> Foundation과 Cocoa에서 `Array`를 사용하는 방법에 대한 자세한 내용은 [Array와 NSArray 연결하기](https://developer.apple.com/documentation/swift/array#2846730)를 참고한다.
 
-### Array Type Shorthand Syntax
 
-The type of a Swift array is written in full as `Array<Element>`,
-where `Element` is the type of values the array is allowed to store.
-You can also write the type of an array in shorthand form as `[Element]`.
-Although the two forms are functionally identical,
-the shorthand form is preferred
-and is used throughout this guide when referring to the type of an array.
+### 배열 타입의 축약형 문법
 
-### Creating an Empty Array
+Swift에서 배열의 타입은 `Array<Element>` 형태로 작성한다. 여기서 `Element`는 배열이 저장할 수 있는 값의 타입을 나타낸다. 배열의 타입은 `[Element]` 형태로 축약해서 쓸 수도 있다. 두 형태는 기능적으로 동일하지만, 이 가이드에서는 배열 타입을 언급할 때 축약형을 주로 사용한다.
 
-You can create an empty array in Swift using two approaches.
-If the context already provides type information,
-such as a function argument or an already typed variable or constant,
-you can use an empty array literal,
-which is written as `[]`
-(an empty pair of square brackets):
+
+### 빈 배열 생성하기
+
+Swift에서 빈 배열을 만드는 방법은 두 가지다.  
+컨텍스트가 이미 타입 정보를 제공하는 경우, 예를 들어 함수 인자나 이미 타입이 지정된 변수 또는 상수라면,  
+빈 배열 리터럴을 사용할 수 있다. 빈 배열 리터럴은 `[]`(빈 대괄호 쌍)으로 표기한다:
 
 ```swift
 var someInts: [Int] = []
@@ -93,11 +66,9 @@ print("someInts is of type [Int] with \(someInts.count) items.")
   ```
 -->
 
-Alternatively, you can create an empty array of a certain type
-using explicit initializer syntax,
-by writing the element type in square brackets
-followed by parentheses ---
-for example, `[Int]()` in the following:
+또는 특정 타입의 빈 배열을 생성할 때 명시적 초기화 구문을 사용할 수도 있다.  
+이 경우, 대괄호 안에 요소 타입을 쓰고 괄호를 붙인다.  
+예를 들어, 아래 코드에서 `[Int]()`와 같이 작성한다:
 
 ```swift
 var someInts = [Int]()
@@ -105,12 +76,10 @@ print("someInts is of type [Int] with \(someInts.count) items.")
 // Prints "someInts is of type [Int] with 0 items."
 ```
 
-Both approaches produce the same result.
-However,
-an empty array literal is shorter and usually easier to read.
+두 방법 모두 동일한 결과를 만든다.  
+하지만 빈 배열 리터럴이 더 짧고 일반적으로 읽기 쉽다.
 
-In both cases, you can use the empty array literal (`[]`) to
-reassign an empty array to an existing variable:
+두 경우 모두, 빈 배열 리터럴(`[]`)을 사용해 기존 변수에 빈 배열을 재할당할 수 있다:
 
 ```swift
 someInts.append(3)
@@ -131,18 +100,14 @@ someInts = []
   ```
 -->
 
-### Creating an Array with a Default Value
 
-Swift's `Array` type also provides
-an initializer for creating an array of a certain size
-with all of its values set to the same default value.
-You pass this initializer
-a default value of the appropriate type (called `repeating`):
-and the number of times that value is repeated in the new array (called `count`):
+### 기본값으로 배열 생성하기
+
+Swift의 `Array` 타입은 특정 크기의 배열을 생성하고 모든 값을 동일한 기본값으로 설정할 수 있는 초기화 메서드를 제공한다. 이 초기화 메서드에는 적절한 타입의 기본값(`repeating` 매개변수)과 새 배열에서 해당 값이 반복되는 횟수(`count` 매개변수)를 전달한다:
 
 ```swift
 var threeDoubles = Array(repeating: 0.0, count: 3)
-// threeDoubles is of type [Double], and equals [0.0, 0.0, 0.0]
+// threeDoubles는 [Double] 타입이며, [0.0, 0.0, 0.0]과 같다
 ```
 
 <!--
@@ -155,18 +120,17 @@ var threeDoubles = Array(repeating: 0.0, count: 3)
   ```
 -->
 
-### Creating an Array by Adding Two Arrays Together
 
-You can create a new array by adding together two existing arrays with compatible types
-with the addition operator (`+`).
-The new array's type is inferred from the type of the two arrays you add together:
+### 두 배열을 더해 새로운 배열 생성하기
+
+호환 가능한 타입을 가진 두 배열을 더하기 연산자(`+`)로 결합해 새로운 배열을 만들 수 있다. 새 배열의 타입은 두 배열의 타입으로부터 추론된다:
 
 ```swift
 var anotherThreeDoubles = Array(repeating: 2.5, count: 3)
-// anotherThreeDoubles is of type [Double], and equals [2.5, 2.5, 2.5]
+// anotherThreeDoubles는 [Double] 타입이며, [2.5, 2.5, 2.5]와 같다
 
 var sixDoubles = threeDoubles + anotherThreeDoubles
-// sixDoubles is inferred as [Double], and equals [0.0, 0.0, 0.0, 2.5, 2.5, 2.5]
+// sixDoubles는 [Double] 타입으로 추론되며, [0.0, 0.0, 0.0, 2.5, 2.5, 2.5]와 같다
 ```
 
 <!--
@@ -196,22 +160,20 @@ var sixDoubles = threeDoubles + anotherThreeDoubles
   Likewise I'm holding off writing about it until NewArray lands.
 -->
 
-### Creating an Array with an Array Literal
 
-You can also initialize an array with an *array literal*,
-which is a shorthand way to write one or more values as an array collection.
-An array literal is written as a list of values, separated by commas,
-surrounded by a pair of square brackets:
+### 배열 리터럴로 배열 생성하기
+
+배열을 생성할 때는 *배열 리터럴*을 사용할 수도 있다. 배열 리터럴은 하나 이상의 값을 배열로 간단히 표현하는 방법이다. 배열 리터럴은 쉼표로 구분된 값의 목록을 대괄호로 감싸서 작성한다:
 
 ```swift
 [<#value 1#>, <#value 2#>, <#value 3#>]
 ```
 
-The example below creates an array called `shoppingList` to store `String` values:
+아래 예제는 `String` 타입의 값을 저장하는 `shoppingList`라는 배열을 생성한다:
 
 ```swift
 var shoppingList: [String] = ["Eggs", "Milk"]
-// shoppingList has been initialized with two initial items
+// shoppingList는 두 개의 초기 값으로 초기화됨
 ```
 
 <!--
@@ -223,27 +185,13 @@ var shoppingList: [String] = ["Eggs", "Milk"]
   ```
 -->
 
-The `shoppingList` variable is declared as
-“an array of string values”, written as `[String]`.
-Because this particular array has specified a value type of `String`,
-it's allowed to store `String` values only.
-Here, the `shoppingList` array is initialized with two `String` values
-(`"Eggs"` and `"Milk"`), written within an array literal.
+`shoppingList` 변수는 `[String]`으로 선언되어 "문자열 값의 배열"임을 나타낸다. 이 배열은 `String` 타입의 값만 저장할 수 있다. 여기서 `shoppingList` 배열은 배열 리터럴 안에 작성된 두 개의 `String` 값(`"Eggs"`와 `"Milk"`)으로 초기화된다.
 
-> Note: The `shoppingList` array is declared as a variable (with the `var` introducer)
-> and not a constant (with the `let` introducer)
-> because more items are added to the shopping list in the examples below.
+> 참고: `shoppingList` 배열은 `var` 키워드로 선언되었으며, `let` 키워드로 선언된 상수가 아니다. 이는 아래 예제에서 쇼핑 목록에 더 많은 항목을 추가할 수 있도록 하기 위함이다.
 
-In this case, the array literal contains two `String` values and nothing else.
-This matches the type of the `shoppingList` variable's declaration
-(an array that can only contain `String` values),
-and so the assignment of the array literal is permitted
-as a way to initialize `shoppingList` with two initial items.
+이 경우, 배열 리터럴은 두 개의 `String` 값만 포함하고 있다. 이는 `shoppingList` 변수의 선언 타입(오직 `String` 값만 포함할 수 있는 배열)과 일치하므로, 배열 리터럴을 사용해 `shoppingList`를 두 개의 초기 값으로 초기화할 수 있다.
 
-Thanks to Swift's type inference,
-you don't have to write the type of the array
-if you're initializing it with an array literal containing values of the same type.
-The initialization of `shoppingList` could have been written in a shorter form instead:
+Swift의 타입 추론 덕분에, 배열 리터럴이 동일한 타입의 값으로 초기화된다면 배열의 타입을 명시적으로 작성하지 않아도 된다. `shoppingList`의 초기화는 더 짧은 형태로 작성할 수 있다:
 
 ```swift
 var shoppingList = ["Eggs", "Milk"]
@@ -257,20 +205,18 @@ var shoppingList = ["Eggs", "Milk"]
   ```
 -->
 
-Because all values in the array literal are of the same type,
-Swift can infer that `[String]` is
-the correct type to use for the `shoppingList` variable.
+배열 리터럴의 모든 값이 동일한 타입이기 때문에, Swift는 `shoppingList` 변수에 `[String]` 타입을 사용하는 것이 적절하다고 추론할 수 있다.
 
-### Accessing and Modifying an Array
 
-You access and modify an array through its methods and properties,
-or by using subscript syntax.
+### 배열 접근 및 수정
 
-To find out the number of items in an array, check its read-only `count` property:
+배열에 접근하고 수정하려면 메서드와 프로퍼티를 사용하거나, 서브스크립트 문법을 활용한다.
+
+배열의 아이템 개수를 확인하려면 읽기 전용 프로퍼티인 `count`를 사용한다:
 
 ```swift
 print("The shopping list contains \(shoppingList.count) items.")
-// Prints "The shopping list contains 2 items."
+// "The shopping list contains 2 items." 출력
 ```
 
 <!--
@@ -282,8 +228,7 @@ print("The shopping list contains \(shoppingList.count) items.")
   ```
 -->
 
-Use the Boolean `isEmpty` property
-as a shortcut for checking whether the `count` property is equal to `0`:
+`count` 프로퍼티가 `0`인지 확인하는 단축키로 `isEmpty` 불리언 프로퍼티를 사용한다:
 
 ```swift
 if shoppingList.isEmpty {
@@ -291,7 +236,7 @@ if shoppingList.isEmpty {
 } else {
     print("The shopping list isn't empty.")
 }
-// Prints "The shopping list isn't empty."
+// "The shopping list isn't empty." 출력
 ```
 
 <!--
@@ -307,11 +252,11 @@ if shoppingList.isEmpty {
   ```
 -->
 
-You can add a new item to the end of an array by calling the array's `append(_:)` method:
+배열의 끝에 새로운 아이템을 추가하려면 `append(_:)` 메서드를 호출한다:
 
 ```swift
 shoppingList.append("Flour")
-// shoppingList now contains 3 items, and someone is making pancakes
+// shoppingList는 이제 3개의 아이템을 포함하며, 누군가 팬케이크를 만들고 있다
 ```
 
 <!--
@@ -324,14 +269,13 @@ shoppingList.append("Flour")
   ```
 -->
 
-Alternatively, append an array of one or more compatible items
-with the addition assignment operator (`+=`):
+또는, 호환 가능한 하나 이상의 아이템을 담은 배열을 덧셈 할당 연산자(`+=`)를 사용해 추가한다:
 
 ```swift
 shoppingList += ["Baking Powder"]
-// shoppingList now contains 4 items
+// shoppingList는 이제 4개의 아이템을 포함한다
 shoppingList += ["Chocolate Spread", "Cheese", "Butter"]
-// shoppingList now contains 7 items
+// shoppingList는 이제 7개의 아이템을 포함한다
 ```
 
 <!--
@@ -347,13 +291,11 @@ shoppingList += ["Chocolate Spread", "Cheese", "Butter"]
   ```
 -->
 
-Retrieve a value from the array by using *subscript syntax*,
-passing the index of the value you want to retrieve within square brackets
-immediately after the name of the array:
+배열에서 값을 가져오려면 *서브스크립트 문법*을 사용한다. 배열 이름 바로 뒤에 대괄호 안에 원하는 값의 인덱스를 전달한다:
 
 ```swift
 var firstItem = shoppingList[0]
-// firstItem is equal to "Eggs"
+// firstItem은 "Eggs"와 같다
 ```
 
 <!--
@@ -366,14 +308,13 @@ var firstItem = shoppingList[0]
   ```
 -->
 
-> Note: The first item in the array has an index of `0`, not `1`.
-> Arrays in Swift are always zero-indexed.
+> 참고: 배열의 첫 번째 아이템은 인덱스 `0`을 가진다. Swift에서 배열은 항상 0부터 시작한다.
 
-You can use subscript syntax to change an existing value at a given index:
+서브스크립트 문법을 사용해 특정 인덱스의 기존 값을 변경할 수 있다:
 
 ```swift
 shoppingList[0] = "Six eggs"
-// the first item in the list is now equal to "Six eggs" rather than "Eggs"
+// 리스트의 첫 번째 아이템은 이제 "Eggs" 대신 "Six eggs"와 같다
 ```
 
 <!--
@@ -386,26 +327,13 @@ shoppingList[0] = "Six eggs"
   ```
 -->
 
-When you use subscript syntax,
-the index you specify needs to be valid.
-For example, writing `shoppingList[shoppingList.count] = "Salt"`
-to try to append an item to the end of the array
-results in a runtime error.
+서브스크립트 문법을 사용할 때는 지정한 인덱스가 유효해야 한다. 예를 들어, `shoppingList[shoppingList.count] = "Salt"`를 사용해 배열의 끝에 아이템을 추가하려고 하면 런타임 오류가 발생한다.
 
-<!--
-  Unlike Ruby and Javascript, where accessing an invalid index
-  extends the array with nil or similar placeholder values,
-  to make that index become valid.
--->
-
-You can also use subscript syntax to change a range of values at once,
-even if the replacement set of values has a different length than the range you are replacing.
-The following example replaces `"Chocolate Spread"`, `"Cheese"`, and `"Butter"`
-with `"Bananas"` and `"Apples"`:
+서브스크립트 문법을 사용해 한 번에 여러 값을 변경할 수도 있다. 대체할 값의 길이가 원래 범위와 다르더라도 가능하다. 다음 예제는 `"Chocolate Spread"`, `"Cheese"`, `"Butter"`를 `"Bananas"`와 `"Apples"`로 대체한다:
 
 ```swift
 shoppingList[4...6] = ["Bananas", "Apples"]
-// shoppingList now contains 6 items
+// shoppingList는 이제 6개의 아이템을 포함한다
 ```
 
 <!--
@@ -418,13 +346,12 @@ shoppingList[4...6] = ["Bananas", "Apples"]
   ```
 -->
 
-To insert an item into the array at a specified index,
-call the array's `insert(_:at:)` method:
+특정 인덱스에 아이템을 삽입하려면 `insert(_:at:)` 메서드를 호출한다:
 
 ```swift
 shoppingList.insert("Maple Syrup", at: 0)
-// shoppingList now contains 7 items
-// "Maple Syrup" is now the first item in the list
+// shoppingList는 이제 7개의 아이템을 포함한다
+// "Maple Syrup"가 이제 리스트의 첫 번째 아이템이다
 ```
 
 <!--
@@ -439,19 +366,15 @@ shoppingList.insert("Maple Syrup", at: 0)
   ```
 -->
 
-This call to the `insert(_:at:)` method inserts a new item with a value of `"Maple Syrup"`
-at the very beginning of the shopping list,
-indicated by an index of `0`.
+`insert(_:at:)` 메서드를 호출하면 `"Maple Syrup"`라는 새 아이템이 쇼핑 리스트의 맨 앞에 삽입된다. 이때 인덱스는 `0`이다.
 
-Similarly, you remove an item from the array with the `remove(at:)` method.
-This method removes the item at the specified index and returns the removed item
-(although you can ignore the returned value if you don't need it):
+마찬가지로, `remove(at:)` 메서드를 사용해 배열에서 아이템을 제거할 수 있다. 이 메서드는 지정한 인덱스의 아이템을 제거하고 제거된 아이템을 반환한다 (반환된 값이 필요하지 않다면 무시해도 된다):
 
 ```swift
 let mapleSyrup = shoppingList.remove(at: 0)
-// the item that was at index 0 has just been removed
-// shoppingList now contains 6 items, and no Maple Syrup
-// the mapleSyrup constant is now equal to the removed "Maple Syrup" string
+// 인덱스 0에 있던 아이템이 방금 제거되었다
+// shoppingList는 이제 6개의 아이템을 포함하며, "Maple Syrup"는 없다
+// mapleSyrup 상수는 이제 제거된 "Maple Syrup" 문자열과 같다
 ```
 
 <!--
@@ -467,22 +390,13 @@ let mapleSyrup = shoppingList.remove(at: 0)
   ```
 -->
 
-> Note: If you try to access or modify a value for an index
-> that's outside of an array's existing bounds,
-> you will trigger a runtime error.
-> You can check that an index is valid before using it
-> by comparing it to the array's `count` property.
-> The largest valid index in an array is `count - 1`
-> because arrays are indexed from zero ---
-> however, when `count` is `0` (meaning the array is empty),
-> there are no valid indexes.
+> 참고: 배열의 현재 범위를 벗어난 인덱스로 값을 접근하거나 수정하려고 하면 런타임 오류가 발생한다. 인덱스를 사용하기 전에 배열의 `count` 프로퍼티와 비교해 유효한지 확인할 수 있다. 배열의 가장 큰 유효한 인덱스는 `count - 1`이다. 배열은 0부터 인덱싱되기 때문이다. 그러나 `count`가 `0`인 경우 (즉, 배열이 비어 있는 경우) 유효한 인덱스는 없다.
 
-Any gaps in an array are closed when an item is removed,
-and so the value at index `0` is once again equal to `"Six eggs"`:
+아이템을 제거하면 배열의 빈 공간이 채워지므로, 인덱스 `0`의 값은 다시 `"Six eggs"`가 된다:
 
 ```swift
 firstItem = shoppingList[0]
-// firstItem is now equal to "Six eggs"
+// firstItem은 이제 "Six eggs"와 같다
 ```
 
 <!--
@@ -495,16 +409,13 @@ firstItem = shoppingList[0]
   ```
 -->
 
-If you want to remove the final item from an array,
-use the `removeLast()` method rather than the `remove(at:)` method
-to avoid the need to query the array's `count` property.
-Like the `remove(at:)` method, `removeLast()` returns the removed item:
+배열의 마지막 아이템을 제거하려면 `remove(at:)` 메서드 대신 `removeLast()` 메서드를 사용한다. 이렇게 하면 배열의 `count` 프로퍼티를 쿼리할 필요가 없다. `remove(at:)` 메서드와 마찬가지로, `removeLast()`는 제거된 아이템을 반환한다:
 
 ```swift
 let apples = shoppingList.removeLast()
-// the last item in the array has just been removed
-// shoppingList now contains 5 items, and no apples
-// the apples constant is now equal to the removed "Apples" string
+// 배열의 마지막 아이템이 방금 제거되었다
+// shoppingList는 이제 5개의 아이템을 포함하며, "Apples"는 없다
+// apples 상수는 이제 제거된 "Apples" 문자열과 같다
 ```
 
 <!--
@@ -520,9 +431,10 @@ let apples = shoppingList.removeLast()
   ```
 -->
 
-### Iterating Over an Array
 
-You can iterate over the entire set of values in an array with the `for`-`in` loop:
+### 배열 순회하기
+
+배열에 있는 모든 값을 순회하려면 `for`-`in` 루프를 사용한다:
 
 ```swift
 for item in shoppingList {
@@ -550,16 +462,7 @@ for item in shoppingList {
   ```
 -->
 
-If you need the integer index of each item as well as its value,
-use the `enumerated()` method to iterate over the array instead.
-For each item in the array,
-the `enumerated()` method returns a tuple
-composed of an integer and the item.
-The integers start at zero and count up by one for each item;
-if you enumerate over a whole array,
-these integers match the items' indices.
-You can decompose the tuple into temporary constants or variables
-as part of the iteration:
+각 항목의 값과 함께 정수 인덱스도 필요하다면, `enumerated()` 메서드를 사용해 배열을 순회한다. 배열의 각 항목에 대해 `enumerated()` 메서드는 정수와 항목으로 구성된 튜플을 반환한다. 정수는 0부터 시작해 각 항목마다 1씩 증가한다. 전체 배열을 순회하면 이 정수는 항목의 인덱스와 일치한다. 순회 과정에서 튜플을 임시 상수나 변수로 분해할 수 있다:
 
 ```swift
 for (index, value) in shoppingList.enumerated() {
@@ -587,55 +490,38 @@ for (index, value) in shoppingList.enumerated() {
   ```
 -->
 
-For more about the `for`-`in` loop, see <doc:ControlFlow#For-In-Loops>.
+`for`-`in` 루프에 대한 자세한 내용은 <doc:ControlFlow#For-In-Loops>를 참고한다.
 
-## Sets
 
-A *set* stores distinct values of the same type
-in a collection with no defined ordering.
-You can use a set instead of an array when the order of items isn't important,
-or when you need to ensure that an item only appears once.
+## 집합(Set)
 
-> Note: Swift's `Set` type is bridged to Foundation's `NSSet` class.
->
-> For more information about using `Set` with Foundation and Cocoa,
-> see [Bridging Between Set and NSSet](https://developer.apple.com/documentation/swift/set#2845530).
+*집합(Set)*은 순서가 정의되지 않은 컬렉션에 동일한 타입의 고유한 값들을 저장한다. 항목의 순서가 중요하지 않거나, 특정 항목이 단 한 번만 나타나도록 보장해야 할 때 배열 대신 집합을 사용할 수 있다.
+
+> 참고: Swift의 `Set` 타입은 Foundation의 `NSSet` 클래스와 브리징된다.  
+> Foundation 및 Cocoa에서 `Set`을 사용하는 방법에 대한 자세한 내용은 [Bridging Between Set and NSSet](https://developer.apple.com/documentation/swift/set#2845530)을 참고한다.
 
 <!--
-  TODO: Add note about performance characteristics of contains on sets as opposed to arrays?
+  TODO: 집합과 배열에서 contains 메서드의 성능 특성에 대한 설명을 추가할지 고려 중
 -->
 
-### Hash Values for Set Types
 
-A type must be *hashable* in order to be stored in a set ---
-that is, the type must provide a way to compute a *hash value* for itself.
-A hash value is an `Int` value that's the same for all objects that compare equally,
-such that if `a == b`,
-the hash value of `a` is equal to the hash value of `b`.
+### 집합 타입의 해시 값
 
-All of Swift's basic types (such as `String`, `Int`, `Double`, and `Bool`)
-are hashable by default, and can be used as set value types or dictionary key types.
-Enumeration case values without associated values
-(as described in <doc:Enumerations>)
-are also hashable by default.
+어떤 타입을 집합에 저장하려면 *해시 가능* 해야 한다. 즉, 해당 타입은 자신의 *해시 값*을 계산할 수 있는 방법을 제공해야 한다. 해시 값은 동일한 객체에 대해 항상 같은 `Int` 값이다. 예를 들어 `a == b`일 때, `a`의 해시 값은 `b`의 해시 값과 같다.
 
-> Note: You can use your own custom types as set value types or dictionary key types
-> by making them conform to the `Hashable` protocol
-> from the Swift standard library.
-> For information about implementing the required `hash(into:)` method,
-> see [`Hashable`](https://developer.apple.com/documentation/swift/hashable).
-> For information about conforming to protocols, see <doc:Protocols>.
+Swift의 기본 타입들(예: `String`, `Int`, `Double`, `Bool`)은 기본적으로 해시 가능하며, 집합의 값 타입이나 딕셔너리의 키 타입으로 사용할 수 있다. 또한, 연관 값을 가지지 않는 열거형 케이스 값들도 기본적으로 해시 가능하다.
 
-### Set Type Syntax
+> 참고: 커스텀 타입을 집합의 값 타입이나 딕셔너리의 키 타입으로 사용하려면 Swift 표준 라이브러리의 `Hashable` 프로토콜을 준수하게 만들면 된다. 필요한 `hash(into:)` 메서드를 구현하는 방법에 대한 자세한 내용은 [`Hashable`](https://developer.apple.com/documentation/swift/hashable)을 참고하라. 프로토콜 준수에 대한 정보는 <doc:Protocols>에서 확인할 수 있다.
 
-The type of a Swift set is written as `Set<Element>`,
-where `Element` is the type that the set is allowed to store.
-Unlike arrays, sets don't have an equivalent shorthand form.
 
-### Creating and Initializing an Empty Set
+### Set 타입 구문
 
-You can create an empty set of a certain type
-using initializer syntax:
+Swift에서 Set의 타입은 `Set<Element>`로 작성한다. 여기서 `Element`는 Set이 저장할 수 있는 값의 타입을 나타낸다. 배열과 달리 Set은 간단한 축약 형태가 없다.
+
+
+### 빈 Set 생성 및 초기화
+
+특정 타입의 빈 Set을 생성하려면 초기화 구문을 사용한다:
 
 ```swift
 var letters = Set<Character>()
@@ -653,12 +539,9 @@ print("letters is of type Set<Character> with \(letters.count) items.")
   ```
 -->
 
-> Note: The type of the `letters` variable is inferred to be `Set<Character>`,
-> from the type of the initializer.
+> 참고: `letters` 변수의 타입은 초기화 구문의 타입에서 `Set<Character>`로 추론된다.
 
-Alternatively, if the context already provides type information,
-such as a function argument or an already typed variable or constant,
-you can create an empty set with an empty array literal:
+또한, 함수 인자나 이미 타입이 지정된 변수 또는 상수와 같이 컨텍스트가 이미 타입 정보를 제공하는 경우, 빈 배열 리터럴을 사용해 빈 Set을 생성할 수 있다:
 
 ```swift
 letters.insert("a")
@@ -679,16 +562,16 @@ letters = []
   ```
 -->
 
-### Creating a Set with an Array Literal
 
-You can also initialize a set with an array literal,
-as a shorthand way to write one or more values as a set collection.
+### 배열 리터럴로 Set 생성하기
 
-The example below creates a set called `favoriteGenres` to store `String` values:
+배열 리터럴을 사용해 Set을 초기화할 수 있다. 이는 하나 이상의 값을 Set 컬렉션으로 간단히 표현하는 방법이다.
+
+아래 예제는 `String` 타입의 값을 저장하는 `favoriteGenres`라는 Set을 생성한다:
 
 ```swift
 var favoriteGenres: Set<String> = ["Rock", "Classical", "Hip hop"]
-// favoriteGenres has been initialized with three initial items
+// favoriteGenres는 초기값으로 세 개의 항목을 가지고 있다
 ```
 
 <!--
@@ -700,24 +583,11 @@ var favoriteGenres: Set<String> = ["Rock", "Classical", "Hip hop"]
   ```
 -->
 
-The `favoriteGenres` variable is declared as
-“a set of `String` values”, written as `Set<String>`.
-Because this particular set has specified a value type of `String`,
-it's *only* allowed to store `String` values.
-Here, the `favoriteGenres` set is initialized with three `String` values
-(`"Rock"`, `"Classical"`, and `"Hip hop"`), written within an array literal.
+`favoriteGenres` 변수는 "`String` 값들의 Set"으로 선언되었으며, 이는 `Set<String>`으로 표기된다. 이 특정 Set은 `String` 타입의 값만 저장할 수 있다. 여기서 `favoriteGenres` Set은 배열 리터럴 안에 작성된 세 개의 `String` 값(`"Rock"`, `"Classical"`, `"Hip hop"`)으로 초기화되었다.
 
-> Note: The `favoriteGenres` set is declared as a variable (with the `var` introducer)
-> and not a constant (with the `let` introducer)
-> because items are added and removed in the examples below.
+> 참고: `favoriteGenres` Set은 변수로 선언되었으며(`var` 키워드 사용), 상수가 아니다(`let` 키워드 사용). 이는 아래 예제에서 항목을 추가하고 제거하기 때문이다.
 
-A set type can't be inferred from an array literal alone,
-so the type `Set` must be explicitly declared.
-However, because of Swift's type inference,
-you don't have to write the type of the set's elements
-if you're initializing it with an array literal
-that contains values of just one type.
-The initialization of `favoriteGenres` could have been written in a shorter form instead:
+Set 타입은 배열 리터럴만으로는 추론할 수 없으므로, `Set` 타입을 명시적으로 선언해야 한다. 그러나 Swift의 타입 추론 덕분에, 배열 리터럴이 단일 타입의 값만 포함하고 있다면 Set의 요소 타입을 작성하지 않아도 된다. `favoriteGenres`의 초기화는 다음과 같이 더 짧게 작성할 수 있다:
 
 ```swift
 var favoriteGenres: Set = ["Rock", "Classical", "Hip hop"]
@@ -731,16 +601,14 @@ var favoriteGenres: Set = ["Rock", "Classical", "Hip hop"]
   ```
 -->
 
-Because all values in the array literal are of the same type,
-Swift can infer that `Set<String>` is
-the correct type to use for the `favoriteGenres` variable.
+배열 리터럴의 모든 값이 동일한 타입이기 때문에, Swift는 `favoriteGenres` 변수에 사용할 타입이 `Set<String>`임을 추론할 수 있다.
 
-### Accessing and Modifying a Set
 
-You access and modify a set through its methods and properties.
+### 집합(Set) 접근 및 수정
 
-To find out the number of items in a set,
-check its read-only `count` property:
+집합을 다루려면 메서드와 프로퍼티를 사용한다.
+
+집합에 포함된 항목의 개수를 확인하려면 `count` 프로퍼티를 사용한다:
 
 ```swift
 print("I have \(favoriteGenres.count) favorite music genres.")
@@ -757,8 +625,7 @@ print("I have \(favoriteGenres.count) favorite music genres.")
   ```
 -->
 
-Use the Boolean `isEmpty` property
-as a shortcut for checking whether the `count` property is equal to `0`:
+`count` 프로퍼티가 `0`인지 확인하는 단축키로 `isEmpty` 프로퍼티를 사용한다:
 
 ```swift
 if favoriteGenres.isEmpty {
@@ -782,7 +649,7 @@ if favoriteGenres.isEmpty {
   ```
 -->
 
-You can add a new item into a set by calling the set's `insert(_:)` method:
+새 항목을 추가하려면 `insert(_:)` 메서드를 호출한다:
 
 ```swift
 favoriteGenres.insert("Jazz")
@@ -799,11 +666,7 @@ favoriteGenres.insert("Jazz")
   ```
 -->
 
-You can remove an item from a set by calling the set's `remove(_:)` method,
-which removes the item if it's a member of the set,
-and returns the removed value,
-or returns `nil` if the set didn't contain it.
-Alternatively, all items in a set can be removed with its `removeAll()` method.
+항목을 제거하려면 `remove(_:)` 메서드를 호출한다. 이 메서드는 집합에 해당 항목이 있으면 제거하고 제거된 값을 반환하며, 항목이 없으면 `nil`을 반환한다. 모든 항목을 한 번에 제거하려면 `removeAll()` 메서드를 사용한다.
 
 ```swift
 if let removedGenre = favoriteGenres.remove("Rock") {
@@ -827,7 +690,7 @@ if let removedGenre = favoriteGenres.remove("Rock") {
   ```
 -->
 
-To check whether a set contains a particular item, use the `contains(_:)` method.
+특정 항목이 집합에 포함되어 있는지 확인하려면 `contains(_:)` 메서드를 사용한다.
 
 ```swift
 if favoriteGenres.contains("Funk") {
@@ -851,9 +714,10 @@ if favoriteGenres.contains("Funk") {
   ```
 -->
 
-### Iterating Over a Set
 
-You can iterate over the values in a set with a `for`-`in` loop.
+### Set 순회하기
+
+`for-in` 루프를 사용해 Set의 값을 순회할 수 있다.
 
 ```swift
 for genre in favoriteGenres {
@@ -877,13 +741,9 @@ for genre in favoriteGenres {
   ```
 -->
 
-For more about the `for`-`in` loop, see <doc:ControlFlow#For-In-Loops>.
+`for-in` 루프에 대한 자세한 내용은 <doc:ControlFlow#For-In-Loops>를 참고한다.
 
-Swift's `Set` type doesn't have a defined ordering.
-To iterate over the values of a set in a specific order,
-use the `sorted()` method,
-which returns the set's elements as an array
-sorted using the `<` operator.
+Swift의 `Set` 타입은 정의된 순서가 없다. 특정 순서로 Set의 값을 순회하려면 `sorted()` 메서드를 사용한다. 이 메서드는 `<` 연산자를 사용해 정렬된 배열로 Set의 요소를 반환한다.
 
 ```swift
 for genre in favoriteGenres.sorted() {
@@ -907,24 +767,22 @@ for genre in favoriteGenres.sorted() {
   ```
 -->
 
-## Performing Set Operations
 
-You can efficiently perform fundamental set operations,
-such as combining two sets together,
-determining which values two sets have in common,
-or determining whether two sets contain all, some, or none of the same values.
+## 집합 연산 수행하기
 
-### Fundamental Set Operations
+두 집합을 효율적으로 결합하거나, 두 집합이 공통으로 가지는 값을 찾거나, 두 집합이 같은 값을 모두 포함하는지, 일부만 포함하는지, 아니면 전혀 포함하지 않는지 확인하는 등 기본적인 집합 연산을 수행할 수 있다.
 
-The illustration below depicts two sets --- `a` and `b` ---
-with the results of various set operations represented by the shaded regions.
+
+### 기본 집합 연산
+
+아래 그림은 두 집합 `a`와 `b`를 보여주며, 다양한 집합 연산의 결과를 음영 처리된 영역으로 표현한다.
 
 ![](setVennDiagram)
 
-- Use the `intersection(_:)` method to create a new set with only the values common to both sets.
-- Use the `symmetricDifference(_:)` method to create a new set with values in either set, but not both.
-- Use the `union(_:)` method to create a new set with all of the values in both sets.
-- Use the `subtracting(_:)` method to create a new set with values not in the specified set.
+- `intersection(_:)` 메서드를 사용해 두 집합에 공통된 값만 포함된 새로운 집합을 생성한다.
+- `symmetricDifference(_:)` 메서드를 사용해 두 집합 중 하나에만 포함된 값을 가진 새로운 집합을 생성한다.
+- `union(_:)` 메서드를 사용해 두 집합의 모든 값을 포함한 새로운 집합을 생성한다.
+- `subtracting(_:)` 메서드를 사용해 지정된 집합에 없는 값을 가진 새로운 집합을 생성한다.
 
 ```swift
 let oddDigits: Set = [1, 3, 5, 7, 9]
@@ -973,24 +831,18 @@ oddDigits.symmetricDifference(singleDigitPrimeNumbers).sorted()
   Tracking bug is <rdar://problem/35301593>
 -->
 
-### Set Membership and Equality
 
-The illustration below depicts three sets --- `a`, `b` and `c` ---
-with overlapping regions representing elements shared among sets.
-Set `a` is a *superset* of set `b`,
-because `a` contains all elements in `b`.
-Conversely, set `b` is a *subset* of set `a`,
-because all elements in `b` are also contained by `a`.
-Set `b` and set `c` are *disjoint* with one another,
-because they share no elements in common.
+### 집합의 포함 관계와 동등성
+
+아래 그림은 세 개의 집합 `a`, `b`, `c`를 보여준다. 겹치는 영역은 집합 간 공유되는 요소를 나타낸다. 집합 `a`는 집합 `b`의 *상위 집합(superset)*이다. 왜냐하면 `a`는 `b`의 모든 요소를 포함하기 때문이다. 반대로, 집합 `b`는 집합 `a`의 *하위 집합(subset)*이다. `b`의 모든 요소가 `a`에 포함되기 때문이다. 집합 `b`와 `c`는 서로 *서로소(disjoint)* 관계이다. 두 집합 간 공통 요소가 없기 때문이다.
 
 ![](setEulerDiagram)
 
-- Use the “is equal” operator (`==`) to determine whether two sets contain all of the same values.
-- Use the `isSubset(of:)` method to determine whether all of the values of a set are contained in the specified set.
-- Use the `isSuperset(of:)` method to determine whether a set contains all of the values in a specified set.
-- Use the `isStrictSubset(of:)` or `isStrictSuperset(of:)` methods to determine whether a set is a subset or superset, but not equal to, a specified set.
-- Use the `isDisjoint(with:)` method to determine whether two sets have no values in common.
+- 두 집합이 동일한 값을 모두 포함하는지 확인하려면 "is equal" 연산자(`==`)를 사용한다.
+- 한 집합의 모든 값이 특정 집합에 포함되는지 확인하려면 `isSubset(of:)` 메서드를 사용한다.
+- 한 집합이 특정 집합의 모든 값을 포함하는지 확인하려면 `isSuperset(of:)` 메서드를 사용한다.
+- 한 집합이 특정 집합의 하위 집합 또는 상위 집합이지만 동일하지는 않은지 확인하려면 `isStrictSubset(of:)` 또는 `isStrictSuperset(of:)` 메서드를 사용한다.
+- 두 집합이 공통된 값을 전혀 가지고 있지 않은지 확인하려면 `isDisjoint(with:)` 메서드를 사용한다.
 
 ```swift
 let houseAnimals: Set = ["🐶", "🐱"]
@@ -1033,45 +885,32 @@ farmAnimals.isDisjoint(with: cityAnimals)
   Tracking bug is <rdar://problem/35301593>
 -->
 
-## Dictionaries
 
-A *dictionary* stores associations between
-keys of the same type and values of the same type
-in a collection with no defined ordering.
-Each value is associated with a unique *key*,
-which acts as an identifier for that value within the dictionary.
-Unlike items in an array, items in a dictionary don't have a specified order.
-You use a dictionary when you need to look up values based on their identifier,
-in much the same way that a real-world dictionary is used to look up
-the definition for a particular word.
+## 딕셔너리
 
-> Note: Swift's `Dictionary` type is bridged to Foundation's `NSDictionary` class.
+*딕셔너리*는 동일한 타입의 키와 동일한 타입의 값 사이의 연관 관계를 저장하는 컬렉션이다. 딕셔너리에서는 순서가 정의되지 않는다. 각 값은 고유한 *키*와 연결되며, 이 키는 딕셔너리 내에서 해당 값을 식별하는 역할을 한다. 배열의 항목과 달리 딕셔너리의 항목은 특정 순서를 가지지 않는다. 딕셔너리는 식별자를 기반으로 값을 조회해야 할 때 사용한다. 실제 사전에서 특정 단어의 정의를 찾는 방식과 유사하다.
+
+> 참고: Swift의 `Dictionary` 타입은 Foundation의 `NSDictionary` 클래스와 연결된다.
 >
-> For more information about using `Dictionary` with Foundation and Cocoa,
-> see [Bridging Between Dictionary and NSDictionary](https://developer.apple.com/documentation/swift/dictionary#2846239).
+> Foundation과 Cocoa에서 `Dictionary`를 사용하는 방법에 대한 자세한 내용은 [Bridging Between Dictionary and NSDictionary](https://developer.apple.com/documentation/swift/dictionary#2846239)를 참고한다.
 
-### Dictionary Type Shorthand Syntax
 
-The type of a Swift dictionary is written in full as `Dictionary<Key, Value>`,
-where `Key` is the type of value that can be used as a dictionary key,
-and `Value` is the type of value that the dictionary stores for those keys.
+### 딕셔너리 타입의 축약형 문법
 
-> Note: A dictionary `Key` type must conform to the `Hashable` protocol,
-> like a set's value type.
+스위프트에서 딕셔너리의 타입은 `Dictionary<Key, Value>`로 작성한다. 여기서 `Key`는 딕셔너리의 키로 사용할 수 있는 값의 타입을 나타내고, `Value`는 해당 키에 저장될 값의 타입을 나타낸다.
 
-You can also write the type of a dictionary in shorthand form as `[Key: Value]`.
-Although the two forms are functionally identical,
-the shorthand form is preferred
-and is used throughout this guide when referring to the type of a dictionary.
+> 참고: 딕셔너리의 `Key` 타입은 `Hashable` 프로토콜을 준수해야 한다. 이는 세트의 값 타입과 동일한 요구사항이다.
 
-### Creating an Empty Dictionary
+딕셔너리의 타입을 `[Key: Value]`와 같은 축약형으로 작성할 수도 있다. 두 형식은 기능적으로 동일하지만, 가이드 전반에 걸쳐 딕셔너리 타입을 언급할 때는 축약형을 주로 사용한다.
 
-As with arrays,
-you can create an empty `Dictionary` of a certain type by using initializer syntax:
+
+### 빈 딕셔너리 생성하기
+
+배열과 마찬가지로, 특정 타입의 빈 `딕셔너리`를 초기화 구문을 사용해 생성할 수 있다:
 
 ```swift
 var namesOfIntegers: [Int: String] = [:]
-// namesOfIntegers is an empty [Int: String] dictionary
+// namesOfIntegers는 빈 [Int: String] 딕셔너리다
 ```
 
 <!--
@@ -1083,20 +922,15 @@ var namesOfIntegers: [Int: String] = [:]
   ```
 -->
 
-This example creates an empty dictionary of type `[Int: String]`
-to store human-readable names of integer values.
-Its keys are of type `Int`, and its values are of type `String`.
+이 예제는 정수 값의 사람이 읽을 수 있는 이름을 저장하기 위해 `[Int: String]` 타입의 빈 딕셔너리를 생성한다. 키는 `Int` 타입이고, 값은 `String` 타입이다.
 
-If the context already provides type information,
-you can create an empty dictionary with an empty dictionary literal,
-which is written as `[:]`
-(a colon inside a pair of square brackets):
+만약 컨텍스트가 이미 타입 정보를 제공한다면, 빈 딕셔너리 리터럴(`[:]`, 즉 대괄호 안에 콜론)을 사용해 빈 딕셔너리를 생성할 수 있다:
 
 ```swift
 namesOfIntegers[16] = "sixteen"
-// namesOfIntegers now contains 1 key-value pair
+// namesOfIntegers는 이제 1개의 키-값 쌍을 포함한다
 namesOfIntegers = [:]
-// namesOfIntegers is once again an empty dictionary of type [Int: String]
+// namesOfIntegers는 다시 [Int: String] 타입의 빈 딕셔너리가 된다
 ```
 
 <!--
@@ -1111,26 +945,18 @@ namesOfIntegers = [:]
   ```
 -->
 
-### Creating a Dictionary with a Dictionary Literal
 
-You can also initialize a dictionary with a *dictionary literal*,
-which has a similar syntax to the array literal seen earlier.
-A dictionary literal is a shorthand way to write
-one or more key-value pairs as a `Dictionary` collection.
+### 딕셔너리 리터럴로 딕셔너리 생성하기
 
-A *key-value pair* is a combination of a key and a value.
-In a dictionary literal,
-the key and value in each key-value pair are separated by a colon.
-The key-value pairs are written as a list, separated by commas,
-surrounded by a pair of square brackets:
+이전에 살펴본 배열 리터럴과 유사한 문법을 사용해 딕셔너리를 초기화할 수도 있다. 딕셔너리 리터럴은 하나 이상의 키-값 쌍을 `Dictionary` 컬렉션으로 간단히 표현하는 방법이다.
+
+키-값 쌍은 키와 값의 조합이다. 딕셔너리 리터럴에서 각 키-값 쌍은 콜론으로 구분되며, 여러 쌍은 쉼표로 구분된 목록 형태로 작성된다. 전체는 대괄호로 둘러싸인다:
 
 ```swift
 [<#key 1#>: <#value 1#>, <#key 2#>: <#value 2#>, <#key 3#>: <#value 3#>]
 ```
 
-The example below creates a dictionary to store the names of international airports.
-In this dictionary, the keys are three-letter International Air Transport Association codes,
-and the values are airport names:
+아래 예제는 국제 공항의 이름을 저장하기 위한 딕셔너리를 생성한다. 이 딕셔너리에서 키는 국제 항공 운송 협회(IATA) 코드이며, 값은 공항 이름이다:
 
 ```swift
 var airports: [String: String] = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
@@ -1144,29 +970,15 @@ var airports: [String: String] = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
   ```
 -->
 
-The `airports` dictionary is declared as having a type of `[String: String]`,
-which means “a `Dictionary` whose keys are of type `String`,
-and whose values are also of type `String`”.
+`airports` 딕셔너리는 `[String: String]` 타입으로 선언되었다. 이는 "키가 `String` 타입이고, 값도 `String` 타입인 `Dictionary`"를 의미한다.
 
-> Note: The `airports` dictionary is declared as a variable (with the `var` introducer),
-> and not a constant (with the `let` introducer),
-> because more airports are added to the dictionary in the examples below.
+> 참고: `airports` 딕셔너리는 `var` 키워드로 변수로 선언되었으며, `let` 키워드로 상수로 선언되지 않았다. 이는 아래 예제에서 더 많은 공항을 딕셔너리에 추가하기 위함이다.
 
-The `airports` dictionary is initialized with
-a dictionary literal containing two key-value pairs.
-The first pair has a key of `"YYZ"` and a value of `"Toronto Pearson"`.
-The second pair has a key of `"DUB"` and a value of `"Dublin"`.
+`airports` 딕셔너리는 두 개의 키-값 쌍을 포함하는 딕셔너리 리터럴로 초기화되었다. 첫 번째 쌍은 키가 `"YYZ"`이고 값이 `"Toronto Pearson"`이다. 두 번째 쌍은 키가 `"DUB"`이고 값이 `"Dublin"`이다.
 
-This dictionary literal contains two `String: String` pairs.
-This key-value type matches the type of the `airports` variable declaration
-(a dictionary with only `String` keys, and only `String` values),
-and so the assignment of the dictionary literal is permitted
-as a way to initialize the `airports` dictionary with two initial items.
+이 딕셔너리 리터럴은 두 개의 `String: String` 쌍을 포함한다. 이 키-값 타입은 `airports` 변수 선언의 타입(키와 값이 모두 `String`인 딕셔너리)과 일치하므로, 딕셔너리 리터럴을 `airports` 딕셔너리를 초기화하는 데 사용할 수 있다.
 
-As with arrays,
-you don't have to write the type of the dictionary
-if you're initializing it with a dictionary literal whose keys and values have consistent types.
-The initialization of `airports` could have been written in a shorter form instead:
+배열과 마찬가지로, 딕셔너리를 키와 값의 타입이 일관된 딕셔너리 리터럴로 초기화할 때는 타입을 명시적으로 작성하지 않아도 된다. `airports` 초기화를 더 짧은 형태로 작성할 수 있다:
 
 ```swift
 var airports = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
@@ -1180,18 +992,14 @@ var airports = ["YYZ": "Toronto Pearson", "DUB": "Dublin"]
   ```
 -->
 
-Because all keys in the literal are of the same type as each other,
-and likewise all values are of the same type as each other,
-Swift can infer that `[String: String]` is
-the correct type to use for the `airports` dictionary.
+리터럴의 모든 키가 동일한 타입이고, 모든 값도 동일한 타입이므로, Swift는 `[String: String]`이 `airports` 딕셔너리에 적합한 타입임을 추론할 수 있다.
 
-### Accessing and Modifying a Dictionary
 
-You access and modify a dictionary through its methods and properties,
-or by using subscript syntax.
+### 딕셔너리 접근 및 수정
 
-As with an array, you find out the number of items in a `Dictionary`
-by checking its read-only `count` property:
+딕셔너리에 접근하고 수정할 때는 메서드와 프로퍼티를 사용하거나, 서브스크립트 문법을 활용한다.
+
+배열과 마찬가지로, `Dictionary`의 항목 수를 확인하려면 읽기 전용 프로퍼티인 `count`를 사용한다:
 
 ```swift
 print("The airports dictionary contains \(airports.count) items.")
@@ -1207,8 +1015,7 @@ print("The airports dictionary contains \(airports.count) items.")
   ```
 -->
 
-Use the Boolean `isEmpty` property
-as a shortcut for checking whether the `count` property is equal to `0`:
+`count` 프로퍼티가 `0`인지 확인하는 단축키로, 불리언 프로퍼티인 `isEmpty`를 사용한다:
 
 ```swift
 if airports.isEmpty {
@@ -1232,9 +1039,7 @@ if airports.isEmpty {
   ```
 -->
 
-You can add a new item to a dictionary with subscript syntax.
-Use a new key of the appropriate type as the subscript index,
-and assign a new value of the appropriate type:
+서브스크립트 문법을 사용해 딕셔너리에 새로운 항목을 추가할 수 있다. 적절한 타입의 새로운 키를 서브스크립트 인덱스로 사용하고, 적절한 타입의 새로운 값을 할당한다:
 
 ```swift
 airports["LHR"] = "London"
@@ -1251,7 +1056,7 @@ airports["LHR"] = "London"
   ```
 -->
 
-You can also use subscript syntax to change the value associated with a particular key:
+특정 키와 연결된 값을 변경할 때도 서브스크립트 문법을 사용할 수 있다:
 
 ```swift
 airports["LHR"] = "London Heathrow"
@@ -1268,23 +1073,9 @@ airports["LHR"] = "London Heathrow"
   ```
 -->
 
-As an alternative to subscripting,
-use a dictionary's `updateValue(_:forKey:)` method
-to set or update the value for a particular key.
-Like the subscript examples above, the `updateValue(_:forKey:)` method
-sets a value for a key if none exists,
-or updates the value if that key already exists.
-Unlike a subscript, however,
-the `updateValue(_:forKey:)` method returns the *old* value after performing an update.
-This enables you to check whether or not an update took place.
+서브스크립트 대신 딕셔너리의 `updateValue(_:forKey:)` 메서드를 사용해 특정 키에 대한 값을 설정하거나 업데이트할 수 있다. 위의 서브스크립트 예제와 마찬가지로, `updateValue(_:forKey:)` 메서드는 키가 존재하지 않으면 값을 설정하고, 키가 이미 존재하면 값을 업데이트한다. 하지만 서브스크립트와 달리, `updateValue(_:forKey:)` 메서드는 업데이트 후 *이전* 값을 반환한다. 이를 통해 업데이트가 발생했는지 확인할 수 있다.
 
-The `updateValue(_:forKey:)` method returns an optional value
-of the dictionary's value type.
-For a dictionary that stores `String` values, for example,
-the method returns a value of type `String?`,
-or “optional `String`”.
-This optional value contains the old value for that key if one existed before the update,
-or `nil` if no value existed:
+`updateValue(_:forKey:)` 메서드는 딕셔너리의 값 타입에 대한 옵셔널 값을 반환한다. 예를 들어, `String` 값을 저장하는 딕셔너리의 경우, 이 메서드는 `String?` 타입, 즉 "옵셔널 `String`" 값을 반환한다. 이 옵셔널 값은 업데이트 전 해당 키에 대한 이전 값을 포함하거나, 값이 존재하지 않았다면 `nil`을 포함한다:
 
 ```swift
 if let oldValue = airports.updateValue("Dublin Airport", forKey: "DUB") {
@@ -1304,12 +1095,7 @@ if let oldValue = airports.updateValue("Dublin Airport", forKey: "DUB") {
   ```
 -->
 
-You can also use subscript syntax to retrieve a value from the dictionary for a particular key.
-Because it's possible to request a key for which no value exists,
-a dictionary's subscript returns an optional value of the dictionary's value type.
-If the dictionary contains a value for the requested key,
-the subscript returns an optional value containing the existing value for that key.
-Otherwise, the subscript returns `nil`:
+특정 키에 대한 값을 딕셔너리에서 가져올 때도 서브스크립트 문법을 사용할 수 있다. 값이 존재하지 않는 키를 요청할 가능성이 있기 때문에, 딕셔너리의 서브스크립트는 딕셔너리의 값 타입에 대한 옵셔널 값을 반환한다. 요청한 키에 대한 값이 딕셔너리에 존재한다면, 서브스크립트는 해당 키의 기존 값을 포함한 옵셔널 값을 반환한다. 그렇지 않으면 `nil`을 반환한다:
 
 ```swift
 if let airportName = airports["DUB"] {
@@ -1333,8 +1119,7 @@ if let airportName = airports["DUB"] {
   ```
 -->
 
-You can use subscript syntax to remove a key-value pair from a dictionary
-by assigning a value of `nil` for that key:
+서브스크립트 문법을 사용해 딕셔너리에서 키-값 쌍을 제거할 수 있다. 해당 키에 `nil` 값을 할당하면 된다:
 
 ```swift
 airports["APL"] = "Apple International"
@@ -1361,11 +1146,7 @@ airports["APL"] = nil
   ```
 -->
 
-Alternatively, remove a key-value pair from a dictionary
-with the `removeValue(forKey:)` method.
-This method removes the key-value pair if it exists
-and returns the removed value,
-or returns `nil` if no value existed:
+또는 `removeValue(forKey:)` 메서드를 사용해 딕셔너리에서 키-값 쌍을 제거할 수 있다. 이 메서드는 키-값 쌍이 존재하면 제거하고 제거된 값을 반환하며, 값이 존재하지 않으면 `nil`을 반환한다:
 
 ```swift
 if let removedValue = airports.removeValue(forKey: "DUB") {
@@ -1389,12 +1170,10 @@ if let removedValue = airports.removeValue(forKey: "DUB") {
   ```
 -->
 
-### Iterating Over a Dictionary
 
-You can iterate over the key-value pairs in a dictionary with a `for`-`in` loop.
-Each item in the dictionary is returned as a `(key, value)` tuple,
-and you can decompose the tuple's members into temporary constants or variables
-as part of the iteration:
+### 딕셔너리 순회하기
+
+`for`-`in` 루프를 사용해 딕셔너리의 키-값 쌍을 순회할 수 있다. 딕셔너리의 각 항목은 `(key, value)` 튜플로 반환되며, 순회 과정에서 튜플의 멤버를 임시 상수나 변수로 분해할 수 있다:
 
 ```swift
 for (airportCode, airportName) in airports {
@@ -1416,10 +1195,9 @@ for (airportCode, airportName) in airports {
   ```
 -->
 
-For more about the `for`-`in` loop, see <doc:ControlFlow#For-In-Loops>.
+`for`-`in` 루프에 대해 더 자세히 알아보려면 <doc:ControlFlow#For-In-Loops>를 참고한다.
 
-You can also retrieve an iterable collection of a dictionary's keys or values
-by accessing its `keys` and `values` properties:
+딕셔너리의 `keys`와 `values` 프로퍼티에 접근해 키나 값의 컬렉션을 가져와 순회할 수도 있다:
 
 ```swift
 for airportCode in airports.keys {
@@ -1453,9 +1231,7 @@ for airportName in airports.values {
   ```
 -->
 
-If you need to use a dictionary's keys or values
-with an API that takes an `Array` instance, initialize a new array
-with the `keys` or `values` property:
+`Array` 타입을 인자로 받는 API와 함께 딕셔너리의 키나 값을 사용해야 한다면, `keys`나 `values` 프로퍼티로 새로운 배열을 초기화한다:
 
 ```swift
 let airportCodes = [String](airports.keys)
@@ -1479,9 +1255,7 @@ let airportNames = [String](airports.values)
   ```
 -->
 
-Swift's `Dictionary` type doesn't have a defined ordering.
-To iterate over the keys or values of a dictionary in a specific order,
-use the `sorted()` method on its `keys` or `values` property.
+Swift의 `Dictionary` 타입은 정의된 순서가 없다. 특정 순서로 딕셔너리의 키나 값을 순회하려면, `keys`나 `values` 프로퍼티에 `sorted()` 메서드를 사용한다.
 
 <!--
 This source file is part of the Swift.org open source project
@@ -1492,3 +1266,5 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
+
+

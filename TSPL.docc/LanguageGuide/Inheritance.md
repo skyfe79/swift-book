@@ -1,45 +1,35 @@
-# Inheritance
+# 상속
 
-Subclass to add or override functionality.
+기능을 추가하거나 재정의하기 위해 서브클래스를 사용한다.
 
-A class can *inherit* methods, properties, and other characteristics
-from another class.
-When one class inherits from another,
-the inheriting class is known as a *subclass*,
-and the class it inherits from is known as its *superclass*.
-Inheritance is a fundamental behavior that differentiates classes
-from other types in Swift.
+클래스는 다른 클래스로부터 메서드, 프로퍼티, 그리고 다른 특성들을 *상속*받을 수 있다.  
+한 클래스가 다른 클래스로부터 상속받을 때, 상속받는 클래스를 *서브클래스*라고 부르고, 상속해주는 클래스를 *슈퍼클래스*라고 부른다.  
+상속은 Swift에서 클래스를 다른 타입과 구분짓는 핵심적인 동작이다.
 
-Classes in Swift can call and access
-methods, properties, and subscripts belonging to their superclass
-and can provide their own overriding versions of those methods, properties, and subscripts
-to refine or modify their behavior.
-Swift helps to ensure your overrides are correct
-by checking that the override definition has a matching superclass definition.
+Swift의 클래스는 슈퍼클래스에 속한 메서드, 프로퍼티, 그리고 서브스크립트를 호출하고 접근할 수 있으며,  
+이러한 메서드, 프로퍼티, 서브스크립트의 동작을 개선하거나 수정하기 위해 자신만의 재정의 버전을 제공할 수 있다.  
+Swift는 재정의가 올바른지 확인하기 위해 재정의 정의가 슈퍼클래스의 정의와 일치하는지 검사한다.
 
-Classes can also add property observers to inherited properties
-in order to be notified when the value of a property changes.
-Property observers can be added to any property,
-regardless of whether it was originally defined as a stored or computed property.
+클래스는 상속받은 프로퍼티에 프로퍼티 옵저버를 추가하여 프로퍼티 값이 변경될 때 알림을 받을 수도 있다.  
+프로퍼티 옵저버는 원래 저장 프로퍼티로 정의되었는지, 계산 프로퍼티로 정의되었는지와 관계없이 모든 프로퍼티에 추가할 수 있다.
 
-## Defining a Base Class
 
-Any class that doesn't inherit from another class is known as a *base class*.
+## 기본 클래스 정의하기
 
-> Note: Swift classes don't inherit from a universal base class.
-> Classes you define without specifying a superclass
-> automatically become base classes for you to build upon.
+다른 클래스로부터 상속받지 않는 모든 클래스를 *기본 클래스*라고 부른다.
 
-The example below defines a base class called `Vehicle`.
-This base class defines a stored property called `currentSpeed`,
-with a default value of `0.0` (inferring a property type of `Double`).
-The `currentSpeed` property's value is used by
-a read-only computed `String` property called `description`
-to create a description of the vehicle.
+> 주의: Swift 클래스는 공통의 기본 클래스에서 상속받지 않는다. 
+> 슈퍼클래스를 지정하지 않고 정의한 클래스는 자동으로 기본 클래스가 된다. 
+> 이 기본 클래스를 바탕으로 더 복잡한 클래스를 구축할 수 있다.
 
-The `Vehicle` base class also defines a method called `makeNoise`.
-This method doesn't actually do anything for a base `Vehicle` instance,
-but will be customized by subclasses of `Vehicle` later on:
+아래 예제는 `Vehicle`이라는 기본 클래스를 정의한다. 
+이 기본 클래스는 `currentSpeed`라는 저장 프로퍼티를 가지며, 기본값은 `0.0`이다(프로퍼티 타입은 `Double`로 추론됨). 
+`currentSpeed` 프로퍼티의 값은 읽기 전용 계산 프로퍼티인 `description`에서 사용된다. 
+`description`은 차량의 현재 속도를 설명하는 문자열을 반환한다.
+
+`Vehicle` 기본 클래스는 `makeNoise`라는 메서드도 정의한다. 
+이 메서드는 기본 `Vehicle` 인스턴스에서는 아무런 동작을 하지 않지만, 
+나중에 `Vehicle`의 하위 클래스에서 이 메서드를 커스터마이징할 수 있다.
 
 ```swift
 class Vehicle {
@@ -48,7 +38,7 @@ class Vehicle {
         return "traveling at \(currentSpeed) miles per hour"
     }
     func makeNoise() {
-        // do nothing - an arbitrary vehicle doesn't necessarily make a noise
+        // 아무 동작도 하지 않음 - 일반적인 차량은 반드시 소음을 내지 않음
     }
 }
 ```
@@ -69,8 +59,8 @@ class Vehicle {
   ```
 -->
 
-You create a new instance of `Vehicle` with *initializer syntax*,
-which is written as a type name followed by empty parentheses:
+*초기화 구문*을 사용해 `Vehicle`의 새로운 인스턴스를 생성한다. 
+초기화 구문은 타입 이름 뒤에 빈 괄호를 붙여 작성한다.
 
 ```swift
 let someVehicle = Vehicle()
@@ -84,9 +74,8 @@ let someVehicle = Vehicle()
   ```
 -->
 
-Having created a new `Vehicle` instance,
-you can access its `description` property to print
-a human-readable description of the vehicle's current speed:
+새로운 `Vehicle` 인스턴스를 생성한 후, 
+`description` 프로퍼티에 접근해 차량의 현재 속도를 사람이 읽기 쉬운 형태로 출력할 수 있다.
 
 ```swift
 print("Vehicle: \(someVehicle.description)")
@@ -102,40 +91,27 @@ print("Vehicle: \(someVehicle.description)")
   ```
 -->
 
-The `Vehicle` class defines common characteristics for an arbitrary vehicle,
-but isn't much use in itself.
-To make it more useful,
-you need to refine it to describe more specific kinds of vehicles.
+`Vehicle` 클래스는 일반적인 차량의 공통 특성을 정의하지만, 
+그 자체로는 큰 유용성이 없다. 
+더 유용하게 만들려면, 더 구체적인 종류의 차량을 설명하도록 클래스를 세분화해야 한다.
 
-## Subclassing
 
-*Subclassing* is the act of basing a new class on an existing class.
-The subclass inherits characteristics from the existing class, which you can then refine.
-You can also add new characteristics to the subclass.
+## 서브클래싱
 
-To indicate that a subclass has a superclass,
-write the subclass name before the superclass name,
-separated by a colon:
+*서브클래싱*은 기존 클래스를 기반으로 새로운 클래스를 만드는 과정이다.  
+서브클래스는 기존 클래스의 특성을 상속받아 이를 세부적으로 조정할 수 있다.  
+또한 서브클래스에 새로운 특성을 추가할 수도 있다.
+
+서브클래스가 슈퍼클래스를 가짐을 나타내려면,  
+서브클래스 이름 뒤에 콜론(:)을 붙이고 슈퍼클래스 이름을 적는다:
 
 ```swift
 class SomeSubclass: SomeSuperclass {
-    // subclass definition goes here
+    // 서브클래스 정의
 }
 ```
 
-<!--
-  - test: `protocolSyntax`
-
-  ```swifttest
-  >> class SomeSuperclass {}
-  -> class SomeSubclass: SomeSuperclass {
-        // subclass definition goes here
-     }
-  ```
--->
-
-The following example defines a subclass called `Bicycle`,
-with a superclass of `Vehicle`:
+다음 예제는 `Vehicle`을 슈퍼클래스로 하는 `Bicycle` 서브클래스를 정의한다:
 
 ```swift
 class Bicycle: Vehicle {
@@ -143,44 +119,22 @@ class Bicycle: Vehicle {
 }
 ```
 
-<!--
-  - test: `inheritance`
+새로운 `Bicycle` 클래스는 `Vehicle`의 모든 특성을 자동으로 상속받는다.  
+예를 들어 `currentSpeed`, `description` 프로퍼티와 `makeNoise()` 메서드 등이 포함된다.
 
-  ```swifttest
-  -> class Bicycle: Vehicle {
-        var hasBasket = false
-     }
-  ```
--->
+상속받은 특성 외에도, `Bicycle` 클래스는 `hasBasket`이라는 새로운 저장 프로퍼티를 정의한다.  
+이 프로퍼티는 기본값으로 `false`를 가지며, 타입은 `Bool`로 추론된다.
 
-The new `Bicycle` class automatically gains all of the characteristics of `Vehicle`,
-such as its `currentSpeed` and `description` properties and its `makeNoise()` method.
-
-In addition to the characteristics it inherits,
-the `Bicycle` class defines a new stored property,
-`hasBasket`, with a default value of `false`
-(inferring a type of `Bool` for the property).
-
-By default, any new `Bicycle` instance you create will not have a basket.
-You can set the `hasBasket` property to `true` for a particular `Bicycle` instance
-after that instance is created:
+기본적으로 새로 생성된 `Bicycle` 인스턴스는 바구니를 갖지 않는다.  
+인스턴스 생성 후 특정 `Bicycle` 인스턴스의 `hasBasket` 프로퍼티를 `true`로 설정할 수 있다:
 
 ```swift
 let bicycle = Bicycle()
 bicycle.hasBasket = true
 ```
 
-<!--
-  - test: `inheritance`
-
-  ```swifttest
-  -> let bicycle = Bicycle()
-  -> bicycle.hasBasket = true
-  ```
--->
-
-You can also modify the inherited `currentSpeed` property of a `Bicycle` instance,
-and query the instance's inherited `description` property:
+상속받은 `currentSpeed` 프로퍼티를 수정하거나,  
+`description` 프로퍼티를 조회할 수도 있다:
 
 ```swift
 bicycle.currentSpeed = 15.0
@@ -188,19 +142,8 @@ print("Bicycle: \(bicycle.description)")
 // Bicycle: traveling at 15.0 miles per hour
 ```
 
-<!--
-  - test: `inheritance`
-
-  ```swifttest
-  -> bicycle.currentSpeed = 15.0
-  -> print("Bicycle: \(bicycle.description)")
-  </ Bicycle: traveling at 15.0 miles per hour
-  ```
--->
-
-Subclasses can themselves be subclassed.
-The next example creates a subclass of `Bicycle` for a two-seater bicycle
-known as a “tandem”:
+서브클래스는 다시 다른 클래스의 슈퍼클래스가 될 수 있다.  
+다음 예제는 두 명이 탈 수 있는 자전거인 "탠덤"을 위해 `Bicycle`의 서브클래스를 만든다:
 
 ```swift
 class Tandem: Bicycle {
@@ -208,24 +151,14 @@ class Tandem: Bicycle {
 }
 ```
 
-<!--
-  - test: `inheritance`
+`Tandem`은 `Bicycle`의 모든 프로퍼티와 메서드를 상속받고,  
+`Bicycle`은 차례로 `Vehicle`의 모든 프로퍼티와 메서드를 상속받는다.  
+`Tandem` 서브클래스는 `currentNumberOfPassengers`라는 새로운 저장 프로퍼티를 추가하며,  
+이 프로퍼티의 기본값은 `0`이다.
 
-  ```swifttest
-  -> class Tandem: Bicycle {
-        var currentNumberOfPassengers = 0
-     }
-  ```
--->
-
-`Tandem` inherits all of the properties and methods from `Bicycle`,
-which in turn inherits all of the properties and methods from `Vehicle`.
-The `Tandem` subclass also adds a new stored property called `currentNumberOfPassengers`,
-with a default value of `0`.
-
-If you create an instance of `Tandem`,
-you can work with any of its new and inherited properties,
-and query the read-only `description` property it inherits from `Vehicle`:
+`Tandem`의 인스턴스를 생성하면,  
+새로 추가된 프로퍼티와 상속받은 프로퍼티를 모두 사용할 수 있다.  
+또한 `Vehicle`에서 상속받은 읽기 전용 `description` 프로퍼티를 조회할 수도 있다:
 
 ```swift
 let tandem = Tandem()
@@ -236,65 +169,32 @@ print("Tandem: \(tandem.description)")
 // Tandem: traveling at 22.0 miles per hour
 ```
 
-<!--
-  - test: `inheritance`
 
-  ```swifttest
-  -> let tandem = Tandem()
-  -> tandem.hasBasket = true
-  -> tandem.currentNumberOfPassengers = 2
-  -> tandem.currentSpeed = 22.0
-  -> print("Tandem: \(tandem.description)")
-  </ Tandem: traveling at 22.0 miles per hour
-  ```
--->
+## 오버라이딩
 
-## Overriding
+서브클래스는 슈퍼클래스로부터 상속받은 인스턴스 메서드, 타입 메서드, 인스턴스 프로퍼티, 타입 프로퍼티, 또는 서브스크립트에 대해 자체적인 커스텀 구현을 제공할 수 있다. 이를 *오버라이딩*이라고 한다.
 
-A subclass can provide its own custom implementation of
-an instance method, type method, instance property, type property, or subscript
-that it would otherwise inherit from a superclass.
-This is known as *overriding*.
+상속받은 특성을 오버라이드하려면, 오버라이딩 정의 앞에 `override` 키워드를 붙여야 한다. 이 키워드는 의도적으로 오버라이드를 제공한다는 것을 명확히 하고, 실수로 일치하는 정의를 제공하지 않았음을 나타낸다. 실수로 인한 오버라이딩은 예상치 못한 동작을 초래할 수 있으며, `override` 키워드 없이 오버라이딩을 시도하면 코드 컴파일 시 오류로 진단된다.
 
-To override a characteristic that would otherwise be inherited,
-you prefix your overriding definition with the `override` keyword.
-Doing so clarifies that you intend to provide an override
-and haven't provided a matching definition by mistake.
-Overriding by accident can cause unexpected behavior,
-and any overrides without the `override` keyword are
-diagnosed as an error when your code is compiled.
+`override` 키워드는 Swift 컴파일러가 오버라이딩 클래스의 슈퍼클래스(또는 그 상위 클래스 중 하나)가 오버라이드에 제공한 선언과 일치하는지 확인하도록 지시한다. 이 검사를 통해 오버라이딩 정의가 정확한지 보장한다.
 
-The `override` keyword also prompts the Swift compiler
-to check that your overriding class's superclass (or one of its parents)
-has a declaration that matches the one you provided for the override.
-This check ensures that your overriding definition is correct.
 
-### Accessing Superclass Methods, Properties, and Subscripts
+### 상위 클래스의 메서드, 프로퍼티, 서브스크립트 접근
 
-When you provide a method, property, or subscript override for a subclass,
-it's sometimes useful to use the existing superclass implementation
-as part of your override.
-For example, you can refine the behavior of that existing implementation,
-or store a modified value in an existing inherited variable.
+서브클래스에서 메서드, 프로퍼티, 또는 서브스크립트를 재정의할 때, 기존 상위 클래스의 구현을 활용하는 것이 유용한 경우가 있다. 예를 들어, 기존 구현의 동작을 개선하거나 상속받은 변수에 수정된 값을 저장할 수 있다.
 
-Where this is appropriate,
-you access the superclass version of a method, property, or subscript
-by using the `super` prefix:
+이러한 경우, `super` 접두사를 사용해 상위 클래스 버전의 메서드, 프로퍼티, 또는 서브스크립트에 접근한다:
 
-- An overridden method named `someMethod()` can call the superclass version of `someMethod()`
-  by calling `super.someMethod()` within the overriding method implementation.
-- An overridden property called `someProperty` can access the superclass version of `someProperty`
-  as `super.someProperty` within the overriding getter or setter implementation.
-- An overridden subscript for `someIndex` can access the superclass version of the same subscript
-  as `super[someIndex]` from within the overriding subscript implementation.
+- `someMethod()`라는 이름의 재정의된 메서드는 구현 내부에서 `super.someMethod()`를 호출해 상위 클래스 버전의 `someMethod()`를 호출할 수 있다.
+- `someProperty`라는 이름의 재정의된 프로퍼티는 게터 또는 세터 구현 내부에서 `super.someProperty`를 통해 상위 클래스 버전의 `someProperty`에 접근할 수 있다.
+- `someIndex`에 대한 재정의된 서브스크립트는 구현 내부에서 `super[someIndex]`를 통해 상위 클래스 버전의 동일한 서브스크립트에 접근할 수 있다.
 
-### Overriding Methods
 
-You can override an inherited instance or type method
-to provide a tailored or alternative implementation of the method within your subclass.
+### 메서드 오버라이딩
 
-The following example defines a new subclass of `Vehicle` called `Train`,
-which overrides the `makeNoise()` method that `Train` inherits from `Vehicle`:
+상속받은 인스턴스 메서드나 타입 메서드를 서브클래스에서 재정의하여 특화된 구현이나 대체 구현을 제공할 수 있다.
+
+다음 예제는 `Vehicle` 클래스의 새로운 서브클래스인 `Train`을 정의한다. `Train`은 `Vehicle`로부터 상속받은 `makeNoise()` 메서드를 재정의한다:
 
 ```swift
 class Train: Vehicle {
@@ -316,8 +216,7 @@ class Train: Vehicle {
   ```
 -->
 
-If you create a new instance of `Train` and call its `makeNoise()` method,
-you can see that the `Train` subclass version of the method is called:
+`Train`의 새로운 인스턴스를 생성하고 `makeNoise()` 메서드를 호출하면, `Train` 서브클래스의 메서드가 호출되는 것을 확인할 수 있다:
 
 ```swift
 let train = Train()
@@ -335,42 +234,21 @@ train.makeNoise()
   ```
 -->
 
-### Overriding Properties
 
-You can override an inherited instance or type property
-to provide your own custom getter and setter for that property,
-or to add property observers to enable the overriding property
-to observe when the underlying property value changes.
+### 프로퍼티 재정의
 
-#### Overriding Property Getters and Setters
+상속받은 인스턴스 프로퍼티나 타입 프로퍼티를 재정의할 수 있다. 이를 통해 해당 프로퍼티에 대해 커스텀 getter와 setter를 제공하거나, 기본 프로퍼티 값이 변경될 때 이를 관찰할 수 있도록 프로퍼티 옵저버를 추가할 수 있다.
 
-You can provide a custom getter (and setter, if appropriate)
-to override *any* inherited property,
-regardless of whether the inherited property is implemented as
-a stored or computed property at source.
-The stored or computed nature of an inherited property isn't known by a subclass ---
-it only knows that the inherited property has a certain name and type.
-You must always state both the name and the type of the property you are overriding,
-to enable the compiler to check that your override matches
-a superclass property with the same name and type.
 
-You can present an inherited read-only property as a read-write property
-by providing both a getter and a setter in your subclass property override.
-You can't, however, present an inherited read-write property as a read-only property.
+#### 프로퍼티 Getter와 Setter 재정의하기
 
-> Note: If you provide a setter as part of a property override,
-> you must also provide a getter for that override.
-> If you don't want to modify the inherited property's value within the overriding getter,
-> you can simply pass through the inherited value
-> by returning `super.someProperty` from the getter,
-> where `someProperty` is the name of the property you are overriding.
+상속받은 프로퍼티를 재정의할 때, 커스텀 getter(그리고 필요하다면 setter도)를 제공할 수 있다. 이때 상속받은 프로퍼티가 원본에서 저장 프로퍼티로 구현되었는지, 계산 프로퍼티로 구현되었는지는 중요하지 않다. 하위 클래스는 상속받은 프로퍼티의 이름과 타입만 알고 있을 뿐이다. 프로퍼티를 재정의할 때는 항상 이름과 타입을 명시해야 한다. 이는 컴파일러가 동일한 이름과 타입을 가진 상위 클래스 프로퍼티와 일치하는지 확인할 수 있게 해준다.
 
-The following example defines a new class called `Car`,
-which is a subclass of `Vehicle`.
-The `Car` class introduces a new stored property called `gear`,
-with a default integer value of `1`.
-The `Car` class also overrides the `description` property it inherits from `Vehicle`,
-to provide a custom description that includes the current gear:
+읽기 전용 프로퍼티를 읽기-쓰기 프로퍼티로 재정의할 수 있다. 이때 하위 클래스에서 getter와 setter를 모두 제공해야 한다. 하지만 읽기-쓰기 프로퍼티를 읽기 전용 프로퍼티로 재정의할 수는 없다.
+
+> 참고: 프로퍼티 재정의 시 setter를 제공한다면, getter도 반드시 제공해야 한다. 재정의한 getter에서 상속받은 프로퍼티의 값을 수정하지 않으려면, `super.someProperty`를 반환하여 상속받은 값을 그대로 전달할 수 있다. 여기서 `someProperty`는 재정의하는 프로퍼티의 이름이다.
+
+다음 예제는 `Vehicle` 클래스를 상속받은 `Car` 클래스를 정의한다. `Car` 클래스는 기본값이 `1`인 정수 타입의 `gear`라는 새로운 저장 프로퍼티를 도입한다. 또한 `Car` 클래스는 `Vehicle`에서 상속받은 `description` 프로퍼티를 재정의하여, 현재 기어 정보를 포함한 커스텀 설명을 제공한다.
 
 ```swift
 class Car: Vehicle {
@@ -394,15 +272,9 @@ class Car: Vehicle {
   ```
 -->
 
-The override of the `description` property starts by calling `super.description`,
-which returns the `Vehicle` class's `description` property.
-The `Car` class's version of `description` then adds some extra text onto
-the end of this description to provide information about the current gear.
+`description` 프로퍼티를 재정할 때, `super.description`을 먼저 호출하여 `Vehicle` 클래스의 `description` 프로퍼티 값을 가져온다. 그런 다음 `Car` 클래스의 `description` 버전은 이 설명 끝에 현재 기어 정보를 추가한다.
 
-If you create an instance of the `Car` class
-and set its `gear` and `currentSpeed` properties,
-you can see that its `description` property returns
-the tailored description defined within the `Car` class:
+`Car` 클래스의 인스턴스를 생성하고 `gear`와 `currentSpeed` 프로퍼티를 설정한 후, `description` 프로퍼티를 출력하면 `Car` 클래스에서 정의한 맞춤 설명이 반환되는 것을 확인할 수 있다.
 
 ```swift
 let car = Car()
@@ -424,29 +296,16 @@ print("Car: \(car.description)")
   ```
 -->
 
-#### Overriding Property Observers
 
-You can use property overriding to add property observers to an inherited property.
-This enables you to be notified when the value of an inherited property changes,
-regardless of how that property was originally implemented.
-For more information on property observers, see <doc:Properties#Property-Observers>.
+#### 프로퍼티 옵저버 오버라이딩
 
-> Note: You can't add property observers to
-> inherited constant stored properties or inherited read-only computed properties.
-> The value of these properties can't be set,
-> and so it isn't appropriate to provide a `willSet` or `didSet` implementation
-> as part of an override.
+상속받은 프로퍼티에 프로퍼티 옵저버를 추가하기 위해 프로퍼티 오버라이딩을 사용할 수 있다. 이를 통해 상속받은 프로퍼티의 값이 변경될 때마다 알림을 받을 수 있으며, 해당 프로퍼티가 원래 어떻게 구현되었는지와 상관없이 동작한다. 프로퍼티 옵저버에 대한 자세한 내용은 <doc:Properties#Property-Observers>를 참고한다.
+
+> 주의: 상속받은 상수 저장 프로퍼티나 상속받은 읽기 전용 계산 프로퍼티에는 프로퍼티 옵저버를 추가할 수 없다. 이러한 프로퍼티의 값은 설정할 수 없기 때문에, 오버라이드의 일부로 `willSet`이나 `didSet`을 제공하는 것은 적절하지 않다.
 >
-> Note also that you can't provide both
-> an overriding setter and an overriding property observer for the same property.
-> If you want to observe changes to a property's value,
-> and you are already providing a custom setter for that property,
-> you can simply observe any value changes from within the custom setter.
+> 또한, 동일한 프로퍼티에 대해 오버라이딩 세터와 오버라이딩 프로퍼티 옵저버를 동시에 제공할 수 없다. 프로퍼티의 값 변경을 관찰하고 싶고, 이미 커스텀 세터를 제공하고 있다면, 커스텀 세터 내부에서 값 변경을 관찰하면 된다.
 
-The following example defines a new class called `AutomaticCar`,
-which is a subclass of `Car`.
-The `AutomaticCar` class represents a car with an automatic gearbox,
-which automatically selects an appropriate gear to use based on the current speed:
+다음 예제는 `Car` 클래스의 서브클래스인 `AutomaticCar`라는 새로운 클래스를 정의한다. `AutomaticCar` 클래스는 자동 변속기가 장착된 자동차를 나타내며, 현재 속도에 따라 적절한 기어를 자동으로 선택한다:
 
 ```swift
 class AutomaticCar: Car {
@@ -472,13 +331,7 @@ class AutomaticCar: Car {
   ```
 -->
 
-Whenever you set the `currentSpeed` property of an `AutomaticCar` instance,
-the property's `didSet` observer sets the instance's `gear` property to
-an appropriate choice of gear for the new speed.
-Specifically, the property observer chooses a gear that's
-the new `currentSpeed` value divided by `10`,
-rounded down to the nearest integer, plus `1`.
-A speed of `35.0` produces a gear of `4`:
+`AutomaticCar` 인스턴스의 `currentSpeed` 프로퍼티를 설정할 때마다, 프로퍼티의 `didSet` 옵저버가 인스턴스의 `gear` 프로퍼티를 새로운 속도에 맞는 적절한 기어로 설정한다. 구체적으로, 프로퍼티 옵저버는 새로운 `currentSpeed` 값을 `10`으로 나누고, 가장 가까운 정수로 내림한 후 `1`을 더한 값을 기어로 선택한다. 속도가 `35.0`일 경우 기어는 `4`가 된다:
 
 ```swift
 let automatic = AutomaticCar()
@@ -498,19 +351,12 @@ print("AutomaticCar: \(automatic.description)")
   ```
 -->
 
-## Preventing Overrides
 
-You can prevent a method, property, or subscript from being overridden
-by marking it as *final*.
-Do this by writing the `final` modifier before
-the method, property, or subscript's introducer keyword
-(such as `final var`, `final func`, `final class func`, and `final subscript`).
+## 오버라이드 방지
 
-Any attempt to override a final method, property, or subscript in a subclass
-is reported as a compile-time error.
-Methods, properties, or subscripts that you add to a class in an extension
-can also be marked as final within the extension's definition.
-For more information, see <doc:Extensions>.
+메서드, 프로퍼티, 서브스크립트를 오버라이드하지 못하도록 막으려면 *final*로 표시한다. 이를 위해 `final` 수정자를 메서드, 프로퍼티, 서브스크립트의 키워드 앞에 추가한다. 예를 들어 `final var`, `final func`, `final class func`, `final subscript`와 같이 작성한다.
+
+서브클래스에서 final로 표시된 메서드, 프로퍼티, 서브스크립트를 오버라이드하려고 하면 컴파일 타임 오류가 발생한다. 익스텐션에서 클래스에 추가한 메서드, 프로퍼티, 서브스크립트도 익스텐션 정의 내에서 final로 표시할 수 있다. 자세한 내용은 <doc:Extensions>를 참고한다.
 
 <!--
   - test: `finalPreventsOverriding`
@@ -546,9 +392,7 @@ For more information, see <doc:Extensions>.
   ```
 -->
 
-You can mark an entire class as final by writing the `final` modifier
-before the `class` keyword in its class definition (`final class`).
-Any attempt to subclass a final class is reported as a compile-time error.
+클래스 전체를 final로 표시하려면 클래스 정의에서 `class` 키워드 앞에 `final` 수정자를 추가한다(`final class`). final 클래스를 서브클래싱하려고 하면 컴파일 타임 오류가 발생한다.
 
 <!--
   - test: `finalClassPreventsOverriding`
@@ -616,3 +460,5 @@ Licensed under Apache License v2.0 with Runtime Library Exception
 See https://swift.org/LICENSE.txt for license information
 See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
 -->
+
+

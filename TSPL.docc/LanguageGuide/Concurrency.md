@@ -1,57 +1,47 @@
-# Concurrency
+# 동시성(Concurrency)
 
-Perform asynchronous operations.
 
-Swift has built-in support for writing asynchronous and parallel code
-in a structured way.
-*Asynchronous code* can be suspended and resumed later,
-although only one piece of the program executes at a time.
-Suspending and resuming code in your program
-lets it continue to make progress
-on short-term operations like updating its UI
-while continuing to work on long-running operations
-like fetching data over the network or parsing files.
-*Parallel code* means multiple pieces of code run simultaneously ---
-for example, a computer with a four-core processor
-can run four pieces of code at the same time,
-with each core carrying out one of the tasks.
-A program that uses parallel and asynchronous code
-carries out multiple operations at a time,
-and it suspends operations that are waiting for an external system.
+비동기 작업을 수행한다.
 
-The additional scheduling flexibility from parallel or asynchronous code
-also comes with a cost of increased complexity.
-Swift lets you express your intent
-in a way that enables some compile-time checking ---
-for example, you can use actors to safely access mutable state.
-However, adding concurrency to slow or buggy code
-isn't a guarantee that it will become fast or correct.
-In fact, adding concurrency might even make your code harder to debug.
-However, using Swift's language-level support for concurrency
-in code that needs to be concurrent
-means Swift can help you catch problems at compile time.
+Swift는 구조화된 방식으로 비동기 및 병렬 코드를 작성할 수 있도록 내장된 지원을 제공한다.  
+*비동기 코드*는 잠시 중단되었다가 나중에 다시 실행될 수 있으며, 프로그램의 한 부분만 동시에 실행된다.  
+프로그램 내에서 코드를 중단하고 재개하는 방식은 UI 업데이트와 같은 단기 작업을 계속 진행하면서,  
+네트워크를 통해 데이터를 가져오거나 파일을 파싱하는 것과 같은 장기 작업도 동시에 처리할 수 있게 한다.  
+*병렬 코드*는 여러 코드 조각이 동시에 실행되는 것을 의미한다.  
+예를 들어, 4코어 프로세서를 가진 컴퓨터는 각 코어가 하나의 작업을 수행하며  
+동시에 4개의 코드 조각을 실행할 수 있다.  
+병렬 및 비동기 코드를 사용하는 프로그램은 여러 작업을 동시에 수행하며,  
+외부 시스템을 기다리는 작업은 일시 중단한다.
 
-The rest of this chapter uses the term *concurrency*
-to refer to this common combination of asynchronous and parallel code.
+병렬 또는 비동기 코드를 사용하면 스케줄링 유연성이 증가하지만,  
+복잡성도 함께 증가한다는 단점이 있다.  
+Swift는 컴파일 타임에 일부 문제를 잡아낼 수 있도록  
+의도를 명확히 표현할 수 있는 방법을 제공한다.  
+예를 들어, 액터를 사용해 변경 가능한 상태에 안전하게 접근할 수 있다.  
+하지만 느리거나 버그가 있는 코드에 동시성을 추가한다고 해서  
+빠르거나 정확해진다는 보장은 없다.  
+오히려 동시성을 추가하면 코드 디버깅이 더 어려워질 수도 있다.  
+그러나 동시성이 필요한 코드에서 Swift의 언어 수준 지원을 사용하면  
+컴파일 타임에 문제를 잡아내는 데 도움을 받을 수 있다.
 
-> Note: If you've written concurrent code before,
-> you might be used to working with threads.
-> The concurrency model in Swift is built on top of threads,
-> but you don't interact with them directly.
-> An asynchronous function in Swift
-> can give up the thread that it's running on,
-> which lets another asynchronous function run on that thread
-> while the first function is blocked.
-> When an asynchronous function resumes,
-> Swift doesn't make any guarantee about which thread
-> that function will run on.
+이 장의 나머지 부분에서는 *동시성*이라는 용어를  
+비동기 및 병렬 코드의 일반적인 조합을 지칭하는 데 사용한다.
 
-Although it's possible to write concurrent code
-without using Swift's language support,
-that code tends to be harder to read.
-For example, the following code downloads a list of photo names,
-downloads the first photo in that list,
-and shows that photo to the user:
+> 참고: 이전에 동시성 코드를 작성해본 적이 있다면,  
+> 스레드를 다루는 것에 익숙할 것이다.  
+> Swift의 동시성 모델은 스레드 위에 구축되었지만,  
+> 직접적으로 스레드를 다루지는 않는다.  
+> Swift의 비동기 함수는 실행 중인 스레드를 포기할 수 있으며,  
+> 이렇게 하면 첫 번째 함수가 블로킹된 동안  
+> 다른 비동기 함수가 해당 스레드에서 실행될 수 있다.  
+> 비동기 함수가 재개될 때, Swift는  
+> 해당 함수가 어떤 스레드에서 실행될지 보장하지 않는다.
+
+Swift의 언어 지원 없이도 동시성 코드를 작성할 수는 있지만,  
+그런 코드는 읽기 어려운 경향이 있다.  
+예를 들어, 다음 코드는 사진 이름 목록을 다운로드하고,  
+목록의 첫 번째 사진을 다운로드한 후,  
+사용자에게 해당 사진을 보여준다:
 
 ```swift
 listPhotos(inGallery: "Summer Vacation") { photoNames in
@@ -63,105 +53,30 @@ listPhotos(inGallery: "Summer Vacation") { photoNames in
 }
 ```
 
-<!--
-  - test: `async-via-nested-completion-handlers`
+이렇게 간단한 경우에도, 코드를 완료 핸들러 시리즈로 작성해야 하기 때문에  
+중첩된 클로저를 사용하게 된다.  
+이런 스타일에서는, 깊은 중첩이 있는 더 복잡한 코드가  
+금방 다루기 어려워질 수 있다.
 
-  ```swifttest
-  >> struct Data {}  // Instead of actually importing Foundation
-  >> func listPhotos(inGallery name: String, completionHandler: ([String]) -> Void ) {
-  >>   completionHandler(["IMG001", "IMG99", "IMG0404"])
-  >> }
-  >> func downloadPhoto(named name: String, completionHandler: (Data) -> Void) {
-  >>     completionHandler(Data())
-  >> }
-  >> func show(_ image: Data) { }
-  -> listPhotos(inGallery: "Summer Vacation") { photoNames in
-         let sortedNames = photoNames.sorted()
-         let name = sortedNames[0]
-         downloadPhoto(named: name) { photo in
-             show(photo)
-         }
-     }
-  ```
--->
 
-Even in this simple case,
-because the code has to be written as a series of completion handlers,
-you end up writing nested closures.
-In this style,
-more complex code with deep nesting can quickly become unwieldy.
+## 비동기 함수 정의와 호출
 
-## Defining and Calling Asynchronous Functions
+*비동기 함수* 또는 *비동기 메서드*는 실행 중간에 일시 중단될 수 있는 특별한 종류의 함수나 메서드다. 일반적인 동기 함수와 달리, 비동기 함수는 완료되거나 오류를 던지거나 반환하지 않을 수 있지만, 실행 중간에 대기 상태로 일시 중단될 수도 있다. 비동기 함수나 메서드 내부에서는 실행이 중단될 수 있는 지점을 명시적으로 표시한다.
 
-An *asynchronous function* or *asynchronous method*
-is a special kind of function or method
-that can be suspended while it's partway through execution.
-This is in contrast to ordinary, synchronous functions and methods,
-which either run to completion, throw an error, or never return.
-An asynchronous function or method still does one of those three things,
-but it can also pause in the middle when it's waiting for something.
-Inside the body of an asynchronous function or method,
-you mark each of these places where execution can be suspended.
-
-To indicate that a function or method is asynchronous,
-you write the `async` keyword in its declaration after its parameters,
-similar to how you use `throws` to mark a throwing function.
-If the function or method returns a value,
-you write `async` before the return arrow (`->`).
-For example,
-here's how you might fetch the names of photos in a gallery:
+함수나 메서드가 비동기임을 나타내려면, `async` 키워드를 선언부에 추가한다. 반환 값이 있는 경우, 반환 화살표(`->`) 앞에 `async`를 쓴다. 예를 들어, 갤러리에서 사진 이름을 가져오는 함수는 다음과 같이 작성할 수 있다:
 
 ```swift
 func listPhotos(inGallery name: String) async -> [String] {
-    let result = // ... some asynchronous networking code ...
+    let result = // ... 비동기 네트워킹 코드 ...
     return result
 }
 ```
 
-<!--
-  - test: `async-function-shape`
+비동기이면서 오류를 던지는 함수나 메서드의 경우, `async`를 `throws` 앞에 쓴다.
 
-  ```swifttest
-  -> func listPhotos(inGallery name: String) async -> [String] {
-         let result = // ... some asynchronous networking code ...
-  >>     ["IMG001", "IMG99", "IMG0404"]
-         return result
-     }
-  ```
--->
+비동기 메서드를 호출할 때는 해당 메서드가 반환될 때까지 실행이 일시 중단된다. 호출 앞에 `await`를 추가해 실행이 중단될 수 있는 지점을 표시한다. 이는 오류가 발생할 수 있는 함수를 호출할 때 `try`를 쓰는 것과 유사하다. 비동기 메서드 내부에서는 다른 비동기 메서드를 호출할 때만 실행이 일시 중단되며, 모든 중단 지점은 `await`로 명시적으로 표시된다. 이렇게 하면 동시성 코드를 더 쉽게 읽고 이해할 수 있다.
 
-For a function or method that's both asynchronous and throwing,
-you write `async` before `throws`.
-
-<!--
-  - test: `async-comes-before-throws`
-
-  ```swifttest
-  >> func right() async throws -> Int { return 12 }
-  >> func wrong() throws async -> Int { return 12 }
-  !$ error: 'async' must precede 'throws'
-  !! func wrong() throws async -> Int { return 12 }
-  !! ^~~~~~
-  !! async
-  ```
--->
-
-When calling an asynchronous method,
-execution suspends until that method returns.
-You write `await` in front of the call
-to mark the possible suspension point.
-This is like writing `try` when calling a throwing function,
-to mark the possible change to the program's flow if there's an error.
-Inside an asynchronous method,
-the flow of execution is suspended *only* when you call another asynchronous method ---
-suspension is never implicit or preemptive ---
-which means every possible suspension point is marked with `await`.
-Marking all of the possible suspension points in your code
-helps make concurrent code easier to read and understand.
-
-For example,
-the code below fetches the names of all the pictures in a gallery
-and then shows the first picture:
+예를 들어, 아래 코드는 갤러리에 있는 모든 사진의 이름을 가져온 후 첫 번째 사진을 보여준다:
 
 ```swift
 let photoNames = await listPhotos(inGallery: "Summer Vacation")
@@ -171,93 +86,31 @@ let photo = await downloadPhoto(named: name)
 show(photo)
 ```
 
-<!--
-  - test: `defining-async-function`
+`listPhotos(inGallery:)`와 `downloadPhoto(named:)` 함수는 모두 네트워크 요청을 수행하므로 완료까지 상대적으로 오랜 시간이 걸릴 수 있다. 이 두 함수를 비동기로 만들면, 사진이 준비될 때까지 앱의 나머지 코드가 계속 실행될 수 있다.
 
-  ```swifttest
-  >> struct Data {}  // Instead of actually importing Foundation
-  >> func downloadPhoto(named name: String) async -> Data { return Data() }
-  >> func show(_ image: Data) { }
-  >> func listPhotos(inGallery name: String) async -> [String] {
-  >>     return ["IMG001", "IMG99", "IMG0404"]
-  >> }
-  >> func f() async {
-  -> let photoNames = await listPhotos(inGallery: "Summer Vacation")
-  -> let sortedNames = photoNames.sorted()
-  -> let name = sortedNames[0]
-  -> let photo = await downloadPhoto(named: name)
-  -> show(photo)
-  >> }
-  ```
--->
+위 예제의 동시성 동작을 이해하기 위해, 실행 순서를 살펴보자:
 
-Because the `listPhotos(inGallery:)` and `downloadPhoto(named:)` functions
-both need to make network requests,
-they could take a relatively long time to complete.
-Making them both asynchronous by writing `async` before the return arrow
-lets the rest of the app's code keep running
-while this code waits for the picture to be ready.
+1. 코드는 첫 번째 줄부터 실행되다가 첫 번째 `await`에서 `listPhotos(inGallery:)` 함수를 호출하고, 해당 함수가 반환될 때까지 실행이 일시 중단된다.
 
-To understand the concurrent nature of the example above,
-here's one possible order of execution:
+2. 이 코드의 실행이 중단된 동안, 프로그램 내의 다른 동시성 코드가 실행될 수 있다. 예를 들어, 오래 걸리는 백그라운드 작업이 새로운 갤러리 목록을 업데이트할 수 있다. 이 코드도 다음 `await` 지점까지 실행되거나 완료된다.
 
-1. The code starts running from the first line
-   and runs up to the first `await`.
-   It calls the `listPhotos(inGallery:)` function
-   and suspends execution while it waits for that function to return.
+3. `listPhotos(inGallery:)`가 반환되면, 이 코드는 해당 지점부터 실행을 재개하고 반환된 값을 `photoNames`에 할당한다.
 
-2. While this code's execution is suspended,
-   some other concurrent code in the same program runs.
-   For example, maybe a long-running background task
-   continues updating a list of new photo galleries.
-   That code also runs until the next suspension point, marked by `await`,
-   or until it completes.
+4. `sortedNames`와 `name`을 정의하는 줄은 일반적인 동기 코드다. 이 줄들에는 `await`가 없으므로 중단 지점이 없다.
 
-3. After `listPhotos(inGallery:)` returns,
-   this code continues execution starting at that point.
-   It assigns the value that was returned to `photoNames`.
+5. 다음 `await`는 `downloadPhoto(named:)` 함수 호출을 표시한다. 이 코드는 해당 함수가 반환될 때까지 다시 실행을 일시 중단하고, 다른 동시성 코드가 실행될 기회를 제공한다.
 
-4. The lines that define `sortedNames` and `name`
-   are regular, synchronous code.
-   Because nothing is marked `await` on these lines,
-   there aren't any possible suspension points.
+6. `downloadPhoto(named:)`가 반환되면, 반환 값이 `photo`에 할당되고 `show(_:)`를 호출할 때 인자로 전달된다.
 
-5. The next `await` marks the call to the `downloadPhoto(named:)` function.
-   This code pauses execution again until that function returns,
-   giving other concurrent code an opportunity to run.
+`await`로 표시된 중단 지점은 비동기 함수나 메서드가 반환될 때까지 현재 코드가 실행을 일시 중단할 수 있음을 나타낸다. 이를 *스레드 양보*라고도 한다. Swift는 현재 스레드에서 코드 실행을 일시 중단하고 대신 다른 코드를 실행한다. `await`가 있는 코드는 실행을 중단할 수 있어야 하므로, 비동기 함수나 메서드를 호출할 수 있는 위치는 제한적이다:
 
-6. After `downloadPhoto(named:)` returns,
-   its return value is assigned to `photo`
-   and then passed as an argument when calling `show(_:)`.
+- 비동기 함수, 메서드, 프로퍼티의 본문 내부
 
-The possible suspension points in your code marked with `await`
-indicate that the current piece of code might pause execution
-while waiting for the asynchronous function or method to return.
-This is also called *yielding the thread*
-because, behind the scenes,
-Swift suspends the execution of your code on the current thread
-and runs some other code on that thread instead.
-Because code with `await` needs to be able to suspend execution,
-only certain places in your program can call asynchronous functions or methods:
+- `@main`으로 표시된 구조체, 클래스, 열거형의 정적 `main()` 메서드 내부
 
-- Code in the body of an asynchronous function, method, or property.
+- 비구조화된 자식 태스크 내부
 
-- Code in the static `main()` method of
-  a structure, class, or enumeration that's marked with `@main`.
-
-- Code in an unstructured child task,
-  as shown in <doc:Concurrency#Unstructured-Concurrency> below.
-
-<!--
-  SE-0296 specifically calls out that top-level code is *not* an async context,
-  contrary to what you might expect.
-  If that gets changed, add this bullet to the list above:
-
-  - Code at the top level that forms an implicit main function.
--->
-
-You can explicitly insert a suspension point
-by calling the [`Task.yield()`][] method.
+[`Task.yield()`][] 메서드를 호출해 명시적으로 중단 지점을 추가할 수 있다.
 
 [`Task.yield()`]: https://developer.apple.com/documentation/swift/task/3814840-yield
 
@@ -265,28 +118,15 @@ by calling the [`Task.yield()`][] method.
 func generateSlideshow(forGallery gallery: String) async {
     let photos = await listPhotos(inGallery: gallery)
     for photo in photos {
-        // ... render a few seconds of video for this photo ...
+        // ... 이 사진에 대한 몇 초 분량의 비디오 렌더링 ...
         await Task.yield()
     }
 }
 ```
 
-Assuming the code that renders video is synchronous,
-it doesn't contain any suspension points.
-The work to render video could also take a long time.
-However,
-you can periodically call `Task.yield()`
-to explicitly add suspension points.
-Structuring long-running code this way
-lets Swift balance between making progress on this task,
-and letting other tasks in your program make progress on their work.
+비디오 렌더링 코드가 동기적이라면 중단 지점이 없다. 렌더링 작업이 오래 걸릴 수 있지만, 주기적으로 `Task.yield()`를 호출해 명시적으로 중단 지점을 추가할 수 있다. 이렇게 하면 Swift가 이 작업의 진행과 프로그램 내 다른 작업의 진행을 균형 있게 조절할 수 있다.
 
-The [`Task.sleep(for:tolerance:clock:)`][] method
-is useful when writing simple code
-to learn how concurrency works.
-This method suspends the current task for at least the given amount of time.
-Here's a version of the `listPhotos(inGallery:)` function
-that uses `sleep(for:tolerance:clock:)` to simulate waiting for a network operation:
+[`Task.sleep(for:tolerance:clock:)`][] 메서드는 동시성 작동 방식을 배우기 위한 간단한 코드를 작성할 때 유용하다. 이 메서드는 현재 태스크를 최소 지정된 시간 동안 일시 중단한다. 다음은 `sleep(for:tolerance:clock:)`을 사용해 네트워크 작업 대기를 시뮬레이션하는 `listPhotos(inGallery:)` 함수의 예시다:
 
 [`Task.sleep(for:tolerance:clock:)`]: https://developer.apple.com/documentation/swift/task/sleep(for:tolerance:clock:)
 
@@ -297,41 +137,15 @@ func listPhotos(inGallery name: String) async throws -> [String] {
 }
 ```
 
-<!--
-  - test: `sleep-in-toy-code`
-
-  ```swifttest
-  >> struct Data {}  // Instead of actually importing Foundation
-  -> func listPhotos(inGallery name: String) async throws -> [String] {
-         try await Task.sleep(for: .seconds(2))
-         return ["IMG001", "IMG99", "IMG0404"]
-  }
-  ```
--->
-
-The version of `listPhotos(inGallery:)` in the code above
-is both asynchronous and throwing,
-because the call to `Task.sleep(until:tolerance:clock:)` can throw an error.
-When you call this version of `listPhotos(inGallery:)`,
-you write both `try` and `await`:
+위 코드의 `listPhotos(inGallery:)` 함수는 비동기이면서 오류를 던질 수 있다. 이 함수를 호출할 때는 `try`와 `await`를 모두 쓴다:
 
 ```swift
 let photos = try await listPhotos(inGallery: "A Rainy Weekend")
 ```
 
-Asynchronous functions have some similarities to throwing functions:
-When you define an asynchronous or throwing function,
-you mark it with `async` or `throws`,
-and you mark calls to that function with `await` or `try`.
-An asynchronous function can call another asynchronous function,
-just like a throwing function can call another throwing function.
+비동기 함수는 오류를 던지는 함수와 몇 가지 유사점이 있다. 비동기 또는 오류를 던지는 함수를 정의할 때 `async` 또는 `throws`를 표시하고, 해당 함수를 호출할 때 `await` 또는 `try`를 쓴다. 비동기 함수는 다른 비동기 함수를 호출할 수 있으며, 오류를 던지는 함수는 다른 오류를 던지는 함수를 호출할 수 있다.
 
-However, there's a very important difference.
-You can wrap throwing code in a `do`-`catch` block to handle errors,
-or use `Result` to store the error for code elsewhere to handle it.
-These approaches let you call throwing functions
-from nonthrowing code.
-For example:
+하지만 중요한 차이점이 있다. 오류를 던지는 코드는 `do`-`catch` 블록으로 감싸 오류를 처리하거나, `Result`를 사용해 오류를 저장할 수 있다. 이 방법을 사용하면 오류를 던지는 함수를 비동기 코드에서 호출할 수 있다. 예를 들어:
 
 ```swift
 func availableRainyWeekendPhotos() -> Result<[String], Error> {
@@ -341,42 +155,19 @@ func availableRainyWeekendPhotos() -> Result<[String], Error> {
 }
 ```
 
-In contrast,
-there's no safe way to wrap asynchronous code
-so you can call it from synchronous code and wait for the result.
-The Swift standard library intentionally omits this unsafe functionality ---
-trying to implement it yourself can lead to
-problems like subtle races, threading issues, and deadlocks.
-When adding concurrent code to an existing project,
-work from the top down.
-Specifically,
-start by converting the top-most layer of code to use concurrency,
-and then start converting the functions and methods that it calls,
-working through the project's architecture one layer at a time.
-There's no way to take a bottom-up approach,
-because synchronous code can't ever call asynchronous code.
+반면, 비동기 코드를 감싸 동기 코드에서 호출하고 결과를 기다리는 안전한 방법은 없다. Swift 표준 라이브러리는 의도적으로 이 불안전한 기능을 제외했다. 이를 직접 구현하려고 하면 경합 조건, 스레딩 문제, 교착 상태 등의 문제가 발생할 수 있다. 기존 프로젝트에 동시성 코드를 추가할 때는 상위 계층부터 작업을 시작해야 한다. 구체적으로, 가장 상위 계층의 코드를 동시성을 사용하도록 변환한 후, 호출하는 함수와 메서드를 하나씩 변환하며 프로젝트 아키텍처를 따라 작업한다. 동기 코드는 비동기 코드를 호출할 수 없으므로 하향식 접근 방식만 가능하다.
 
-<!--
-  OUTLINE
 
-  ## Asynchronous Closures
+## 비동기 클로저
 
-  like how you can have an async function, a closure con be async
-  if a closure contains 'await' that implicitly makes it async
-  you can mark it explicitly with "async -> in"
+함수를 비동기로 만들 수 있는 것처럼, 클로저도 비동기로 만들 수 있다. 클로저 안에 `await`가 포함되면 암시적으로 비동기 클로저가 된다. 명시적으로 표시하려면 `async -> in`을 사용한다.
 
-  (discussion of @MainActor closures can probably go here too)
--->
+(여기서 `@MainActor` 클로저에 대한 논의도 함께 다룰 수 있다)
 
-## Asynchronous Sequences
 
-The `listPhotos(inGallery:)` function in the previous section
-asynchronously returns the whole array at once,
-after all of the array's elements are ready.
-Another approach
-is to wait for one element of the collection at a time
-using an *asynchronous sequence*.
-Here's what iterating over an asynchronous sequence looks like:
+## 비동기 시퀀스
+
+이전 섹션의 `listPhotos(inGallery:)` 함수는 배열의 모든 요소가 준비된 후 한 번에 전체 배열을 비동기적으로 반환한다. 또 다른 접근 방식은 *비동기 시퀀스*를 사용해 컬렉션의 요소를 하나씩 기다리는 것이다. 비동기 시퀀스를 순회하는 방법은 다음과 같다:
 
 ```swift
 import Foundation
@@ -402,43 +193,34 @@ for try await line in handle.bytes.lines {
   ```
 -->
 
-Instead of using an ordinary `for`-`in` loop,
-the example above writes `for` with `await` after it.
-Like when you call an asynchronous function or method,
-writing `await` indicates a possible suspension point.
-A `for`-`await`-`in` loop potentially suspends execution
-at the beginning of each iteration,
-when it's waiting for the next element to be available.
+일반적인 `for`-`in` 루프 대신, 위 예제에서는 `for` 뒤에 `await`를 사용한다. 비동기 함수나 메서드를 호출할 때와 마찬가지로, `await`는 잠재적인 중단 지점을 나타낸다. `for`-`await`-`in` 루프는 각 반복의 시작 부분에서 다음 요소가 준비될 때까지 실행을 잠시 중단할 수 있다.
 
 <!--
-  FIXME TR: Where does the 'try' above come from?
+  FIXME TR: 위의 'try'는 어디서 온 것인가?
 -->
 
-In the same way that you can use your own types in a `for`-`in` loop
-by adding conformance to the [`Sequence`][] protocol,
-you can use your own types in a `for`-`await`-`in` loop
-by adding conformance to the [`AsyncSequence`] protocol.
+`for`-`in` 루프에서 사용자 정의 타입을 사용하려면 [`Sequence`][] 프로토콜을 준수해야 하는 것처럼, `for`-`await`-`in` 루프에서 사용자 정의 타입을 사용하려면 [`AsyncSequence`] 프로토콜을 준수해야 한다.
 
 [`Sequence`]: https://developer.apple.com/documentation/swift/sequence
 [`AsyncSequence`]: https://developer.apple.com/documentation/swift/asyncsequence
 
 <!--
-  TODO what happened to ``Series`` which was supposed to be a currency type?
-  Is that coming from Combine instead of the stdlib maybe?
+  TODO ``Series``라는 통화 타입은 어떻게 되었는가?
+  Combine에서 나온 것인가?
 
-  Also... need a real API that produces a async sequence.
-  I'd prefer not to go through the whole process of making one here,
-  since the protocol reference has enough detail to show you how to do that.
-  There's nothing in the stdlib except for the AsyncFooSequence types.
-  Maybe one of the other conforming types from an Apple framework --
-  how about FileHandle.AsyncBytes (myFilehandle.bytes.lines) from Foundation?
+  또한... 비동기 시퀀스를 생성하는 실제 API가 필요하다.
+  여기서 전체 과정을 설명하는 대신,
+  프로토콜 참조에 충분한 세부 정보가 있으므로 해당 부분을 보여주는 것이 좋다.
+  stdlib에는 AsyncFooSequence 타입 외에는 아무것도 없다.
+  다른 Apple 프레임워크의 준수 타입 중 하나를 사용할 수 있을까 --
+  Foundation의 FileHandle.AsyncBytes (myFilehandle.bytes.lines)는 어떨까?
 
   https://developer.apple.com/documentation/swift/asyncsequence
   https://developer.apple.com/documentation/foundation/filehandle
 
-  if we get a stdlib-provided async sequence type at some point,
-  rewrite the above to fit the same narrative flow
-  using something like the following
+  stdlib에서 비동기 시퀀스 타입을 제공받게 되면,
+  위의 내용을 같은 서술 흐름에 맞게 다시 작성하자.
+  예를 들어 다음과 같은 코드를 사용할 수 있다.
 
   let names = await listPhotos(inGallery: "Winter Vacation")
   for await photo in Photos(names: names) {
@@ -446,17 +228,10 @@ by adding conformance to the [`AsyncSequence`] protocol.
   }
 -->
 
-## Calling Asynchronous Functions in Parallel
 
-Calling an asynchronous function with `await`
-runs only one piece of code at a time.
-While the asynchronous code is running,
-the caller waits for that code to finish
-before moving on to run the next line of code.
-For example,
-to fetch the first three photos from a gallery,
-you could await three calls to the `downloadPhoto(named:)` function
-as follows:
+## 비동기 함수를 병렬로 호출하기
+
+`await`를 사용해 비동기 함수를 호출하면 한 번에 하나의 코드만 실행한다. 비동기 코드가 실행되는 동안 호출자는 해당 코드가 완료될 때까지 기다린 후 다음 코드를 실행한다. 예를 들어, 갤러리에서 처음 세 개의 사진을 가져오려면 `downloadPhoto(named:)` 함수를 세 번 호출하고 각 호출에 `await`를 사용할 수 있다.
 
 ```swift
 let firstPhoto = await downloadPhoto(named: photoNames[0])
@@ -484,18 +259,9 @@ show(photos)
   ```
 -->
 
-This approach has an important drawback:
-Although the download is asynchronous
-and lets other work happen while it progresses,
-only one call to `downloadPhoto(named:)` runs at a time.
-Each photo downloads completely before the next one starts downloading.
-However, there's no need for these operations to wait ---
-each photo can download independently, or even at the same time.
+이 방식에는 중요한 단점이 있다. 다운로드가 비동기로 진행되면서 다른 작업을 할 수 있지만, 한 번에 하나의 `downloadPhoto(named:)` 호출만 실행된다. 각 사진은 완전히 다운로드된 후에 다음 사진 다운로드가 시작된다. 하지만 이러한 작업은 기다릴 필요가 없다. 각 사진은 독립적으로, 심지어 동시에 다운로드될 수 있다.
 
-To call an asynchronous function
-and let it run in parallel with code around it,
-write `async` in front of `let` when you define a constant,
-and then write `await` each time you use the constant.
+비동기 함수를 호출하고 주변 코드와 병렬로 실행하려면 상수를 정의할 때 `let` 앞에 `async`를 쓰고, 상수를 사용할 때마다 `await`를 사용한다.
 
 ```swift
 async let firstPhoto = downloadPhoto(named: photoNames[0])
@@ -525,75 +291,37 @@ show(photos)
   ```
 -->
 
-In this example,
-all three calls to `downloadPhoto(named:)` start
-without waiting for the previous one to complete.
-If there are enough system resources available, they can run at the same time.
-None of these function calls are marked with `await`
-because the code doesn't suspend to wait for the function's result.
-Instead, execution continues
-until the line where `photos` is defined ---
-at that point, the program needs the results from these asynchronous calls,
-so you write `await` to pause execution
-until all three photos finish downloading.
+이 예제에서는 `downloadPhoto(named:)` 호출이 세 번 모두 이전 호출이 완료될 때까지 기다리지 않고 시작된다. 시스템 리소스가 충분하다면 동시에 실행될 수 있다. 이 함수 호출에는 `await`가 표시되지 않는다. 코드는 함수의 결과를 기다리며 중단되지 않기 때문이다. 대신 실행은 `photos`가 정의된 라인까지 계속된다. 이 시점에서 프로그램은 비동기 호출의 결과가 필요하므로, 세 사진이 모두 다운로드될 때까지 실행을 일시 중단하기 위해 `await`를 사용한다.
 
-Here's how you can think about the differences between these two approaches:
+두 접근 방식의 차이점을 다음과 같이 생각할 수 있다:
 
-- Call asynchronous functions with `await`
-  when the code on the following lines depends on that function's result.
-  This creates work that is carried out sequentially.
-- Call asynchronous functions with `async`-`let`
-  when you don't need the result until later in your code.
-  This creates work that can be carried out in parallel.
-- Both `await` and `async`-`let`
-  allow other code to run while they're suspended.
-- In both cases, you mark the possible suspension point with `await`
-  to indicate that execution will pause, if needed,
-  until an asynchronous function has returned.
+- 다음 코드가 함수의 결과에 의존할 때 `await`를 사용해 비동기 함수를 호출한다. 이렇게 하면 작업이 순차적으로 수행된다.
+- 결과가 나중에 필요할 때 `async`-`let`을 사용해 비동기 함수를 호출한다. 이렇게 하면 작업을 병렬로 수행할 수 있다.
+- `await`와 `async`-`let` 모두 중단되는 동안 다른 코드가 실행될 수 있다.
+- 두 경우 모두, 비동기 함수가 반환될 때까지 실행이 일시 중단될 수 있음을 나타내기 위해 `await`로 가능한 중단 지점을 표시한다.
 
-You can also mix both of these approaches in the same code.
+동일한 코드에서 두 접근 방식을 혼합해서 사용할 수도 있다.
 
-## Tasks and Task Groups
 
-A *task* is a unit of work
-that can be run asynchronously as part of your program.
-All asynchronous code runs as part of some task.
-A task itself does only one thing at a time,
-but when you create multiple tasks,
-Swift can schedule them to run simultaneously.
+## 작업(Task)과 작업 그룹(Task Group)
 
-The `async`-`let` syntax described in the previous section
-implicitly creates a child task ---
-this syntax works well when you already know
-what tasks your program needs to run.
-You can also create a task group
-(an instance of [`TaskGroup`][])
-and explicitly add child tasks to that group,
-which gives you more control over priority and cancellation,
-and lets you create a dynamic number of tasks.
+*작업(Task)*은 프로그램의 일부로 비동기적으로 실행할 수 있는 작업 단위다. 모든 비동기 코드는 어떤 작업의 일부로 실행된다. 하나의 작업은 한 번에 한 가지만 처리하지만, 여러 작업을 생성하면 Swift가 이를 동시에 실행하도록 스케줄링한다.
+
+이전 섹션에서 설명한 `async`-`let` 구문은 암묵적으로 자식 작업을 생성한다. 이 구문은 프로그램에서 실행해야 할 작업을 이미 알고 있을 때 유용하다. 또한 [`TaskGroup`][] 인스턴스를 생성하고 명시적으로 자식 작업을 그룹에 추가할 수도 있다. 이 방식은 우선순위와 취소를 더 세밀하게 제어할 수 있으며, 동적으로 여러 작업을 생성할 수 있다는 장점이 있다.
 
 [`TaskGroup`]: https://developer.apple.com/documentation/swift/taskgroup
 
-Tasks are arranged in a hierarchy.
-Each task in a given task group has the same parent task,
-and each task can have child tasks.
-Because of the explicit relationship between tasks and task groups,
-this approach is called *structured concurrency*.
-The explicit parent-child relationships between tasks has several advantages:
+작업은 계층 구조로 구성된다. 특정 작업 그룹 내의 모든 작업은 동일한 부모 작업을 가지며, 각 작업은 자식 작업을 가질 수 있다. 작업과 작업 그룹 사이의 명시적인 관계 때문에 이 접근 방식을 *구조적 동시성(structured concurrency)*이라고 부른다. 작업 간의 명시적인 부모-자식 관계는 다음과 같은 장점을 제공한다:
 
-- In a parent task,
-  you can't forget to wait for its child tasks to complete.
+- 부모 작업에서 자식 작업이 완료될 때까지 기다리는 것을 잊어버릴 수 없다.
 
-- When setting a higher priority on a child task,
-  the parent task's priority is automatically escalated.
+- 자식 작업에 더 높은 우선순위를 설정하면, 부모 작업의 우선순위도 자동으로 상승한다.
 
-- When a parent task is canceled,
-  each of its child tasks is also automatically canceled.
+- 부모 작업이 취소되면, 모든 자식 작업도 자동으로 취소된다.
 
-- Task-local values propagate to child tasks efficiently and automatically.
+- 작업 지역 값(Task-local values)이 자식 작업으로 효율적이고 자동으로 전파된다.
 
-Here's another version of the code to download photos
-that handles any number of photos:
+다음은 여러 사진을 다운로드하는 코드의 또 다른 버전으로, 임의의 수의 사진을 처리할 수 있다:
 
 ```swift
 await withTaskGroup(of: Data.self) { group in
@@ -610,25 +338,11 @@ await withTaskGroup(of: Data.self) { group in
 }
 ```
 
-The code above creates a new task group,
-and then creates child tasks
-to download each photo in the gallery.
-Swift runs as many of these tasks concurrently as conditions allow.
-As soon a child task finishes downloading a photo,
-that photo is displayed.
-There's no guarantee about the order that child tasks complete,
-so the photos from this gallery can be shown in any order.
+위 코드는 새로운 작업 그룹을 생성하고, 갤러리에 있는 각 사진을 다운로드하기 위해 자식 작업을 생성한다. Swift는 가능한 한 많은 작업을 동시에 실행한다. 자식 작업이 사진 다운로드를 완료하면 해당 사진이 즉시 표시된다. 자식 작업이 완료되는 순서는 보장되지 않으므로, 갤러리의 사진은 어떤 순서로든 표시될 수 있다.
 
-> Note:
-> If the code to download a photo could throw an error,
-> you would call `withThrowingTaskGroup(of:returning:body:)` instead.
+> 참고: 사진 다운로드 코드가 오류를 발생시킬 수 있다면, `withThrowingTaskGroup(of:returning:body:)`를 대신 호출해야 한다.
 
-In the code listing above,
-each photo is downloaded and then displayed,
-so the task group doesn't return any results.
-For a task group that returns a result,
-you add code that accumulates its result
-inside the closure you pass to `withTaskGroup(of:returning:body:)`.
+위 코드 예제에서는 각 사진을 다운로드한 후 표시하므로, 작업 그룹은 어떤 결과도 반환하지 않는다. 결과를 반환하는 작업 그룹을 만들려면, `withTaskGroup(of:returning:body:)`에 전달한 클로저 내부에서 결과를 누적하는 코드를 추가하면 된다.
 
 ```swift
 let photos = await withTaskGroup(of: Data.self) { group in
@@ -648,62 +362,30 @@ let photos = await withTaskGroup(of: Data.self) { group in
 }
 ```
 
-Like the previous example,
-this example creates a child task for each photo to download it.
-Unlike the previous example,
-the `for`-`await`-`in` loop waits for the next child task to finish,
-appends the result of that task to the array of results,
-and then continues waiting until all child tasks have finished.
-Finally,
-the task group returns the array of downloaded photos
-as its overall result.
+이전 예제와 마찬가지로, 이 예제도 각 사진을 다운로드하기 위해 자식 작업을 생성한다. 이전 예제와 달리, `for`-`await`-`in` 루프는 다음 자식 작업이 완료될 때까지 기다린 후, 해당 작업의 결과를 결과 배열에 추가하고, 모든 자식 작업이 완료될 때까지 계속 기다린다. 마지막으로, 작업 그룹은 다운로드된 사진 배열을 전체 결과로 반환한다.
 
 <!--
 TODO:
-In the future,
-we could extend the example above
-to show how you can limit the number of concurrent tasks
-that get spun up by a task group.
-There isn't a specific guideline we can give
-in terms of how many concurrent tasks to run --
-it's more "profile your code, and then adjust".
+향후에, 작업 그룹에 의해 생성되는 동시 작업의 수를 제한하는 방법을 보여주기 위해 위 예제를 확장할 수 있다. 
+동시에 실행할 작업의 수에 대한 구체적인 지침은 없으며, "코드를 프로파일링한 후 조정하라"는 것이 더 적절하다.
 
-See also:
+참고:
 https://developer.apple.com/videos/play/wwdc2023/10170?time=688
 
-We could also show withDiscardingTaskGroup(...)
-since that's optimized for child tasks
-whose values aren't collected.
+또한 withDiscardingTaskGroup(...)을 보여줄 수도 있다.
+이것은 값이 수집되지 않는 자식 작업에 최적화되어 있다.
 -->
 
-### Task Cancellation
 
-Swift concurrency uses a cooperative cancellation model.
-Each task checks whether it has been canceled
-at the appropriate points in its execution,
-and responds to cancellation appropriately.
-Depending on what work the task is doing,
-responding to cancellation usually means one of the following:
+### 작업 취소
 
-- Throwing an error like `CancellationError`
-- Returning `nil` or an empty collection
-- Returning the partially completed work
+Swift의 동시성 모델은 협력적 취소 방식을 사용한다. 각 작업은 실행 중 적절한 시점에 취소되었는지 확인하고, 취소에 적절히 대응한다. 작업의 종류에 따라 취소에 대한 응답은 다음과 같다:
 
-Downloading pictures could take a long time
-if the pictures are large or the network is slow.
-To let the user stop this work,
-without waiting for all of the tasks to complete,
-the tasks need check for cancellation and stop running if they are canceled.
-There are two ways a task can do this:
-by calling the [`Task.checkCancellation()`][] type method,
-or by reading the [`Task.isCancelled`][`Task.isCancelled` type] type property.
-Calling `checkCancellation()` throws an error if the task is canceled;
-a throwing task can propagate the error out of the task,
-stopping all of the task's work.
-This has the advantage of being simple to implement and understand.
-For more flexibility, use the `isCancelled` property,
-which lets you perform clean-up work as part of stopping the task,
-like closing network connections and deleting temporary files.
+- `CancellationError`와 같은 오류를 던진다.
+- `nil`이나 빈 컬렉션을 반환한다.
+- 부분적으로 완료된 작업 결과를 반환한다.
+
+이미지 다운로드 작업은 이미지 크기가 크거나 네트워크가 느릴 경우 시간이 오래 걸릴 수 있다. 사용자가 모든 작업이 완료되기를 기다리지 않고 작업을 중단할 수 있도록 하려면, 작업이 취소되었는지 확인하고 취소된 경우 실행을 중단해야 한다. 작업이 취소를 확인하는 방법은 두 가지다: [`Task.checkCancellation()`][] 타입 메서드를 호출하거나 [`Task.isCancelled`][`Task.isCancelled` type] 타입 프로퍼티를 읽는 것이다. `checkCancellation()`은 작업이 취소된 경우 오류를 던지며, 오류를 던지는 작업은 해당 오류를 작업 외부로 전파하여 모든 작업을 중단한다. 이 방식은 구현과 이해가 간단하다는 장점이 있다. 더 유연한 방법으로 `isCancelled` 프로퍼티를 사용하면, 작업을 중단하면서 네트워크 연결을 닫거나 임시 파일을 삭제하는 등의 정리 작업을 수행할 수 있다.
 
 [`Task.checkCancellation()`]: https://developer.apple.com/documentation/swift/task/3814826-checkcancellation
 [`Task.isCancelled` type]: https://developer.apple.com/documentation/swift/task/iscancelled-swift.type.property
@@ -727,40 +409,24 @@ let photos = await withTaskGroup(of: Optional<Data>.self) { group in
 }
 ```
 
-The code above makes several changes from the previous version:
+위 코드는 이전 버전과 비교해 몇 가지 변경 사항이 있다:
 
-- Each task is added using the
-  [`TaskGroup.addTaskUnlessCancelled(priority:operation:)`][] method,
-  to avoid starting new work after cancellation.
+- 각 작업은 [`TaskGroup.addTaskUnlessCancelled(priority:operation:)`][] 메서드를 사용해 추가되어, 취소 후 새로운 작업이 시작되지 않도록 한다.
 
-- After each call to `addTaskUnlessCancelled(priority:operation:)`,
-  the code confirms that the new child task was added.
-  If the group is canceled, the value of `added` is `false` ---
-  in that case, the code stops trying to download additional photos.
+- `addTaskUnlessCancelled(priority:operation:)`를 호출한 후, 새로운 자식 작업이 추가되었는지 확인한다. 그룹이 취소된 경우 `added` 값이 `false`가 되며, 이 경우 추가 이미지 다운로드를 시도하지 않는다.
 
-- Each task checks for cancellation
-  before starting to download the photo.
-  If it has been canceled, the task returns `nil`.
+- 각 작업은 이미지 다운로드를 시작하기 전에 취소되었는지 확인한다. 취소된 경우 `nil`을 반환한다.
 
-- At the end,
-  the task group skips `nil` values when collecting the results.
-  Handling cancellation by returning `nil`
-  means the task group can return a partial result ---
-  the photos that were already downloaded at the time of cancellation ---
-  instead of discarding that completed work.
+- 마지막으로, 작업 그룹은 결과를 수집할 때 `nil` 값을 건너뛴다. `nil`을 반환해 취소를 처리하면, 작업 그룹이 완료된 작업을 버리지 않고 취소 시점까지 다운로드된 이미지를 부분적으로 반환할 수 있다.
 
 [`TaskGroup.addTaskUnlessCancelled(priority:operation:)`]: https://developer.apple.com/documentation/swift/taskgroup/addtaskunlesscancelled(priority:operation:)
 
-> Note:
-> To check whether a task has been canceled from outside that task,
-> use the [`Task.isCancelled`][`Task.isCancelled` instance] instance property
-> instead of the type property.
+> 참고:
+> 작업 외부에서 작업이 취소되었는지 확인하려면 타입 프로퍼티 대신 [`Task.isCancelled`][`Task.isCancelled` instance] 인스턴스 프로퍼티를 사용한다.
 
 [`Task.isCancelled` instance]: https://developer.apple.com/documentation/swift/task/iscancelled-swift.property
 
-For work that needs immediate notification of cancellation,
-use the [`Task.withTaskCancellationHandler(operation:onCancel:isolation:)`][] method.
-For example:
+취소에 대한 즉각적인 알림이 필요한 작업에는 [`Task.withTaskCancellationHandler(operation:onCancel:isolation:)`][] 메서드를 사용한다. 예를 들면:
 
 [`Task.withTaskCancellationHandler(operation:onCancel:isolation:)`]: https://developer.apple.com/documentation/swift/withtaskcancellationhandler(operation:oncancel:isolation:)
 
@@ -772,157 +438,15 @@ let task = await Task.withTaskCancellationHandler {
 }
 
 // ... some time later...
-task.cancel()  // Prints "Canceled!"
+task.cancel()  // "Canceled!" 출력
 ```
 
-When using a cancellation handler,
-task cancellation is still cooperative:
-The task either runs to completion
-or checks for cancellation and stops early.
-Because the task is still running when the cancellation handler starts,
-avoid sharing state between the task and its cancellation handler,
-which could create a race condition.
+취소 핸들러를 사용할 때도 작업 취소는 여전히 협력적이다. 작업은 완료될 때까지 실행되거나 취소를 확인하고 조기에 중단한다. 취소 핸들러가 시작될 때 작업이 여전히 실행 중이므로, 작업과 취소 핸들러 간 상태를 공유하지 않도록 주의해야 한다. 그렇지 않으면 경쟁 조건이 발생할 수 있다.
 
-<!--
-  OUTLINE
 
-  - cancellation propagates (Konrad's example below)
+### 비구조적 동시성
 
-  ::
-
-      let handle = Task.detached {
-      await withTaskGroup(of: Bool.self) { group in
-          var done = false
-          while done {
-          await group.addTask { Task.isCancelled } // is this child task canceled?
-          done = try await group.next() ?? false
-          }
-      print("done!") // <1>
-      }
-
-      handle.cancel()
-      // done!           <1>
--->
-
-<!--
-  Not for WWDC, but keep for future:
-
-  task have deadlines, not timeouts --- like "now + 20 ms" ---
-  a deadline is usually what you want anyhow when you think of a timeout
-
-  - this chapter introduces the core ways you use tasks;
-  for the full list what you can do,
-  including the unsafe escape hatches
-  and ``Task.current()`` for advanced use cases,
-  see the Task API reference [link to stdlib]
-
-  - task cancellation isn't part of the state diagram below;
-  it's an independent property that can happen in any state
-
-  [PLACEHOLDER ART]
-
-  Task state diagram
-
-     |
-     v
-  Suspended <-+
-     |        |
-     v        |
-  Running ----+
-     |
-     v
-  Completed
-
-  [PLACEHOLDER ART]
-
-  Task state diagram, including "substates"
-
-     |
-     v
-  Suspended <-----+
-  (Waiting) <---+ |
-     |          | |
-     v          | |
-  Suspended     | |
-  (Schedulable) / |
-     |            |
-     v            |
-  Running --------+
-     |
-     v
-  Completed
-
-  .. _Concurrency_ChildTasks:
-
-  Adding Child Tasks to a Task Group
-
-  - awaiting ``withGroup`` means waiting for all child tasks to complete
-
-  - a child task can't outlive its parent,
-  like how ``async``-``let`` can't outlive the (implicit) parent
-  which is the function scope
-
-  - awaiting ``addTask(priority:operation:)``
-  means waiting for that child task to be added,
-  not waiting for that child task to finish
-
-  - ?? maybe cover ``TaskGroup.next``
-  probably nicer to use the ``for await result in someGroup`` syntax
-
-  quote from the SE proposal --- I want to include this fact here too
-
-  > There's no way for reference to the child task to
-  > escape the scope in which the child task is created.
-  > This ensures that the structure of structured concurrency is maintained.
-  > It makes it easier to reason about
-  > the concurrent tasks that are executing within a given scope,
-  > and also enables various optimizations.
--->
-
-<!--
-  OUTLINE
-
-  .. _Concurrency_TaskPriority:
-
-  Setting Task Priority
-  ~~~~~~~~~~~~~~~~~~~~~
-
-  - priority values defined by ``Task.Priority`` enum
-
-  - type property ``Task.currentPriority``
-
-  - The exact result of setting a task's priority depends on the executor
-
-  - TR: What's the built-in stdlib executor do?
-
-  - Child tasks inherit the priority of their parents
-
-  - If a high-priority task is waiting for a low-priority one,
-  the low-priority one gets scheduled at high priority
-  (this is known as :newTerm:`priority escalation`)
-
-  - In addition, or instead of, setting a low priority,
-  you can use ``Task.yield()`` to explicitly pass execution to the next scheduled task.
-  This is a sort of cooperative multitasking for long-running work.
--->
-
-### Unstructured Concurrency
-
-In addition to the structured approaches to concurrency
-described in the previous sections,
-Swift also supports unstructured concurrency.
-Unlike tasks that are part of a task group,
-an *unstructured task* doesn't have a parent task.
-You have complete flexibility to manage unstructured tasks
-in whatever way your program needs,
-but you're also completely responsible for their correctness.
-To create an unstructured task that runs on the current actor,
-call the [`Task.init(priority:operation:)`][] initializer.
-To create an unstructured task that's not part of the current actor,
-known more specifically as a *detached task*,
-call the [`Task.detached(priority:operation:)`][] class method.
-Both of these operations return a task that you can interact with ---
-for example, to wait for its result or to cancel it.
+이전 섹션에서 설명한 구조적 동시성 접근 방식 외에도, Swift는 비구조적 동시성도 지원한다. **비구조적 태스크**는 태스크 그룹의 일부가 아니며, 부모 태스크가 없다. 프로그램의 필요에 따라 비구조적 태스크를 자유롭게 관리할 수 있지만, 그 정확성에 대한 책임도 전적으로 개발자에게 있다. 현재 액터에서 실행되는 비구조적 태스크를 생성하려면 [`Task.init(priority:operation:)`][] 이니셜라이저를 호출한다. 현재 액터의 일부가 아닌 비구조적 태스크를 생성하려면, 보다 구체적으로 **분리된 태스크(detached task)**라고 알려진 [`Task.detached(priority:operation:)`][] 클래스 메서드를 호출한다. 이 두 작업 모두 태스크를 반환하며, 결과를 기다리거나 취소하는 등 상호작용할 수 있다.
 
 ```swift
 let newPhoto = // ... some photo data ...
@@ -932,8 +456,7 @@ let handle = Task {
 let result = await handle.value
 ```
 
-For more information about managing detached tasks,
-see [`Task`](https://developer.apple.com/documentation/swift/task).
+분리된 태스크를 관리하는 방법에 대한 자세한 내용은 [`Task`](https://developer.apple.com/documentation/swift/task) 문서를 참고한다.
 
 [`Task.init(priority:operation:)`]: https://developer.apple.com/documentation/swift/task/init(priority:operation:)-7f0zv
 [`Task.detached(priority:operation:)`]: https://developer.apple.com/documentation/swift/task/detached(priority:operation:)-d24l
@@ -945,23 +468,12 @@ see [`Task`](https://developer.apple.com/documentation/swift/task).
   (Pull from my 2021-04-21 notes from Ben's talk rehearsal.)
 -->
 
-## Actors
 
-You can use tasks to break up your program into isolated, concurrent pieces.
-Tasks are isolated from each other,
-which is what makes it safe for them to run at the same time,
-but sometimes you need to share some information between tasks.
-Actors let you safely share information between concurrent code.
+## 액터
 
-Like classes, actors are reference types,
-so the comparison of value types and reference types
-in <doc:ClassesAndStructures#Classes-Are-Reference-Types>
-applies to actors as well as classes.
-Unlike classes,
-actors allow only one task to access their mutable state at a time,
-which makes it safe for code in multiple tasks
-to interact with the same instance of an actor.
-For example, here's an actor that records temperatures:
+프로그램을 독립적이고 동시에 실행 가능한 부분으로 나누기 위해 작업(task)을 사용한다. 작업은 서로 격리되어 있어 동시에 실행하기에 안전하지만, 때로는 작업 간에 정보를 공유해야 할 때가 있다. 액터는 동시성 코드 간에 정보를 안전하게 공유할 수 있게 해준다.
+
+클래스와 마찬가지로 액터도 참조 타입이다. 따라서 <doc:ClassesAndStructures#Classes-Are-Reference-Types>에서 설명한 값 타입과 참조 타입의 비교는 액터에도 동일하게 적용된다. 클래스와 달리 액터는 한 번에 하나의 작업만이 자신의 가변 상태에 접근할 수 있도록 허용한다. 이는 여러 작업이 동일한 액터 인스턴스와 상호작용할 때 안전성을 보장한다. 예를 들어, 다음은 온도를 기록하는 액터의 예이다:
 
 ```swift
 actor TemperatureLogger {
@@ -995,18 +507,9 @@ actor TemperatureLogger {
   ```
 -->
 
-You introduce an actor with the `actor` keyword,
-followed by its definition in a pair of braces.
-The `TemperatureLogger` actor has properties
-that other code outside the actor can access,
-and restricts the `max` property so only code inside the actor
-can update the maximum value.
+액터는 `actor` 키워드로 정의하며, 중괄호 안에 구현 내용을 작성한다. `TemperatureLogger` 액터는 외부 코드에서 접근할 수 있는 프로퍼티를 가지며, `max` 프로퍼티는 액터 내부 코드만 업데이트할 수 있도록 제한한다.
 
-You create an instance of an actor
-using the same initializer syntax as structures and classes.
-When you access a property or method of an actor,
-you use `await` to mark the potential suspension point.
-For example:
+구조체와 클래스와 동일한 초기화 구문을 사용해 액터 인스턴스를 생성한다. 액터의 프로퍼티나 메서드에 접근할 때는 잠재적인 중단 지점을 나타내기 위해 `await`를 사용한다. 예를 들어:
 
 ```swift
 let logger = TemperatureLogger(label: "Outdoors", measurement: 25)
@@ -1014,17 +517,9 @@ print(await logger.max)
 // Prints "25"
 ```
 
-In this example,
-accessing `logger.max` is a possible suspension point.
-Because the actor allows only one task at a time to access its mutable state,
-if code from another task is already interacting with the logger,
-this code suspends while it waits to access the property.
+이 예제에서 `logger.max`에 접근하는 것은 잠재적인 중단 지점이다. 액터는 한 번에 하나의 작업만이 가변 상태에 접근할 수 있도록 허용하기 때문에, 다른 작업이 이미 로거와 상호작용 중이라면 이 코드는 프로퍼티에 접근할 때까지 일시 중단된다.
 
-In contrast,
-code that's part of the actor doesn't write `await`
-when accessing the actor's properties.
-For example,
-here's a method that updates a `TemperatureLogger` with a new temperature:
+반대로, 액터의 일부인 코드는 액터의 프로퍼티에 접근할 때 `await`를 작성하지 않는다. 예를 들어, 다음은 새로운 온도로 `TemperatureLogger`를 업데이트하는 메서드이다:
 
 ```swift
 extension TemperatureLogger {
@@ -1037,72 +532,31 @@ extension TemperatureLogger {
 }
 ```
 
-The `update(with:)` method is already running on the actor,
-so it doesn't mark its access to properties like `max` with `await`.
-This method also shows one of the reasons
-why actors allow only one task at a time to interact with their mutable state:
-Some updates to an actor's state temporarily break invariants.
-The `TemperatureLogger` actor keeps track of
-a list of temperatures and a maximum temperature,
-and it updates the maximum temperature when you record a new measurement.
-In the middle of an update,
-after appending the new measurement but before updating `max`,
-the temperature logger is in a temporary inconsistent state.
-Preventing multiple tasks from interacting with the same instance simultaneously
-prevents problems like the following sequence of events:
+`update(with:)` 메서드는 이미 액터에서 실행 중이므로, `max`와 같은 프로퍼티에 접근할 때 `await`를 표시하지 않는다. 이 메서드는 또한 액터가 한 번에 하나의 작업만이 가변 상태와 상호작용할 수 있도록 허용하는 이유 중 하나를 보여준다: 액터의 상태를 업데이트할 때 일시적으로 불변성이 깨질 수 있다. `TemperatureLogger` 액터는 온도 목록과 최대 온도를 추적하며, 새로운 측정값을 기록할 때 최대 온도를 업데이트한다. 업데이트 중간에, 새로운 측정값을 추가한 후 `max`를 업데이트하기 전에, 온도 로거는 일시적으로 일관성이 없는 상태가 된다. 여러 작업이 동시에 동일한 인스턴스와 상호작용하지 못하도록 방지함으로써 다음과 같은 일련의 이벤트로 인한 문제를 방지한다:
 
-1. Your code calls the `update(with:)` method.
-   It updates the `measurements` array first.
-2. Before your code can update `max`,
-   code elsewhere reads the maximum value and the array of temperatures.
-3. Your code finishes its update by changing `max`.
+1. 코드가 `update(with:)` 메서드를 호출한다. 먼저 `measurements` 배열을 업데이트한다.
+2. 코드가 `max`를 업데이트하기 전에, 다른 곳의 코드가 최대값과 온도 배열을 읽는다.
+3. 코드가 `max`를 변경하여 업데이트를 완료한다.
 
-In this case,
-the code running elsewhere would read incorrect information
-because its access to the actor was interleaved
-in the middle of the call to `update(with:)`
-while the data was temporarily invalid.
-You can prevent this problem when using Swift actors
-because they only allow one operation on their state at a time,
-and because that code can be interrupted
-only in places where `await` marks a suspension point.
-Because `update(with:)` doesn't contain any suspension points,
-no other code can access the data in the middle of an update.
+이 경우, 다른 곳에서 실행 중인 코드는 `update(with:)` 호출 중간에 액터에 접근했기 때문에 잘못된 정보를 읽게 된다. 데이터가 일시적으로 유효하지 않은 상태였기 때문이다. Swift 액터를 사용하면 이 문제를 방지할 수 있다. 액터는 한 번에 하나의 작업만 상태에 접근할 수 있도록 허용하며, `await`로 표시된 중단 지점에서만 코드가 중단될 수 있기 때문이다. `update(with:)`에는 중단 지점이 없으므로, 업데이트 중간에 다른 코드가 데이터에 접근할 수 없다.
 
-If code outside the actor tries to access those properties directly,
-like accessing a structure or class's properties,
-you'll get a compile-time error.
-For example:
+액터 외부의 코드가 프로퍼티에 직접 접근하려고 하면, 구조체나 클래스의 프로퍼티에 접근하는 것처럼 컴파일 타임 오류가 발생한다. 예를 들어:
 
 ```swift
 print(logger.max)  // Error
 ```
 
-Accessing `logger.max` without writing `await` fails because
-the properties of an actor are part of that actor's isolated local state.
-The code to access this property needs to run as part of the actor,
-which is an asynchronous operation and requires writing `await`.
-Swift guarantees that
-only code running on an actor can access that actor's local state.
-This guarantee is known as *actor isolation*.
+`await`를 작성하지 않고 `logger.max`에 접근하면 실패한다. 액터의 프로퍼티는 액터의 격리된 로컬 상태의 일부이기 때문이다. 이 프로퍼티에 접근하는 코드는 액터의 일부로 실행되어야 하며, 이는 비동기 작업이므로 `await`를 작성해야 한다. Swift는 액터에서 실행 중인 코드만이 해당 액터의 로컬 상태에 접근할 수 있음을 보장한다. 이 보장을 *액터 격리(actor isolation)*라고 한다.
 
-The following aspects of the Swift concurrency model
-work together to make it easier to reason about shared mutable state:
+Swift 동시성 모델의 다음과 같은 측면들이 함께 작용하여 공유 가변 상태를 더 쉽게 추론할 수 있게 한다:
 
-- Code in between possible suspension points runs sequentially,
-  without the possibility of interruption from other concurrent code.
+- 잠재적인 중단 지점 사이의 코드는 순차적으로 실행되며, 다른 동시성 코드에 의해 중단되지 않는다.
 
-- Code that interacts with an actor's local state
-  runs only on that actor.
+- 액터의 로컬 상태와 상호작용하는 코드는 해당 액터에서만 실행된다.
 
-- An actor runs only one piece of code at a time.
+- 액터는 한 번에 하나의 코드만 실행한다.
 
-Because of these guarantees,
-code that doesn't include `await` and that's inside an actor
-can make the updates without a risk of other places in your program
-observing the temporarily invalid state.
-For example,
-the code below converts measured temperatures from Fahrenheit to Celsius:
+이러한 보장 덕분에, `await`를 포함하지 않고 액터 내부에 있는 코드는 프로그램의 다른 부분에서 일시적으로 유효하지 않은 상태를 관찰할 위험 없이 업데이트를 수행할 수 있다. 예를 들어, 다음 코드는 측정된 온도를 화씨에서 섭씨로 변환한다:
 
 ```swift
 extension TemperatureLogger {
@@ -1114,32 +568,9 @@ extension TemperatureLogger {
 }
 ```
 
-The code above converts the array of measurements, one at a time.
-While the map operation is in progress,
-some temperatures are in Fahrenheit and others are in Celsius.
-However, because none of the code includes `await`,
-there are no potential suspension points in this method.
-The state that this method modifies belongs to the actor,
-which protects it against code reading or modifying it
-except when that code runs on the actor.
-This means there's no way for other code
-to read a list of partially converted temperatures
-while unit conversion is in progress.
+위 코드는 측정값 배열을 하나씩 변환한다. 맵 작업이 진행되는 동안 일부 온도는 화씨로, 다른 온도는 섭씨로 남아 있을 수 있다. 그러나 이 메서드에는 `await`가 포함되지 않았으므로 잠재적인 중단 지점이 없다. 이 메서드가 수정하는 상태는 액터에 속하며, 액터는 해당 코드가 액터에서 실행될 때를 제외하고는 코드가 상태를 읽거나 수정하지 못하도록 보호한다. 이는 단위 변환이 진행되는 동안 다른 코드가 부분적으로 변환된 온도 목록을 읽을 수 없음을 의미한다.
 
-In addition to writing code in an actor
-that protects temporary invalid state by omitting potential suspension points,
-you can move that code into a synchronous method.
-The `convertFahrenheitToCelsius()` method above is a synchronous method,
-so it's guaranteed to *never* contain potential suspension points.
-This function encapsulates the code
-that temporarily makes the data model inconsistent,
-and makes it easier for anyone reading the code
-to recognize that no other code can run
-before data consistency is restored by completing the work.
-In the future,
-if you try to add concurrent code to this function,
-introducing a possible suspension point,
-you'll get compile-time error instead of introducing a bug.
+잠재적인 중단 지점을 생략하여 일시적으로 유효하지 않은 상태를 보호하는 코드를 액터에 작성하는 것 외에도, 이 코드를 동기 메서드로 옮길 수 있다. 위의 `convertFahrenheitToCelsius()` 메서드는 동기 메서드이므로 잠재적인 중단 지점이 *절대* 포함되지 않음을 보장한다. 이 함수는 데이터 모델을 일시적으로 일관성이 없게 만드는 코드를 캡슐화하며, 코드를 읽는 사람이 작업이 완료되어 데이터 일관성이 복원되기 전에는 다른 코드가 실행될 수 없음을 쉽게 인식할 수 있게 한다. 나중에 이 함수에 동시성 코드를 추가하려고 하면, 잠재적인 중단 지점을 도입하게 되며, 이는 버그를 도입하는 대신 컴파일 타임 오류를 발생시킨다.
 
 <!--
   OUTLINE
@@ -1202,68 +633,22 @@ you'll get compile-time error instead of introducing a bug.
        print(await logger.getMax())
 -->
 
-## Sendable Types
 
-Tasks and actors let you divide a program
-into pieces that can safely run concurrently.
-Inside of a task or an instance of an actor,
-the part of a program that contains mutable state,
-like variables and properties,
-is called a *concurrency domain*.
-Some kinds of data can't be shared between concurrency domains,
-because that data contains mutable state,
-but it doesn't protect against overlapping access.
+## 전송 가능 타입(Sendable Types)
 
-A type that can be shared from one concurrency domain to another
-is known as a *sendable* type.
-For example, it can be passed as an argument when calling an actor method
-or be returned as the result of a task.
-The examples earlier in this chapter didn't discuss sendability
-because those examples use simple value types
-that are always safe to share
-for the data being passed between concurrency domains.
-In contrast,
-some types aren't safe to pass across concurrency domains.
-For example, a class that contains mutable properties
-and doesn't serialize access to those properties
-can produce unpredictable and incorrect results
-when you pass instances of that class between different tasks.
+작업(Task)과 액터(Actor)를 사용하면 프로그램을 동시에 안전하게 실행할 수 있는 여러 부분으로 나눌 수 있다. 작업이나 액터 인스턴스 내부에서, 변수나 프로퍼티와 같이 변경 가능한 상태를 포함하는 프로그램 부분을 *동시성 도메인(concurrency domain)* 이라고 부른다. 일부 데이터는 변경 가능한 상태를 포함하지만, 동시 접근을 방지하지 않기 때문에 동시성 도메인 간에 공유할 수 없다.
 
-You mark a type as being sendable
-by declaring conformance to the `Sendable` protocol.
-That protocol doesn't have any code requirements,
-but it does have semantic requirements that Swift enforces.
-In general, there are three ways for a type to be sendable:
+한 동시성 도메인에서 다른 동시성 도메인으로 공유할 수 있는 타입을 *전송 가능 타입(Sendable type)* 이라고 한다. 예를 들어, 액터 메서드를 호출할 때 인자로 전달하거나 작업의 결과로 반환할 수 있다. 이 장의 앞부분 예제에서는 동시성 도메인 간에 전달되는 데이터가 항상 안전하게 공유할 수 있는 단순한 값 타입을 사용했기 때문에 전송 가능성에 대해 다루지 않았다. 반면, 일부 타입은 동시성 도메인 간에 안전하게 전달할 수 없다. 예를 들어, 변경 가능한 프로퍼티를 포함하고 해당 프로퍼티에 대한 접근을 직렬화하지 않는 클래스는 다른 작업 간에 인스턴스를 전달할 때 예측할 수 없고 잘못된 결과를 초래할 수 있다.
 
-- The type is a value type,
-  and its mutable state is made up of other sendable data ---
-  for example, a structure with stored properties that are sendable
-  or an enumeration with associated values that are sendable.
-- The type doesn't have any mutable state,
-  and its immutable state is made up of other sendable data ---
-  for example, a structure or class that has only read-only properties.
-- The type has code that ensures the safety of its mutable state,
-  like a class that's marked `@MainActor`
-  or a class that serializes access to its properties
-  on a particular thread or queue.
+타입을 전송 가능으로 표시하려면 `Sendable` 프로토콜을 준수하도록 선언한다. 이 프로토콜은 코드 요구사항은 없지만, Swift가 강제하는 의미론적 요구사항이 있다. 일반적으로 타입이 전송 가능하려면 다음 세 가지 방법 중 하나를 만족해야 한다:
 
-<!--
-  There's no example of the third case,
-  where you serialize access to the class's members,
-  because the stdlib doesn't include the locking primitives you'd need.
-  Implementing it in terms of NSLock or some Darwin API
-  isn't a good fit for TSPL.
-  Implementing it in terms of isKnownUniquelyReferenced(_:)
-  and copy-on-write is also probably too involved for TSPL.
--->
+- 타입이 값 타입이고, 변경 가능한 상태가 다른 전송 가능 데이터로 구성된 경우. 예를 들어, 전송 가능한 저장 프로퍼티를 가진 구조체나 전송 가능한 연관 값을 가진 열거형이 여기에 해당한다.
+- 타입에 변경 가능한 상태가 없고, 불변 상태가 다른 전송 가능 데이터로 구성된 경우. 예를 들어, 읽기 전용 프로퍼티만 있는 구조체나 클래스가 이에 해당한다.
+- 타입이 변경 가능한 상태의 안전성을 보장하는 코드를 포함하는 경우. 예를 들어, `@MainActor`로 표시된 클래스나 특정 스레드나 큐에서 프로퍼티 접근을 직렬화하는 클래스가 이에 해당한다.
 
-For a detailed list of the semantic requirements,
-see the [`Sendable`](https://developer.apple.com/documentation/swift/sendable) protocol reference.
+의미론적 요구사항에 대한 자세한 목록은 [`Sendable`](https://developer.apple.com/documentation/swift/sendable) 프로토콜 참조 문서를 확인한다.
 
-Some types are always sendable,
-like structures that have only sendable properties
-and enumerations that have only sendable associated values.
-For example:
+일부 타입은 항상 전송 가능하다. 예를 들어, 전송 가능한 프로퍼티만 있는 구조체나 전송 가능한 연관 값만 있는 열거형이 이에 해당한다. 예를 들어:
 
 ```swift
 struct TemperatureReading: Sendable {
@@ -1281,31 +666,7 @@ let reading = TemperatureReading(measurement: 45)
 await logger.addReading(from: reading)
 ```
 
-<!--
-  - test: `actors`
-
-  ```swifttest
-  -> struct TemperatureReading: Sendable {
-         var measurement: Int
-     }
-
-  -> extension TemperatureLogger {
-         func addReading(from reading: TemperatureReading) {
-             measurements.append(reading.measurement)
-         }
-     }
-
-  -> let logger = TemperatureLogger(label: "Tea kettle", measurement: 85)
-  -> let reading = TemperatureReading(measurement: 45)
-  -> await logger.addReading(from: reading)
-  ```
--->
-
-Because `TemperatureReading` is a structure that has only sendable properties,
-and the structure isn't marked `public` or `@usableFromInline`,
-it's implicitly sendable.
-Here's a version of the structure
-where conformance to the `Sendable` protocol is implied:
+`TemperatureReading`은 전송 가능한 프로퍼티만 있는 구조체이며, `public`이나 `@usableFromInline`으로 표시되지 않았기 때문에 암시적으로 전송 가능하다. 다음은 `Sendable` 프로토콜 준수가 암시된 구조체의 예시다:
 
 ```swift
 struct TemperatureReading {
@@ -1313,19 +674,7 @@ struct TemperatureReading {
 }
 ```
 
-<!--
-  - test: `actors-implicitly-sendable`
-
-  ```swifttest
-  -> struct TemperatureReading {
-         var measurement: Int
-     }
-  ```
--->
-
-To explicitly mark a type as not being sendable,
-overriding an implicit conformance to the `Sendable` protocol,
-use an extension:
+암시적 `Sendable` 프로토콜 준수를 재정의하여 타입을 전송 불가능으로 명시적으로 표시하려면 확장을 사용한다:
 
 ```swift
 struct FileDescriptor {
@@ -1336,107 +685,8 @@ struct FileDescriptor {
 extension FileDescriptor: Sendable { }
 ```
 
-<!--
-The example above is abbreviated from a Swift System API.
-https://github.com/apple/swift-system/blob/main/Sources/System/FileDescriptor.swift
--->
+위 코드는 POSIX 파일 디스크립터를 감싸는 래퍼의 일부를 보여준다. 파일 디스크립터 인터페이스가 정수 값을 사용하여 열린 파일을 식별하고 상호작용하지만, 파일 디스크립터는 동시성 도메인 간에 안전하게 전송할 수 없다.
 
-The code above shows part of a wrapper around POSIX file descriptors.
-Even though interface for file descriptors uses integers
-to identify and interact with open files,
-and integer values are sendable,
-a file descriptor isn't safe to send across concurrency domains.
+위 코드에서 `FileDescriptor`는 암시적으로 전송 가능한 기준을 충족하는 구조체다. 그러나 확장에서 `Sendable` 준수를 사용할 수 없도록 설정하여 타입이 전송 불가능하게 된다.
 
-<!--
-  - test: `suppressing-implied-sendable-conformance`
 
-  -> struct FileDescriptor {
-  ->     let rawValue: CInt
-  -> }
-
-  -> @available(*, unavailable)
-  -> extension FileDescriptor: Sendable { }
-  >> let nonsendable: Sendable = FileDescriptor(rawValue: 10)
-  !$ warning: conformance of 'FileDescriptor' to 'Sendable' is unavailable; this is an error in Swift 6
-  !! let nonsendable: Sendable = FileDescriptor(rawValue: 10)
-  !! ^
-  !$ note: conformance of 'FileDescriptor' to 'Sendable' has been explicitly marked unavailable here
-  !! extension FileDescriptor: Sendable { }
-  !! ^
--->
-
-In the code above,
-the `FileDescriptor` is a structure
-that meets the criteria to be implicitly sendable.
-However, the extension makes its conformance to `Sendable` unavailable,
-preventing the type from being sendable.
-
-<!--
-  OUTLINE
-  .. _Concurrency_MainActor:
-
-  The Main Actor
-  ~~~~~~~~~~~~~~
-
-  - the main actor is kinda-sorta like the main thread
-
-  - use it when you have shared mutable state,
-  but that state isn't neatly wrapped up in a single type
-
-  - you can put it on a function,
-  which makes calls to the function always run on the main actor
-
-  - you can put it on a type,
-  which makes calls to all of the type's methods run on the main actor
-
-  - some property wrappers like ``@EnvironmentObject`` from SwiftUI
-  imply ``@MainActor`` on a type.
-  Check for a ``wrappedValue`` that's marked ``@MainActor``.
-  If you mark the property of a type with one of these implicit-main-actor properties,
-  that has the same effect as marking the type with ``@MainActor``
-  you can wait for each child of a task
--->
-
-<!--
-  LEFTOVER OUTLINE BITS
-
-  - like classes, actors can inherit from other actors
-
-  - actors can also inherit from ``NSObject``,
-  which lets you mark them ``@objc`` and do interop stuff with them
-
-  - every actor implicitly conforms to the ``Actor`` protocol,
-  which has no requirements
-
-  - you can use the ``Actor`` protocol to write code that's generic across actors
-
-  - In the future, when we get distributed actors,
-    the TemperatureSensor example
-    might be a good example to expand when explaining them.
-
-  ::
-
-      while let result = try await group.next() { }
-      for try await result in group { }
-
-  how much should you have to understand threads to understand this?
-  Ideally you don't have to know anything about them.
-
-  How do you meld async-await-Task-Actor with an event driven model?
-  Can you feed your user events through an async sequence or Combine
-  and then use for-await-in to spin an event loop?
-  I think so --- but how do you get the events *into* the async sequence?
-
-  Probably don't cover unsafe continuations (SE-0300) in TSPL,
-  but maybe link to them?
--->
-
-<!--
-This source file is part of the Swift.org open source project
-
-Copyright (c) 2014 - 2022 Apple Inc. and the Swift project authors
-Licensed under Apache License v2.0 with Runtime Library Exception
-
-See https://swift.org/LICENSE.txt for license information
-See https://swift.org/CONTRIBUTORS.txt for the list of Swift project authors
--->
