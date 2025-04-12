@@ -20,6 +20,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v1
+        with:
+          swift-version: "5.9"
+          
       - name: Build Documentation
         run: |
           xcrun docc convert TSPL.docc --output-path docs --hosting-base-path swift-book --transform-for-static-hosting
@@ -35,14 +40,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
+          
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v3 
