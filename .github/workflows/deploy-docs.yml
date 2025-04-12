@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Documentation
         run: |
-          xcrun docc convert TSPL.docc --output-path docs --hosting-base-path swift-book --transform-for-static-hosting
+          xcrun docc convert TSPL.docc --output-path docs --transform-for-static-hosting
           
       - name: Create CNAME file
         run: |
