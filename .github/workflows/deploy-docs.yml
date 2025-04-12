@@ -25,10 +25,11 @@ jobs:
 
       - name: Build Documentation
         run: |
+          # docc 문서 생성
           xcrun docc convert TSPL.docc --output-path docs --transform-for-static-hosting
-
-          # RIDI 폰트 스타일 추가
-          cat TSPL.docc/ridi-font.css >> docs/css/theme.css
+          
+          # Python 스크립트 실행하여 커스텀 스타일 추가
+          python3 scripts/add_custom_styles.py
 
       # 리다이렉트를 위한 index.html 생성
       - name: Create redirect index.html
