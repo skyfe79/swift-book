@@ -20,7 +20,9 @@ def inject_custom_styles():
     }
 
     body {
-        line-height: 180%;
+        font-family: 'RIDIBatang', -apple-system, BlinkMacSystemFont, sans-serif !important;
+        line-height: 180% !important;
+        color: rgba(0, 0, 0, 0.9) !important;
     }
     </style>
     """
