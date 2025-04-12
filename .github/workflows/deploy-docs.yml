@@ -20,14 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Setup Swift
-        uses: swift-actions/setup-swift@v1
-        with:
-          swift-version: "5.9"
-          
       - name: Build Documentation
         run: |
-          swift package --allow-writing-to-directory docs generate-documentation --target TSPL --output-path docs --transform-for-static-hosting
+          (xcrun --find docc) convert TSPL.docc --output-path docs --hosting-base-path swift-book --transform-for-static-hosting
           
       - name: Create CNAME file
         run: |
