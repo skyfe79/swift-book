@@ -26,6 +26,24 @@ jobs:
       - name: Build Documentation
         run: |
           xcrun docc convert TSPL.docc --output-path docs --transform-for-static-hosting
+
+      # 리다이렉트를 위한 index.html 생성
+    - name: Create redirect index.html
+      run: |
+        cat > docs/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <title>Redirecting...</title>
+            <meta http-equiv="refresh" content="0; URL=documentation/the-swift-programming-language">
+            <link rel="canonical" href="documentation/the-swift-programming-language">
+          </head>
+          <body>
+            <p>페이지가 이동되었습니다. 자동으로 리다이렉트되지 않는 경우 <a href="documentation/the-swift-programming-language">여기</a>를 클릭하세요.</p>
+          </body>
+        </html>
+        EOF
           
       - name: Create CNAME file
         run: |
