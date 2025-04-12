@@ -30,9 +30,10 @@ def inject_custom_styles():
         with open(html_file, 'r', encoding='utf-8') as f:
             content = f.read()
         
-        # </head> 태그 바로 앞에 스타일 삽입
-        if '</head>' in content:
-            content = content.replace('</head>', f'{custom_styles}</head>')
+        # body 태그 앞에 새로운 head 태그 삽입
+        if '<body' in content:
+            new_head = f'<head>{custom_styles}</head>'
+            content = content.replace('<body', f'{new_head}<body')
             
             with open(html_file, 'w', encoding='utf-8') as f:
                 f.write(content)
